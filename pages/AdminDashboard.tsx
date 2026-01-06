@@ -286,7 +286,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
           <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
           
           {/* First Row - 6 columns */}
@@ -402,7 +402,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Visitor Stats Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-blue-100">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
             <div className="flex items-center gap-3">
@@ -449,7 +449,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Order Status Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-blue-100">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">Order Status</h3>
           
           <div className="flex flex-wrap items-center gap-4">
@@ -512,7 +512,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
             </div>
@@ -585,7 +585,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
             </div>
@@ -642,7 +642,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
             </div>
@@ -726,8 +726,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Best Selling & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-gray-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-gray-200">
+          <div className="lg:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-blue-100">
               <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
                 <Filter className="w-3.5 h-3.5" />
@@ -736,7 +736,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-[#F8FAFC] text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-white/50 text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-blue-100">
               <div>PRODUCT</div>
               <div className="text-center">TOTAL ORDER</div>
               <div className="text-center">STATUS</div>
@@ -772,16 +772,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Details Button */}
-            <div className="p-3 flex justify-center border-t border-gray-200">
-              <button className="px-6 py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 transition">
+            <div className="p-3 flex justify-center border-t border-blue-100">
+              <button className="px-6 py-2 border border-blue-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-white/50 transition">
                 Details
               </button>
             </div>
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-gray-200">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-blue-100">
               <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
               <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
             </div>
