@@ -739,7 +739,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Best Selling & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="lg:col-span-2 bg-gray-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 flex items-center justify-between border-b border-gray-200">
               <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
@@ -793,7 +793,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-gray-50 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 flex items-center justify-between border-b border-gray-200">
               <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
               <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
