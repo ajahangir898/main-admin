@@ -318,7 +318,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Language Selector */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl p-3 border border-slate-200">
               <p className="text-[10px] text-gray-500 mb-1.5">Language</p>
               <div className="flex items-center gap-1.5">
                 <button 
@@ -340,9 +340,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Important Notification */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 col-span-2">
+            <div className="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-3 border border-cyan-100 col-span-2">
               <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
-              <div className="h-10 bg-white rounded-lg border border-gray-200"></div>
+              <div className="h-10 bg-white/80 rounded-lg border border-cyan-100"></div>
               <div className="flex justify-end gap-1 mt-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
@@ -736,7 +736,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-white/50 text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-blue-100">
+            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-blue-100/50 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-blue-100">
               <div>PRODUCT</div>
               <div className="text-center">TOTAL ORDER</div>
               <div className="text-center">STATUS</div>
@@ -746,7 +746,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Table Body */}
             <div className="divide-y divide-gray-50">
               {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
-                <div key={item.product.id} className="grid grid-cols-4 gap-3 px-4 py-3 items-center hover:bg-gray-50/50 transition">
+                <div key={item.product.id} className="grid grid-cols-4 gap-3 px-4 py-3 items-center hover:bg-blue-50/50 transition">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                       {item.product.image ? (
@@ -772,8 +772,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Details Button */}
-            <div className="p-3 flex justify-center border-t border-blue-100">
-              <button className="px-6 py-2 border border-blue-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-white/50 transition">
+            <div className="p-3 flex justify-center border-t border-blue-100 bg-blue-50/30">
+              <button className="px-6 py-2 border border-blue-200 bg-white rounded-lg text-xs font-medium text-gray-600 hover:bg-blue-50 transition">
                 Details
               </button>
             </div>
@@ -793,7 +793,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <input
                   type="text"
                   placeholder="Search"
-                  className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border-0 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full pl-9 pr-3 py-2 bg-blue-50/70 border border-blue-100 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
             </div>
@@ -801,7 +801,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Product List */}
             <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
               {topProducts.map((product, index) => (
-                <div key={product.id} className="px-4 py-3 flex items-center gap-2.5 hover:bg-gray-50/50 transition">
+                <div key={product.id} className="px-4 py-3 flex items-center gap-2.5 hover:bg-blue-50/50 transition">
                   <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                     {product.image ? (
                       <img src={normalizeImageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
