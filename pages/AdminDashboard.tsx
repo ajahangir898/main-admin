@@ -5,132 +5,50 @@ import {
   Truck,
   CheckCircle,
   Clock,
-  PauseCircle,
   XCircle,
   PackageCheck,
   ArchiveRestore,
   LayoutGrid,
   TrendingUp,
-  CreditCard,
   Download,
-  Plus,
   Search,
-  ArrowUpRight,
   Wallet,
-  BarChart3,
   Calendar,
   ChevronDown,
-  DollarSign,
   Eye,
   Users,
-  UserCheck,
-  Activity,
-  Smartphone,
-  Monitor,
-  Tablet,
   MoreHorizontal,
-  ArrowUp,
-  ArrowDown,
   Globe,
-  Wifi
+  Wifi,
+  Settings,
+  Filter,
+  ExternalLink,
+  Play,
+  AlertCircle,
+  Star,
+  Package,
+  Moon,
+  MessageCircle,
+  Bell
 } from 'lucide-react';
-// Chart default data types
-type RevenueDataPoint = { name: string; value: number };
-type CategoryDataPoint = { name: string; value: number };
-const DEFAULT_REVENUE_DATA: RevenueDataPoint[] = [];
-const DEFAULT_CATEGORY_DATA: CategoryDataPoint[] = [];
 import { Order, Product } from '../types';
-import { DashboardStatCard } from '@/components/AdminComponents';
 import { useVisitorStats } from '../hooks/useVisitorStats';
 
-// Modern Stat Card Component
-interface ModernStatCardProps {
-  title: string;
-  value: string | number;
-  change?: number;
-  changeLabel?: string;
-  icon: React.ReactNode;
-  gradient: string;
-  iconBg: string;
-}
-
-const ModernStatCard: React.FC<ModernStatCardProps> = ({ 
-  title, 
-  value, 
-  change, 
-  changeLabel = 'than last week',
-  icon, 
-  gradient,
-  iconBg 
-}) => {
-  const isPositive = change && change >= 0;
-  
-  return (
-    <div className={`relative p-3 sm:p-5 rounded-2xl ${gradient} overflow-hidden min-h-[100px] sm:min-h-[140px]`}>
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-      
-      <div className="relative">
-        <div className="flex items-start justify-between">
-          <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl ${iconBg} flex items-center justify-center`}>
-            <div className="text-white [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-6 sm:[&>svg]:h-6">
-              {icon}
-            </div>
-          </div>
-          <button className="p-1 hover:bg-white/20 rounded-lg transition hidden sm:block">
-            <MoreHorizontal className="w-5 h-5 text-white/70" />
-          </button>
-        </div>
-        
-        <div className="mt-2 sm:mt-4">
-          <p className="text-white/80 text-xs sm:text-sm font-medium truncate">{title}</p>
-          <p className="text-white text-xl sm:text-3xl font-bold mt-0.5 sm:mt-1">{value}</p>
-        </div>
-        
-        {change !== undefined && (
-          <div className="flex items-center gap-1 sm:gap-2 mt-1.5 sm:mt-3">
-            <span className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold ${
-              isPositive ? 'bg-green-500/20 text-green-100' : 'bg-red-500/20 text-red-100'
-            }`}>
-              {isPositive ? <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
-              {Math.abs(change)}%
-            </span>
-            <span className="text-white/60 text-[10px] sm:text-xs hidden sm:inline">{changeLabel}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-type RevenueRange = 'Yearly' | 'Monthly' | 'Last Week';
-
-const PIE_COLORS = [
-  '#22d3ee', // cyan
-  '#a3e635', // lime
-  '#8b5cf6', // violet
-  '#f97316', // orange
-  '#ec4899', // pink
-  '#3b82f6', // blue
-  '#10b981', // emerald
-  '#f59e0b', // amber
-];
-
-const COLORS = [
-  'rgb(var(--color-primary-rgb))',
-  'rgba(var(--color-secondary-rgb), 0.9)',
-  'rgba(var(--color-primary-rgb), 0.75)',
-  'rgba(var(--color-secondary-rgb), 0.6)'
-];
+// Chart default data types
+type RevenueDataPoint = { name: string; sales: number; costs: number };
+type ProfitDataPoint = { name: string; value: number };
+type CategoryDataPoint = { name: string; value: number; color: string };
 
 const ALLOWED_REVENUE_STATUSES: Array<Order['status']> = ['Pending', 'Confirmed', 'On Hold', 'Processing', 'Shipped', 'Sent to Courier', 'Delivered'];
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    maximumFractionDigits: 0
-  }).format(Math.round(value || 0));
+const CATEGORY_COLORS = [
+  { bg: '#3B82F6', label: 'ABC' },
+  { bg: '#10B981', label: 'NBC' },
+  { bg: '#F97316', label: 'CBS' },
+  { bg: '#06B6D4', label: 'CNN' },
+  { bg: '#8B5CF6', label: 'AOL' },
+  { bg: '#EC4899', label: 'MSN' },
+];
 
 const parseOrderDate = (dateString?: string) => {
   if (!dateString) return null;
@@ -140,106 +58,38 @@ const parseOrderDate = (dateString?: string) => {
   return Number.isNaN(sanitized) ? null : new Date(sanitized);
 };
 
-const buildWeeklyRevenueData = (orders: Order[], endDateOverride?: Date | null) => {
-  const endDate = endDateOverride ? new Date(endDateOverride) : new Date();
-  endDate.setHours(23, 59, 59, 999);
-  const startDate = new Date(endDate);
-  startDate.setDate(endDate.getDate() - 6);
-  startDate.setHours(0, 0, 0, 0);
-
-  const buckets = Array.from({ length: 7 }, (_, index) => {
-    const current = new Date(startDate);
-    current.setDate(startDate.getDate() + index);
-    return {
-      key: `${current.getFullYear()}-${current.getMonth()}-${current.getDate()}`,
-      name: current.toLocaleDateString('en-US', { weekday: 'short' }),
-      value: 0
-    };
-  });
-
-  const bucketIndex = new Map(buckets.map((bucket, index) => [bucket.key, index]));
-
-  orders.forEach((order) => {
-    if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
-    const orderDate = parseOrderDate(order.date);
-    if (!orderDate || orderDate < startDate || orderDate > endDate) return;
-    const key = `${orderDate.getFullYear()}-${orderDate.getMonth()}-${orderDate.getDate()}`;
-    const targetIndex = bucketIndex.get(key);
-    if (targetIndex === undefined) return;
-    buckets[targetIndex].value += order.amount;
-  });
-
-  return buckets.map(({ key, ...rest }) => rest);
-};
-
-const buildMonthlyRevenueData = (orders: Order[], endDateOverride?: Date | null) => {
-  const endDate = endDateOverride ? new Date(endDateOverride) : new Date();
+const buildMonthlyRevenueData = (orders: Order[]) => {
+  const endDate = new Date();
   endDate.setHours(23, 59, 59, 999);
 
   const startDate = new Date(endDate);
   startDate.setDate(endDate.getDate() - 29);
   startDate.setHours(0, 0, 0, 0);
 
-  const buckets = Array.from({ length: 30 }, (_, index) => {
-    const current = new Date(startDate);
-    current.setDate(startDate.getDate() + index);
-    return {
-      key: `${current.getFullYear()}-${current.getMonth()}-${current.getDate()}`,
-      name: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      value: 0
-    };
+  const labels = ['Dec 1', 'Dec 8', 'Dec 15', 'Dec 22', 'Dec 29'];
+  
+  return labels.map((name, index) => {
+    const weekStart = new Date(startDate);
+    weekStart.setDate(startDate.getDate() + (index * 7));
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    
+    let sales = 0;
+    orders.forEach(order => {
+      if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
+      const orderDate = parseOrderDate(order.date);
+      if (!orderDate || orderDate < weekStart || orderDate > weekEnd) return;
+      sales += order.amount;
+    });
+    
+    const costs = Math.round(sales * 0.6);
+    
+    return { name, sales, costs };
   });
-
-  const bucketIndex = new Map(buckets.map((bucket, index) => [bucket.key, index]));
-
-  orders.forEach((order) => {
-    if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
-    const orderDate = parseOrderDate(order.date);
-    if (!orderDate || orderDate < startDate || orderDate > endDate) return;
-    const key = `${orderDate.getFullYear()}-${orderDate.getMonth()}-${orderDate.getDate()}`;
-    const targetIndex = bucketIndex.get(key);
-    if (targetIndex === undefined) return;
-    buckets[targetIndex].value += order.amount;
-  });
-
-  return buckets.map(({ key, ...rest }) => rest);
 };
 
-const buildYearlyRevenueData = (orders: Order[], endDateOverride?: Date | null) => {
-  const endDate = endDateOverride ? new Date(endDateOverride) : new Date();
-  endDate.setHours(23, 59, 59, 999);
-
-  const startDate = new Date(endDate);
-  startDate.setMonth(endDate.getMonth() - 11, 1);
-  startDate.setHours(0, 0, 0, 0);
-
-  const buckets = Array.from({ length: 12 }, (_, index) => {
-    const current = new Date(startDate);
-    current.setMonth(startDate.getMonth() + index, 1);
-    return {
-      key: `${current.getFullYear()}-${current.getMonth()}`,
-      name: current.toLocaleDateString('en-US', { month: 'short' }),
-      value: 0
-    };
-  });
-
-  const bucketIndex = new Map(buckets.map((bucket, index) => [bucket.key, index]));
-
-  orders.forEach((order) => {
-    if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
-    const orderDate = parseOrderDate(order.date);
-    if (!orderDate || orderDate < startDate || orderDate > endDate) return;
-    const key = `${orderDate.getFullYear()}-${orderDate.getMonth()}`;
-    const targetIndex = bucketIndex.get(key);
-    if (targetIndex === undefined) return;
-    buckets[targetIndex].value += order.amount;
-  });
-
-  return buckets.map(({ key, ...rest }) => rest);
-};
-
-const buildCategoryBreakdown = (orders: Order[], products: Product[]) => {
-  if (!orders.length) return DEFAULT_CATEGORY_DATA;
+const buildCategoryBreakdown = (orders: Order[], products: Product[]): CategoryDataPoint[] => {
+  if (!orders.length) return [];
 
   const productById = new Map(products.map((product) => [product.id, product]));
   const productByName = new Map(products.map((product) => [product.name.toLowerCase(), product]));
@@ -255,50 +105,14 @@ const buildCategoryBreakdown = (orders: Order[], products: Product[]) => {
   });
 
   const dataset = Object.entries(totals)
-    .map(([name, value]) => ({ name, value }))
+    .map(([name, value], index) => ({ 
+      name, 
+      value,
+      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg 
+    }))
     .sort((a, b) => b.value - a.value);
 
-  return dataset.length ? dataset : DEFAULT_CATEGORY_DATA;
-};
-
-const buildAreaGeometry = (data: typeof DEFAULT_REVENUE_DATA, width = 720, height = 280) => {
-  if (!data.length) {
-    return {
-      width,
-      height,
-      strokePath: '',
-      fillPath: '',
-      points: [] as Array<{ x: number; y: number; value: number; label: string }>
-    };
-  }
-
-  const maxValue = Math.max(...data.map((item) => item.value), 1);
-  const stepX = data.length > 1 ? width / (data.length - 1) : width;
-  const paddingY = 24;
-
-  const points = data.map((item, index) => {
-    const normalizedY = height - paddingY - (item.value / maxValue) * (height - paddingY * 2);
-    return {
-      x: Math.round(index * stepX),
-      y: Number.isFinite(normalizedY) ? normalizedY : height - paddingY,
-      value: item.value,
-      label: item.name
-    };
-  });
-
-  const strokePath = points
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ');
-
-  const fillPath = `${strokePath} L ${points[points.length - 1]?.x || width} ${height} L 0 ${height} Z`;
-
-  return {
-    width,
-    height,
-    strokePath,
-    fillPath,
-    points
-  };
+  return dataset;
 };
 
 const exportOrdersToCsv = (orders: Order[]) => {
@@ -323,6 +137,7 @@ interface AdminDashboardProps {
   orders: Order[];
   products: Product[];
   tenantId?: string;
+  user?: { name?: string; avatar?: string } | null;
   onManageBalance?: () => void;
   onExportData?: (orders: Order[]) => void;
   onCreatePayment?: () => void;
@@ -333,1009 +148,722 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   orders,
   products,
   tenantId,
+  user,
   onManageBalance,
   onExportData,
   onCreatePayment,
   onSearch
 }) => {
-  const gradientId = useId();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [language, setLanguage] = useState<'Eng' | 'বাংলা'>('Eng');
 
   // Visitor stats
   const { stats: visitorStats, isLoading: visitorLoading } = useVisitorStats({ 
     tenantId, 
     period: '7d',
-    refreshInterval: 30000 // refresh every 30 seconds
+    refreshInterval: 30000
   });
 
-  const [revenueRange, setRevenueRange] = useState<RevenueRange>('Last Week');
-
-  const [dateFilter, setDateFilter] = useState<{ from?: string; to?: string }>({});
-  const [dateDraft, setDateDraft] = useState<{ from: string; to: string }>(() => {
-    const today = new Date();
-    const yyyyMmDd = today.toISOString().split('T')[0];
-    return { from: yyyyMmDd, to: yyyyMmDd };
-  });
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [isQuickMenuOpen, setIsQuickMenuOpen] = useState(false);
-  const headerControlsRef = useRef<HTMLDivElement | null>(null);
-
-  const isDateFilterActive = Boolean(dateFilter.from && dateFilter.to);
-
-  const effectiveEndDateForWeeklyChart = useMemo(() => {
-    if (!dateFilter.to) return null;
-    const parsed = Date.parse(dateFilter.to);
-    return Number.isNaN(parsed) ? null : new Date(parsed);
-  }, [dateFilter.to]);
-
-  const dateFilteredOrders = useMemo(() => {
-    if (!dateFilter.from && !dateFilter.to) return orders;
-
-    const fromDate = dateFilter.from ? new Date(dateFilter.from) : null;
-    const toDate = dateFilter.to ? new Date(dateFilter.to) : null;
-    if (fromDate) fromDate.setHours(0, 0, 0, 0);
-    if (toDate) toDate.setHours(23, 59, 59, 999);
-
-    return orders.filter((order) => {
-      const parsed = parseOrderDate(order.date);
-      if (!parsed) return false;
-      if (fromDate && parsed < fromDate) return false;
-      if (toDate && parsed > toDate) return false;
-      return true;
-    });
-  }, [orders, dateFilter.from, dateFilter.to]);
-
-  const formatRangeLabel = useCallback((fromIso?: string, toIso?: string) => {
-    if (!fromIso || !toIso) return '';
-    const fromDate = new Date(fromIso);
-    const toDate = new Date(toIso);
-    const fromLabel = fromDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const toLabel = toDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    return `${fromLabel}-${toLabel}`;
-  }, []);
-
-  const applyDateDraft = useCallback(() => {
-    const from = dateDraft.from;
-    const to = dateDraft.to;
-    if (!from || !to) return;
-    const fromDate = new Date(from);
-    const toDate = new Date(to);
-    const normalizedFrom = fromDate <= toDate ? from : to;
-    const normalizedTo = fromDate <= toDate ? to : from;
-    setDateFilter({ from: normalizedFrom, to: normalizedTo });
-    setIsDatePickerOpen(false);
-    setIsQuickMenuOpen(false);
-  }, [dateDraft.from, dateDraft.to]);
-
-  const clearDateFilter = useCallback(() => {
-    setDateFilter({});
-    setIsDatePickerOpen(false);
-    setIsQuickMenuOpen(false);
-  }, []);
-
-  const setTodayFilter = useCallback(() => {
-    const today = new Date();
-    const yyyyMmDd = today.toISOString().split('T')[0];
-    setDateFilter({ from: yyyyMmDd, to: yyyyMmDd });
-    setDateDraft({ from: yyyyMmDd, to: yyyyMmDd });
-    setIsDatePickerOpen(false);
-    setIsQuickMenuOpen(false);
-  }, []);
-
-  // Simulate initial data loading
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const revenueData = useMemo(() => {
-    if (revenueRange === 'Yearly') return buildYearlyRevenueData(dateFilteredOrders, effectiveEndDateForWeeklyChart);
-    if (revenueRange === 'Monthly') return buildMonthlyRevenueData(dateFilteredOrders, effectiveEndDateForWeeklyChart);
-    return buildWeeklyRevenueData(dateFilteredOrders, effectiveEndDateForWeeklyChart);
-  }, [dateFilteredOrders, effectiveEndDateForWeeklyChart, revenueRange]);
-  const revenueGeometry = useMemo(() => buildAreaGeometry(revenueData), [revenueData]);
-  const categoryData = useMemo(() => buildCategoryBreakdown(dateFilteredOrders, products), [dateFilteredOrders, products]);
-
-  const totalOrders = dateFilteredOrders.length;
+  // Calculate stats
+  const totalOrders = orders.length;
   const today = new Date().toDateString();
   const todayOrders = useMemo(
-    () =>
-      dateFilteredOrders.filter((order) => {
-        const parsed = parseOrderDate(order.date);
-        return parsed && parsed.toDateString() === today;
-      }).length,
-    [dateFilteredOrders, today]
+    () => orders.filter((order) => {
+      const parsed = parseOrderDate(order.date);
+      return parsed && parsed.toDateString() === today;
+    }).length,
+    [orders, today]
   );
 
-  const courierOrders = useMemo(() => dateFilteredOrders.filter((order) => Boolean(order.courierProvider)).length, [dateFilteredOrders]);
-  const confirmedOrders = useMemo(() => dateFilteredOrders.filter((order) => order.status === 'Confirmed').length, [dateFilteredOrders]);
-  const pendingOrders = useMemo(() => dateFilteredOrders.filter((order) => order.status === 'Pending').length, [dateFilteredOrders]);
-  const cancelledOrders = useMemo(() => dateFilteredOrders.filter((order) => order.status === 'Cancelled').length, [dateFilteredOrders]);
-  const deliveredOrders = useMemo(() => dateFilteredOrders.filter((order) => order.status === 'Delivered').length, [dateFilteredOrders]);
-  const shippedOrders = useMemo(() => dateFilteredOrders.filter((order) => order.status === 'Shipped').length, [dateFilteredOrders]);
-  const returnsCount = Math.max(cancelledOrders, Math.round(totalOrders * 0.05));
+  const courierOrders = useMemo(() => orders.filter((order) => Boolean(order.courierProvider)).length, [orders]);
+  const confirmedOrders = useMemo(() => orders.filter((order) => order.status === 'Confirmed').length, [orders]);
+  const pendingOrders = useMemo(() => orders.filter((order) => order.status === 'Pending').length, [orders]);
+  const cancelledOrders = useMemo(() => orders.filter((order) => order.status === 'Cancelled').length, [orders]);
+  const returnsCount = useMemo(() => orders.filter((order) => order.status === 'Returned').length, [orders]);
 
-  const totalRevenue = useMemo(() => dateFilteredOrders.reduce((sum, order) => sum + order.amount, 0), [dateFilteredOrders]);
-  const deliveredRevenue = useMemo(
-    () => dateFilteredOrders.filter((order) => order.status === 'Delivered').reduce((sum, order) => sum + order.amount, 0),
-    [dateFilteredOrders]
-  );
-  const averageOrderValue = totalOrders ? totalRevenue / totalOrders : 0;
-  const retentionRate = totalOrders ? Math.round((deliveredOrders / totalOrders) * 100) : 0;
-  const filteredOrders = useMemo(() => {
-    if (!searchQuery.trim()) return orders;
-    const query = searchQuery.toLowerCase();
-    return orders.filter((order) => {
-      const haystack = `${order.id} ${order.customer} ${order.status} ${order.location ?? ''}`.toLowerCase();
-      return haystack.includes(query);
+  const totalRevenue = useMemo(() => orders.reduce((sum, order) => sum + order.amount, 0), [orders]);
+  const lowStockProducts = useMemo(() => products.filter(p => (p.stock || 0) < 10).length, [products]);
+  const toBeReviewed = useMemo(() => orders.filter(o => o.status === 'Pending').length, [orders]);
+
+  // Chart data
+  const revenueData = useMemo(() => buildMonthlyRevenueData(orders), [orders]);
+  const categoryData = useMemo(() => buildCategoryBreakdown(orders, products), [orders, products]);
+
+  // Profit data
+  const profitData = useMemo(() => {
+    return revenueData.map(item => ({
+      name: item.name,
+      value: item.sales - item.costs
+    }));
+  }, [revenueData]);
+
+  const totalProfit = useMemo(() => profitData.reduce((sum, item) => sum + item.value, 0), [profitData]);
+
+  // Best selling products
+  const bestSellingProducts = useMemo(() => {
+    const productSales: Record<string, { product: Product; orders: number; revenue: number }> = {};
+    
+    orders.forEach(order => {
+      if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
+      const product = products.find(p => p.id === order.productId);
+      if (product) {
+        if (!productSales[product.id]) {
+          productSales[product.id] = { product, orders: 0, revenue: 0 };
+        }
+        productSales[product.id].orders++;
+        productSales[product.id].revenue += order.amount;
+      }
     });
-  }, [orders, searchQuery]);
 
-  const filteredOrdersByDateAndSearch = useMemo(() => {
-    if (!searchQuery.trim()) return dateFilteredOrders;
-    const query = searchQuery.toLowerCase();
-    return dateFilteredOrders.filter((order) => {
-      const haystack = `${order.id} ${order.customer} ${order.status} ${order.location ?? ''}`.toLowerCase();
-      return haystack.includes(query);
-    });
-  }, [dateFilteredOrders, searchQuery]);
+    return Object.values(productSales)
+      .sort((a, b) => b.orders - a.orders)
+      .slice(0, 5);
+  }, [orders, products]);
 
-  const visibleOrders = useMemo(() => filteredOrdersByDateAndSearch.slice(0, 8), [filteredOrdersByDateAndSearch]);
-
-  const featuredProducts = useMemo(() => {
-    if (!products.length) return [];
-    return products.slice(0, 3);
-  }, [products]);
-
-  const pieGradient = useMemo(() => {
-    const total = categoryData.reduce((sum, entry) => sum + entry.value, 0);
-    if (!total) return 'rgba(255,255,255,0.08) 0% 100%';
-    let cursor = 0;
-    return categoryData
-      .map((entry, index) => {
-        const start = (cursor / total) * 100;
-        cursor += entry.value;
-        const end = (cursor / total) * 100;
-        return `${COLORS[index % COLORS.length]} ${start.toFixed(1)}% ${end.toFixed(1)}%`;
-      })
-      .join(', ');
-  }, [categoryData]);
-
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const nextValue = event.target.value;
-      setSearchQuery(nextValue);
-      onSearch?.(nextValue);
-    },
-    [onSearch]
-  );
-
-  const handleSearchSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => event.preventDefault(), []);
-
-  const handleManageBalance = useCallback(() => {
-    if (onManageBalance) return onManageBalance();
-    console.info('[AdminDashboard] Manage balance clicked');
-  }, [onManageBalance]);
+  // Top products for sidebar
+  const topProducts = useMemo(() => products.slice(0, 5), [products]);
 
   const handleExport = useCallback(() => {
-    if (onExportData) return onExportData(filteredOrders);
-    exportOrdersToCsv(filteredOrders);
-  }, [filteredOrders, onExportData]);
+    if (onExportData) return onExportData(orders);
+    exportOrdersToCsv(orders);
+  }, [orders, onExportData]);
 
-  const handleCreatePayment = useCallback(() => {
-    if (onCreatePayment) return onCreatePayment();
-    console.info('[AdminDashboard] New payment action triggered');
-  }, [onCreatePayment]);
-
-  // Product management handlers
-  const handleUpdateProduct = useCallback((product: Product) => {
-    console.info('[AdminDashboard] Update product:', product.id);
-  }, []);
-
-  const handleDeleteProduct = useCallback((productId: number) => {
-    console.info('[AdminDashboard] Delete product:', productId);
-  }, []);
-
-  const handleBulkAction = useCallback((ids: number[], action: string) => {
-    console.info(`[AdminDashboard] Bulk action "${action}" on products:`, ids);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      if (headerControlsRef.current && !headerControlsRef.current.contains(target)) {
-        setIsDatePickerOpen(false);
-        setIsQuickMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Calculate additional metrics for the modern cards
-  const weeklyChange = useMemo(() => {
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    
-    const thisWeekOrders = orders.filter(o => {
-      const d = parseOrderDate(o.date);
-      return d && d >= weekAgo;
-    }).length;
-    
-    const lastWeekOrders = orders.filter(o => {
-      const d = parseOrderDate(o.date);
-      return d && d >= twoWeeksAgo && d < weekAgo;
-    }).length;
-    
-    if (lastWeekOrders === 0) return thisWeekOrders > 0 ? 100 : 0;
-    return Math.round(((thisWeekOrders - lastWeekOrders) / lastWeekOrders) * 100);
-  }, [orders]);
-
-  // Device traffic data (simulated based on orders)
-  const deviceTraffic = useMemo(() => {
-    const total = dateFilteredOrders.length;
-    if (total === 0) {
-      // Show placeholder data when no orders
-      return [
-        { name: 'Desktop', value: 45, color: '#8b5cf6', percentage: 45 },
-        { name: 'Mobile', value: 40, color: '#06b6d4', percentage: 40 },
-        { name: 'Tablet', value: 15, color: '#f97316', percentage: 15 },
-      ];
-    }
-    const desktop = Math.round(total * 0.45);
-    const mobile = Math.round(total * 0.40);
-    const tablet = Math.max(1, total - desktop - mobile);
-    return [
-      { name: 'Desktop', value: desktop, color: '#8b5cf6', percentage: Math.round((desktop / total) * 100) },
-      { name: 'Mobile', value: mobile, color: '#06b6d4', percentage: Math.round((mobile / total) * 100) },
-      { name: 'Tablet', value: tablet, color: '#f97316', percentage: Math.round((tablet / total) * 100) },
-    ];
-  }, [dateFilteredOrders]);
-
-  // Location traffic data
-  const locationTraffic = useMemo(() => {
-    const locations: Record<string, number> = {};
-    dateFilteredOrders.forEach(order => {
-      const loc = order.location || 'Unknown';
-      locations[loc] = (locations[loc] || 0) + 1;
-    });
-    return Object.entries(locations)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([name, value]) => ({ name, value }));
-  }, [dateFilteredOrders]);
+  // Get current day info
+  const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'short' });
+  const currentDate = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }).replace('/', '/');
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 text-sm mt-1">Welcome back! Here's what's happening with your store.</p>
-        </div>
-        <div ref={headerControlsRef} className="relative flex items-center gap-3">
-          {isDateFilterActive ? (
-            <>
-              <button
-                type="button"
-                onClick={clearDateFilter}
-                className="flex items-center gap-2 px-4 py-2.5 border border-red-200 rounded-xl text-sm font-medium text-red-500 bg-white hover:bg-red-50 transition shadow-sm"
-              >
-                <XCircle size={16} />
-                Clear
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setDateDraft({
-                    from: dateFilter.from || dateDraft.from,
-                    to: dateFilter.to || dateDraft.to,
-                  });
-                  setIsDatePickerOpen((prev) => !prev);
-                  setIsQuickMenuOpen(false);
-                }}
-                className="flex items-center gap-2 px-4 py-2.5 border border-violet-200 rounded-xl text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 transition shadow-sm"
-              >
-                <Calendar size={16} />
-                {formatRangeLabel(dateFilter.from, dateFilter.to)}
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setDateDraft(() => {
-                  const to = new Date();
-                  const from = new Date();
-                  from.setDate(from.getDate() - 6);
-                  return {
-                    from: from.toISOString().split('T')[0],
-                    to: to.toISOString().split('T')[0],
-                  };
-                });
-                setIsDatePickerOpen((prev) => !prev);
-                setIsQuickMenuOpen(false);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition shadow-sm"
-            >
-              <Calendar size={16} />
-              Filter by Date
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Top Header */}
+      <div className="bg-white border-b border-gray-100 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Welcome back, {user?.name || 'Admin'}</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {/* View Website Button */}
+            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
+              <Globe className="w-4 h-4" />
+              View Website
             </button>
-          )}
-
-          <button
-            type="button"
-            onClick={() => setIsQuickMenuOpen((prev) => !prev)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 rounded-xl text-sm font-medium text-white hover:from-violet-700 hover:to-purple-700 transition shadow-sm"
-          >
-            <ChevronDown size={16} />
-            Quick Filter
-          </button>
-
-          {isQuickMenuOpen && (
-            <div className="absolute right-0 top-14 z-20 w-48 rounded-xl border border-gray-200 bg-white shadow-xl overflow-hidden">
-              <button
-                type="button"
-                onClick={setTodayFilter}
-                className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-              >
-                <Calendar size={14} className="text-gray-400" />
-                Today
-              </button>
-              <button
-                type="button"
-                onClick={clearDateFilter}
-                className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-100"
-              >
-                <XCircle size={14} />
-                All Time
-              </button>
-            </div>
-          )}
-
-          {isDatePickerOpen && (
-            <div className="absolute right-0 top-14 z-20 w-[340px] rounded-2xl border border-gray-200 bg-white shadow-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="font-semibold text-gray-900">Select date range</div>
-                <button
-                  type="button"
-                  onClick={() => setIsDatePickerOpen(false)}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition"
-                  aria-label="Close"
-                >
-                  <XCircle size={18} />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">From</label>
-                  <input
-                    type="date"
-                    value={dateDraft.from}
-                    onChange={(e) => setDateDraft((prev) => ({ ...prev, from: e.target.value }))}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">To</label>
-                  <input
-                    type="date"
-                    value={dateDraft.to}
-                    onChange={(e) => setDateDraft((prev) => ({ ...prev, to: e.target.value }))}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 mt-5">
-                <button
-                  type="button"
-                  onClick={() => setIsDatePickerOpen(false)}
-                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={applyDateDraft}
-                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 transition"
-                >
-                  Apply Filter
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Modern Stats Cards - Row 1 (2x2 on mobile) */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-        <ModernStatCard
-          title="Total Orders"
-          value={totalOrders.toLocaleString()}
-          change={weeklyChange}
-          icon={<ShoppingBag />}
-          gradient="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700"
-          iconBg="bg-white/20"
-        />
-        <ModernStatCard
-          title="Today Orders"
-          value={todayOrders.toLocaleString()}
-          change={todayOrders > 0 ? 12 : 0}
-          icon={<Activity />}
-          gradient="bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-600"
-          iconBg="bg-white/20"
-        />
-        <ModernStatCard
-          title="Delivered"
-          value={deliveredOrders.toLocaleString()}
-          change={retentionRate}
-          changeLabel="delivery rate"
-          icon={<PackageCheck />}
-          gradient="bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600"
-          iconBg="bg-white/20"
-        />
-        <ModernStatCard
-          title="Total Revenue"
-          value={`৳${totalRevenue.toLocaleString()}`}
-          change={weeklyChange}
-          icon={<Wallet />}
-          gradient="bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500"
-          iconBg="bg-white/20"
-        />
-      </div>
-
-      {/* Order Status Cards - Row 2 (Hidden on mobile, visible on tablet+) */}
-      <div className="hidden sm:grid grid-cols-3 gap-4 lg:grid-cols-6">
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5 text-pink-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Today</p>
-              <p className="text-xl font-bold text-gray-900">{todayOrders}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-              <Truck className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Courier</p>
-              <p className="text-xl font-bold text-gray-900">{courierOrders}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Confirmed</p>
-              <p className="text-xl font-bold text-gray-900">{confirmedOrders}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Pending</p>
-              <p className="text-xl font-bold text-gray-900">{pendingOrders}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-              <XCircle className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Cancelled</p>
-              <p className="text-xl font-bold text-gray-900">{cancelledOrders}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <ArchiveRestore className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Returns</p>
-              <p className="text-xl font-bold text-gray-900">{returnsCount}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
-        {/* Revenue Overview Chart - Takes 2 columns */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm">
-          <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Revenue Overview</h3>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 hidden sm:block">Track your revenue performance</p>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 text-xs sm:text-sm">
-              {(['Last Week', 'Monthly', 'Yearly'] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setRevenueRange(tab)}
-                  className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg font-medium transition ${
-                    tab === revenueRange
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  {tab === 'Last Week' ? 'Week' : tab}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Area Chart */}
-          <div className="h-48 sm:h-72 relative">
-            <svg className="w-full h-full" viewBox="0 0 720 280" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id={`${gradientId}-area`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.02" />
-                </linearGradient>
-              </defs>
-              {/* Grid lines */}
-              {[0, 1, 2, 3, 4].map((i) => (
-                <line
-                  key={i}
-                  x1="0"
-                  y1={56 * i + 24}
-                  x2="720"
-                  y2={56 * i + 24}
-                  stroke="#f3f4f6"
-                  strokeWidth="1"
-                />
-              ))}
-              {/* Area fill */}
-              <path
-                d={revenueGeometry.fillPath}
-                fill={`url(#${gradientId}-area)`}
-              />
-              {/* Line */}
-              <path
-                d={revenueGeometry.strokePath}
-                fill="none"
-                stroke="#8b5cf6"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              {/* Points */}
-              {revenueGeometry.points.map((point, index) => (
-                <g key={index}>
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="6"
-                    fill="white"
-                    stroke="#8b5cf6"
-                    strokeWidth="3"
-                    className="hover:r-8 transition-all cursor-pointer"
-                  />
-                </g>
-              ))}
-            </svg>
-            {/* X-axis labels */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between px-1 sm:px-2">
-              {revenueData.map((item) => (
-                <span key={item.name} className="text-[10px] sm:text-xs text-gray-400">{item.name}</span>
-              ))}
-            </div>
-          </div>
-          
-          {/* Legend */}
-          <div className="flex items-center justify-center gap-4 sm:gap-8 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-violet-500"></div>
-              <span className="text-xs sm:text-sm text-gray-600">Revenue</span>
-              <span className="text-xs sm:text-sm font-semibold text-gray-900">৳{totalRevenue.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500"></div>
-              {/* <span className="text-xs sm:text-sm text-gray-600">Delivered</span> */}
-              <span className="text-xs sm:text-sm font-semibold text-gray-900">৳{deliveredRevenue.toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Device Traffic - Bar Chart Style for Mobile */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-gray-900">Device Traffic</h3>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition">
-              <MoreHorizontal className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+            
+            {/* Tutorials Button */}
+            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
+              <Play className="w-4 h-4" />
+              Tutorials
             </button>
-          </div>
-          
-          {/* Bar Chart Style */}
-          <div className="flex items-end justify-center gap-4 sm:gap-8 h-36 sm:h-48 mb-6">
-            {deviceTraffic.map((item) => {
-              const maxVal = Math.max(...deviceTraffic.map(d => d.value), 1);
-              const heightPercent = (item.value / maxVal) * 100;
-              return (
-                <div key={item.name} className="flex flex-col items-center gap-2">
-                  <div className="h-28 sm:h-40 flex items-end">
-                    <div 
-                      className="w-10 sm:w-14 rounded-t-xl transition-all duration-500 shadow-sm"
-                      style={{ 
-                        height: `${Math.max(heightPercent, 15)}%`,
-                        backgroundColor: item.color,
-                        minHeight: '20px'
-                      }}
-                    />
-                  </div>
-                  <span className="text-[10px] sm:text-xs text-gray-500 font-medium">{item.name}</span>
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* Center Total */}
-          <div className="flex justify-center mb-4">
-            <div className="text-center px-4 py-2 bg-gray-50 rounded-xl">
-              <span className="text-xl sm:text-2xl font-bold text-gray-900">{dateFilteredOrders.length}</span>
-              <span className="text-xs text-gray-500 ml-1">Total</span>
+            
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 w-48 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+              />
+            </div>
+            
+            {/* Icons */}
+            <button className="p-2 hover:bg-gray-50 rounded-lg transition">
+              <Moon className="w-5 h-5 text-gray-500" />
+            </button>
+            <button className="p-2 hover:bg-gray-50 rounded-lg transition">
+              <MessageCircle className="w-5 h-5 text-gray-500" />
+            </button>
+            <button className="p-2 hover:bg-gray-50 rounded-lg transition relative">
+              <Bell className="w-5 h-5 text-gray-500" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            
+            {/* Avatar */}
+            <div className="flex items-center gap-2 ml-2">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  user?.name?.charAt(0) || 'A'
+                )}
+              </div>
+              <div className="text-right hidden lg:block">
+                <p className="text-xs text-gray-400">Admin</p>
+                <p className="text-sm font-medium text-gray-700">{user?.name || 'Admin'}</p>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        {/* Order Analytics Section */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Analytics</h2>
           
-          {/* Legend */}
-          <div className="space-y-2 sm:space-y-3">
-            {deviceTraffic.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    {item.name === 'Desktop' && <Monitor className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />}
-                    {item.name === 'Mobile' && <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />}
-                    {item.name === 'Tablet' && <Tablet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />}
-                    <span className="text-xs sm:text-sm text-gray-600">{item.name}</span>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* Products on Hands */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4 relative">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{products.length}</p>
+                  <p className="text-sm text-gray-500 mt-1">Products on Hands</p>
+                </div>
+                <button className="p-1.5 hover:bg-gray-200 rounded-lg transition">
+                  <Settings className="w-4 h-4 text-gray-400" />
+                </button>
+              </div>
+            </div>
+
+            {/* Total Orders */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{totalOrders}</p>
+                  <p className="text-sm text-gray-500 mt-1">Total Orders</p>
+                </div>
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <Package className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Language Selector */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4">
+              <p className="text-sm text-gray-500 mb-2">Language</p>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setLanguage('Eng')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'Eng' ? 'bg-[#3B82F6] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                >
+                  Eng
+                </button>
+                <button 
+                  onClick={() => setLanguage('বাংলা')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'বাংলা' ? 'bg-[#3B82F6] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                >
+                  বাংলা
+                </button>
+              </div>
+            </div>
+
+            {/* Date Display */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-sm text-gray-500">{currentDate}</p>
+                <div className="mt-1 px-4 py-1.5 bg-[#2DD4BF] rounded-lg">
+                  <p className="text-white font-semibold">{currentDay}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Important Notification */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4 col-span-2 lg:col-span-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <AlertCircle className="w-5 h-5 text-gray-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Important Notification</p>
+                  <div className="flex gap-1 mt-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#3B82F6]"></span>
+                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
                   </div>
                 </div>
-                <span className="text-xs sm:text-sm font-semibold text-gray-900">{item.value}</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Visitor Statistics */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
-        {/* Total Visitors Card */}
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              {visitorLoading && (
-                <div className="animate-spin w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
-              )}
-            </div>
-            <div className="mt-4">
-              <p className="text-white/80 text-sm font-medium">Total Visitors</p>
-              <p className="text-white text-3xl font-bold mt-1">
-                {visitorStats?.totalVisitors?.toLocaleString() || '0'}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="text-white/70 text-xs">
-                {visitorStats?.totalPageViews?.toLocaleString() || '0'} page views
-              </span>
             </div>
           </div>
-        </div>
 
-        {/* Today's Visitors Card */}
-        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
+          {/* Second Row */}
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            {/* Reserved Price */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
+                  <p className="text-sm text-gray-500 mt-1">Reserved Price</p>
+                </div>
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <Wallet className="w-4 h-4 text-yellow-500" />
+                </div>
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-white/80 text-sm font-medium">Today's Visitors</p>
-              <p className="text-white text-3xl font-bold mt-1">
-                {visitorStats?.todayVisitors?.toLocaleString() || '0'}
-              </p>
+
+            {/* Low Stock */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{lowStockProducts}</p>
+                  <p className="text-sm text-gray-500 mt-1">Low Stock</p>
+                </div>
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <Package className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="text-white/70 text-xs">
-                Last 7 days: {visitorStats?.periodVisitors?.toLocaleString() || '0'}
-              </span>
+
+            {/* To be Reviewed */}
+            <div className="bg-[#F8FAFC] rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{toBeReviewed}</p>
+                  <p className="text-sm text-gray-500 mt-1">To be Reviewed</p>
+                </div>
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <Star className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Online Now Card */}
-        <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-4 sm:p-6 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+        {/* Visitor Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Online Now */}
+          <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2563EB] rounded-2xl p-5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
                 <Wifi className="w-6 h-6 text-white" />
               </div>
-              {/* Live indicator */}
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 rounded-full">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                </span>
-                <span className="text-white text-xs font-medium">Live</span>
+              <div>
+                <p className="text-white/90 text-sm font-medium">Online Now</p>
+                <p className="text-white/60 text-xs">Active visitors on site</p>
               </div>
             </div>
-            <div className="mt-4">
-              <p className="text-white/80 text-sm font-medium">Online Now</p>
-              <p className="text-white text-3xl font-bold mt-1">
-                {visitorStats?.onlineNow?.toLocaleString() || '0'}
-              </p>
+            <div className="text-3xl font-bold text-white">
+              {visitorStats?.onlineNow || 0}
             </div>
-            <div className="flex items-center gap-2 mt-3">
-              <span className="text-white/70 text-xs">
-                Active visitors on site
-              </span>
+          </div>
+
+          {/* Today Visitors */}
+          <div className="bg-gradient-to-r from-[#065F46] to-[#10B981] rounded-2xl p-5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-white/90 text-sm font-medium">Today visitors</p>
+                <p className="text-white/60 text-xs">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-white">
+              {visitorStats?.todayVisitors || 0}
+            </div>
+          </div>
+
+          {/* Total Visitors */}
+          <div className="bg-gradient-to-r from-[#0E7490] to-[#06B6D4] rounded-2xl p-5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <Globe className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-white/90 text-sm font-medium">Total visitors</p>
+                <p className="text-white/60 text-xs">{visitorStats?.totalPageViews || 0} page view</p>
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-white">
+              {visitorStats?.totalVisitors || 0}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Sales by Category & Location Traffic */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
-        {/* Sales by Category */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-gray-900">Sales by Category</h3>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition">
-              <MoreHorizontal className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-            </button>
+        {/* Order Status Row */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Order</h3>
           </div>
           
-          {categoryData.length > 0 && categoryData[0].value > 0 ? (
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-              {/* Donut Chart */}
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0">
-                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                  {(() => {
-                    const total = categoryData.reduce((sum, d) => sum + d.value, 0);
-                    let cumulativePercent = 0;
-                    return categoryData.slice(0, 5).map((item, index) => {
-                      const percent = (item.value / total) * 100;
-                      const dashArray = `${percent} ${100 - percent}`;
-                      const dashOffset = -cumulativePercent;
-                      cumulativePercent += percent;
-                      return (
-                        <circle
-                          key={item.name}
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          fill="none"
-                          stroke={PIE_COLORS[index % PIE_COLORS.length]}
-                          strokeWidth="16"
-                          strokeDasharray={dashArray}
-                          strokeDashoffset={dashOffset}
-                          pathLength="100"
-                          className="transition-all duration-500"
-                        />
-                      );
-                    });
-                  })()}
-                </svg>
-                {/* Center Text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-lg sm:text-xl font-bold text-gray-900">
-                    ৳{categoryData.reduce((sum, d) => sum + d.value, 0).toLocaleString()}
-                  </span>
-                  <span className="text-[10px] sm:text-xs text-gray-500">Total</span>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* Today */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-pink-100 rounded-xl">
+                <ShoppingBag className="w-5 h-5 text-pink-600" />
               </div>
-              
-              {/* Legend */}
-              <div className="flex-1 space-y-2 sm:space-y-3 w-full">
-                {categoryData.slice(0, 5).map((item, index) => {
-                  const total = categoryData.reduce((sum, d) => sum + d.value, 0);
-                  const percent = total > 0 ? Math.round((item.value / total) * 100) : 0;
+              <div>
+                <p className="text-xs text-gray-500">Today</p>
+                <p className="text-xl font-bold text-gray-900">{todayOrders}</p>
+              </div>
+            </div>
+
+            {/* Courier */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-orange-100 rounded-xl">
+                <Truck className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Courier</p>
+                <p className="text-xl font-bold text-gray-900">{courierOrders}</p>
+              </div>
+            </div>
+
+            {/* Confirmed */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-green-100 rounded-xl">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Confirmed</p>
+                <p className="text-xl font-bold text-gray-900">{confirmedOrders}</p>
+              </div>
+            </div>
+
+            {/* Pending */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-amber-100 rounded-xl">
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Pending</p>
+                <p className="text-xl font-bold text-gray-900">{pendingOrders}</p>
+              </div>
+            </div>
+
+            {/* Cancelled */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-red-100 rounded-xl">
+                <XCircle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Cancelled</p>
+                <p className="text-xl font-bold text-gray-900">{cancelledOrders}</p>
+              </div>
+            </div>
+
+            {/* Returns */}
+            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
+              <div className="p-2.5 bg-blue-100 rounded-xl">
+                <ArchiveRestore className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Returns</p>
+                <p className="text-xl font-bold text-gray-900">{returnsCount}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Revenue & Costs */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Revenue & Costs</h3>
+            </div>
+            
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#3B82F6]"></span>
+                <span className="text-sm text-gray-600">Net Sales</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#F87171]"></span>
+                <span className="text-sm text-gray-600">Costs</span>
+              </div>
+            </div>
+
+            {/* Area Chart */}
+            <div className="h-52 relative mt-4">
+              <svg className="w-full h-full" viewBox="0 0 300 160" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="salesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
+                  </linearGradient>
+                </defs>
+                
+                {/* Y-axis labels */}
+                <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
+                <text x="0" y="45" className="text-[8px] fill-gray-400">$60K</text>
+                <text x="0" y="75" className="text-[8px] fill-gray-400">$40K</text>
+                <text x="0" y="105" className="text-[8px] fill-gray-400">$20K</text>
+                <text x="0" y="135" className="text-[8px] fill-gray-400">$0</text>
+
+                {/* Grid lines */}
+                {[0, 1, 2, 3, 4].map(i => (
+                  <line key={i} x1="28" y1={12 + i * 30} x2="295" y2={12 + i * 30} stroke="#E5E7EB" strokeWidth="0.5" />
+                ))}
+
+                {/* Sales Area */}
+                <path
+                  d="M28,105 Q80,65 150,85 T270,45 L270,132 L28,132 Z"
+                  fill="url(#salesGradient)"
+                />
+                <path
+                  d="M28,105 Q80,65 150,85 T270,45"
+                  fill="none"
+                  stroke="#3B82F6"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+
+                {/* Costs Line */}
+                <path
+                  d="M28,115 Q80,95 150,100 T270,75"
+                  fill="none"
+                  stroke="#F87171"
+                  strokeWidth="2"
+                  strokeDasharray="4,4"
+                />
+              </svg>
+
+              {/* X-axis labels */}
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400 pr-1">
+                <span>Dec 1</span>
+                <span>Dec 8</span>
+                <span>Dec 15</span>
+                <span>Dec 22</span>
+                <span>Dec 29</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Total Profit */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Total Profit</h3>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>
+              <span className="text-sm text-gray-600">Profit</span>
+            </div>
+
+            {/* Bar Chart */}
+            <div className="h-52 relative mt-4">
+              <svg className="w-full h-full" viewBox="0 0 300 160" preserveAspectRatio="none">
+                {/* Y-axis labels */}
+                <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
+                <text x="0" y="45" className="text-[8px] fill-gray-400">$60K</text>
+                <text x="0" y="75" className="text-[8px] fill-gray-400">$40K</text>
+                <text x="0" y="105" className="text-[8px] fill-gray-400">$20K</text>
+                <text x="0" y="135" className="text-[8px] fill-gray-400">$0</text>
+
+                {/* Grid lines */}
+                {[0, 1, 2, 3, 4].map(i => (
+                  <line key={i} x1="28" y1={12 + i * 30} x2="295" y2={12 + i * 30} stroke="#E5E7EB" strokeWidth="0.5" />
+                ))}
+
+                {/* Bars */}
+                {revenueData.map((item, index) => {
+                  const maxValue = Math.max(...revenueData.map(d => d.sales - d.costs), 1) || 80000;
+                  const profit = (item.sales - item.costs) || (Math.random() * 60000 + 20000);
+                  const barHeight = Math.max((profit / maxValue) * 100, 15);
+                  const x = 38 + index * 54;
                   return (
-                    <div key={item.name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
-                        />
-                        <span className="text-xs sm:text-sm text-gray-600 truncate max-w-[100px] sm:max-w-[120px]">
-                          {item.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{percent}%</span>
-                        <span className="text-xs sm:text-sm font-semibold text-gray-900">
-                          ৳{item.value.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
+                    <rect
+                      key={index}
+                      x={x}
+                      y={132 - barHeight}
+                      width="32"
+                      height={barHeight}
+                      fill="#22C55E"
+                      rx="4"
+                    />
                   );
                 })}
+              </svg>
+
+              {/* X-axis labels */}
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400 pr-1">
+                <span>Dec 1</span>
+                <span>Dec 8</span>
+                <span>Dec 15</span>
+                <span>Dec 22</span>
+                <span>Dec 29</span>
               </div>
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-gray-400">
-              <BarChart3 className="w-10 h-10 sm:w-12 sm:h-12 mb-2 opacity-50" />
-              <span className="text-xs sm:text-sm">No category data yet</span>
-            </div>
-          )}
-        </div>
-
-        {/* Location Traffic */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-gray-900">Top Locations</h3>
-            <button className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition">
-              <MoreHorizontal className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-            </button>
           </div>
-          
-          {/* Location Bars */}
-          <div className="space-y-3 sm:space-y-4">
-            {locationTraffic.length > 0 ? locationTraffic.map((item, index) => {
-              const maxValue = Math.max(...locationTraffic.map(d => d.value), 1);
-              const percentage = (item.value / maxValue) * 100;
-              const colors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
-              return (
-                <div key={item.name}>
-                  <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                    <span className="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[150px] sm:max-w-[200px]">{item.name}</span>
-                    <span className="text-xs sm:text-sm font-semibold text-gray-900">{item.value}</span>
-                  </div>
-                  <div className="h-2 sm:h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${percentage}%`,
-                        backgroundColor: colors[index % colors.length]
-                      }}
-                    />
-                  </div>
+
+          {/* Sale by Category */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Sale by Category</h3>
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-3 mb-4">
+              {CATEGORY_COLORS.map((cat, index) => (
+                <div key={index} className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.bg }}></span>
+                  <span className="text-xs text-gray-500">{cat.label}</span>
                 </div>
-              );
-            }) : (
-              <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-gray-400">
-                <TrendingUp className="w-10 h-10 sm:w-12 sm:h-12 mb-2 opacity-50" />
-                <span className="text-xs sm:text-sm">No location data available</span>
+              ))}
+            </div>
+
+            {/* Donut Chart */}
+            <div className="flex justify-center">
+              <div className="relative w-44 h-44">
+                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                  {categoryData.length > 0 ? (
+                    (() => {
+                      const total = categoryData.reduce((sum, d) => sum + d.value, 0);
+                      let cumulativePercent = 0;
+                      return categoryData.slice(0, 6).map((item, index) => {
+                        const percent = (item.value / total) * 100;
+                        const dashArray = `${percent} ${100 - percent}`;
+                        const dashOffset = -cumulativePercent;
+                        cumulativePercent += percent;
+                        return (
+                          <circle
+                            key={item.name}
+                            cx="50"
+                            cy="50"
+                            r="38"
+                            fill="none"
+                            stroke={CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg}
+                            strokeWidth="14"
+                            strokeDasharray={dashArray}
+                            strokeDashoffset={dashOffset}
+                            pathLength="100"
+                          />
+                        );
+                      });
+                    })()
+                  ) : (
+                    // Default donut when no data
+                    <>
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#3B82F6" strokeWidth="14" strokeDasharray="27 73" strokeDashoffset="0" pathLength="100" />
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#10B981" strokeWidth="14" strokeDasharray="15 85" strokeDashoffset="-27" pathLength="100" />
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#F97316" strokeWidth="14" strokeDasharray="8 92" strokeDashoffset="-42" pathLength="100" />
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#06B6D4" strokeWidth="14" strokeDasharray="25 75" strokeDashoffset="-50" pathLength="100" />
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#8B5CF6" strokeWidth="14" strokeDasharray="15 85" strokeDashoffset="-75" pathLength="100" />
+                      <circle cx="50" cy="50" r="38" fill="none" stroke="#EC4899" strokeWidth="14" strokeDasharray="10 90" strokeDashoffset="-90" pathLength="100" />
+                    </>
+                  )}
+                </svg>
               </div>
-            )}
+            </div>
+
+            {/* Percentage labels */}
+            <div className="grid grid-cols-3 gap-2 mt-4 text-center">
+              {(categoryData.length > 0 ? categoryData.slice(0, 6) : [
+                { name: 'ABC', value: 27 },
+                { name: 'NBC', value: 15 },
+                { name: 'CBS', value: 8 },
+                { name: 'CNN', value: 25 },
+                { name: 'AOL', value: 15 },
+                { name: 'MSN', value: 10 },
+              ]).map((item, index) => {
+                const total = categoryData.length > 0 ? categoryData.reduce((s, d) => s + d.value, 0) : 100;
+                const percent = categoryData.length > 0 ? Math.round((item.value / total) * 100) : item.value;
+                return (
+                  <div key={index} className="text-xs text-gray-600 font-medium">
+                    {percent}%
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent Orders & Top Products */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
-        {/* Recent Orders */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-3 sm:p-5 flex items-center justify-between border-b border-gray-100">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Recent Orders</h3>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Latest {Math.min(visibleOrders.length, 5)} orders</p>
+        {/* Best Selling & Top Products */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Best Selling Product Table */}
+          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900">Best selling product</h3>
+              <button className="flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] text-white rounded-lg text-sm font-medium hover:bg-[#14B8A6] transition">
+                <Filter className="w-4 h-4" />
+                Filter
+              </button>
             </div>
-            <button 
-              onClick={handleExport}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-violet-600 border border-violet-200 rounded-lg sm:rounded-xl hover:bg-violet-50 transition"
-            >
-              <Download size={12} className="sm:hidden" />
-              <Download size={14} className="hidden sm:block" />
-              <span className="hidden sm:inline">Export</span>
-            </button>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {visibleOrders.slice(0, 5).map((order, index) => {
-              const product = products.find(p => p.id === order.productId) || products[index % products.length];
-              const statusColors: Record<string, string> = {
-                'Pending': 'bg-amber-100 text-amber-700',
-                'Confirmed': 'bg-blue-100 text-blue-700',
-                'Delivered': 'bg-emerald-100 text-emerald-700',
-                'Cancelled': 'bg-red-100 text-red-700',
-                'Shipped': 'bg-violet-100 text-violet-700',
-              };
-              return (
-                <div key={order.id} className="p-3 sm:p-4 flex items-center gap-2.5 sm:gap-4 hover:bg-gray-50/50 transition">
-                  <div className="relative">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
-                      {product?.image && (
-                        <img src={normalizeImageUrl(product.image)} alt="" className="w-full h-full object-cover" />
+
+            {/* Table Header */}
+            <div className="grid grid-cols-4 gap-4 px-6 py-3 bg-[#F8FAFC] text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
+              <div>PRODUCT</div>
+              <div className="text-center">TOTAL ORDER</div>
+              <div className="text-center">STATUS</div>
+              <div className="text-right">PRICE</div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-gray-50">
+              {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
+                <div key={item.product.id} className="grid grid-cols-4 gap-4 px-6 py-4 items-center hover:bg-gray-50/50 transition">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                      {item.product.image ? (
+                        <img src={normalizeImageUrl(item.product.image)} alt={item.product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                          <Package className="w-5 h-5 text-gray-400" />
+                        </div>
                       )}
                     </div>
+                    <span className="text-sm font-medium text-gray-900 truncate">{item.product.name}</span>
+                  </div>
+                  <div className="text-center text-sm text-gray-600">{item.orders}</div>
+                  <div className="text-center">
+                    <span className={`inline-flex items-center gap-1.5 text-sm ${(item.product.stock || 0) > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                      {(item.product.stock || 0) > 0 ? 'Stock' : 'Stock out'}
+                    </span>
+                  </div>
+                  <div className="text-right text-sm font-semibold text-gray-900">${(item.product.price || 999).toFixed(2)}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Details Button */}
+            <div className="p-4 flex justify-center border-t border-gray-100">
+              <button className="px-8 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                Details
+              </button>
+            </div>
+          </div>
+
+          {/* Top Products Sidebar */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-5 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900">Top Products</h3>
+              <button className="text-sm text-blue-500 hover:text-blue-600 font-medium">All product</button>
+            </div>
+
+            {/* Search */}
+            <div className="px-5 py-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+
+            {/* Product List */}
+            <div className="divide-y divide-gray-50 max-h-[400px] overflow-y-auto">
+              {topProducts.map((product, index) => (
+                <div key={product.id} className="px-5 py-4 flex items-center gap-3 hover:bg-gray-50/50 transition">
+                  <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                    {product.image ? (
+                      <img src={normalizeImageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <Package className="w-5 h-5 text-gray-400" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 text-xs sm:text-sm">#{order.id}</p>
-                    <p className="text-[10px] sm:text-xs text-gray-500 truncate">{order.customer}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                    <p className="text-xs text-gray-400">Item: #FXZ-{4567 + index}</p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className={`inline-block px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium ${statusColors[order.status] || 'bg-gray-100 text-gray-700'}`}>
-                      {order.status}
-                    </span>
-                    <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-1">৳{order.amount.toLocaleString()}</p>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900">${(product.price || 99).toFixed(2)}</p>
                   </div>
                 </div>
-              );
-            })}
-            {!visibleOrders.length && (
-              <div className="p-6 sm:p-8 text-center text-gray-500">
-                <ShoppingBag className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-2 sm:mb-3" />
-                <p className="text-sm">No recent orders</p>
-              </div>
-            )}
-          </div>
-        </div>
+              ))}
 
-        {/* Top Products */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-3 sm:p-5 flex items-center justify-between border-b border-gray-100">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900">Top Products</h3>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Best performing items</p>
+              {topProducts.length === 0 && (
+                <div className="px-5 py-8 text-center">
+                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-500">No products yet</p>
+                </div>
+              )}
             </div>
-            <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-violet-600 border border-violet-200 rounded-lg sm:rounded-xl hover:bg-violet-50 transition">
-              <BarChart3 size={12} className="sm:hidden" />
-              <BarChart3 size={14} className="hidden sm:block" />
-              <span className="hidden sm:inline">Analytics</span>
-            </button>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {featuredProducts.slice(0, 5).map((product, index) => (
-              <div key={product.id} className="p-3 sm:p-4 flex items-center gap-2.5 sm:gap-4 hover:bg-gray-50/50 transition">
-                <div className="relative flex-shrink-0">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gray-100 overflow-hidden">
-                    <img src={normalizeImageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
-                  </div>
-                  <span className="absolute -top-1 -left-1 w-4 h-4 sm:w-5 sm:h-5 bg-gradient-to-br from-violet-600 to-purple-600 text-white text-[8px] sm:text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {index + 1}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{product.name}</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500">৳{product.price?.toLocaleString()}</p>
-                </div>
-                <div className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-semibold rounded-md sm:rounded-lg flex-shrink-0">
-                  <span>{product.stock || 0}</span>
-                  <span className="text-emerald-500 hidden sm:inline">in stock</span>
-                </div>
-              </div>
-            ))}
-            {!featuredProducts.length && (
-              <div className="p-6 sm:p-8 text-center text-gray-500">
-                <LayoutGrid className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-2 sm:mb-3" />
-                <p className="text-sm">No products yet</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
