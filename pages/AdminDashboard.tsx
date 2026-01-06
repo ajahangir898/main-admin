@@ -235,7 +235,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Top Header */}
-      <div className="bg-white border-b border-gray-100 px-6 py-4">
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-gray-900">Welcome back, {user?.name || 'Admin'}</h1>
@@ -299,39 +299,39 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
           <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
           
           {/* First Row - 6 columns */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Products on Hands */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{products.length}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Products on Hands</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                   <Settings className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Total Orders</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                   <Package className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <p className="text-[10px] text-gray-500 mb-1.5">Language</p>
               <div className="flex items-center gap-1.5">
                 <button 
@@ -345,7 +345,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Date Display */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 flex flex-col items-center justify-center">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 flex flex-col items-center justify-center">
               <p className="text-xs text-gray-600 font-medium">{currentDate}</p>
               <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md">
                 <p className="text-white font-semibold text-xs">{currentDay}</p>
@@ -353,9 +353,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Important Notification */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 col-span-2">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 col-span-2">
               <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
-              <div className="h-10 bg-white rounded-lg border border-gray-100"></div>
+              <div className="h-10 bg-white rounded-lg border border-gray-200"></div>
               <div className="flex justify-end gap-1 mt-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
@@ -367,7 +367,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* Second Row - 4 columns */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
             {/* Reserved Price */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
@@ -380,33 +380,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Low Stock */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{lowStockProducts}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Low Stock</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                   <Package className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{toBeReviewed}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">To be Reviewed</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
                   <Star className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Quick Action */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 flex items-center justify-center">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 flex items-center justify-center">
               <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center cursor-pointer hover:bg-purple-200 transition">
                 <LayoutGrid className="w-4 h-4 text-purple-600" />
               </div>
@@ -415,7 +415,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Visitor Stats Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
             <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Order Status Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">Order</h3>
           
           <div className="flex flex-wrap items-center gap-4">
@@ -525,7 +525,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
             </div>
@@ -598,7 +598,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
             </div>
@@ -655,7 +655,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
             </div>
@@ -739,8 +739,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Best Selling & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-200">
               <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
                 <Filter className="w-3.5 h-3.5" />
@@ -749,7 +749,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-[#F8FAFC] text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
+            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-[#F8FAFC] text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
               <div>PRODUCT</div>
               <div className="text-center">TOTAL ORDER</div>
               <div className="text-center">STATUS</div>
@@ -785,7 +785,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Details Button */}
-            <div className="p-3 flex justify-center border-t border-gray-100">
+            <div className="p-3 flex justify-center border-t border-gray-200">
               <button className="px-6 py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 transition">
                 Details
               </button>
@@ -793,8 +793,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-200">
               <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
               <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
             </div>
