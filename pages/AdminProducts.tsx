@@ -966,18 +966,18 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                <input 
                  type="text" 
                  placeholder="Search products..." 
-                 className="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-gray-900/70 text-gray-100 placeholder-gray-500 border border-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/60 focus:border-red-500 selection:bg-red-500/30 selection:text-white transition"
+                 className="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 transition"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                />
-               <Search className="absolute left-3 top-2.5 text-gray-500" size={16} />
+               <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
             </div>
             <button
               onClick={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 ${
                 isDeepSearchOpen 
-                  ? 'bg-red-600 text-white' 
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-teal-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
               title="Advanced Deep Search"
             >
@@ -990,23 +990,23 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <button 
                 type="button"
                 onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
-                className={`w-full sm:w-auto rounded-2xl px-4 py-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-red-500/40 shadow-2xl bg-gradient-to-b from-gray-900 via-gray-950 to-black border ${isViewMenuOpen ? 'border-red-500/60' : 'border-gray-800 hover:border-red-500/40'}`}
+                className={`w-full sm:w-auto rounded-xl px-4 py-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-teal-500/40 shadow-sm bg-white border ${isViewMenuOpen ? 'border-teal-500' : 'border-gray-200 hover:border-teal-400'}`}
               >
-                <span className="text-[10px] uppercase tracking-[0.4em] text-red-100/70">View</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400">View</span>
                 <div className="flex items-center justify-between gap-3 mt-1">
                   <div className="flex items-center gap-2">
-                    <ActiveViewIcon size={16} className="text-red-200" />
-                    <span className="text-sm font-semibold text-gray-100">{activeViewOption?.label}</span>
+                    <ActiveViewIcon size={16} className="text-teal-600" />
+                    <span className="text-sm font-semibold text-gray-800">{activeViewOption?.label}</span>
                   </div>
-                  <ChevronDown size={14} className={`text-red-200 transition ${isViewMenuOpen ? 'transform rotate-180' : ''}`} />
+                  <ChevronDown size={14} className={`text-gray-400 transition ${isViewMenuOpen ? 'transform rotate-180' : ''}`} />
                 </div>
               </button>
 
               {isViewMenuOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl z-40 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-gray-800 bg-gray-900">
-                    <p className="text-xs font-semibold text-gray-200 uppercase tracking-[0.3em]">View options</p>
-                    <p className="text-[11px] text-gray-400">Switch between Windows-style layouts</p>
+                <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-40 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                    <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">View options</p>
+                    <p className="text-[11px] text-gray-500">Switch between layouts</p>
                   </div>
                   <div className="py-1">
                     {VIEW_OPTIONS.map(option => {
@@ -1020,21 +1020,21 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             setViewMode(option.value);
                             setIsViewMenuOpen(false);
                           }}
-                          className={`w-full flex items-start gap-3 px-4 py-2.5 transition text-left ${isActive ? 'bg-red-900/30 border-l-4 border-red-500' : 'hover:bg-gray-900'}`}
+                          className={`w-full flex items-start gap-3 px-4 py-2.5 transition text-left ${isActive ? 'bg-teal-50 border-l-4 border-teal-500' : 'hover:bg-gray-50'}`}
                         >
-                          <Icon size={18} className={`mt-0.5 ${isActive ? 'text-red-300' : 'text-gray-400'}`} />
+                          <Icon size={18} className={`mt-0.5 ${isActive ? 'text-teal-600' : 'text-gray-400'}`} />
                           <div className="flex-1">
                             <div className="flex items-center justify-between gap-2">
-                              <span className={`text-sm font-semibold ${isActive ? 'text-white' : 'text-gray-200'}`}>{option.label}</span>
-                              {isActive && <CheckCircle size={16} className="text-red-400" />}
+                              <span className={`text-sm font-semibold ${isActive ? 'text-teal-700' : 'text-gray-700'}`}>{option.label}</span>
+                              {isActive && <CheckCircle size={16} className="text-teal-500" />}
                             </div>
-                            <p className="text-xs text-gray-400">{option.description}</p>
+                            <p className="text-xs text-gray-500">{option.description}</p>
                           </div>
                         </button>
                       );
                     })}
                   </div>
-                  <div className="px-4 py-3 bg-gray-900 text-xs text-gray-300 border-t border-gray-800 flex items-center gap-2">
+                  <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500 border-t border-gray-100 flex items-center gap-2">
                     <AlertCircle size={14} className="text-gray-400" />
                     Personalize how the catalog grid looks and feels.
                   </div>
@@ -1095,15 +1095,15 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
       {/* Deep Search Panel */}
       {isDeepSearchOpen && (
-        <div className="bg-gradient-to-br from-gray-900 via-gray-950 to-black border border-red-500/30 rounded-xl p-6 shadow-2xl">
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Filter className="text-red-400" size={20} />
+            <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+              <Filter className="text-teal-500" size={20} />
               Advanced Deep Search
             </h3>
             <button
               onClick={() => setIsDeepSearchOpen(false)}
-              className="text-gray-400 hover:text-white transition"
+              className="text-gray-400 hover:text-gray-600 transition"
             >
               <X size={20} />
             </button>
@@ -1112,27 +1112,27 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Search Term */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">Search Query</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Search Query</label>
               <input
                 type="text"
                 value={deepSearchTerm}
                 onChange={(e) => setDeepSearchTerm(e.target.value)}
                 placeholder="Enter search term..."
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               />
             </div>
 
             {/* Search In Fields */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Search In</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Search In</label>
               <div className="space-y-2">
                 {Object.entries(searchInFields).map(([field, checked]) => (
-                  <label key={field} className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                  <label key={field} className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={(e) => setSearchInFields({ ...searchInFields, [field]: e.target.checked })}
-                      className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-red-500 focus:ring-red-500"
+                      className="w-4 h-4 rounded border-gray-300 bg-white text-teal-500 focus:ring-teal-500"
                     />
                     <span className="capitalize">{field}</span>
                   </label>
@@ -1142,14 +1142,14 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
             {/* Price Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Price Range</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Price Range</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
                   value={priceRange.min}
                   onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
                   placeholder="Min"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <span className="text-gray-400">—</span>
                 <input
@@ -1157,21 +1157,21 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   value={priceRange.max}
                   onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
                   placeholder="Max"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
 
             {/* Stock Range */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2">Stock Range</label>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Stock Range</label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
                   value={stockRange.min}
                   onChange={(e) => setStockRange({ ...stockRange, min: e.target.value })}
                   placeholder="Min Stock"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <span className="text-gray-400">—</span>
                 <input
@@ -1179,7 +1179,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   value={stockRange.max}
                   onChange={(e) => setStockRange({ ...stockRange, max: e.target.value })}
                   placeholder="Max Stock"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
@@ -1188,7 +1188,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
             <div className="md:col-span-2 flex justify-end gap-3 pt-2">
               <button
                 onClick={resetFilters}
-                className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition"
+                className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"
               >
                 Clear All
               </button>
@@ -1197,7 +1197,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   // Search is applied automatically via filteredProducts
                   toast.success(`Found ${filteredProducts.length} products`);
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+                className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition flex items-center gap-2"
               >
                 <Search size={16} />
                 Apply Search
@@ -1209,15 +1209,15 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
       {/* Bulk Actions Floating Bar */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-6 animate-in slide-in-from-bottom-4">
-           <span className="font-bold text-sm bg-gray-700 px-3 py-1 rounded-full">{selectedIds.length} Selected</span>
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-6 py-3 rounded-xl shadow-xl border border-gray-200 z-50 flex items-center gap-6 animate-in slide-in-from-bottom-4">
+           <span className="font-bold text-sm bg-teal-500 text-white px-3 py-1 rounded-lg">{selectedIds.length} Selected</span>
            
-           <div className="h-6 w-px bg-gray-700"></div>
+           <div className="h-6 w-px bg-gray-200"></div>
            
            <div className="flex items-center gap-2">
               <button 
                 onClick={() => setBulkAction('category')}
-                className="flex items-center gap-2 hover:text-purple-300 transition text-sm font-medium"
+                className="flex items-center gap-2 hover:text-teal-600 transition text-sm font-medium"
               >
                 <Layers size={16} /> Category
               </button>

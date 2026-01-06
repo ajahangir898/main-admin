@@ -105,8 +105,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 	const getMenuItemStyle = (itemId: string, isActive: boolean) => {
 		if (isActive) {
 			return {
-				background: '#E0F2FE',
-				color: '#0EA5E9',
+				background: '#CCFBF1',
+				color: '#0D9488',
 			};
 		}
 		return {
@@ -177,7 +177,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 										onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
 										className={`py-2 px-3 rounded-lg text-sm cursor-pointer transition hover:bg-gray-50`}
 										style={{
-											color: activePage === item.id ? '#0EA5E9' : '#6B7280',
+										color: activePage === item.id ? '#0D9488' : '#6B7280',
 											fontWeight: activePage === item.id ? 500 : 400,
 										}}
 									>
@@ -232,7 +232,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 					{isOnTenantAdminPath && (
 						<a
 							href="/"
-							className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition text-sm text-sky-500 hover:bg-sky-50 font-medium"
+							className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition text-sm text-teal-600 hover:bg-teal-50 font-medium"
 						>
 							<Store size={18} />
 							<span>Back to Store</span>

@@ -24,6 +24,6 @@
 }
 
 .admin-notice-ticker {
-  animation: adminNoticeTicker 12s linear infinite;
+  animation: adminNoticeTicker 30s linear infinite;
   white-space: nowrap;
 }
