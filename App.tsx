@@ -667,7 +667,7 @@ const App = () => {
             onRefreshTenants={refreshTenants}
             onSearchChange={handleStoreSearchChange}
             onCategoryFilterChange={handleCategoryFilterChange}
-            onMobileMenuOpenRef={handleMobileMenuOpenRef}
+            onMobileMenuOpenRef={(fn) => { handleMobileMenuOpenRef.current = fn; }}
             onToggleCart={handleCartToggle}
             onCheckoutFromCart={handlers.handleCheckoutFromCart}
             onAddToCart={handleAddProductToCart}
