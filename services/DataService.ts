@@ -3,6 +3,9 @@ import { getAuthHeader } from './authService';
 import { getCached, setCached, deleteCached, CacheKeys, setCachedByType, clearTenantCache } from './RedisService';
 import type { Socket } from 'socket.io-client';
 
+// Debug flag - set to false in production to reduce console noise
+const DEBUG_LOGGING = import.meta.env.DEV || false;
+
 // Reserved subdomains that cannot be used for tenants
 const RESERVED_TENANT_SLUGS = [
   'www', 'admin', 'adminlogin', 'superadmin', 'login', 'app',
@@ -28,12 +31,12 @@ const cachedFetch = async <T>(
   // Check cache first
   const cached = await getCached<T>(key);
   if (cached !== null) {
-    console.log(`[Cache] Hit for ${endpoint}`);
+    if (DEBUG_LOGGING) console.log(`[Cache] Hit for ${endpoint}`);
     return cached;
   }
   
   // Fetch from API
-  console.log(`[Cache] Miss for ${endpoint}, fetching...`);
+  if (DEBUG_LOGGING) console.log(`[Cache] Miss for ${endpoint}, fetching...`);
   const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, {
     ...options,
     headers: {
@@ -79,7 +82,7 @@ export const invalidateDataCache = async (tenantId: string, dataType?: string): 
     await clearTenantCache(tenantId);
   }
   
-  console.log(`[Cache] Invalidated cache for tenant ${tenantId}, type: ${dataType || 'all'}`);
+  if (DEBUG_LOGGING) console.log(`[Cache] Invalidated cache for tenant ${tenantId}, type: ${dataType || 'all'}`);
 };
 
 // Mark fetch API usage for socket updates
@@ -914,12 +917,12 @@ class DataServiceImpl {
     
     // If remote is empty but we have cached data (even if expired), prefer cache over defaults
     if (cached && cached.length > 0) {
-      console.warn(`[DataService] Remote ${key} is empty, using cached data`);
+      if (DEBUG_LOGGING) console.warn(`[DataService] Remote ${key} is empty, using cached data`);
       return this.filterByTenant(cached as Array<T & { tenantId?: string }>, tenantId);
     }
     
     // Only return defaults if we have no cached data at all
-    console.info(`[DataService] No data for ${key}, using defaults`);
+    if (DEBUG_LOGGING) console.info(`[DataService] No data for ${key}, using defaults`);
     return defaultValue;
   }
 
@@ -1027,7 +1030,7 @@ class DataServiceImpl {
     // Check cache first to avoid unnecessary API calls
     const cached = getCachedData<any[]>(type, tenantId);
     if (cached && cached.length > 0) {
-      console.log(`[DataService] Using cached ${type}`);
+      if (DEBUG_LOGGING) console.log(`[DataService] Using cached ${type}`);
       return cached;
     }
     
@@ -1040,12 +1043,12 @@ class DataServiceImpl {
     
     // If remote is empty but we have cached data, prefer cache
     if (cached && cached.length > 0) {
-      console.warn(`[DataService] Remote ${type} is empty, preserving cached data`);
+      if (DEBUG_LOGGING) console.warn(`[DataService] Remote ${type} is empty, preserving cached data`);
       return cached;
     }
     
     // Only use defaults if we have no data at all (new tenant)
-    console.info(`[DataService] No ${type} found, using defaults for new tenant`);
+    if (DEBUG_LOGGING) console.info(`[DataService] No ${type} found, using defaults for new tenant`);
     return defaults;
   }
 
