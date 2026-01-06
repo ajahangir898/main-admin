@@ -242,15 +242,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p>
           </div>
           
-          <div className="flex items-center gap-4">
-            {/* View Website Button */}
-            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
-              <Globe className="w-4 h-4" />
-              View Website
-            </button>
-            
+          <div className="flex items-center gap-3">
             {/* Tutorials Button */}
-            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
+            <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
               <Play className="w-4 h-4" />
               Tutorials
             </button>
@@ -263,7 +257,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-48 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                className="pl-10 pr-4 py-2 w-44 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
               />
             </div>
             
@@ -271,26 +265,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button className="p-2 hover:bg-gray-50 rounded-lg transition">
               <Moon className="w-5 h-5 text-gray-500" />
             </button>
-            <button className="p-2 hover:bg-gray-50 rounded-lg transition">
-              <MessageCircle className="w-5 h-5 text-gray-500" />
-            </button>
             <button className="p-2 hover:bg-gray-50 rounded-lg transition relative">
               <Bell className="w-5 h-5 text-gray-500" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             
             {/* Avatar */}
-            <div className="flex items-center gap-2 ml-2">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
+            <div className="flex items-center gap-2 ml-1">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
                   user?.name?.charAt(0) || 'A'
                 )}
-              </div>
-              <div className="text-right hidden lg:block">
-                <p className="text-xs text-gray-400">Admin</p>
-                <p className="text-sm font-medium text-gray-700">{user?.name || 'Admin'}</p>
               </div>
             </div>
           </div>
@@ -299,33 +286,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
           <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
           
           {/* First Row - 6 columns */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Products on Hands */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{products.length}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Products on Hands</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
-                  <Settings className="w-4 h-4 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
+                  <Package className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-emerald-100">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Total Orders</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
-                  <Package className="w-4 h-4 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
+                  <ShoppingBag className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
@@ -336,7 +323,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex items-center gap-1.5">
                 <button 
                   onClick={() => setLanguage('Eng')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${language === 'Eng' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${language === 'Eng' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
                 >
                   Eng
                 </button>
@@ -345,9 +332,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Date Display */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 flex flex-col items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 border border-orange-100 flex flex-col items-center justify-center">
               <p className="text-xs text-gray-600 font-medium">{currentDate}</p>
-              <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md">
+              <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md shadow-sm">
                 <p className="text-white font-semibold text-xs">{currentDay}</p>
               </div>
             </div>
@@ -357,7 +344,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
               <div className="h-10 bg-white rounded-lg border border-gray-200"></div>
               <div className="flex justify-end gap-1 mt-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
               </div>
@@ -367,55 +354,55 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* Second Row - 4 columns */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
             {/* Reserved Price */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 border border-amber-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-gray-900">৳{totalRevenue.toLocaleString()}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Reserved Price</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
-                  <Wallet className="w-4 h-4 text-amber-500" />
+                <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shadow-sm">
+                  <Wallet className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-3 border border-red-100">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{lowStockProducts}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">Low Stock</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
-                  <Package className="w-4 h-4 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center shadow-sm">
+                  <AlertCircle className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200">
+            <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-3 border border-purple-100">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{toBeReviewed}</p>
                   <p className="text-[10px] text-gray-500 mt-0.5">To be Reviewed</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-200">
-                  <Star className="w-4 h-4 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center shadow-sm">
+                  <Star className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Quick Action */}
-            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-200 flex items-center justify-center">
-              <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center cursor-pointer hover:bg-purple-200 transition">
-                <LayoutGrid className="w-4 h-4 text-purple-600" />
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-3 border border-teal-100 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center cursor-pointer hover:bg-teal-600 transition shadow-sm">
+                <LayoutGrid className="w-4 h-4 text-white" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Visitor Stats Row - Compact */}
-        <div className="bg-gray-50 rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
             <div className="flex items-center gap-3">
