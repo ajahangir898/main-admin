@@ -68,6 +68,7 @@ export const createTenant = async (payload: CreateTenantPayload): Promise<Tenant
 
   // Create tenant record (DON'T store password here!)
   const tenant: Tenant = {
+    id: undefined as any, // Will be set by MongoDB after insert
     name: payload.name.trim(),
     subdomain,
     contactEmail: payload.contactEmail.trim().toLowerCase(),
