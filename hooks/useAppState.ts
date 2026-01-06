@@ -1,7 +1,7 @@
 /**
  * useAppState.ts - Core data state management extracted from App.tsx
  */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type {
   Product, Order, ThemeConfig, WebsiteConfig, DeliveryConfig,
   LandingPage, FacebookPixelConfig, CourierConfig, Role, Category,
@@ -169,41 +169,45 @@ export function useAppState(): AppState {
   const [selectedLandingPage, setSelectedLandingPage] = useState<LandingPage | null>(null);
   
   // === REFS FOR DATA PERSISTENCE ===
-  const ordersRef = useRef<Order[]>([]);
-  const productsRef = useRef<Product[]>([]);
-  const logoRef = useRef<string | null>(null);
-  const themeConfigRef = useRef<ThemeConfig | null>(null);
-  const websiteConfigRef = useRef<WebsiteConfig | undefined>(undefined);
-  const deliveryConfigRef = useRef<DeliveryConfig[]>([]);
-  const courierConfigRef = useRef<CourierConfig>(DEFAULT_COURIER_CONFIG);
-  const facebookPixelConfigRef = useRef<FacebookPixelConfig>(DEFAULT_FACEBOOK_PIXEL_CONFIG);
-  const rolesRef = useRef<Role[]>([]);
-  const usersRef = useRef<User[]>([]);
-  const categoriesRef = useRef<Category[]>([]);
-  const subCategoriesRef = useRef<SubCategory[]>([]);
-  const childCategoriesRef = useRef<ChildCategory[]>([]);
-  const brandsRef = useRef<Brand[]>([]);
-  const tagsRef = useRef<Tag[]>([]);
-  const landingPagesRef = useRef<LandingPage[]>([]);
-  const userRef = useRef<User | null>(null);
+  const ordersRef = useRef<Order[]>(orders);
+  const productsRef = useRef<Product[]>(products);
+  const logoRef = useRef<string | null>(logo);
+  const themeConfigRef = useRef<ThemeConfig | null>(themeConfig);
+  const websiteConfigRef = useRef<WebsiteConfig | undefined>(websiteConfig);
+  const deliveryConfigRef = useRef<DeliveryConfig[]>(deliveryConfig);
+  const courierConfigRef = useRef<CourierConfig>(courierConfig);
+  const facebookPixelConfigRef = useRef<FacebookPixelConfig>(facebookPixelConfig);
+  const rolesRef = useRef<Role[]>(roles);
+  const usersRef = useRef<User[]>(users);
+  const categoriesRef = useRef<Category[]>(categories);
+  const subCategoriesRef = useRef<SubCategory[]>(subCategories);
+  const childCategoriesRef = useRef<ChildCategory[]>(childCategories);
+  const brandsRef = useRef<Brand[]>(brands);
+  const tagsRef = useRef<Tag[]>(tags);
+  const landingPagesRef = useRef<LandingPage[]>(landingPages);
+  const userRef = useRef<User | null>(user);
   
-  // Keep refs in sync with state
-  ordersRef.current = orders;
-  productsRef.current = products;
-  logoRef.current = logo;
-  themeConfigRef.current = themeConfig;
-  websiteConfigRef.current = websiteConfig;
-  deliveryConfigRef.current = deliveryConfig;
-  courierConfigRef.current = courierConfig;
-  facebookPixelConfigRef.current = facebookPixelConfig;
-  rolesRef.current = roles;
-  usersRef.current = users;
-  categoriesRef.current = categories;
-  subCategoriesRef.current = subCategories;
-  childCategoriesRef.current = childCategories;
-  brandsRef.current = brands;
-  tagsRef.current = tags;
-  landingPagesRef.current = landingPages;
+  // Mobile menu handler ref
+  const handleMobileMenuOpenRef = useRef<(() => void) | null>(null);
+  
+  // Keep refs in sync with state using useEffect
+  useEffect(() => { ordersRef.current = orders; }, [orders]);
+  useEffect(() => { productsRef.current = products; }, [products]);
+  useEffect(() => { logoRef.current = logo; }, [logo]);
+  useEffect(() => { themeConfigRef.current = themeConfig; }, [themeConfig]);
+  useEffect(() => { websiteConfigRef.current = websiteConfig; }, [websiteConfig]);
+  useEffect(() => { deliveryConfigRef.current = deliveryConfig; }, [deliveryConfig]);
+  useEffect(() => { courierConfigRef.current = courierConfig; }, [courierConfig]);
+  useEffect(() => { facebookPixelConfigRef.current = facebookPixelConfig; }, [facebookPixelConfig]);
+  useEffect(() => { rolesRef.current = roles; }, [roles]);
+  useEffect(() => { usersRef.current = users; }, [users]);
+  useEffect(() => { categoriesRef.current = categories; }, [categories]);
+  useEffect(() => { subCategoriesRef.current = subCategories; }, [subCategories]);
+  useEffect(() => { childCategoriesRef.current = childCategories; }, [childCategories]);
+  useEffect(() => { brandsRef.current = brands; }, [brands]);
+  useEffect(() => { tagsRef.current = tags; }, [tags]);
+  useEffect(() => { landingPagesRef.current = landingPages; }, [landingPages]);
+  useEffect(() => { userRef.current = user; }, [user]);
   
   const refs: AppStateRefs = {
     ordersRef,
@@ -224,9 +228,6 @@ export function useAppState(): AppState {
     landingPagesRef,
     userRef,
   };
-  
-  // Mobile menu handler ref
-  const handleMobileMenuOpenRef = useRef<(() => void) | null>(null);
   
   return {
     isLoading, setIsLoading,
