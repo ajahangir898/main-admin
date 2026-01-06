@@ -477,74 +477,62 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Order Status Row */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Order</h3>
+            <h3 className="text-base font-semibold text-gray-800">Order</h3>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="flex flex-wrap items-center gap-6 lg:gap-8">
             {/* Today */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-pink-100 rounded-xl">
-                <ShoppingBag className="w-5 h-5 text-pink-600" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-pink-50 flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4 text-pink-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Today</p>
-                <p className="text-xl font-bold text-gray-900">{todayOrders}</p>
-              </div>
+              <span className="text-sm text-gray-500">Today</span>
+              <span className="text-xl font-bold text-gray-900">{todayOrders}</span>
             </div>
 
             {/* Courier */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-orange-100 rounded-xl">
-                <Truck className="w-5 h-5 text-orange-600" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center">
+                <Truck className="w-4 h-4 text-orange-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Courier</p>
-                <p className="text-xl font-bold text-gray-900">{courierOrders}</p>
-              </div>
+              <span className="text-sm text-gray-500">Courier</span>
+              <span className="text-xl font-bold text-gray-900">{courierOrders}</span>
             </div>
 
             {/* Confirmed */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-green-100 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-green-600" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center">
+                <CheckCircle className="w-4 h-4 text-green-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Confirmed</p>
-                <p className="text-xl font-bold text-gray-900">{confirmedOrders}</p>
-              </div>
+              <span className="text-sm text-gray-500">Confirmed</span>
+              <span className="text-xl font-bold text-gray-900">{confirmedOrders}</span>
             </div>
 
             {/* Pending */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-amber-100 rounded-xl">
-                <Clock className="w-5 h-5 text-amber-600" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-amber-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Pending</p>
-                <p className="text-xl font-bold text-gray-900">{pendingOrders}</p>
-              </div>
+              <span className="text-sm text-gray-500">Pending</span>
+              <span className="text-xl font-bold text-gray-900">{pendingOrders}</span>
             </div>
 
-            {/* Cancelled */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-red-100 rounded-xl">
-                <XCircle className="w-5 h-5 text-red-600" />
+            {/* Canceled */}
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
+                <XCircle className="w-4 h-4 text-red-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Cancelled</p>
-                <p className="text-xl font-bold text-gray-900">{cancelledOrders}</p>
-              </div>
+              <span className="text-sm text-gray-500">Canceled</span>
+              <span className="text-xl font-bold text-gray-900">{cancelledOrders}</span>
             </div>
 
             {/* Returns */}
-            <div className="flex items-center gap-3 p-3 bg-[#F8FAFC] rounded-xl">
-              <div className="p-2.5 bg-blue-100 rounded-xl">
-                <ArchiveRestore className="w-5 h-5 text-blue-600" />
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
+                <ArchiveRestore className="w-4 h-4 text-blue-500" />
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Returns</p>
-                <p className="text-xl font-bold text-gray-900">{returnsCount}</p>
-              </div>
+              <span className="text-sm text-gray-500">Returns</span>
+              <span className="text-xl font-bold text-gray-900">{returnsCount}</span>
             </div>
           </div>
         </div>
