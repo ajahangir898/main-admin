@@ -299,7 +299,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+        <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
           <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
           
           {/* First Row - 6 columns */}
@@ -415,7 +415,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Visitor Stats Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="bg-gray-50 rounded-xl p-3 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
             <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Order Status Row - Compact */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="bg-gray-50 rounded-xl p-3 shadow-sm border border-gray-200">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">Order</h3>
           
           <div className="flex flex-wrap items-center gap-4">
@@ -525,7 +525,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
             </div>
@@ -598,7 +598,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
             </div>
@@ -655,7 +655,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
             </div>
