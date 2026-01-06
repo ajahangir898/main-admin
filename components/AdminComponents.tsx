@@ -56,30 +56,34 @@ const canAccess = (resource: string, userRole?: User['role'], permissions?: Perm
 };
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNavigate, logo, isOpen, onClose, userRole, permissions }) => {
-	const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
 	const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-	const [isBusinessReportOpen, setIsBusinessReportOpen] = useState(false);
 
-	// Menu items with their resource mapping
-	const menuItems = [
+	// Main Menu items
+	const mainMenuItems = [
 		{ id: 'dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard', resource: 'dashboard' },
 		{ id: 'orders', icon: <ShoppingBag size={18} />, label: 'Orders', resource: 'orders' },
 		{ id: 'products', icon: <Box size={18} />, label: 'Products', resource: 'products' },
-		{ id: 'landing_pages', icon: <FileText size={18} />, label: 'Landing page', resource: 'landing_pages' },
+		{ id: 'inventory', icon: <Boxes size={18} />, label: 'Inventory', resource: 'inventory' },
+		{ id: 'customers_reviews', icon: <Users size={18} />, label: 'Customers & review', resource: 'customers' },
+	];
+
+	// Configuration items
+	const configItems = [
+		{ id: 'customization', icon: <Sliders size={18} />, label: 'Customization', resource: 'customization' },
+		{ id: 'landing_pages', icon: <FileText size={18} />, label: 'Landing Page', resource: 'landing_pages' },
 		{ id: 'popups', icon: <Layers size={18} />, label: 'Popups', resource: 'landing_pages' },
-		{ id: 'inventory', icon: <Boxes size={18} />, label: 'Inventory Management', resource: 'inventory' },
-		{ id: 'customers_reviews', icon: <Users size={18} />, label: 'Customers & Reviews', resource: 'customers' },
 		{ id: 'gallery', icon: <ImageIcon size={18} />, label: 'Gallery', resource: 'gallery' },
-		{ id: 'figma', icon: <Figma size={18} />, label: 'Figma Integration', resource: 'gallery' },
+		{ id: 'business_report_expense', icon: <FileText size={18} />, label: 'Business Report', resource: 'business_report' },
 	];
 
-	// System monitoring items (only for super admin or admin)
+	// System items
 	const systemItems = [
-		{ id: 'cache_monitor', icon: <Target size={18} />, label: 'Cache Monitor', resource: 'system' },
+		{ id: 'settings', icon: <Settings size={18} />, label: 'Settings', resource: 'settings' },
+		{ id: 'admin', icon: <Shield size={18} />, label: 'Admin Control', resource: 'admin_control' },
+		{ id: 'billing', icon: <DollarSign size={18} />, label: 'Billing & Subscription', resource: 'settings' },
+		{ id: 'support', icon: <Headphones size={18} />, label: 'Support', resource: 'settings' },
+		{ id: 'tutorial', icon: <FileText size={18} />, label: 'Tutorial', resource: 'settings' },
 	];
-
-	// Filter menu items based on permissions
-	const filteredMenuItems = menuItems.filter(item => canAccess(item.resource, userRole, permissions));
 
 	const catalogItems = [
 		{ id: 'catalog_categories', label: 'Categories' },
@@ -89,54 +93,43 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'catalog_tags', label: 'Tags' },
 	];
 
-	const customizationItems = [
-		{ id: 'carousel', label: 'Carousel' },
-		{ id: 'banner', label: 'Banner' },
-		{ id: 'popup', label: 'PopUp' },
-		{ id: 'website_info', label: 'Website Information' },
-		{ id: 'chat_settings', label: 'Chat Settings' },
-		{ id: 'theme_view', label: 'Theme View' },
-		{ id: 'theme_colors', label: 'Theme Colors' },
-	];
-
-	const businessReportItems = [
-		{ id: 'business_report_expense', label: 'Expense' },
-		{ id: 'business_report_income', label: 'Income' },
-		{ id: 'business_report_due_book', label: 'Due Book' },
-		{ id: 'business_report_profit_loss', label: 'Profit / Loss' },
-		{ id: 'business_report_note', label: 'Note' },
-	];
-
-	// Check if user can see business report section
-	const canSeeBusinessReport = canAccess('business_report', userRole, permissions) || 
-		canAccess('expenses', userRole, permissions) || 
-		canAccess('income', userRole, permissions) ||
-		canAccess('due_book', userRole, permissions) ||
-		canAccess('profit_loss', userRole, permissions) ||
-		canAccess('notes', userRole, permissions);
+	// Filter menu items based on permissions
+	const filteredMainMenuItems = mainMenuItems.filter(item => canAccess(item.resource, userRole, permissions));
+	const filteredConfigItems = configItems.filter(item => canAccess(item.resource, userRole, permissions));
+	const filteredSystemItems = systemItems.filter(item => canAccess(item.resource, userRole, permissions));
 
 	// Check if user can see catalog
 	const canSeeCatalog = canAccess('catalog', userRole, permissions);
 
-	// Check if user can see customization
-	const canSeeCustomization = canAccess('customization', userRole, permissions);
+	// Active style for menu items
+	const getMenuItemStyle = (itemId: string, isActive: boolean) => {
+		if (isActive) {
+			return {
+				background: '#E0F2FE',
+				color: '#0EA5E9',
+			};
+		}
+		return {
+			color: '#6B7280',
+		};
+	};
 
-	// Check if user can see settings
-	const canSeeSettings = canAccess('settings', userRole, permissions);
-
-	// Check if user can see admin control
-	const canSeeAdminControl = canAccess('admin_control', userRole, permissions);
+	const isItemActive = (itemId: string) => {
+		if (itemId === 'business_report_expense' && activePage?.startsWith('business_report_')) return true;
+		if (itemId === 'customization' && ['carousel', 'banner', 'popup', 'website_info', 'chat_settings', 'theme_view', 'theme_colors'].includes(activePage || '')) return true;
+		return activePage === itemId;
+	};
 
 	const SidebarContent = () => (
 		<>
-			{/* Sidebar Header - Clean White with Red accent */}
-			<div className="p-5 border-b flex items-center justify-between bg-white" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
+			{/* Sidebar Header */}
+			<div className="p-5 border-b flex items-center justify-between bg-white" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
 				{logo ? (
 					<img src={normalizeImageUrl(logo)} alt="Admin Logo" className="h-8 md:h-10 object-contain" />
 				) : (
 					<h2 className="text-xl font-bold tracking-tight">
 						<span className="text-gray-900">Your</span>
-						<span className="text-red-600">Shop</span>
+						<span className="text-sky-500">Shop</span>
 					</h2>
 				)}
 				<button onClick={onClose} className="lg:hidden p-2 rounded-lg transition hover:bg-gray-100 text-gray-500">
@@ -144,103 +137,51 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 				</button>
 			</div>
 
-			{/* Sidebar Menu - White background */}
-			<div className="p-3 space-y-1 flex-1 overflow-y-auto scrollbar-hide bg-white">
-				<div className="text-[10px] font-bold uppercase tracking-widest mb-3 px-3 mt-2 text-gray-400">Main Menu</div>
-				{filteredMenuItems.map((item) => (
+			{/* Sidebar Menu */}
+			<div className="p-4 space-y-1 flex-1 overflow-y-auto scrollbar-hide bg-white">
+				{/* Main Menu Section */}
+				<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 text-gray-400">Main Menu</div>
+				
+				{filteredMainMenuItems.map((item) => (
 					<div
 						key={item.id}
 						onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
-						className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${
-							activePage === item.id ? 'font-semibold' : ''
-						}`}
-						style={activePage === item.id ? {
-							background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-							color: 'white',
-							boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-						} : {
-							color: '#4b5563'
-						}}
+						className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+						style={getMenuItemStyle(item.id, isItemActive(item.id))}
 					>
 						{item.icon}
 						<span>{item.label}</span>
 					</div>
 				))}
 
-				{/* Business Report - Single Menu Item */}
-				{canSeeBusinessReport && (
-					<div
-						onClick={() => { onNavigate && onNavigate('business_report_expense'); onClose && onClose(); }}
-						className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${
-							activePage?.startsWith('business_report_') ? 'font-semibold' : ''
-						}`}
-						style={activePage?.startsWith('business_report_') ? {
-							background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-							color: 'white',
-							boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-						} : {
-							color: '#4b5563'
-						}}
-					>
-						<FileText size={18} />
-						<span>Business Report</span>
-					</div>
-				)}
-
-				{/* Catalog - Single Menu Item */}
+				{/* Catalog with Dropdown */}
 				{canSeeCatalog && (
-					<div
-						onClick={() => { onNavigate && onNavigate('catalog_categories'); onClose && onClose(); }}
-						className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${
-							activePage?.startsWith('catalog_') ? 'font-semibold' : ''
-						}`}
-						style={activePage?.startsWith('catalog_') ? {
-							background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-							color: 'white',
-							boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-						} : {
-							color: '#4b5563'
-						}}
-					>
-						<Layers size={18} />
-						<span>Catalog</span>
-					</div>
-				)}
-
-				{/* Customization Dropdown */}
-				{canSeeCustomization && (
 					<div>
 						<div
-							onClick={() => setIsCustomizationOpen(!isCustomizationOpen)}
-							className="flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm hover:bg-gray-50"
-							style={{ color: '#4b5563' }}
+							onClick={() => setIsCatalogOpen(!isCatalogOpen)}
+							className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+							style={getMenuItemStyle('catalog', activePage?.startsWith('catalog_') || false)}
 						>
 							<div className="flex items-center gap-3">
-								<Sliders size={18} />
-								<span>Customization</span>
+								<Layers size={18} />
+								<span>Catalog</span>
 							</div>
-							{isCustomizationOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+							<ChevronDown size={16} className={`transition-transform duration-200 ${isCatalogOpen ? 'rotate-180' : ''}`} />
 						</div>
 
-						{isCustomizationOpen && (
-							<div className="pl-9 pr-2 space-y-1 mt-1 animate-in slide-in-from-top-1 duration-200">
-								{customizationItems.map(item => (
+						{isCatalogOpen && (
+							<div className="ml-9 mt-1 space-y-0.5">
+								{catalogItems.map(item => (
 									<div
 										key={item.id}
 										onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
-										className={`py-2 px-3 rounded-lg text-xs cursor-pointer transition ${activePage === item.id ? 'font-semibold' : ''}`}
-										style={activePage === item.id ? {
-											color: '#16a34a',
-											background: 'rgba(22, 163, 74, 0.08)',
-											borderLeft: '2px solid #16a34a'
-										} : {
-											color: '#6b7280'
+										className={`py-2 px-3 rounded-lg text-sm cursor-pointer transition hover:bg-gray-50`}
+										style={{
+											color: activePage === item.id ? '#0EA5E9' : '#6B7280',
+											fontWeight: activePage === item.id ? 500 : 400,
 										}}
 									>
-										<div className="flex items-center gap-2">
-											<div className="w-1.5 h-1.5 rounded-full" style={{ background: activePage === item.id ? '#16a34a' : '#d1d5db' }}></div>
-											{item.label}
-										</div>
+										{item.label}
 									</div>
 								))}
 							</div>
@@ -248,96 +189,55 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 					</div>
 				)}
 
-				{/* System Section */}
-				{(canSeeSettings || canSeeAdminControl || userRole === 'super_admin' || userRole === 'admin') && (
+				{/* Configuration Section */}
+				{filteredConfigItems.length > 0 && (
 					<>
-						<div className="text-[10px] font-bold uppercase tracking-widest mb-3 px-3 mt-6 text-gray-400">System</div>
+						<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 mt-6 text-gray-400">Configuration</div>
 						
-						{/* Cache Monitor - Only for admin/super_admin */}
-						{(userRole === 'super_admin' || userRole === 'admin') && (
+						{filteredConfigItems.map((item) => (
 							<div
-								onClick={() => { onNavigate && onNavigate('cache_monitor'); onClose && onClose(); }}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${activePage === 'cache_monitor' ? 'font-semibold' : ''}`}
-								style={activePage === 'cache_monitor' ? {
-									background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-									color: 'white',
-									boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-								} : {
-									color: '#4b5563'
-								}}
+								key={item.id}
+								onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
-								<Target size={18} />
-								<span>Cache Monitor</span>
+								{item.icon}
+								<span>{item.label}</span>
 							</div>
-						)}
-						
-						{canSeeSettings && (
-							<div
-								onClick={() => { onNavigate && onNavigate('settings'); onClose && onClose(); }}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${activePage === 'settings' ? 'font-semibold' : ''}`}
-								style={activePage === 'settings' ? {
-									background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-									color: 'white',
-									boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-								} : {
-									color: '#4b5563'
-								}}
-							>
-								<Settings size={18} />
-								<span>Settings</span>
-							</div>
-						)}
-						{/* Support menu item - after Settings */}
-						{canSeeSettings && (
-							<div
-								onClick={() => { onNavigate && onNavigate('support'); onClose && onClose(); }}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${activePage === 'support' ? 'font-semibold' : ''}`}
-								style={activePage === 'support' ? {
-									background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-									color: 'white',
-									boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-								} : {
-									color: '#4b5563'
-								}}
-							>
-								<Headphones size={18} />
-								<span>Support</span>
-							</div>
-						)}
-						{canSeeAdminControl && (
-							<div
-								onClick={() => { onNavigate && onNavigate('admin'); onClose && onClose(); }}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sm ${activePage === 'admin' ? 'font-semibold' : ''}`}
-								style={activePage === 'admin' ? {
-									background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #16a34a 100%)',
-									color: 'white',
-									boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)'
-								} : {
-									color: '#4b5563'
-								}}
-							>
-								<Shield size={18} />
-								<span>Admin Control</span>
-							</div>
-						)}
+						))}
 					</>
 				)}
 
-				<div className="mt-8 pt-4 border-t border-gray-100"> 
-					{/* Back to Store - Only show on tenant subdomain with /admin path */}
+				{/* System Section */}
+				{filteredSystemItems.length > 0 && (
+					<>
+						<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 mt-6 text-gray-400">System</div>
+						
+						{filteredSystemItems.map((item) => (
+							<div
+								key={item.id}
+								onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								style={getMenuItemStyle(item.id, isItemActive(item.id))}
+							>
+								{item.icon}
+								<span>{item.label}</span>
+							</div>
+						))}
+					</>
+				)}
+
+				{/* Back to Store */}
+				<div className="mt-6 pt-4 border-t border-gray-100"> 
 					{isOnTenantAdminPath && (
 						<a
 							href="/"
-							className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 mb-2"
+							className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition text-sm text-sky-500 hover:bg-sky-50 font-medium"
 						>
 							<Store size={18} />
 							<span>Back to Store</span>
 						</a>
 					)}
-					<div className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition text-sm text-gray-400 hover:text-gray-600">
-						<LogOut size={18} />
-						<span>More Options (Coming Soon)</span>
-					</div>
 				</div>
 			</div>
 		</>
