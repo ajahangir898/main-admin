@@ -300,48 +300,48 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="p-6 space-y-6">
         {/* Order Analytics Section */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Analytics</h2>
+          <h2 className="text-base font-semibold text-gray-800 mb-5">Order Analytics</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Products on Hands */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4 relative">
-              <div className="flex items-start justify-between">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-                  <p className="text-sm text-gray-500 mt-1">Products on Hands</p>
+                  <p className="text-xs text-gray-500 mt-1">Products on Hands</p>
                 </div>
-                <button className="p-1.5 hover:bg-gray-200 rounded-lg transition">
-                  <Settings className="w-4 h-4 text-gray-400" />
-                </button>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+                  <Settings className="w-5 h-5 text-gray-400" />
+                </div>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4">
-              <div className="flex items-start justify-between">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{totalOrders}</p>
-                  <p className="text-sm text-gray-500 mt-1">Total Orders</p>
+                  <p className="text-xs text-gray-500 mt-1">Total Orders</p>
                 </div>
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <Package className="w-4 h-4 text-gray-500" />
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+                  <Package className="w-5 h-5 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4">
-              <p className="text-sm text-gray-500 mb-2">Language</p>
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+              <p className="text-xs text-gray-500 mb-2">Language</p>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setLanguage('Eng')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'Eng' ? 'bg-[#3B82F6] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'Eng' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
                   Eng
                 </button>
                 <button 
                   onClick={() => setLanguage('বাংলা')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'বাংলা' ? 'bg-[#3B82F6] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'বাংলা' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
                   বাংলা
                 </button>
@@ -349,123 +349,127 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Date Display */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-sm text-gray-500">{currentDate}</p>
-                <div className="mt-1 px-4 py-1.5 bg-[#2DD4BF] rounded-lg">
-                  <p className="text-white font-semibold">{currentDay}</p>
-                </div>
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+              <p className="text-sm text-gray-600 font-medium">{currentDate}</p>
+              <div className="mt-2 px-5 py-1.5 bg-gradient-to-r from-teal-400 to-teal-500 rounded-lg">
+                <p className="text-white font-semibold text-sm">{currentDay}</p>
               </div>
             </div>
 
             {/* Important Notification */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4 col-span-2 lg:col-span-2">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <AlertCircle className="w-5 h-5 text-gray-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700">Important Notification</p>
-                  <div className="flex gap-1 mt-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#3B82F6]"></span>
-                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                  </div>
-                </div>
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm col-span-2">
+              <p className="text-xs text-gray-500 mb-2">Important Notification</p>
+              <div className="h-16 bg-gray-50 rounded-xl border border-gray-100"></div>
+              <div className="flex justify-center gap-1.5 mt-3">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
               </div>
             </div>
           </div>
 
           {/* Second Row */}
-          <div className="grid grid-cols-3 gap-4 mt-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
             {/* Reserved Price */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4">
-              <div className="flex items-start justify-between">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
-                  <p className="text-sm text-gray-500 mt-1">Reserved Price</p>
+                  <p className="text-xs text-gray-500 mt-1">Reserved Price</p>
                 </div>
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <Wallet className="w-4 h-4 text-yellow-500" />
+                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-amber-500" />
                 </div>
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4">
-              <div className="flex items-start justify-between">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{lowStockProducts}</p>
-                  <p className="text-sm text-gray-500 mt-1">Low Stock</p>
+                  <p className="text-xs text-gray-500 mt-1">Low Stock</p>
                 </div>
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <Package className="w-4 h-4 text-gray-500" />
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+                  <Package className="w-5 h-5 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-[#F8FAFC] rounded-xl p-4">
-              <div className="flex items-start justify-between">
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{toBeReviewed}</p>
-                  <p className="text-sm text-gray-500 mt-1">To be Reviewed</p>
+                  <p className="text-xs text-gray-500 mt-1">To be Reviewed</p>
                 </div>
-                <div className="p-2 bg-white rounded-lg shadow-sm">
-                  <Star className="w-4 h-4 text-gray-500" />
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+                  <Star className="w-5 h-5 text-gray-400" />
                 </div>
+              </div>
+            </div>
+
+            {/* Quick Action */}
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition">
+                <LayoutGrid className="w-5 h-5 text-blue-500" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Visitor Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Online Now */}
-          <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2563EB] rounded-2xl p-5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Wifi className="w-6 h-6 text-white" />
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+            {/* Online Now */}
+            <div className="flex items-center justify-between p-4 relative">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
+                  <Wifi className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Online Now</p>
+                  <p className="text-xs text-gray-500">Active visitors on site</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white/90 text-sm font-medium">Online Now</p>
-                <p className="text-white/60 text-xs">Active visitors on site</p>
+              <div className="relative">
+                <div className="absolute -inset-4 bg-blue-100 rounded-full opacity-30 animate-pulse"></div>
+                <p className="text-3xl font-bold text-blue-600 relative z-10">
+                  {visitorStats?.onlineNow || 0}
+                </p>
               </div>
             </div>
-            <div className="text-3xl font-bold text-white">
-              {visitorStats?.onlineNow || 0}
-            </div>
-          </div>
 
-          {/* Today Visitors */}
-          <div className="bg-gradient-to-r from-[#065F46] to-[#10B981] rounded-2xl p-5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Users className="w-6 h-6 text-white" />
+            {/* Today Visitors */}
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-200">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Today visitors</p>
+                  <p className="text-xs text-gray-500">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white/90 text-sm font-medium">Today visitors</p>
-                <p className="text-white/60 text-xs">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
-              </div>
+              <p className="text-3xl font-bold text-gray-800">
+                {visitorStats?.todayVisitors || 0}
+              </p>
             </div>
-            <div className="text-3xl font-bold text-white">
-              {visitorStats?.todayVisitors || 0}
-            </div>
-          </div>
 
-          {/* Total Visitors */}
-          <div className="bg-gradient-to-r from-[#0E7490] to-[#06B6D4] rounded-2xl p-5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Globe className="w-6 h-6 text-white" />
+            {/* Total Visitors */}
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-200">
+                  <Globe className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Total visitors</p>
+                  <p className="text-xs text-gray-500">{visitorStats?.totalPageViews || 0} page view</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white/90 text-sm font-medium">Total visitors</p>
-                <p className="text-white/60 text-xs">{visitorStats?.totalPageViews || 0} page view</p>
-              </div>
-            </div>
-            <div className="text-3xl font-bold text-white">
-              {visitorStats?.totalVisitors || 0}
+              <p className="text-3xl font-bold text-gray-800">
+                {visitorStats?.totalVisitors || 0}
+              </p>
             </div>
           </div>
         </div>
