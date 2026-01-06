@@ -23,7 +23,7 @@ server {
     client_max_body_size 10M;
 
     location /uploads/ {
-        alias /var/www/admin/backend/uploads/;
+        alias /var/www/html/main-admin/backend/uploads/;
         expires 30d;
         add_header Cache-Control public;
         add_header Access-Control-Allow-Origin $http_origin always;
@@ -90,7 +90,7 @@ server {
     }
 
     location /assets/ {
-        alias /var/www/admin/dist/client/assets/;
+        alias /var/www/html/main-admin/dist/client/assets/;
         expires 1y;
         add_header Cache-Control public;
         add_header Access-Control-Allow-Origin * always;
@@ -101,7 +101,7 @@ server {
     }
 
     location /promo/ {
-        alias /var/www/admin/pages/promoPage/;
+        alias /var/www/html/main-admin/pages/promoPage/;
         index index.html;
         try_files $uri $uri/ /promo/index.html;
     }
@@ -139,7 +139,7 @@ server {
     # Security headers
     add_header X-Content-Type-Options "nosniff" always;
 
-    root /var/www/admin/dist/client;
+    root /var/www/html/main-admin//dist/client;
 
     location / {
         add_header Access-Control-Allow-Origin * always;
@@ -150,7 +150,7 @@ server {
     }
 
     location /uploads/ {
-        alias /var/www/admin/backend/uploads/;
+        alias /var/www/html/main-admin/backend/uploads/;
         add_header Access-Control-Allow-Origin * always;
         add_header Access-Control-Allow-Methods 'GET, OPTIONS' always;
         add_header Cache-Control 'public, max-age=2592000';
@@ -178,7 +178,7 @@ server {
     # Security headers
     add_header X-Content-Type-Options "nosniff" always;
 
-    root /var/www/admin/backend/uploads;
+    root /var/www/html/main-admin/backend/uploads;
 
     location / {
         add_header Access-Control-Allow-Origin * always;

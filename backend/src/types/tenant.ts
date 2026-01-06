@@ -7,6 +7,7 @@ export interface BaseModel {
 }
 
 export interface Tenant extends BaseModel {
+  id: any;
   name: string;
   subdomain: string;
   customDomain?: string | null;

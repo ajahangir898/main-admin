@@ -1,0 +1,193 @@
+/* Skeleton CSS - Pure CSS skeleton for instant loading */
+/* No JS required - renders immediately before React hydrates */
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Pre-render skeleton in index.html - shows before any JS loads */
+.preload-skeleton {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.preload-skeleton.hidden {
+  display: none;
+}
+
+/* Header skeleton */
+.skeleton-header {
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.skeleton-header .logo {
+  width: 120px;
+  height: 40px;
+}
+
+.skeleton-header .search {
+  flex: 1;
+  max-width: 500px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.skeleton-header .actions {
+  display: flex;
+  gap: 12px;
+}
+
+.skeleton-header .actions > div {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Hero skeleton */
+.skeleton-hero {
+  max-width: 1280px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+.skeleton-hero > div {
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  border-radius: 16px;
+}
+
+/* Categories skeleton */
+.skeleton-categories {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.skeleton-categories > div {
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* Products grid skeleton */
+.skeleton-products {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.skeleton-products-title {
+  width: 150px;
+  height: 24px;
+  margin-bottom: 16px;
+}
+
+.skeleton-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .skeleton-products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .skeleton-products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .skeleton-products-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.skeleton-product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #f3f4f6;
+}
+
+.skeleton-product-card .image {
+  aspect-ratio: 1;
+  border-radius: 0;
+}
+
+.skeleton-product-card .content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-product-card .title {
+  height: 16px;
+  width: 100%;
+}
+
+.skeleton-product-card .price {
+  height: 16px;
+  width: 60%;
+}
+
+.skeleton-product-card .buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.skeleton-product-card .buttons > div {
+  flex: 1;
+  height: 36px;
+  border-radius: 8px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .skeleton-header .search {
+    display: none;
+  }
+  
+  .skeleton-hero > div {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+/* Content Layout Shift prevention */
+.cls-prevent {
+  min-height: 100vh;
+  contain: layout style;
+}

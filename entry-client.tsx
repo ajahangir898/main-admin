@@ -67,10 +67,16 @@ appPromise.then(({ default: App }) => {
   
   // Remove skeleton after React has rendered first frame
   requestAnimationFrame(() => {
+    // Hide preload skeleton with smooth transition
+    const preload = document.getElementById('preload');
+    if (preload) {
+      preload.classList.add('done');
+      setTimeout(() => preload.remove(), 350);
+    }
+    // Legacy loader (if exists)
     const initialLoader = document.getElementById('initial-loader');
     if (initialLoader) {
       initialLoader.style.opacity = '0';
-      initialLoader.style.transition = 'opacity 150ms ease-out';
       setTimeout(() => initialLoader.remove(), 150);
     }
   });
