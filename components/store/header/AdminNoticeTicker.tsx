@@ -1,0 +1,21 @@
+import React from 'react';
+
+interface AdminNoticeTickerProps {
+  noticeText?: string | null;
+}
+
+export const AdminNoticeTicker: React.FC<AdminNoticeTickerProps> = ({ noticeText }) => {
+  if (!noticeText) return null;
+
+  return (
+    <div className="w-full bg-white border-b border-gray-100 py-1.5 overflow-hidden">
+      <div className="marquee-container">
+        <div className="marquee-content">
+          <span className="text-sm" style={{ color: 'rgb(var(--color-font-rgb))' }}>{noticeText}</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// RR

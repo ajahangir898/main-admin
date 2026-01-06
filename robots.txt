@@ -1,0 +1,46 @@
+# SystemNext IT / CartNGet - SEO Optimized Robots.txt
+# https://systemnextit.com
+# https://cartnget.shop
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /login
+Disallow: /checkout
+Disallow: /profile
+Disallow: /search?*
+
+# Allow search engines to crawl important pages
+Allow: /products/
+Allow: /category/
+Allow: /product/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://systemnextit.com/sitemap.xml
+Sitemap: https://cartnget.shop/sitemap.xml
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+
+# Facebook crawler
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter crawler
+User-agent: Twitterbot
+Allow: /

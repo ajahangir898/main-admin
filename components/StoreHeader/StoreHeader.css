@@ -1,0 +1,29 @@
+@keyframes searchHintSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-hint-animate {
+  animation: searchHintSlideUp 0.45s ease;
+  display: inline-block;
+}
+
+@keyframes adminNoticeTicker {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.admin-notice-ticker {
+  animation: adminNoticeTicker 12s linear infinite;
+  white-space: nowrap;
+}

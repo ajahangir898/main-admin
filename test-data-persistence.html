@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Persistence Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .test h3 { margin-top: 0; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>AdminCustomization Data Persistence Test</h1>
+    
+    <div class="test info">
+        <h3>Test Instructions</h3>
+        <ol>
+            <li>Open your admin panel in another tab</li>
+            <li>Go to Customization → Carousel</li>
+            <li>Add 8 carousel items (don't save yet)</li>
+            <li>Then go to Website Styles → Category Section</li>
+            <li>Change category style and click Save</li>
+            <li>Check if carousel items are still there (should be 8)</li>
+        </ol>
+    </div>
+
+    <div class="test">
+        <h3>Test 1: Check Current State</h3>
+        <button onclick="checkCurrentState()">Check Browser Console</button>
+        <pre id="state-output">Click button to check current state in console...</pre>
+    </div>
+
+    <div class="test">
+        <h3>Test 2: Simulate Save Operation</h3>
+        <button onclick="simulateSave()">Simulate Category Style Save</button>
+        <pre id="save-output">Click button to simulate save...</pre>
+    </div>
+
+    <div class="test">
+        <h3>Test 3: MongoDB Verification</h3>
+        <p>Run this in your MongoDB shell or MongoDB Compass:</p>
+        <pre>// Check website_config document
+db.tenant_data.findOne({ 
+    tenantId: "YOUR_TENANT_ID", 
+    key: "website_config" 
+}, { 
+    "data.carouselItems": 1, 
+    "data.categorySectionStyle": 1,
+    updatedAt: 1 
+})
+
+// Count carousel items
+db.tenant_data.findOne({ 
+    tenantId: "YOUR_TENANT_ID", 
+    key: "website_config" 
+}).data.carouselItems.length</pre>
+    </div>
+
+    <script>
+        function checkCurrentState() {
+            const output = document.getElementById('state-output');
+            output.textContent = 'Open browser DevTools Console (F12) to see detailed state...';
+            
+            console.group('=== Current State Check ===');
+            console.log('1. Check React DevTools for AdminCustomization component');
+            console.log('2. Look for websiteConfiguration state');
+            console.log('3. Check carouselItems array length');
+            console.log('4. Check categorySectionStyle value');
+            console.groupEnd();
+            
+            console.group('=== What to Look For ===');
+            console.log('[AdminCustomization] Saving config: { carouselCount: X, ... }');
+            console.log('[AdminCustomization] Tenant changed, reloading config: { ... }');
+            console.log('[DataService] Saving website_config for tenant ...');
+            console.groupEnd();
+        }
+
+        function simulateSave() {
+            const output = document.getElementById('save-output');
+            output.textContent = 'This is a visual guide. Actual save happens in admin panel.\n\n';
+            output.textContent += 'Expected behavior:\n';
+            output.textContent += '1. Add 8 carousels locally (not saved)\n';
+            output.textContent += '2. Change category style to "style2"\n';
+            output.textContent += '3. Click Save button\n';
+            output.textContent += '4. Should save BOTH carousel items AND category style\n';
+            output.textContent += '5. Check console for: "Saving config: { carouselCount: 8, ... }"\n';
+            output.textContent += '6. Verify MongoDB has all 8 carousel items';
+        }
+
+        console.log('%c=== Data Persistence Test Loaded ===', 'color: blue; font-size: 16px; font-weight: bold');
+        console.log('This test helps verify that carousel data is not lost when saving category styles.');
+        console.log('Follow the test instructions on the page.');
+    </script>
+</body>
+</html>

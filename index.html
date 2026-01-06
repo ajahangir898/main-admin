@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SystemNext IT</title>
+    <meta name="theme-color" content="#E91E8C">
+    <link rel="icon" type="image/png" href="/icons/icon-32x32.png">
+    
+    <!-- DNS Prefetch & Preconnect for faster external connections -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//static.systemnextit.com">
+    <link rel="dns-prefetch" href="//images.systemnextit.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://static.systemnextit.com" crossorigin>
+    <link rel="preconnect" href="https://images.systemnextit.com" crossorigin>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+    
+    <!-- Early bootstrap prefetch -->
+    <script>
+      (function(){
+        var h = location.hostname, t = h.split('.')[0];
+        if (t && t !== 'www' && t !== 'admin' && t !== 'superadmin' && h.indexOf('.') > 0) {
+          var x = new XMLHttpRequest();
+          x.open('GET', '/api/tenant-data/' + t + '/bootstrap', true);
+          x.onload = function() { if (x.status === 200) try { window.__BOOTSTRAP_DATA__ = JSON.parse(x.responseText); } catch(e) {} };
+          x.send();
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/entry-client.tsx"></script>
+  </body>
+</html>
