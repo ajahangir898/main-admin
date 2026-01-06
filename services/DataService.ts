@@ -843,22 +843,62 @@ class DataServiceImpl {
     isBackground = false
   ) {
     try {
-      const response = await deduplicateRequest(`tenant_secondary_bundle`, scope === 'public' ? undefined : scope, () =>
-        this.requestTenantApi<{
-          data: {
-            orders: Order[] | null;
-            logo: string | null;
-            delivery_config: DeliveryConfig[] | null;
-            chat_messages: ChatMessage[] | null;
-            landing_pages: LandingPage[] | null;
-            categories: Category[] | null;
-            subcategories: SubCategory[] | null;
-            childcategories: ChildCategory[] | null;
-            brands: Brand[] | null;
-            tags: Tag[] | null;
-          };
-        }>(`/api/tenant-data/${scope}/secondary`)
-      );
+      // Check for prefetched secondary data from index.html/entry-client (instant)
+      let response: {
+        data: {
+          orders: Order[] | null;
+          logo: string | null;
+          delivery_config: DeliveryConfig[] | null;
+          chat_messages: ChatMessage[] | null;
+          landing_pages: LandingPage[] | null;
+          categories: Category[] | null;
+          subcategories: SubCategory[] | null;
+          childcategories: ChildCategory[] | null;
+          brands: Brand[] | null;
+          tags: Tag[] | null;
+        };
+      } | null = null;
+
+      if (!isBackground && typeof window !== 'undefined') {
+        // First check synchronous XHR prefetch from index.html
+        if ((window as any).__SECONDARY_DATA__?.data) {
+          console.log('[DataService] Using XHR prefetched secondary data (instant)');
+          response = (window as any).__SECONDARY_DATA__;
+          delete (window as any).__SECONDARY_DATA__;
+        }
+        // Fallback to entry-client.tsx fetch promise
+        else if ((window as any).__PREFETCHED_SECONDARY__) {
+          try {
+            const prefetched = await (window as any).__PREFETCHED_SECONDARY__;
+            if (prefetched?.data) {
+              console.log('[DataService] Using prefetched secondary data');
+              response = prefetched;
+              delete (window as any).__PREFETCHED_SECONDARY__;
+            }
+          } catch (e) {
+            console.warn('[DataService] Secondary prefetch failed, fetching fresh');
+          }
+        }
+      }
+
+      if (!response) {
+        response = await deduplicateRequest(`tenant_secondary_bundle`, scope === 'public' ? undefined : scope, () =>
+          this.requestTenantApi<{
+            data: {
+              orders: Order[] | null;
+              logo: string | null;
+              delivery_config: DeliveryConfig[] | null;
+              chat_messages: ChatMessage[] | null;
+              landing_pages: LandingPage[] | null;
+              categories: Category[] | null;
+              subcategories: SubCategory[] | null;
+              childcategories: ChildCategory[] | null;
+              brands: Brand[] | null;
+              tags: Tag[] | null;
+            };
+          }>(`/api/tenant-data/${scope}/secondary`)
+        );
+      }
 
       const data = response.data;
 

@@ -1,6 +1,6 @@
 import { getDatabase } from '../db/mongo';
 import type { TenantDataDocument } from '../types/tenantData';
-import { getCached, setCached, invalidateTenantCache } from './redisCache';
+import { getCached, setCachedWithTTL, invalidateTenantCache } from './redisCache';
 
 const collectionName = 'tenant_data';
 
@@ -30,6 +30,7 @@ export const getTenantDataBatch = async <T extends Record<string, unknown>>(
   const cacheKey = getBootstrapCacheKey(tenantId, keys);
   const cached = await getCached<T>(cacheKey);
   if (cached) {
+    console.log(`[Redis] Cache hit for ${tenantId} (${keys.length} keys)`);
     return cached;
   }
   
@@ -51,8 +52,8 @@ export const getTenantDataBatch = async <T extends Record<string, unknown>>(
   
   console.log(`[DB] Fetched ${keys.length} keys in ${Date.now() - startTime}ms`);
   
-  // Cache the result in Redis for fast subsequent requests
-  await setCached(cacheKey, result);
+  // Cache the result in Redis with longer TTL for bootstrap data (1 hour)
+  await setCachedWithTTL(cacheKey, result, 'long');
   
   return result as T;
 };

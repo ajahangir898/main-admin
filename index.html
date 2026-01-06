@@ -54,16 +54,39 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap"></noscript>
     
-    <!-- Early bootstrap prefetch -->
+    <!-- Early bootstrap prefetch with parallel secondary data -->
     <script>
       (function(){
-        var h = location.hostname, t = h.split('.')[0];
-        if (t && t !== 'www' && t !== 'admin' && t !== 'superadmin' && h.indexOf('.') > 0) {
-          var x = new XMLHttpRequest();
-          x.open('GET', '/api/tenant-data/' + t + '/bootstrap', true);
-          x.onload = function() { if (x.status === 200) try { window.__BOOTSTRAP_DATA__ = JSON.parse(x.responseText); } catch(e) {} };
-          x.send();
-        }
+        var h = location.hostname, p = h.split('.'), t = p[0];
+        // Skip for admin/superadmin subdomains
+        if (!t || t === 'www' || t === 'admin' || t === 'superadmin' || p.length < 3) return;
+        // Check cached tenant ID for faster resolution
+        var cachedId;
+        try { cachedId = localStorage.getItem('tenant_id_' + t); } catch(e) {}
+        var scope = cachedId || t;
+        // Start bootstrap fetch immediately
+        var x1 = new XMLHttpRequest();
+        x1.open('GET', '/api/tenant-data/' + scope + '/bootstrap', true);
+        x1.onload = function() {
+          if (x1.status === 200) {
+            try {
+              window.__BOOTSTRAP_DATA__ = JSON.parse(x1.responseText);
+              window.__BOOTSTRAP_READY__ = true;
+            } catch(e) {}
+          }
+        };
+        x1.send();
+        // Start secondary data fetch in parallel (categories, brands, etc)
+        var x2 = new XMLHttpRequest();
+        x2.open('GET', '/api/tenant-data/' + scope + '/secondary', true);
+        x2.onload = function() {
+          if (x2.status === 200) {
+            try {
+              window.__SECONDARY_DATA__ = JSON.parse(x2.responseText);
+            } catch(e) {}
+          }
+        };
+        x2.send();
       })();
     </script>
   </head>

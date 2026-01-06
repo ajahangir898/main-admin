@@ -13,13 +13,14 @@ const getRedis = (): Redis | null => {
   return redis;
 };
 
-// Cache configuration
+// Cache configuration - optimized for fast store loading
 const TTL = {
-  MEMORY_MS: 60 * 1000,      // 1 min L1 (in-memory)
-  REDIS_SEC: 10 * 60,        // 10 min L2 (Redis)
-  SHORT: 5 * 60,            // 5 min for dynamic data
-  MEDIUM: 30 * 60,          // 30 min for API responses
-  LONG: 2 * 60 * 60,        // 2 hours for static data
+  MEMORY_MS: 2 * 60 * 1000,   // 2 min L1 (in-memory) - increased for faster repeat loads
+  REDIS_SEC: 15 * 60,         // 15 min L2 (Redis) - increased for better cache hits
+  SHORT: 5 * 60,              // 5 min for dynamic data
+  MEDIUM: 30 * 60,            // 30 min for API responses
+  LONG: 2 * 60 * 60,          // 2 hours for static data
+  BOOTSTRAP: 60 * 60,         // 1 hour for bootstrap data (products/theme/website)
 };
 
 // Cache key generators for consistency

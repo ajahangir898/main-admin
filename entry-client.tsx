@@ -47,6 +47,13 @@ const prefetchPromise = tenantScope ?
 // Store for DataService to use
 if (typeof window !== 'undefined' && tenantScope) {
   (window as any).__PREFETCHED_BOOTSTRAP__ = prefetchPromise;
+  // Also start secondary data prefetch if not already started by index.html
+  if (!(window as any).__SECONDARY_DATA__) {
+    (window as any).__PREFETCHED_SECONDARY__ = fetch(`${API_BASE}/api/tenant-data/${tenantScope}/secondary`, {
+      credentials: 'include',
+      headers: { 'Accept': 'application/json' }
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
+  }
 }
 
 const container = document.getElementById('root')!;

@@ -392,9 +392,11 @@ const App = () => {
         setThemeConfig(bootstrapData.themeConfig);
         setWebsiteConfig(bootstrapData.websiteConfig);
 
-        const loadSecondaryData = () => {
+        // Load secondary data immediately (don't wait for idle) - it's already prefetched
+        const loadSecondaryData = async () => {
           if (!isMounted) return;
-          DataService.getSecondaryData(resolvedTenantId).then((data) => {
+          try {
+            const data = await DataService.getSecondaryData(resolvedTenantId);
             if (!isMounted) return;
             refs.ordersLoadedRef.current = false;
             refs.prevOrdersRef.current = data.orders;
@@ -417,14 +419,13 @@ const App = () => {
             refs.prevTagsRef.current = data.tags;
             setTags(data.tags);
             refs.catalogLoadedRef.current = true;
-          }).catch(error => console.warn('Failed to load secondary data', error));
+          } catch (error) {
+            console.warn('Failed to load secondary data', error);
+          }
         };
         
-        if (typeof requestIdleCallback !== 'undefined') {
-          requestIdleCallback(loadSecondaryData, { timeout: 50 });
-        } else {
-          setTimeout(loadSecondaryData, 10);
-        }
+        // Start secondary data load immediately (it's prefetched so should be instant)
+        loadSecondaryData();
       } catch (error) {
         loadError = error as Error;
         console.error('Failed to load data', error);
