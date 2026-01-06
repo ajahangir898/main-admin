@@ -33,6 +33,28 @@ export interface AppStateRefs {
   tagsRef: React.MutableRefObject<Tag[]>;
   landingPagesRef: React.MutableRefObject<LandingPage[]>;
   userRef: React.MutableRefObject<User | null>;
+  // Additional refs for data persistence
+  ordersLoadedRef: React.MutableRefObject<boolean>;
+  prevOrdersRef: React.MutableRefObject<Order[]>;
+  initialDataLoadedRef: React.MutableRefObject<boolean>;
+  productsLoadedFromServerRef: React.MutableRefObject<boolean>;
+  prevProductsRef: React.MutableRefObject<Product[]>;
+  isFirstProductUpdateRef: React.MutableRefObject<boolean>;
+  prevLogoRef: React.MutableRefObject<string | null>;
+  prevThemeConfigRef: React.MutableRefObject<ThemeConfig | null>;
+  prevWebsiteConfigRef: React.MutableRefObject<WebsiteConfig | undefined>;
+  prevDeliveryConfigRef: React.MutableRefObject<DeliveryConfig[]>;
+  prevRolesRef: React.MutableRefObject<Role[]>;
+  prevUsersRef: React.MutableRefObject<User[]>;
+  prevCategoriesRef: React.MutableRefObject<Category[]>;
+  prevSubCategoriesRef: React.MutableRefObject<SubCategory[]>;
+  prevChildCategoriesRef: React.MutableRefObject<ChildCategory[]>;
+  prevBrandsRef: React.MutableRefObject<Brand[]>;
+  prevTagsRef: React.MutableRefObject<Tag[]>;
+  prevLandingPagesRef: React.MutableRefObject<LandingPage[]>;
+  catalogLoadedRef: React.MutableRefObject<boolean>;
+  adminDataLoadedRef: React.MutableRefObject<boolean>;
+  sessionRestoredRef: React.MutableRefObject<boolean>;
 }
 
 export interface AppState {
@@ -187,6 +209,29 @@ export function useAppState(): AppState {
   const landingPagesRef = useRef<LandingPage[]>(landingPages);
   const userRef = useRef<User | null>(user);
   
+  // Additional refs for data persistence tracking
+  const ordersLoadedRef = useRef<boolean>(false);
+  const prevOrdersRef = useRef<Order[]>([]);
+  const initialDataLoadedRef = useRef<boolean>(false);
+  const productsLoadedFromServerRef = useRef<boolean>(false);
+  const prevProductsRef = useRef<Product[]>([]);
+  const isFirstProductUpdateRef = useRef<boolean>(false);
+  const prevLogoRef = useRef<string | null>(null);
+  const prevThemeConfigRef = useRef<ThemeConfig | null>(null);
+  const prevWebsiteConfigRef = useRef<WebsiteConfig | undefined>(undefined);
+  const prevDeliveryConfigRef = useRef<DeliveryConfig[]>([]);
+  const prevRolesRef = useRef<Role[]>([]);
+  const prevUsersRef = useRef<User[]>([]);
+  const prevCategoriesRef = useRef<Category[]>([]);
+  const prevSubCategoriesRef = useRef<SubCategory[]>([]);
+  const prevChildCategoriesRef = useRef<ChildCategory[]>([]);
+  const prevBrandsRef = useRef<Brand[]>([]);
+  const prevTagsRef = useRef<Tag[]>([]);
+  const prevLandingPagesRef = useRef<LandingPage[]>([]);
+  const catalogLoadedRef = useRef<boolean>(false);
+  const adminDataLoadedRef = useRef<boolean>(false);
+  const sessionRestoredRef = useRef<boolean>(false);
+  
   // Mobile menu handler ref
   const handleMobileMenuOpenRef = useRef<(() => void) | null>(null);
   
@@ -227,6 +272,28 @@ export function useAppState(): AppState {
     tagsRef,
     landingPagesRef,
     userRef,
+    // Additional refs
+    ordersLoadedRef,
+    prevOrdersRef,
+    initialDataLoadedRef,
+    productsLoadedFromServerRef,
+    prevProductsRef,
+    isFirstProductUpdateRef,
+    prevLogoRef,
+    prevThemeConfigRef,
+    prevWebsiteConfigRef,
+    prevDeliveryConfigRef,
+    prevRolesRef,
+    prevUsersRef,
+    prevCategoriesRef,
+    prevSubCategoriesRef,
+    prevChildCategoriesRef,
+    prevBrandsRef,
+    prevTagsRef,
+    prevLandingPagesRef,
+    catalogLoadedRef,
+    adminDataLoadedRef,
+    sessionRestoredRef,
   };
   
   return {
