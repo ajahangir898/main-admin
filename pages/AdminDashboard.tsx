@@ -297,252 +297,237 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-base font-semibold text-gray-800 mb-5">Order Analytics</h2>
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* First Row - 6 columns */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Products on Hands */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-                  <p className="text-xs text-gray-500 mt-1">Products on Hands</p>
+                  <p className="text-xl font-bold text-gray-900">{products.length}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Products on Hands</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                  <Settings className="w-5 h-5 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                  <Settings className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{totalOrders}</p>
-                  <p className="text-xs text-gray-500 mt-1">Total Orders</p>
+                  <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Total Orders</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                  <Package className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-              <p className="text-xs text-gray-500 mb-2">Language</p>
-              <div className="flex items-center gap-2">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
+              <p className="text-[10px] text-gray-500 mb-1.5">Language</p>
+              <div className="flex items-center gap-1.5">
                 <button 
                   onClick={() => setLanguage('Eng')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'Eng' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${language === 'Eng' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
                 >
                   Eng
                 </button>
-                <button 
-                  onClick={() => setLanguage('বাংলা')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${language === 'বাংলা' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
-                >
-                  বাংলা
-                </button>
+                <span className="text-xs text-gray-400">বাংলা</span>
               </div>
             </div>
 
             {/* Date Display */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center justify-center">
-              <p className="text-sm text-gray-600 font-medium">{currentDate}</p>
-              <div className="mt-2 px-5 py-1.5 bg-gradient-to-r from-teal-400 to-teal-500 rounded-lg">
-                <p className="text-white font-semibold text-sm">{currentDay}</p>
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 flex flex-col items-center justify-center">
+              <p className="text-xs text-gray-600 font-medium">{currentDate}</p>
+              <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md">
+                <p className="text-white font-semibold text-xs">{currentDay}</p>
               </div>
             </div>
 
             {/* Important Notification */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm col-span-2">
-              <p className="text-xs text-gray-500 mb-2">Important Notification</p>
-              <div className="h-16 bg-gray-50 rounded-xl border border-gray-100"></div>
-              <div className="flex justify-center gap-1.5 mt-3">
-                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 col-span-2">
+              <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
+              <div className="h-10 bg-white rounded-lg border border-gray-100"></div>
+              <div className="flex justify-end gap-1 mt-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
               </div>
             </div>
           </div>
 
-          {/* Second Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          {/* Second Row - 4 columns */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
             {/* Reserved Price */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
-                  <p className="text-xs text-gray-500 mt-1">Reserved Price</p>
+                  <p className="text-xl font-bold text-gray-900">{totalRevenue.toLocaleString()}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Reserved Price</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-                  <Wallet className="w-5 h-5 text-amber-500" />
+                <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
+                  <Wallet className="w-4 h-4 text-amber-500" />
                 </div>
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{lowStockProducts}</p>
-                  <p className="text-xs text-gray-500 mt-1">Low Stock</p>
+                  <p className="text-xl font-bold text-gray-900">{lowStockProducts}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Low Stock</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                  <Package className="w-5 h-5 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                  <Package className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{toBeReviewed}</p>
-                  <p className="text-xs text-gray-500 mt-1">To be Reviewed</p>
+                  <p className="text-xl font-bold text-gray-900">{toBeReviewed}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5">To be Reviewed</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
-                  <Star className="w-5 h-5 text-gray-400" />
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                  <Star className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
             </div>
 
             {/* Quick Action */}
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center justify-center">
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition">
-                <LayoutGrid className="w-5 h-5 text-blue-500" />
+            <div className="bg-[#F8FAFC] rounded-xl p-3 border border-gray-100 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center cursor-pointer hover:bg-purple-200 transition">
+                <LayoutGrid className="w-4 h-4 text-purple-600" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Visitor Stats Row */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+        {/* Visitor Stats Row - Compact */}
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
-            <div className="flex items-center justify-between p-4 relative">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
-                  <Wifi className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">Online Now</p>
-                  <p className="text-xs text-gray-500">Active visitors on site</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center">
+                <Wifi className="w-4 h-4 text-white" />
               </div>
-              <div className="relative">
-                <div className="absolute -inset-4 bg-blue-100 rounded-full opacity-30 animate-pulse"></div>
-                <p className="text-3xl font-bold text-blue-600 relative z-10">
-                  {visitorStats?.onlineNow || 0}
-                </p>
+              <div>
+                <p className="text-xs font-semibold text-blue-500">Online Now</p>
+                <p className="text-[10px] text-gray-400">Active visitors on site</p>
+              </div>
+              <div className="ml-2 px-3 py-1.5 bg-blue-50 rounded-lg">
+                <p className="text-lg font-bold text-blue-600">{visitorStats?.onlineNow || 0}</p>
               </div>
             </div>
 
             {/* Today Visitors */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-200">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">Today visitors</p>
-                  <p className="text-xs text-gray-500">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center">
+                <Users className="w-4 h-4 text-white" />
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {visitorStats?.todayVisitors || 0}
-              </p>
+              <div>
+                <p className="text-xs font-semibold text-orange-500">Today visitors</p>
+                <p className="text-[10px] text-gray-400">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
+              </div>
+              <div className="ml-2 px-3 py-1.5 bg-orange-50 rounded-lg">
+                <p className="text-lg font-bold text-gray-800">{visitorStats?.todayVisitors || 0}</p>
+              </div>
             </div>
 
             {/* Total Visitors */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-200">
-                  <Globe className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">Total visitors</p>
-                  <p className="text-xs text-gray-500">{visitorStats?.totalPageViews || 0} page view</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 flex items-center justify-center">
+                <Globe className="w-4 h-4 text-white" />
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {visitorStats?.totalVisitors || 0}
-              </p>
+              <div>
+                <p className="text-xs font-semibold text-purple-500">Total visitors</p>
+                <p className="text-[10px] text-gray-400">{visitorStats?.totalPageViews || 0} page view</p>
+              </div>
+              <div className="ml-2 px-3 py-1.5 bg-purple-50 rounded-lg">
+                <p className="text-lg font-bold text-gray-800">{visitorStats?.totalVisitors || 0}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Order Status Row */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-gray-800">Order</h3>
-          </div>
+        {/* Order Status Row - Compact */}
+        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+          <h3 className="text-sm font-semibold text-gray-800 mb-2">Order</h3>
           
-          <div className="flex flex-wrap items-center gap-6 lg:gap-8">
+          <div className="flex flex-wrap items-center gap-4">
             {/* Today */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-pink-50 flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4 text-pink-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center">
+                <ShoppingBag className="w-3.5 h-3.5 text-pink-500" />
               </div>
-              <span className="text-sm text-gray-500">Today</span>
-              <span className="text-xl font-bold text-gray-900">{todayOrders}</span>
+              <span className="text-xs text-gray-500">Today</span>
+              <span className="text-base font-bold text-gray-900">{todayOrders}</span>
             </div>
 
             {/* Courier */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center">
-                <Truck className="w-4 h-4 text-orange-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-orange-50 flex items-center justify-center">
+                <Truck className="w-3.5 h-3.5 text-orange-500" />
               </div>
-              <span className="text-sm text-gray-500">Courier</span>
-              <span className="text-xl font-bold text-gray-900">{courierOrders}</span>
+              <span className="text-xs text-gray-500">Courier</span>
+              <span className="text-base font-bold text-gray-900">{courierOrders}</span>
             </div>
 
             {/* Confirmed */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center">
-                <CheckCircle className="w-4 h-4 text-green-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-green-50 flex items-center justify-center">
+                <CheckCircle className="w-3.5 h-3.5 text-green-500" />
               </div>
-              <span className="text-sm text-gray-500">Confirmed</span>
-              <span className="text-xl font-bold text-gray-900">{confirmedOrders}</span>
+              <span className="text-xs text-gray-500">Confirmed</span>
+              <span className="text-base font-bold text-gray-900">{confirmedOrders}</span>
             </div>
 
             {/* Pending */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-amber-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-amber-50 flex items-center justify-center">
+                <Clock className="w-3.5 h-3.5 text-amber-500" />
               </div>
-              <span className="text-sm text-gray-500">Pending</span>
-              <span className="text-xl font-bold text-gray-900">{pendingOrders}</span>
+              <span className="text-xs text-gray-500">Pending</span>
+              <span className="text-base font-bold text-gray-900">{pendingOrders}</span>
             </div>
 
             {/* Canceled */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
-                <XCircle className="w-4 h-4 text-red-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center">
+                <XCircle className="w-3.5 h-3.5 text-red-500" />
               </div>
-              <span className="text-sm text-gray-500">Canceled</span>
-              <span className="text-xl font-bold text-gray-900">{cancelledOrders}</span>
+              <span className="text-xs text-gray-500">Canceled</span>
+              <span className="text-base font-bold text-gray-900">{cancelledOrders}</span>
             </div>
 
             {/* Returns */}
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
-                <ArchiveRestore className="w-4 h-4 text-blue-500" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
+                <ArchiveRestore className="w-3.5 h-3.5 text-blue-500" />
               </div>
-              <span className="text-sm text-gray-500">Returns</span>
-              <span className="text-xl font-bold text-gray-900">{returnsCount}</span>
+              <span className="text-xs text-gray-500">Returns</span>
+              <span className="text-base font-bold text-gray-900">{returnsCount}</span>
             </div>
           </div>
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Revenue & Costs</h3>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
             </div>
             
             <div className="flex items-center gap-4 mb-4">
@@ -613,18 +598,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Total Profit</h3>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
             </div>
             
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>
-              <span className="text-sm text-gray-600">Profit</span>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]"></span>
+              <span className="text-xs text-gray-600">Profit</span>
             </div>
 
             {/* Bar Chart */}
-            <div className="h-52 relative mt-4">
+            <div className="h-52 relative mt-3">
               <svg className="w-full h-full" viewBox="0 0 300 160" preserveAspectRatio="none">
                 {/* Y-axis labels */}
                 <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
@@ -670,9 +655,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Sale by Category</h3>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
             </div>
 
             {/* Legend */}
@@ -752,19 +737,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Best Selling & Top Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 flex items-center justify-between border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">Best selling product</h3>
-              <button className="flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] text-white rounded-lg text-sm font-medium hover:bg-[#14B8A6] transition">
-                <Filter className="w-4 h-4" />
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
+              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
+                <Filter className="w-3.5 h-3.5" />
                 Filter
               </button>
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-4 px-6 py-3 bg-[#F8FAFC] text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
+            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-[#F8FAFC] text-[10px] font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
               <div>PRODUCT</div>
               <div className="text-center">TOTAL ORDER</div>
               <div className="text-center">STATUS</div>
@@ -774,85 +759,85 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Table Body */}
             <div className="divide-y divide-gray-50">
               {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
-                <div key={item.product.id} className="grid grid-cols-4 gap-4 px-6 py-4 items-center hover:bg-gray-50/50 transition">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                <div key={item.product.id} className="grid grid-cols-4 gap-3 px-4 py-3 items-center hover:bg-gray-50/50 transition">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                       {item.product.image ? (
                         <img src={normalizeImageUrl(item.product.image)} alt={item.product.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                          <Package className="w-5 h-5 text-gray-400" />
+                          <Package className="w-4 h-4 text-gray-400" />
                         </div>
                       )}
                     </div>
-                    <span className="text-sm font-medium text-gray-900 truncate">{item.product.name}</span>
+                    <span className="text-xs font-medium text-gray-900 truncate">{item.product.name}</span>
                   </div>
-                  <div className="text-center text-sm text-gray-600">{item.orders}</div>
+                  <div className="text-center text-xs text-gray-600">{item.orders}</div>
                   <div className="text-center">
-                    <span className={`inline-flex items-center gap-1.5 text-sm ${(item.product.stock || 0) > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                      <span className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                    <span className={`inline-flex items-center gap-1 text-xs ${(item.product.stock || 0) > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
                       {(item.product.stock || 0) > 0 ? 'Stock' : 'Stock out'}
                     </span>
                   </div>
-                  <div className="text-right text-sm font-semibold text-gray-900">${(item.product.price || 999).toFixed(2)}</div>
+                  <div className="text-right text-xs font-semibold text-gray-900">${(item.product.price || 999).toFixed(2)}</div>
                 </div>
               ))}
             </div>
 
             {/* Details Button */}
-            <div className="p-4 flex justify-center border-t border-gray-100">
-              <button className="px-8 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+            <div className="p-3 flex justify-center border-t border-gray-100">
+              <button className="px-6 py-2 border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 transition">
                 Details
               </button>
             </div>
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-5 flex items-center justify-between border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">Top Products</h3>
-              <button className="text-sm text-blue-500 hover:text-blue-600 font-medium">All product</button>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
+              <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
             </div>
 
             {/* Search */}
-            <div className="px-5 py-3">
+            <div className="px-4 py-2.5">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border-0 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full pl-9 pr-3 py-2 bg-[#F8FAFC] border-0 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-100"
                 />
               </div>
             </div>
 
             {/* Product List */}
-            <div className="divide-y divide-gray-50 max-h-[400px] overflow-y-auto">
+            <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
               {topProducts.map((product, index) => (
-                <div key={product.id} className="px-5 py-4 flex items-center gap-3 hover:bg-gray-50/50 transition">
-                  <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                <div key={product.id} className="px-4 py-3 flex items-center gap-2.5 hover:bg-gray-50/50 transition">
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                     {product.image ? (
                       <img src={normalizeImageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <Package className="w-5 h-5 text-gray-400" />
+                        <Package className="w-4 h-4 text-gray-400" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                    <p className="text-xs text-gray-400">Item: #FXZ-{4567 + index}</p>
+                    <p className="text-xs font-medium text-gray-900 truncate">{product.name}</p>
+                    <p className="text-[10px] text-gray-400">Item: #FXZ-{4567 + index}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">${(product.price || 99).toFixed(2)}</p>
+                    <p className="text-xs font-bold text-gray-900">${(product.price || 99).toFixed(2)}</p>
                   </div>
                 </div>
               ))}
 
               {topProducts.length === 0 && (
-                <div className="px-5 py-8 text-center">
-                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-sm text-gray-500">No products yet</p>
+                <div className="px-4 py-6 text-center">
+                  <Package className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                  <p className="text-xs text-gray-500">No products yet</p>
                 </div>
               )}
             </div>
