@@ -20,81 +20,86 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onBu
   const handleCart = (e: React.MouseEvent) => { e.stopPropagation(); onAddToCart?.(product); };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-lg transition-shadow duration-300 min-h-[280px]">
       {/* Purple gradient top bar */}
       <div 
         className="absolute top-0 left-0 right-0 h-1 z-10"
         style={{ background: 'linear-gradient(to right, #8b5cf6, #ec4899)' }}
       />
       
-      {/* Wishlist button */}
+      {/* Wishlist button - fixed size */}
       <button 
-        className="absolute top-3 left-3 z-10 text-pink-400 hover:text-pink-500 transition-colors"
+        className="absolute top-3 left-3 z-10 text-pink-400 hover:text-pink-500 transition-colors w-5 h-5"
         onClick={(e) => e.stopPropagation()}
       >
         <Heart size={20} />
       </button>
 
-      {/* Sale badge */}
-      {product.discount && (
-        <div className="absolute top-3 right-3 z-10">
+      {/* Sale badge - fixed size container to prevent CLS */}
+      <div className="absolute top-3 right-3 z-10 min-w-[40px] h-[22px]">
+        {product.discount && (
           <span 
             className="text-white text-[10px] font-bold px-2.5 py-1 rounded"
             style={{ background: 'linear-gradient(to right, #8b5cf6, #a855f7)' }}
           >
             SALE
           </span>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Product Image */}
+      {/* Product Image - explicit aspect ratio */}
       <div 
-        className="relative aspect-[4/3] cursor-pointer bg-gray-50" 
+        className="relative cursor-pointer bg-gray-50" 
+        style={{ aspectRatio: '4/3' }}
         onClick={() => onClick(product)}
       >
         <LazyImage 
           src={getImage(product)} 
           alt={product.name} 
-          className="w-full h-full object-cover" 
+          className="w-full h-full object-cover"
+          width={300}
+          height={225}
         />
       </div>
 
-      {/* Product Details */}
-      <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col">
-        {/* Rating & Sold */}
-        <div className="flex items-center gap-1 text-[10px] text-gray-400 mb-1">
-          <Star size={10} className="text-yellow-400" fill="#facc15" />
+      {/* Product Details - fixed min-height to prevent CLS */}
+      <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col min-h-[120px]">
+        {/* Rating & Sold - fixed height */}
+        <div className="flex items-center gap-1 text-[10px] text-gray-400 mb-1 h-[14px]">
+          <Star size={10} className="text-yellow-400 flex-shrink-0" fill="#facc15" />
           <span className="text-gray-600">({product.reviews || 0})</span>
           <span className="text-gray-300">|</span>
           <span>{product.soldCount || 0} Sold</span>
         </div>
 
-        {/* Product Name */}
+        {/* Product Name - fixed height for 2 lines */}
         <h3 
-          className="font-semibold text-gray-800 text-xs leading-tight mb-1.5 line-clamp-2 cursor-pointer hover:text-cyan-600 transition-colors"
+          className="font-semibold text-gray-800 text-xs leading-tight mb-1.5 line-clamp-2 cursor-pointer hover:text-cyan-600 transition-colors min-h-[32px]"
           onClick={() => onClick(product)}
         >
           {product.name}
         </h3>
 
-        {/* Price */}
-        <div className="flex items-baseline gap-1.5 mb-2">
-          {product.originalPrice && (
+        {/* Price - fixed height container */}
+        <div className="flex items-baseline gap-1.5 mb-2 min-h-[20px]">
+          {product.originalPrice ? (
             <span className="text-[10px] text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
+          ) : (
+            <span className="text-[10px] invisible">৳0</span>
           )}
           <span className="text-sm font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
         </div>
 
-        {/* Buttons */}
-        <div className="flex gap-1.5 mt-auto">
+        {/* Buttons - fixed height */}
+        <div className="flex gap-1.5 mt-auto h-[36px]">
           <button 
-            className="flex items-center justify-center w-9 border-2 border-theme-primary text-theme-primary rounded-lg hover:bg-theme-primary/10 transition-all"
+            className="flex items-center justify-center w-9 h-full border-2 border-theme-primary text-theme-primary rounded-lg hover:bg-theme-primary/10 transition-all"
             onClick={handleCart}
           >
             <ShoppingCart size={16} />
           </button>
           <button 
-            className="flex-1 btn-order text-xs py-2 rounded-lg"
+            className="flex-1 btn-order text-xs py-2 rounded-lg h-full"
             onClick={handleBuyNow}
           >
             Buy Now

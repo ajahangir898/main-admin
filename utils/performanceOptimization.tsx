@@ -341,11 +341,15 @@ export const LazyImage: React.FC<{
   priority?: boolean;
   optimizationOptions?: ImageOptimizationOptions;
   imgClassName?: string;
-}> = ({ src, alt, width, height, className = '', size = 'medium', priority = false, imgClassName }) => {
+  aspectRatio?: string; // e.g., '4/3', '1/1', '16/9'
+}> = ({ src, alt, width, height, className = '', size = 'medium', priority = false, imgClassName, aspectRatio }) => {
   const [isLoaded, setIsLoaded] = useState(priority);
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
   const [shouldRender, setShouldRender] = useState(priority);
+  
+  // Calculate aspect ratio style for CLS prevention
+  const containerStyle: React.CSSProperties = aspectRatio ? { aspectRatio } : {};
 
   // Simple intersection observer - trigger load well before viewport for smooth UX
   useEffect(() => {
@@ -367,7 +371,7 @@ export const LazyImage: React.FC<{
   }, [priority, shouldRender]);
 
   return (
-    <div ref={imgRef} className={`relative overflow-hidden bg-gray-100 ${className}`}>
+    <div ref={imgRef} className={`relative overflow-hidden bg-gray-100 ${className}`} style={containerStyle}>
       {!isLoaded && !hasError && (
         <div className="absolute inset-0 bg-gray-100 animate-pulse" />
       )}
@@ -376,10 +380,11 @@ export const LazyImage: React.FC<{
         <img
           src={src}
           alt={alt}
-          width={width}
-          height={height}
+          width={width || IMAGE_SIZES[size].width}
+          height={height || (width ? Math.round(width * 0.75) : Math.round(IMAGE_SIZES[size].width * 0.75))}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
           className={`${imgClassName || 'w-full h-full object-cover'} transition-opacity duration-200 ${
