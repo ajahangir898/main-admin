@@ -81,7 +81,7 @@ export const StoreFooter: React.FC<StoreFooterProps> = ({ websiteConfig, logo, o
 
   return (
     <>
-      <footer className="store-footer store-footer-minheight surface-panel bg-white border-t border-gray-100 mt-auto">
+      <footer className="store-footer store-footer-minheight surface-panel bg-white border-t border-gray-100 mt-auto" style={{ contain: 'layout style' }}>
         {/* Mobile Footer */}
         <div className="md:hidden px-4 py-8">
           {/* Logo & Description */}

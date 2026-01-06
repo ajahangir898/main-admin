@@ -824,7 +824,7 @@ const StoreHome = ({
         </section>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 space-y-4 pb-4">
+      <main className="max-w-7xl mx-auto px-4 space-y-4 pb-4" style={{ minHeight: '680px', contain: 'layout' }}>
         {hasSearchQuery ? (
           <Suspense fallback={<SectionSkeleton />}>
             <SearchResultsSection

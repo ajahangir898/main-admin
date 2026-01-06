@@ -20,7 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onBu
   const handleCart = (e: React.MouseEvent) => { e.stopPropagation(); onAddToCart?.(product); };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-lg transition-shadow duration-300 min-h-[280px]">
+    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-lg transition-shadow duration-300" style={{ minHeight: '320px', contain: 'layout' }}>
       {/* Purple gradient top bar */}
       <div 
         className="absolute top-0 left-0 right-0 h-1 z-10"
@@ -63,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onBu
       </div>
 
       {/* Product Details - fixed min-height to prevent CLS */}
-      <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col min-h-[120px]">
+      <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col" style={{ minHeight: '128px' }}>
         {/* Rating & Sold - fixed height */}
         <div className="flex items-center gap-1 text-[10px] text-gray-400 mb-1 h-[14px]">
           <Star size={10} className="text-yellow-400 flex-shrink-0" fill="#facc15" />

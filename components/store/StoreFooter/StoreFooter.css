@@ -1,5 +1,14 @@
 .store-footer-minheight {
-  min-height: 400px;
+  /* Fixed height prevents CLS - footer content is static */
+  min-height: 320px;
+  contain: layout style;
+}
+
+/* Mobile footer height */
+@media (max-width: 767px) {
+  .store-footer-minheight {
+    min-height: 480px;
+  }
 }
 
 .store-footer-chat-gradient {
