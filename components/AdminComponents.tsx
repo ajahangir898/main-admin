@@ -4,7 +4,7 @@ import {
 	LayoutDashboard, ShoppingBag, Box, Settings, Sliders,
 	FileText, Star, Users, Image as ImageIcon, DollarSign,
 	Shield, LogOut, Bell, Menu, X, Globe, LogOut as LogOutIcon, ChevronDown, ChevronRight,
-	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store
+	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store, Figma
 } from 'lucide-react';
 import { StatCardProps, User, Tenant } from '../types';
 import { useNotifications } from '../hooks/useNotifications';
@@ -70,6 +70,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'inventory', icon: <Boxes size={18} />, label: 'Inventory Management', resource: 'inventory' },
 		{ id: 'customers_reviews', icon: <Users size={18} />, label: 'Customers & Reviews', resource: 'customers' },
 		{ id: 'gallery', icon: <ImageIcon size={18} />, label: 'Gallery', resource: 'gallery' },
+		{ id: 'figma', icon: <Figma size={18} />, label: 'Figma Integration', resource: 'gallery' },
 	];
 
 	// System monitoring items (only for super admin or admin)

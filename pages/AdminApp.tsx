@@ -38,6 +38,7 @@ const AdminLandingPage = lazy(() => import(/* webpackChunkName: "admin-landing" 
 const AdminTenantManagement = lazy(() => import(/* webpackChunkName: "admin-tenant" */ './AdminTenantManagement'));
 const AdminDueList = lazy(() => import(/* webpackChunkName: "admin-duelist" */ './AdminDueList'));
 const AdminSupport = lazy(() => import(/* webpackChunkName: "admin-support" */ './AdminSupport'));
+const AdminFigmaIntegration = lazy(() => import(/* webpackChunkName: "admin-figma" */ './AdminFigmaIntegration'));
 // Admin Components - directly imported for instant layout render
 import { AdminSidebar, AdminHeader } from '../components/AdminComponents';
 
@@ -547,6 +548,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
          adminSection === 'customers_reviews' ? <AdminCustomers orders={orders} products={products} /> :
          adminSection === 'daily_target' ? <AdminDailyTarget /> :
          adminSection === 'gallery' ? <AdminGallery /> :
+         adminSection === 'figma' ? <AdminFigmaIntegration onBack={() => setAdminSection('gallery')} tenantId={activeTenantId} /> :
          adminSection === 'settings' ? <AdminSettings courierConfig={courierConfig} onUpdateCourierConfig={onUpdateCourierConfig} onNavigate={setAdminSection} user={user} onUpdateProfile={onUpdateProfile} activeTenant={selectedTenantRecord} logo={logo} onUpdateLogo={onUpdateLogo} /> :
          adminSection === 'support' ? <AdminSupport user={user} activeTenant={selectedTenantRecord} /> :
          adminSection === 'settings_delivery' ? <AdminDeliverySettings configs={deliveryConfig} onSave={onUpdateDeliveryConfig} onBack={() => setAdminSection('settings')} /> :
