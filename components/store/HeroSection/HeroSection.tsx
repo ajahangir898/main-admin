@@ -185,5 +185,5 @@ export const CategoryPill: React.FC<{ name: string; icon: React.ReactNode }> = (
 );
 
 export const SectionHeader: React.FC<{ title: string; className?: string }> = ({ title, className }) => (
-    <h2 className={`text-2xl font-black tracking-tight text-gray-900 dark:text-white drop-shadow-sm ${className ?? ''}`}>{title}</h2>
+    <h2 className={`text-2xl font-bold tracking-tight text-gray-900 ${className ?? ''}`}>{title}</h2>
 );

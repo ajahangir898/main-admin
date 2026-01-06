@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-const Bone = ({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => <div className={`bg-gray-200 dark:bg-slate-700 animate-pulse rounded ${className}`}/>;
+const Bone = ({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => <div className={`bg-gray-200 animate-pulse rounded ${className}`}/>;
 const arr = (n: number) => Array.from({ length: n });
 
 export const ProductCardSkeleton = () => (
@@ -11,13 +11,13 @@ export const ProductCardSkeleton = () => (
 
 export const TableSkeleton = ({ rows = 5, cols = 5 }: { rows?: number; cols?: number }) => (
   <div className="w-full">
-    <div className="flex gap-4 p-4 border-b border-gray-200 dark:border-slate-700">{arr(cols).map((_, i) => <Bone key={i} className="h-4 flex-1"/>)}</div>
-    {arr(rows).map((_, r) => <div key={r} className="flex gap-4 p-4 border-b border-gray-100 dark:border-slate-800">{arr(cols).map((_, c) => <Bone key={c} className="h-4 flex-1"/>)}</div>)}
+    <div className="flex gap-4 p-4 border-b border-gray-200">{arr(cols).map((_, i) => <Bone key={i} className="h-4 flex-1"/>)}</div>
+    {arr(rows).map((_, r) => <div key={r} className="flex gap-4 p-4 border-b border-gray-100">{arr(cols).map((_, c) => <Bone key={c} className="h-4 flex-1"/>)}</div>)}
   </div>
 );
 
 export const MetricsSkeleton = ({ count = 4 }: { count?: number }) => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{arr(count).map((_, i) => <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-5"><Bone className="h-3 w-20 mb-3"/><Bone className="h-8 w-24 mb-2"/><Bone className="h-3 w-16"/></div>)}</div>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{arr(count).map((_, i) => <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5"><Bone className="h-3 w-20 mb-3"/><Bone className="h-8 w-24 mb-2"/><Bone className="h-3 w-16"/></div>)}</div>
 );
 
 export const ImageGridSkeleton = ({ count = 8 }: { count?: number }) => (
@@ -25,7 +25,7 @@ export const ImageGridSkeleton = ({ count = 8 }: { count?: number }) => (
 );
 
 export const PageSkeleton = () => (
-  <div className="space-y-6 p-6"><div className="flex justify-between items-center"><Bone className="h-8 w-48"/><Bone className="h-10 w-32 rounded-lg"/></div><MetricsSkeleton count={4}/><div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden"><TableSkeleton rows={6} cols={5}/></div></div>
+  <div className="space-y-6 p-6"><div className="flex justify-between items-center"><Bone className="h-8 w-48"/><Bone className="h-10 w-32 rounded-lg"/></div><MetricsSkeleton count={4}/><div className="bg-white rounded-xl border border-gray-100 overflow-hidden"><TableSkeleton rows={6} cols={5}/></div></div>
 );
 
 export const HeroSkeleton = () => <div className="max-w-7xl mx-auto px-4 mt-4"><Bone className="w-full aspect-[5/2] sm:aspect-[3/1] md:aspect-[7/2] lg:aspect-[4/1] rounded-xl"/></div>;

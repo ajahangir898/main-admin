@@ -602,7 +602,7 @@ const App = () => {
     <ThemeProvider themeConfig={themeConfig || undefined}>
       <Suspense fallback={null}>
         <Toaster position="top-right" toastOptions={{ duration: 2500 }} />
-        <div className={`relative ${themeConfig?.darkMode ? 'dark bg-slate-900' : 'bg-gray-50'}`}>
+        <div className="relative bg-gray-50">
           <AppRoutes
             currentView={currentView}
             isSuperAdminSubdomain={isSuperAdminSubdomain}

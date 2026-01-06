@@ -130,7 +130,7 @@ export const HeroSection: React.FC<{ carouselItems?: CarouselItem[]; websiteConf
 
   return (
     <div className="max-w-7xl mx-auto px-4 mt-4">
-      <div className="relative w-full aspect-[5/2] sm:aspect-[3/1] md:aspect-[7/2] lg:aspect-[4/1] rounded-xl overflow-hidden shadow-lg group bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
+      <div className="relative w-full aspect-[5/2] sm:aspect-[3/1] md:aspect-[7/2] lg:aspect-[4/1] rounded-xl overflow-hidden shadow-lg group bg-gradient-to-br from-gray-100 to-gray-200">
         {items.map((item, index) => (
           <a key={item.id} href={item.url || '#'} className={`absolute inset-0 transition-opacity duration-700 ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
             <LazyImage src={normalizeImageUrl(item.image)} alt={item.name} className="absolute inset-0" size="full" priority={index === currentIndex} optimizationOptions={{ width: 1600, quality: 85 }} />

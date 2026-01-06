@@ -43,13 +43,13 @@ export const StorePopup = ({ popup: p, onClose, onNavigate }: StorePopupProps) =
       >
         <button
           onClick={close}
-          className="absolute -top-3 -right-3 z-10 p-1.5 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition"
+          className="absolute -top-3 -right-3 z-10 p-1.5 bg-white rounded-full shadow-lg hover:bg-gray-100 transition"
           aria-label="Close popup"
         >
-          <X size={20} className="text-gray-700 dark:text-gray-300" />
+          <X size={20} className="text-gray-700" />
         </button>
         <div
-          className={`relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-2xl ${
+          className={`relative bg-white rounded-xl overflow-hidden shadow-2xl ${
             p.url ? 'cursor-pointer' : ''
           }`}
           onClick={p.url ? handleClick : undefined}

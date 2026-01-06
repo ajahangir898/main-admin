@@ -10,7 +10,6 @@ module.exports = {
     './constants.ts',
     './types.ts'
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
