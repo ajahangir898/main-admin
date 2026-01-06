@@ -82,7 +82,7 @@ const AdminDueList: React.FC<AdminDueListProps> = ({ user, onLogout }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">

@@ -266,20 +266,20 @@ const AdminExpenses: React.FC = () => {
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
 
   return (
-    <div className="space-y-4 h-full overflow-auto">
+    <div className="p-6 bg-[#F8FAFC] min-h-screen space-y-4">
       {/* Summary Header */}
-      <div className="bg-[#0a0e12] rounded-lg p-4">
+      <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-white">Expense Summary</h2>
-            <p className="text-sm text-slate-400">Total expenses overview for the selected period.</p>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Expense Summary</h2>
+            <p className="text-sm text-gray-500">Total expenses overview for the selected period.</p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center bg-white/5 rounded-lg px-3 py-2">
-              <Search className="w-4 h-4 text-slate-300" />
-              <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search" className="bg-transparent text-slate-200 text-sm outline-none ml-2" />
+            <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
+              <Search className="w-4 h-4 text-gray-500" />
+              <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search" className="bg-transparent text-gray-700 text-sm outline-none ml-2" />
             </div>
-            <button onClick={()=>setIsAddOpen(true)} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+            <button onClick={()=>setIsAddOpen(true)} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-semibold">
               <Plus className="w-4 h-4" />
               Add Expense
             </button>
@@ -287,37 +287,37 @@ const AdminExpenses: React.FC = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-3">
-          <div className="col-span-1 md:col-span-2 bg-emerald-600/20 rounded-lg p-3">
-            <div className="text-2xl md:text-3xl font-black text-emerald-300">BDT{totalAmount.toFixed(2)}</div>
-            <div className="text-xs text-slate-300">Total Expense • {filtered.length} transactions</div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
+          <div className="col-span-1 md:col-span-2 bg-red-50 rounded-xl p-4 border border-red-100">
+            <div className="text-2xl md:text-3xl font-black text-red-600">BDT{totalAmount.toFixed(2)}</div>
+            <div className="text-xs text-gray-600">Total Expense • {filtered.length} transactions</div>
           </div>
-          <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-300 text-xs">Summary</div>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="text-gray-600 text-xs">Summary</div>
             <div className="mt-2 grid grid-cols-3 gap-2 text-center">
               <div>
-                <div className="text-lg font-bold text-white">{new Set(items.map(i=>i.category)).size}</div>
-                <div className="text-[11px] text-slate-400">Categories</div>
+                <div className="text-lg font-bold text-gray-900">{new Set(items.map(i=>i.category)).size}</div>
+                <div className="text-[11px] text-gray-500">Categories</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-white">{items.length}</div>
-                <div className="text-[11px] text-slate-400">Total Transactions</div>
+                <div className="text-lg font-bold text-gray-900">{items.length}</div>
+                <div className="text-[11px] text-gray-500">Total Transactions</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-white">{filtered.length}</div>
-                <div className="text-[11px] text-slate-400">Filtered</div>
+                <div className="text-lg font-bold text-gray-900">{filtered.length}</div>
+                <div className="text-[11px] text-gray-500">Filtered</div>
               </div>
             </div>
           </div>
-          <div className="bg-white/5 rounded-lg p-3">
-            <div className="text-slate-300 text-xs mb-2">Actions</div>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="text-gray-600 text-xs mb-2">Actions</div>
             <div className="flex items-center gap-2">
-              <button onClick={() => { setNewCategoryName(''); setEditingCategoryId(null); setIsCategoryModalOpen(true); }} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-xs font-semibold"><Plus className="w-4 h-4" /> Category</button>
-              <button onClick={handlePrintInvoice} className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-xs font-semibold"><Printer className="w-4 h-4" /> Print</button>
+              <button onClick={() => { setNewCategoryName(''); setEditingCategoryId(null); setIsCategoryModalOpen(true); }} className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold"><Plus className="w-4 h-4" /> Category</button>
+              <button onClick={handlePrintInvoice} className="inline-flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold"><Printer className="w-4 h-4" /> Print</button>
             </div>
             <div className="flex items-center gap-2 mt-2">
-              <Filter className="w-4 h-4 text-slate-300" />
-              <select value={selectedCategory} onChange={e=>setSelectedCategory(e.target.value)} className="bg-transparent text-slate-200 text-xs rounded-md px-2 py-1">
+              <Filter className="w-4 h-4 text-gray-500" />
+              <select value={selectedCategory} onChange={e=>setSelectedCategory(e.target.value)} className="bg-white border border-gray-300 text-gray-700 text-xs rounded-md px-2 py-1">
                 <option value="">Filter by Category</option>
                 {categories.map(c=> <option key={c.id} value={c.name}>{c.name}</option>)}
               </select>
@@ -327,30 +327,30 @@ const AdminExpenses: React.FC = () => {
       </div>
 
       {/* Table & Tabs */}
-      <div className="bg-[#0a0e12] rounded-lg p-4">
+      <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 text-sm">
             {(['All','Published','Draft','Trash'] as const).map(t => (
-              <button key={t} onClick={()=>setStatusTab(t)} className={`font-semibold ${statusTab===t? 'text-emerald-300':'text-slate-400'} hover:text-white`}>{t}{t==='All'? ` (${filtered.length})`: ''}</button>
+              <button key={t} onClick={()=>setStatusTab(t)} className={`font-semibold ${statusTab===t? 'text-emerald-600':'text-gray-400'} hover:text-gray-900`}>{t}{t==='All'? ` (${filtered.length})`: ''}</button>
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => { setNewCategoryName(''); setEditingCategoryId(null); setIsCategoryModalOpen(true); }} className="text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded-md">+ Add Category</button>
-            <div className="flex items-center gap-2 text-xs text-white/80">
-              <button disabled className="px-2 py-1 bg-white/10 rounded-md">1</button>
+            <button onClick={() => { setNewCategoryName(''); setEditingCategoryId(null); setIsCategoryModalOpen(true); }} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded-md">+ Add Category</button>
+            <div className="flex items-center gap-2 text-xs text-gray-600">
+              <button disabled className="px-2 py-1 bg-gray-100 rounded-md">1</button>
               <span>of {totalPages}</span>
-              <button onClick={()=>setPage(Math.max(1,page-1))} className="px-2 py-1 bg-white/10 rounded-md"><ChevronLeft className="w-3 h-3"/></button>
-              <button onClick={()=>setPage(Math.min(totalPages,page+1))} className="px-2 py-1 bg-white/10 rounded-md"><ChevronRight className="w-3 h-3"/></button>
+              <button onClick={()=>setPage(Math.max(1,page-1))} className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-md"><ChevronLeft className="w-3 h-3"/></button>
+              <button onClick={()=>setPage(Math.min(totalPages,page+1))} className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-md"><ChevronRight className="w-3 h-3"/></button>
             </div>
           </div>
         </div>
 
         <div className="mt-3 overflow-x-auto">
           {error ? (
-            <div className="py-10 text-center text-red-400">{error}</div>
+            <div className="py-10 text-center text-red-500">{error}</div>
           ) : paged.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="flex flex-col items-center text-slate-400">
+              <div className="flex flex-col items-center text-gray-400">
                 <ImageIcon className="w-10 h-10 mb-2" />
                 <div className="font-semibold">No Data Found!</div>
                 <div className="text-xs">Please add some data to show here.</div>
@@ -359,7 +359,7 @@ const AdminExpenses: React.FC = () => {
           ) : (
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-300 border-b border-white/10">
+              <tr className="text-left text-gray-600 border-b border-gray-200">
                 <th className="p-2"><input type="checkbox" disabled/></th>
                 <th className="p-2">Image</th>
                 <th className="p-2">Name</th>
@@ -372,22 +372,22 @@ const AdminExpenses: React.FC = () => {
             </thead>
             <tbody>
               {paged.map((i, idx) => (
-                  <tr key={i.id || `expense-${idx}`} className="border-b border-white/5">
+                  <tr key={i.id || `expense-${idx}`} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="p-2"><input type="checkbox" /></td>
                     <td className="p-2">
-                      {i.imageUrl ? <img src={normalizeImageUrl(i.imageUrl)} alt="receipt" className="w-10 h-10 rounded object-cover"/> : <div className="w-10 h-10 bg-white/5 rounded flex items-center justify-center"><ImageIcon className="w-5 h-5 text-slate-400"/></div>}
+                      {i.imageUrl ? <img src={normalizeImageUrl(i.imageUrl)} alt="receipt" className="w-10 h-10 rounded object-cover"/> : <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center"><ImageIcon className="w-5 h-5 text-gray-400"/></div>}
                     </td>
-                    <td className="p-2 text-white">{i.name}</td>
-                    <td className="p-2 text-slate-300">{i.category}</td>
-                    <td className="p-2 text-emerald-300 font-semibold">BDT{i.amount.toFixed(2)}</td>
-                    <td className="p-2 text-slate-300">{new Date(i.date).toLocaleDateString()}</td>
+                    <td className="p-2 text-gray-900 font-medium">{i.name}</td>
+                    <td className="p-2 text-gray-600">{i.category}</td>
+                    <td className="p-2 text-red-600 font-semibold">BDT{i.amount.toFixed(2)}</td>
+                    <td className="p-2 text-gray-600">{new Date(i.date).toLocaleDateString()}</td>
                     <td className="p-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${i.status==='Published'? 'bg-emerald-600/20 text-emerald-300':'bg-white/10 text-slate-300'}`}>{i.status}</span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${i.status==='Published'? 'bg-emerald-50 text-emerald-600':'bg-gray-100 text-gray-600'}`}>{i.status}</span>
                     </td>
                     <td className="p-2">
-                      <div className="flex items-center gap-2 text-slate-300">
-                        <button className="p-1 hover:text-white" onClick={() => handleEditExpense(i)}><Edit2 className="w-4 h-4"/></button>
-                        <button className="p-1 hover:text-red-400" onClick={()=>setItems(prev=>prev.filter(x=>x.id!==i.id))}><Trash2 className="w-4 h-4"/></button>
+                      <div className="flex items-center gap-2 text-gray-400">
+                        <button className="p-1 hover:text-gray-700" onClick={() => handleEditExpense(i)}><Edit2 className="w-4 h-4"/></button>
+                        <button className="p-1 hover:text-red-500" onClick={()=>setItems(prev=>prev.filter(x=>x.id!==i.id))}><Trash2 className="w-4 h-4"/></button>
                       </div>
                     </td>
                   </tr>
@@ -400,52 +400,52 @@ const AdminExpenses: React.FC = () => {
 
       {/* Add/Edit Modal */}
       {isAddOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#0a0e12] rounded-lg p-6 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg border border-gray-200 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold">{editingExpenseId ? 'Edit Expense' : 'Add Expense'}</h3>
-              <button onClick={()=>{setIsAddOpen(false); setNewItem({ status: 'Draft' }); setEditingExpenseId(null);}} className="text-slate-400 hover:text-white">✕</button>
+              <h3 className="text-gray-900 font-bold">{editingExpenseId ? 'Edit Expense' : 'Add Expense'}</h3>
+              <button onClick={()=>{setIsAddOpen(false); setNewItem({ status: 'Draft' }); setEditingExpenseId(null);}} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-slate-400">Expense Name</label>
-                <input className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.name||''} onChange={e=>setNewItem({...newItem, name: e.target.value})} />
+                <label className="text-xs text-gray-600">Expense Name</label>
+                <input className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" value={newItem.name||''} onChange={e=>setNewItem({...newItem, name: e.target.value})} />
               </div>
               <div>
-                <label className="text-xs text-slate-400">Category</label>
-                <select className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.category||''} onChange={e=>setNewItem({...newItem, category: e.target.value})}>
+                <label className="text-xs text-gray-600">Category</label>
+                <select className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-emerald-500" value={newItem.category||''} onChange={e=>setNewItem({...newItem, category: e.target.value})}>
                   <option value="">Select Category</option>
                   {categories.map(c=> <option key={c.id} value={c.name}>{c.name}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-slate-400">Amount</label>
-                  <input type="number" className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.amount as any || ''} onChange={e=>setNewItem({...newItem, amount: Number(e.target.value)})} />
+                  <label className="text-xs text-gray-600">Amount</label>
+                  <input type="number" className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" value={newItem.amount as any || ''} onChange={e=>setNewItem({...newItem, amount: Number(e.target.value)})} />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Date</label>
-                  <input type="date" className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.date||''} onChange={e=>setNewItem({...newItem, date: e.target.value})} />
+                  <label className="text-xs text-gray-600">Date</label>
+                  <input type="date" className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-emerald-500" value={newItem.date||''} onChange={e=>setNewItem({...newItem, date: e.target.value})} />
                 </div>
               </div>
               <div>
-                <label className="text-xs text-slate-400">Image Upload (URL)</label>
-                <input className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.imageUrl||''} onChange={e=>setNewItem({...newItem, imageUrl: e.target.value})} placeholder="https://..." />
+                <label className="text-xs text-gray-600">Image Upload (URL)</label>
+                <input className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-emerald-500" value={newItem.imageUrl||''} onChange={e=>setNewItem({...newItem, imageUrl: e.target.value})} placeholder="https://..." />
               </div>
               <div>
-                <label className="text-xs text-slate-400">Status</label>
-                <select className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.status as any || 'Draft'} onChange={e=>setNewItem({...newItem, status: e.target.value as any})}>
+                <label className="text-xs text-gray-600">Status</label>
+                <select className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-emerald-500" value={newItem.status as any || 'Draft'} onChange={e=>setNewItem({...newItem, status: e.target.value as any})}>
                   <option>Draft</option>
                   <option>Published</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs text-slate-400">Note</label>
-                <textarea className="mt-1 w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={newItem.note||''} onChange={e=>setNewItem({...newItem, note: e.target.value})} />
+                <label className="text-xs text-gray-600">Note</label>
+                <textarea className="mt-1 w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-emerald-500" value={newItem.note||''} onChange={e=>setNewItem({...newItem, note: e.target.value})} />
               </div>
               <div className="flex items-center justify-end gap-2 pt-2">
-                <button onClick={()=>{setIsAddOpen(false); setNewItem({ status: 'Draft' }); setEditingExpenseId(null);}} className="px-3 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-md">Cancel</button>
-                <button onClick={handleAdd} className="px-3 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-md font-semibold">{editingExpenseId ? 'Update Expense' : 'Save Expense'}</button>
+                <button onClick={()=>{setIsAddOpen(false); setNewItem({ status: 'Draft' }); setEditingExpenseId(null);}} className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md">Cancel</button>
+                <button onClick={handleAdd} className="px-3 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-md font-semibold">{editingExpenseId ? 'Update Expense' : 'Save Expense'}</button>
               </div>
             </div>
           </div>
@@ -454,35 +454,35 @@ const AdminExpenses: React.FC = () => {
 
       {/* Category Management Modal */}
       {isCategoryModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#0a0e12] rounded-lg p-6 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg border border-gray-200 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold">{editingCategoryId ? 'Edit Category' : 'Add Category'}</h3>
-              <button onClick={()=>setIsCategoryModalOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5"/></button>
+              <h3 className="text-gray-900 font-bold">{editingCategoryId ? 'Edit Category' : 'Add Category'}</h3>
+              <button onClick={()=>setIsCategoryModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5"/></button>
             </div>
             <div className="space-y-4 mb-4">
               <input 
                 type="text" 
                 placeholder="Category name" 
-                className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" 
+                className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500" 
                 value={newCategoryName}
                 onChange={e => setNewCategoryName(e.target.value)}
               />
               <div className="flex gap-2">
-                <button onClick={handleAddCategory} className="flex-1 px-3 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-md font-semibold">{editingCategoryId ? 'Update' : 'Add'}</button>
-                <button onClick={()=>setIsCategoryModalOpen(false)} className="flex-1 px-3 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-md">Cancel</button>
+                <button onClick={handleAddCategory} className="flex-1 px-3 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-md font-semibold">{editingCategoryId ? 'Update' : 'Add'}</button>
+                <button onClick={()=>setIsCategoryModalOpen(false)} className="flex-1 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md">Cancel</button>
               </div>
             </div>
 
-            <div className="border-t border-white/10 pt-4">
-              <h4 className="text-white text-sm font-semibold mb-3">All Categories</h4>
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-gray-900 text-sm font-semibold mb-3">All Categories</h4>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {categories.map(cat => (
-                  <div key={cat.id} className="flex items-center justify-between bg-white/5 p-2 rounded-md">
-                    <span className="text-sm text-white">{cat.name}</span>
+                  <div key={cat.id} className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+                    <span className="text-sm text-gray-900">{cat.name}</span>
                     <div className="flex gap-2">
-                      <button onClick={() => { setNewCategoryName(cat.name); setEditingCategoryId(cat.id!); }} className="p-1 text-emerald-300 hover:text-emerald-200"><Edit2 className="w-3 h-3"/></button>
-                      <button onClick={() => handleDeleteCategory(cat.id!)} className="p-1 text-red-300 hover:text-red-200"><Trash2 className="w-3 h-3"/></button>
+                      <button onClick={() => { setNewCategoryName(cat.name); setEditingCategoryId(cat.id!); }} className="p-1 text-emerald-600 hover:text-emerald-700"><Edit2 className="w-3 h-3"/></button>
+                      <button onClick={() => handleDeleteCategory(cat.id!)} className="p-1 text-red-500 hover:text-red-600"><Trash2 className="w-3 h-3"/></button>
                     </div>
                   </div>
                 ))}

@@ -134,21 +134,21 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700">
+      <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={onBack}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition"
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
               >
-                <X size={24} className="text-gray-600 dark:text-gray-300" />
+                <X size={24} className="text-gray-600" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Popup Management</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <h1 className="text-2xl font-bold text-gray-900">Popup Management</h1>
+                <p className="text-sm text-gray-500 mt-1">
                   Create and manage store popups
                 </p>
               </div>
@@ -166,7 +166,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
       {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
@@ -176,7 +176,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                 placeholder="Search popups..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
 
@@ -189,7 +189,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                   className={`px-4 py-2 rounded-lg transition ${
                     filterStatus === status
                       ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   {status}
@@ -205,72 +205,72 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
         </div>
 
         {/* Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-purple-50 dark:bg-slate-700 border-b border-gray-200 dark:border-slate-600">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Image
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     URL
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     URL Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Priority
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedPopups.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                       No popups found. Click "Add Popup" to create one.
                     </td>
                   </tr>
                 ) : (
                   paginatedPopups.map((popup) => (
-                    <tr key={popup.id} className="hover:bg-gray-50 dark:hover:bg-slate-700 transition">
+                    <tr key={popup.id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <img
                           src={normalizeImageUrl(popup.image)}
                           alt={popup.name}
-                          className="h-12 w-16 object-cover rounded border border-gray-200 dark:border-slate-600"
+                          className="h-12 w-16 object-cover rounded border border-gray-200"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">{popup.name}</div>
+                        <div className="text-sm font-medium text-gray-900">{popup.name}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                        <div className="text-sm text-gray-500 truncate max-w-xs">
                           {popup.url || '-'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900 dark:text-white">{popup.urlType || '-'}</span>
+                        <span className="text-sm text-gray-900">{popup.urlType || '-'}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900 dark:text-white">{popup.priority || '-'}</span>
+                        <span className="text-sm text-gray-900">{popup.priority || '-'}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => toggleStatus(popup)}
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             popup.status === 'Publish'
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                              : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-orange-100 text-orange-700'
                           }`}
                         >
                           {popup.status}
@@ -280,14 +280,14 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleEdit(popup)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition"
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                             title="Edit"
                           >
                             <Edit2 size={16} />
                           </button>
                           <button
                             onClick={() => handleDelete(popup.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                             title="Delete"
                           >
                             <Trash2 size={16} />
@@ -303,22 +303,22 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+              <div className="text-sm text-gray-500">
                 Page {currentPage} of {totalPages}
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 dark:border-slate-600 rounded hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 dark:border-slate-600 rounded hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 dark:text-gray-300"
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700"
                 >
                   Next
                 </button>
@@ -330,38 +330,38 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">
                 {editingPopup ? 'Edit Popup' : 'Add New Popup'}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition"
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
               >
-                <X size={20} className="text-gray-600 dark:text-gray-300" />
+                <X size={20} className="text-gray-600" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Popup Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="e.g., Friday Up To 50% Off"
                 />
               </div>
 
               {/* Image Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Popup Image <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-4">
@@ -370,13 +370,13 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                       type="text"
                       value={formData.image}
                       onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="Image URL or upload below"
                     />
                   </div>
-                  <label className="px-4 py-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-600 transition flex items-center gap-2">
-                    <ImageIcon size={18} className="text-gray-600 dark:text-gray-300" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Upload</span>
+                  <label className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-200 transition flex items-center gap-2">
+                    <ImageIcon size={18} className="text-gray-600" />
+                    <span className="text-sm text-gray-700">Upload</span>
                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                   </label>
                 </div>
@@ -385,7 +385,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                     <img
                       src={normalizeImageUrl(formData.image)}
                       alt="Preview"
-                      className="max-h-40 rounded border border-gray-200 dark:border-slate-600"
+                      className="max-h-40 rounded border border-gray-200"
                     />
                   </div>
                 )}
@@ -393,7 +393,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
               {/* URL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Link URL (Optional)
                 </label>
                 <div className="relative">
@@ -402,7 +402,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                     type="text"
                     value={formData.url}
                     onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="/products or https://example.com"
                   />
                 </div>
@@ -410,14 +410,14 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
               {/* URL Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   URL Type
                 </label>
                 <div className="relative">
                   <select
                     value={formData.urlType}
                     onChange={(e) => setFormData({ ...formData, urlType: e.target.value as 'Internal' | 'External' })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none dark:bg-slate-700 dark:text-white cursor-pointer"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none cursor-pointer"
                   >
                     <option value="Internal">Internal</option>
                     <option value="External">External</option>
@@ -428,25 +428,25 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
 
               {/* Priority */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Priority (Display Order)
                 </label>
                 <input
                   type="number"
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="0"
                   min="0"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Lower numbers appear first
                 </p>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Status
                 </label>
                 <div className="flex gap-4">
@@ -458,7 +458,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Draft' | 'Publish' })}
                       className="w-4 h-4 text-purple-600 focus:ring-purple-500"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Draft</span>
+                    <span className="text-sm text-gray-700">Draft</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -468,17 +468,17 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Draft' | 'Publish' })}
                       className="w-4 h-4 text-purple-600 focus:ring-purple-500"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Publish</span>
+                    <span className="text-sm text-gray-700">Publish</span>
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700 px-6 py-4 flex items-center justify-end gap-3">
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-end gap-3 rounded-b-xl">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition"
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition"
               >
                 Cancel
               </button>

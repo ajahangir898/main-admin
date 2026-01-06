@@ -16,12 +16,12 @@ interface AdminNoteProps {
 }
 
 const NOTE_COLORS = [
-  { name: 'Default', value: '#1e1e2e' },
-  { name: 'Yellow', value: '#3d3a1d' },
-  { name: 'Green', value: '#1d3d2a' },
-  { name: 'Blue', value: '#1d2e3d' },
-  { name: 'Purple', value: '#2d1d3d' },
-  { name: 'Red', value: '#3d1d1d' },
+  { name: 'Default', value: '#F3F4F6' },
+  { name: 'Yellow', value: '#FEF3C7' },
+  { name: 'Green', value: '#D1FAE5' },
+  { name: 'Blue', value: '#DBEAFE' },
+  { name: 'Purple', value: '#EDE9FE' },
+  { name: 'Red', value: '#FEE2E2' },
 ];
 
 const NOTE_CATEGORIES = ['General', 'Important', 'Reminder', 'Business', 'Personal', 'Todo'];
@@ -126,19 +126,19 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
   };
 
   return (
-    <div className="p-6 bg-[#0a0a0f] min-h-screen">
+    <div className="p-6 bg-[#F8FAFC] min-h-screen">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <StickyNote className="w-7 h-7 text-yellow-500" />
             Notes
           </h1>
-          <p className="text-slate-400 text-sm mt-1">Keep track of important information and reminders</p>
+          <p className="text-gray-500 text-sm mt-1">Keep track of important information and reminders</p>
         </div>
         <button
           onClick={() => { setNewNote({ color: NOTE_COLORS[0].value, date: new Date().toISOString() }); setEditingNote(null); setIsAddOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
+          className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
         >
           <Plus className="w-4 h-4" />
           Add Note
@@ -146,17 +146,17 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
       </div>
 
       {/* Filters */}
-      <div className="bg-[#12121a] rounded-xl p-4 mb-6 border border-white/5">
+      <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search notes..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500"
             />
           </div>
 
@@ -164,7 +164,7 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none"
+            className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:outline-none focus:border-yellow-500"
           >
             <option value="">All Categories</option>
             {NOTE_CATEGORIES.map((cat) => (
@@ -176,51 +176,51 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
 
       {/* Notes Grid */}
       {paged.length === 0 ? (
-        <div className="bg-[#12121a] rounded-xl border border-white/5 p-12 text-center">
-          <StickyNote className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400 text-lg">No notes yet</p>
-          <p className="text-slate-500 text-sm mt-1">Click "Add Note" to create your first note</p>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+          <StickyNote className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">No notes yet</p>
+          <p className="text-gray-400 text-sm mt-1">Click "Add Note" to create your first note</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {paged.map((note) => (
             <div
               key={note.id}
-              className="rounded-xl border border-white/5 overflow-hidden hover:border-yellow-500/30 transition group"
+              className="rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md hover:border-yellow-300 transition group"
               style={{ backgroundColor: note.color || NOTE_COLORS[0].value }}
             >
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-white font-semibold line-clamp-1">{note.title}</h3>
+                  <h3 className="text-gray-900 font-semibold line-clamp-1">{note.title}</h3>
                   <button
                     onClick={() => togglePin(note.id)}
-                    className={`p-1 rounded-lg transition ${note.isPinned ? 'text-yellow-400' : 'text-slate-500 hover:text-yellow-400'}`}
+                    className={`p-1 rounded-lg transition ${note.isPinned ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-500'}`}
                   >
                     {note.isPinned ? <Pin className="w-4 h-4" /> : <PinOff className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-slate-300 text-sm line-clamp-4 mb-3">{note.content}</p>
+                <p className="text-gray-600 text-sm line-clamp-4 mb-3">{note.content}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-white/10 text-xs rounded-full text-slate-300">
+                    <span className="px-2 py-0.5 bg-white/60 text-xs rounded-full text-gray-600 border border-gray-200">
                       {note.category}
                     </span>
                   </div>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-gray-500">
                     {new Date(note.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center justify-end gap-1 px-4 py-2 bg-black/20 opacity-0 group-hover:opacity-100 transition">
+              <div className="flex items-center justify-end gap-1 px-4 py-2 bg-black/5 opacity-0 group-hover:opacity-100 transition">
                 <button
                   onClick={() => handleEdit(note)}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition"
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-white/50 rounded-lg transition"
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(note.id)}
-                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition"
+                  className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -236,17 +236,17 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg disabled:opacity-50 transition"
+            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg disabled:opacity-50 transition"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-gray-600">
             Page {page} of {Math.ceil(filtered.length / pageSize)}
           </span>
           <button
             onClick={() => setPage(p => p + 1)}
             disabled={page * pageSize >= filtered.length}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg disabled:opacity-50 transition"
+            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg disabled:opacity-50 transition"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -255,47 +255,47 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
 
       {/* Add/Edit Modal */}
       {isAddOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#12121a] rounded-xl border border-white/10 w-full max-w-lg">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-              <h2 className="text-lg font-semibold text-white">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-xl w-full max-w-lg">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
                 {editingNote ? 'Edit Note' : 'Add New Note'}
               </h2>
               <button
                 onClick={() => { setIsAddOpen(false); setEditingNote(null); setNewNote({ color: NOTE_COLORS[0].value }); }}
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition"
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Title *</label>
+                <label className="block text-sm text-gray-600 mb-1">Title *</label>
                 <input
                   type="text"
                   value={newNote.title || ''}
                   onChange={(e) => setNewNote(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Note title"
-                  className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500"
                 />
               </div>
               <div>
-                <label className="block text-sm text-slate-400 mb-1">Content *</label>
+                <label className="block text-sm text-gray-600 mb-1">Content *</label>
                 <textarea
                   value={newNote.content || ''}
                   onChange={(e) => setNewNote(prev => ({ ...prev, content: e.target.value }))}
                   placeholder="Write your note..."
                   rows={5}
-                  className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 resize-none"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 resize-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-slate-400 mb-1">Category</label>
+                  <label className="block text-sm text-gray-600 mb-1">Category</label>
                   <select
                     value={newNote.category || 'General'}
                     onChange={(e) => setNewNote(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-yellow-500"
                   >
                     {NOTE_CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -303,14 +303,14 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm text-slate-400 mb-1">Color</label>
+                  <label className="block text-sm text-gray-600 mb-1">Color</label>
                   <div className="flex items-center gap-2">
                     {NOTE_COLORS.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => setNewNote(prev => ({ ...prev, color: color.value }))}
                         className={`w-8 h-8 rounded-lg border-2 transition ${
-                          newNote.color === color.value ? 'border-yellow-400' : 'border-transparent hover:border-white/30'
+                          newNote.color === color.value ? 'border-yellow-500' : 'border-gray-200 hover:border-gray-400'
                         }`}
                         style={{ backgroundColor: color.value }}
                         title={color.name}
@@ -325,22 +325,22 @@ const AdminNote: React.FC<AdminNoteProps> = ({ tenantId }) => {
                   id="pinned"
                   checked={newNote.isPinned || false}
                   onChange={(e) => setNewNote(prev => ({ ...prev, isPinned: e.target.checked }))}
-                  className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-yellow-500 focus:ring-yellow-500/50"
+                  className="w-4 h-4 rounded border-gray-300 bg-white text-yellow-500 focus:ring-yellow-500/50"
                 />
-                <label htmlFor="pinned" className="text-sm text-slate-400">Pin this note</label>
+                <label htmlFor="pinned" className="text-sm text-gray-600">Pin this note</label>
               </div>
             </div>
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/5">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
               <button
                 onClick={() => { setIsAddOpen(false); setEditingNote(null); setNewNote({ color: NOTE_COLORS[0].value }); }}
-                className="px-4 py-2 text-slate-400 hover:text-white transition"
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAdd}
                 disabled={!newNote.title || !newNote.content}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {editingNote ? 'Update' : 'Add'} Note
               </button>

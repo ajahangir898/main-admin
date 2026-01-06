@@ -301,7 +301,7 @@ const AdminSupport: React.FC<AdminSupportProps> = ({ user, activeTenant }) => {
   };
 
   return (
-    <div className="p-4 md:p-6 min-h-screen bg-gray-50">
+    <div className="p-4 md:p-6 min-h-screen bg-[#F8FAFC]">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Support</h1>

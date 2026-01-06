@@ -47,8 +47,8 @@ const AdminBusinessReport: React.FC<AdminBusinessReportProps> = ({
       onClick={() => setActiveTab(id)}
       className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
         activeTab === id
-          ? 'border-emerald-500 text-emerald-400'
-          : 'border-transparent text-slate-400 hover:text-white'
+          ? 'border-emerald-500 text-emerald-600'
+          : 'border-transparent text-gray-500 hover:text-gray-900'
       }`}
     >
       {icon} {label}
@@ -56,20 +56,20 @@ const AdminBusinessReport: React.FC<AdminBusinessReportProps> = ({
   );
 
   return (
-    <div className="space-y-0 animate-fade-in">
+    <div className="space-y-0 animate-fade-in bg-[#F8FAFC] min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center bg-[#0a0a0f] z-30 pt-4 pb-4 px-6">
+      <div className="flex justify-between items-center bg-white z-30 pt-4 pb-4 px-6 border-b border-gray-200">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <FileText className="w-7 h-7 text-emerald-500" />
             Business Report
           </h2>
-          <p className="text-sm text-slate-400">Track expenses, income, and profit/loss</p>
+          <p className="text-sm text-gray-500">Track expenses, income, and profit/loss</p>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-white/10 overflow-x-auto scrollbar-hide bg-[#12121a] px-2">
+      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide bg-white px-2">
         {tabs.map((tab) => (
           <TabButton key={tab.id} id={tab.id} label={tab.label} icon={tab.icon} />
         ))}
