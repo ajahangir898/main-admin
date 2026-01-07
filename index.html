@@ -75,26 +75,7 @@
             if (parsed.ts && (Date.now() - parsed.ts) < CACHE_TTL) {
               window.__BOOTSTRAP_DATA__ = parsed.data;
               window.__BOOTSTRAP_READY__ = true;
-              // Preload first carousel image immediately from cache
-              var ws = parsed.data?.data?.website_config;
-              if (ws && ws.carouselItems && ws.carouselItems.length > 0) {
-                var items = ws.carouselItems.filter(function(i) { 
-                  return (i.status || '').toLowerCase() === 'publish'; 
-                }).sort(function(a, b) { return (a.serial || 0) - (b.serial || 0); });
-                if (items.length > 0) {
-                  var firstItem = items[0];
-                  var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
-                  if (imgUrl) {
-                    var link = document.createElement('link');
-                    link.rel = 'preload';
-                    link.as = 'image';
-                    link.href = imgUrl;
-                    link.crossOrigin = 'anonymous';
-                    link.fetchPriority = 'high';
-                    document.head.appendChild(link);
-                  }
-                }
-              }
+              // Skip carousel preload - React loads fast enough now
               // Background revalidation
               setTimeout(function() { fetchBootstrap(true); }, 100);
               // Load secondary from cache
@@ -125,26 +106,6 @@
                 try {
                   sessionStorage.setItem(bootstrapCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
                 } catch(e) {}
-                // Preload first carousel image with high priority
-                var ws = data.data?.website_config;
-                if (!isBackground && ws && ws.carouselItems && ws.carouselItems.length > 0) {
-                  var items = ws.carouselItems.filter(function(i) { 
-                    return (i.status || '').toLowerCase() === 'publish'; 
-                  }).sort(function(a, b) { return (a.serial || 0) - (b.serial || 0); });
-                  if (items.length > 0) {
-                    var firstItem = items[0];
-                    var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
-                    if (imgUrl) {
-                      var link = document.createElement('link');
-                      link.rel = 'preload';
-                      link.as = 'image';
-                      link.href = imgUrl;
-                      link.crossOrigin = 'anonymous';
-                      link.fetchPriority = 'high';
-                      document.head.appendChild(link);
-                    }
-                  }
-                }
               } catch(e) {}
             }
           };
