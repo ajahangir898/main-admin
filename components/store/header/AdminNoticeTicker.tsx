@@ -11,7 +11,7 @@ export const AdminNoticeTicker: React.FC<AdminNoticeTickerProps> = ({ noticeText
     <div className="w-full bg-white border-b border-gray-100 py-1.5 overflow-hidden">
       <div className="relative overflow-hidden">
         <div className="admin-notice-ticker">
-          <span className="text-sm" style={{ color: 'rgb(var(--color-font-rgb))' }}>{noticeText}</span>
+          <span className="text-sm">{noticeText}</span>
         </div>
       </div>
     </div>

@@ -53,7 +53,7 @@ export const DesktopSearchBar: React.FC<HeaderSearchProps> = ({
       placeholder={activeHint ? '' : 'Search products...'}
       value={activeSearchValue}
       onChange={(event) => onInputChange(event.target.value)}
-      className="w-full border-2 border-gray-200 hover:border-theme-primary focus:border-theme-primary rounded-full py-2.5 pl-5 pr-36 focus:outline-none focus:ring-4 focus:ring-theme-primary/10 placeholder-gray-400 transition-all bg-gray-50 focus:bg-white"
+      className="w-full border-2 border-theme-primary hover:border-theme-primary focus:border-theme-primary rounded-full py-2.5 pl-5 pr-36 focus:outline-none focus:ring-4 focus:ring-theme-primary/10 placeholder-gray-400 transition-all bg-gray-50 focus:bg-white"
     />
     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
       <CameraButton />

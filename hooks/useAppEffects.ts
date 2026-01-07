@@ -12,6 +12,7 @@ import {
   SESSION_STORAGE_KEY,
   ACTIVE_TENANT_STORAGE_KEY,
 } from '../utils/appHelpers';
+import { isMainDomain, DEMO_PRODUCTS, DEMO_WEBSITE_CONFIG, DEMO_CATEGORIES, DEMO_BRANDS } from '../utils/demoData';
 
 // Check if we're on the admin subdomain
 const isAdminSubdomain = typeof window !== 'undefined' && 
@@ -255,6 +256,26 @@ export const useInitialDataLoad = ({
     let isMounted = true;
     
     const loadInitialData = async () => {
+      // Check if we're on main domain - show demo data
+      if (isMainDomain()) {
+        console.log('[App] Main domain detected - loading demo data');
+        setProducts(DEMO_PRODUCTS as Product[]);
+        setWebsiteConfig(DEMO_WEBSITE_CONFIG as any);
+        setCategories(DEMO_CATEGORIES as Category[]);
+        setBrands(DEMO_BRANDS as Brand[]);
+        setTags([]);
+        setOrders([]);
+        setLogo('/icons/icon-192x192.png');
+        setThemeConfig(null);
+        setDeliveryConfig([]);
+        setLandingPages([]);
+        setSubCategories([]);
+        setChildCategories([]);
+        hidePreloadSkeleton();
+        setIsLoading(false);
+        return;
+      }
+      
       const hasCache = hasCachedData();
       if (!hasCache) setIsLoading(true);
       let loadError: Error | null = null;
