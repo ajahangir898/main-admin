@@ -7,10 +7,10 @@ import type {
   ProductVariantSelection, LandingPage, FacebookPixelConfig, CourierConfig,
   Category, SubCategory, ChildCategory, Brand, Tag, User, ChatMessage
 } from '../types';
-import { SuperAdminDashboardSkeleton, StorePageSkeleton, ProductDetailSkeleton } from './SkeletonLoaders';
+import { SuperAdminDashboardSkeleton, StorePageSkeleton, ProductDetailSkeleton, RegistrationPageSkeleton } from './SkeletonLoaders';
 import { ensureVariantSelection } from '../utils/appHelpers';
 
-// Lazy load pages
+// Lazy load pages - loaded on demand when view changes
 const StoreHome = lazy(() => import('../pages/StoreHome'));
 const StoreProductDetail = lazy(() => import('../pages/StoreProductDetail'));
 const StoreCheckout = lazy(() => import('../pages/StoreCheckout'));
@@ -20,9 +20,15 @@ const LandingPagePreview = lazy(() => import('../pages/LandingPagePreview'));
 const SuperAdminDashboard = lazy(() => import('../pages/SuperAdminDashboard'));
 const AdminLogin = lazy(() => import('../pages/AdminLogin'));
 const AdminAppWithAuth = lazy(() => import('../pages/AdminAppWithAuth'));
-const TenantRegistration = lazy(() => import('../pages/TenantRegistration'));
 const MobileBottomNav = lazy(() => import('./store/MobileBottomNav').then(m => ({ default: m.MobileBottomNav })));
 const StoreChatModal = lazy(() => import('./store/StoreChatModal').then(m => ({ default: m.StoreChatModal })));
+
+// TenantRegistration - Completely isolated lazy load
+// This component is ONLY loaded when user navigates to /register URL
+// It will NOT be loaded for shop/subdomain/main domain visits
+const TenantRegistration = lazy(() => 
+  import(/* webpackChunkName: "tenant-registration" */ '../pages/TenantRegistration')
+);
 
 interface AppRoutesProps {
   currentView: string;
@@ -236,7 +242,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
       )}
 
       {currentView === 'register' ? (
-        <Suspense fallback={<StorePageSkeleton />}>
+        <Suspense fallback={<RegistrationPageSkeleton />}>
           <TenantRegistration />
         </Suspense>
       ) : currentView === 'admin-login' ? (

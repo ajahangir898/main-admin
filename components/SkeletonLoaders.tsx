@@ -113,3 +113,25 @@ export const SuperAdminDashboardSkeleton = () => (
 export const SuperAdminTabSkeleton = () => (
   <div className="p-6 space-y-6"><div className="flex justify-between items-center"><Bone className="h-8 w-48"/><Bone className="h-10 w-32 rounded-lg"/></div><div className="bg-white rounded-xl border border-slate-200 overflow-hidden"><div className="p-6 space-y-4"><Bone className="h-6 w-64"/><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><Bone className="h-32 rounded-lg"/><Bone className="h-32 rounded-lg"/></div></div></div><div className="bg-white rounded-xl border border-slate-200 overflow-hidden"><TableSkeleton rows={5} cols={4}/></div></div>
 );
+
+// Lightweight registration page skeleton - minimal for fast display
+export const RegistrationPageSkeleton = () => (
+  <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 space-y-6">
+      <div className="text-center space-y-2">
+        <Bone className="h-12 w-12 rounded-xl mx-auto"/>
+        <Bone className="h-8 w-48 mx-auto"/>
+        <Bone className="h-4 w-64 mx-auto"/>
+      </div>
+      <div className="space-y-4">
+        {arr(5).map((_, i) => (
+          <div key={i} className="space-y-2">
+            <Bone className="h-4 w-24"/>
+            <Bone className="h-12 w-full rounded-lg"/>
+          </div>
+        ))}
+      </div>
+      <Bone className="h-12 w-full rounded-lg"/>
+    </div>
+  </div>
+);

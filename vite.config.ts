@@ -16,12 +16,12 @@ const CRITICAL_JS_CHUNKS = [
   // App entry chunks ONLY
   'index-',
   'App-',
-  // Store home critical path ONLY - minimal set
+  // Store home critical path ONLY - minimal set for storefront
   'page-storehome',
-  'store-herosection',
-  'cmp-storeheader'
-  // REMOVED: store-header, cmp-storeproductcomponents, store-categoriessection
-  // These load via dynamic imports and don't need preload
+  'store-core',
+  'store-header'
+  // NOTE: Admin, SuperAdmin, Registration pages are NOT preloaded
+  // They load on-demand when user navigates to those routes
 ];
 
 // Critical CSS patterns for preloading (ordered by priority)
@@ -180,10 +180,56 @@ const manualChunkResolver = (id: string): string | undefined => {
     const segment = normalized.split('/pages/')[1];
     if (segment) {
       const pageName = segment.split('/')[0].replace(/\W+/g, '-').toLowerCase();
-      // Force ImageSearch into its own chunk with explicit name
+      
+      // === STOREFRONT PAGES - Isolated chunks for shop loading ===
+      // StoreHome - main storefront, loads only when visiting shop
+      if (pageName === 'storehome-tsx' || pageName === 'storehome') {
+        return 'page-storehome';
+      }
+      // Store product detail - loads only when viewing a product
+      if (pageName === 'storeproductdetail-tsx' || pageName === 'storeproductdetail') {
+        return 'page-storeproductdetail';
+      }
+      // Store checkout - loads only during checkout
+      if (pageName === 'storecheckout-tsx' || pageName === 'storecheckout') {
+        return 'page-storecheckout';
+      }
+      // Store order success - loads after order completion
+      if (pageName === 'storeordersuccess-tsx' || pageName === 'storeordersuccess') {
+        return 'page-storeordersuccess';
+      }
+      // Store profile - user profile page
+      if (pageName === 'storeprofile-tsx' || pageName === 'storeprofile') {
+        return 'page-storeprofile';
+      }
+      
+      // === OTHER ISOLATED PAGES ===
+      // ImageSearch/Visual Search - isolated chunk
       if (pageName === 'imagesearch-tsx' || pageName === 'imagesearch') {
         return 'page-visual-search';
       }
+      // TenantRegistration - isolated chunk, only loaded when navigating to /register
+      if (pageName === 'tenantregistration-tsx' || pageName === 'tenantregistration') {
+        return 'page-tenant-registration';
+      }
+      // Landing page preview - isolated
+      if (pageName === 'landingpagepreview-tsx' || pageName === 'landingpagepreview') {
+        return 'page-landingpreview';
+      }
+      // SuperAdmin dashboard - isolated
+      if (pageName === 'superadmindashboard-tsx' || pageName === 'superadmindashboard') {
+        return 'page-superadmin';
+      }
+      // Admin login - isolated
+      if (pageName === 'adminlogin-tsx' || pageName === 'adminlogin') {
+        return 'page-adminlogin';
+      }
+      
+      // === ADMIN PAGES - Group together ===
+      if (pageName.startsWith('admin')) {
+        return 'page-admin';
+      }
+      
       return `page-${pageName}`;
     }
   }
@@ -193,11 +239,58 @@ const manualChunkResolver = (id: string): string | undefined => {
     return 'page-visual-search';
   }
 
-  // Store components - split into individual chunks for parallel loading
+  // === STORE COMPONENTS - Isolated for storefront loading ===
+  // These components are ONLY loaded when visiting shop/storefront
   if (normalized.includes('/components/store/')) {
     const segment = normalized.split('/components/store/')[1];
     if (segment) {
       const componentName = segment.split('/')[0].replace(/\.(tsx|ts|jsx|js)$/, '').toLowerCase();
+      
+      // Core storefront components - loaded with StoreHome
+      const coreStoreComponents = [
+        'herosection', 'categoriessection', 'productgridsection', 
+        'flashsalessection', 'productcard', 'lazysection', 'promobanner'
+      ];
+      if (coreStoreComponents.includes(componentName)) {
+        return 'store-core';
+      }
+      
+      // Header components - separate chunk (used across store pages)
+      if (componentName === 'header' || segment.startsWith('header/')) {
+        return 'store-header';
+      }
+      
+      // Footer components - lazy loaded
+      if (componentName.includes('footer') || segment.startsWith('StoreFooter/')) {
+        return 'store-footer';
+      }
+      
+      // Modals - loaded on demand
+      if (componentName.includes('modal')) {
+        return 'store-modals';
+      }
+      
+      // Chat - loaded on demand
+      if (componentName.includes('chat')) {
+        return 'store-chat';
+      }
+      
+      // Category products - loaded when browsing categories
+      if (segment.startsWith('StoreCategoryProducts/')) {
+        return 'store-categoryproducts';
+      }
+      
+      // Skeletons - loaded with core
+      if (segment.startsWith('skeletons/')) {
+        return 'store-core';
+      }
+      
+      // Popup components - loaded on demand
+      if (segment.startsWith('StorePopup/')) {
+        return 'store-popup';
+      }
+      
+      // Other store components - individual chunks
       return `store-${componentName}`;
     }
   }
