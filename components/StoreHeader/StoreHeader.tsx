@@ -418,6 +418,7 @@ export const StoreHeader: React.FC<StoreHeaderProps> = (props) => {
           onAccountClick={user ? onProfileClick : onLoginClick}
           onMenuOpen={() => setIsMobileMenuOpen(true)}
           onSearchOpen={() => setIsMobileSearchOpen(true)}
+          websiteConfig={websiteConfig}
         />
 
         <DesktopHeaderBar

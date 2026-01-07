@@ -64,15 +64,14 @@ export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
             <img 
               key={logoKey} 
               src={normalizeImageUrl(resolvedHeaderLogo)} 
-              alt="Logo" 
+              alt={websiteConfig?.websiteName || 'Logo'} 
               width={192}
               height={48}
               className="h-10 md:h-12 object-contain transition-transform group-hover:scale-105" 
             />
           ) : (
-            <h2 className="text-2xl font-black tracking-tight">
-              <span className="text-theme-primary">YOUR</span>
-              <span className="text-gray-800">SHOP</span>
+            <h2 className="text-2xl font-black tracking-tight text-theme-primary">
+              {websiteConfig?.websiteName || 'My Store'}
             </h2>
           )}
         </button>

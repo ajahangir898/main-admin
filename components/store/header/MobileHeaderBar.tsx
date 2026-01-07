@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingCart, Heart, User, Search, Menu } from 'lucide-react';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
+import type { WebsiteConfig } from '../../../types';
 
 interface MobileHeaderBarProps {
   resolvedHeaderLogo: string | null;
@@ -13,6 +14,7 @@ interface MobileHeaderBarProps {
   onAccountClick?: () => void;
   onMenuOpen: () => void;
   onSearchOpen: () => void;
+  websiteConfig?: WebsiteConfig;
 }
 
 export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
@@ -25,7 +27,8 @@ export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
   onCartOpen,
   onAccountClick,
   onMenuOpen,
-  onSearchOpen
+  onSearchOpen,
+  websiteConfig
 }) => (
   <header className="md:hidden bg-white px-3 py-2 border-b border-gray-100 shadow-sm sticky top-0 z-50">
     <div className="flex items-center justify-between gap-3">
@@ -44,15 +47,14 @@ export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
             <img
               key={logoKey}
               src={normalizeImageUrl(resolvedHeaderLogo)}
-              alt="Store logo"
+              alt={websiteConfig?.websiteName || 'Store logo'}
               width={120}
               height={32}
               className="h-8 max-w-[120px] object-contain"
             />
           ) : (
-            <h1 className="text-lg font-black tracking-tight">
-              <span className="text-theme-primary">YOUR</span>
-              <span className="text-gray-800">SHOP</span>
+            <h1 className="text-lg font-black tracking-tight text-theme-primary">
+              {websiteConfig?.websiteName || 'My Store'}
             </h1>
           )}
         </button>
