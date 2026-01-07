@@ -569,6 +569,61 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
     prevWebsiteConfigRef.current = websiteConfiguration;
   }, [websiteConfiguration]);
 
+  // Auto-convert base64 branding images to uploaded URLs
+  useEffect(() => {
+    const convertBase64BrandingImages = async () => {
+      const updates: Partial<WebsiteConfig> = {};
+      let hasUpdates = false;
+
+      // Check and convert headerLogo
+      if (websiteConfiguration.headerLogo && isBase64Image(websiteConfiguration.headerLogo)) {
+        try {
+          console.log('[AdminCustomization] Converting base64 headerLogo to uploaded URL');
+          const uploadedUrl = await convertBase64ToUploadedUrl(websiteConfiguration.headerLogo, tenantId, 'branding');
+          updates.headerLogo = uploadedUrl;
+          hasUpdates = true;
+        } catch (err) {
+          console.error('[AdminCustomization] Failed to convert headerLogo:', err);
+        }
+      }
+
+      // Check and convert footerLogo
+      if (websiteConfiguration.footerLogo && isBase64Image(websiteConfiguration.footerLogo)) {
+        try {
+          console.log('[AdminCustomization] Converting base64 footerLogo to uploaded URL');
+          const uploadedUrl = await convertBase64ToUploadedUrl(websiteConfiguration.footerLogo, tenantId, 'branding');
+          updates.footerLogo = uploadedUrl;
+          hasUpdates = true;
+        } catch (err) {
+          console.error('[AdminCustomization] Failed to convert footerLogo:', err);
+        }
+      }
+
+      // Check and convert favicon
+      if (websiteConfiguration.favicon && isBase64Image(websiteConfiguration.favicon)) {
+        try {
+          console.log('[AdminCustomization] Converting base64 favicon to uploaded URL');
+          const uploadedUrl = await convertBase64ToUploadedUrl(websiteConfiguration.favicon, tenantId, 'branding');
+          updates.favicon = uploadedUrl;
+          hasUpdates = true;
+        } catch (err) {
+          console.error('[AdminCustomization] Failed to convert favicon:', err);
+        }
+      }
+
+      // Apply updates if any
+      if (hasUpdates) {
+        setWebsiteConfiguration(prev => ({ ...prev, ...updates }));
+        console.log('[AdminCustomization] Base64 branding images converted to URLs:', updates);
+      }
+    };
+
+    // Only run if config is loaded and there are potential base64 images
+    if (hasLoadedInitialConfig.current) {
+      convertBase64BrandingImages();
+    }
+  }, [tenantId]); // Only run on mount or tenant change, not on every config change
+
   // Sync theme colors with prop
   useEffect(() => {
     if (themeConfig) {
@@ -654,18 +709,26 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
             ? { ...prev, image: uploadedUrl }
             : { ...prev, mobileImage: uploadedUrl }
         );
-      } else if (imageType === 'logo') {
-        onUpdateLogo(convertedImage);
-      } else if (imageType === 'favicon') {
-        setWebsiteConfiguration((prev) => ({ ...prev, favicon: convertedImage }));
-      } else if (imageType === 'headerLogo') {
-        setWebsiteConfiguration((prev) => ({ ...prev, headerLogo: convertedImage }));
-      } else if (imageType === 'footerLogo') {
-        setWebsiteConfiguration((prev) => ({ ...prev, footerLogo: convertedImage }));
+      } else if (imageType === 'logo' || imageType === 'favicon' || imageType === 'headerLogo' || imageType === 'footerLogo') {
+        // Upload branding images to server instead of storing base64
+        const filename = `${imageType}-${Date.now()}.webp`;
+        const webpFile = dataUrlToFile(convertedImage, filename);
+        const uploadedUrl = await uploadPreparedImageToServer(webpFile, tenantId, 'branding');
+        
+        if (imageType === 'logo') {
+          onUpdateLogo(uploadedUrl);
+        } else if (imageType === 'favicon') {
+          setWebsiteConfiguration((prev) => ({ ...prev, favicon: uploadedUrl }));
+        } else if (imageType === 'headerLogo') {
+          setWebsiteConfiguration((prev) => ({ ...prev, headerLogo: uploadedUrl }));
+        } else if (imageType === 'footerLogo') {
+          setWebsiteConfiguration((prev) => ({ ...prev, footerLogo: uploadedUrl }));
+        }
       } else if (imageType === 'popup') {
         setPopupFormData((prev) => ({ ...prev, image: convertedImage }));
       }
-    } catch {
+    } catch (err) {
+      console.error('Failed to upload image:', err);
       alert('Failed to process image.');
     } finally {
       event.target.value = '';

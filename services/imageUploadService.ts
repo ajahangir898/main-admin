@@ -25,7 +25,7 @@ export interface UploadResponse {
 export const uploadPreparedImageToServer = async (
   file: File,
   tenantId: string,
-  folder?: 'carousel'
+  folder?: 'carousel' | 'branding' | 'gallery'
 ): Promise<string> => {
   try {
     const formData = new FormData();
@@ -107,7 +107,7 @@ const normalizeBase64DataUrl = (value: string): string => {
 export const convertBase64ToUploadedUrl = async (
   base64Data: string,
   tenantId: string,
-  folder?: 'carousel'
+  folder?: 'carousel' | 'branding' | 'gallery'
 ): Promise<string> => {
   try {
     const normalizedBase64Data = normalizeBase64DataUrl(base64Data);

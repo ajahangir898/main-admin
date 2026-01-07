@@ -131,7 +131,7 @@ tenantsRouter.post('/register', async (req, res) => {
         status: 'trialing',
         trialEndsAt: trialEndDate.toISOString(),
         shopUrl: `https://${tenant.subdomain}.systemnextit.com`,
-        adminUrl: `https://${tenant.subdomain}.systemnextit.com/admin`
+        adminUrl: `https://admin.systemnextit.com`
       },
       message: `🎉 Your shop "${tenant.name}" has been created! 14-day free trial started.`
     });
