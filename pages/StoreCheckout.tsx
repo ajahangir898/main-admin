@@ -346,8 +346,8 @@ const StoreCheckout = ({
                         key={config.type}
                         type="button"
                         onClick={() => setSelectedDeliveryType(config.type)}
-                        className={`rounded-2xl border p-4 text-left transition flex flex-col gap-1 ${
-                          isActive ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100' : 'border-gray-200 bg-white'
+                        className={`rounded-2xl border p-4 text-left transition flex flex-col gap-1 transform hover:scale-105 ${
+                          isActive ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100' : 'border-gray-200 bg-white hover:shadow-lg'
                         } ${!config.isEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={!config.isEnabled}
                       >
@@ -656,7 +656,7 @@ const StoreCheckout = ({
               <div className="mt-6 flex flex-col gap-3">
                 <button
                   onClick={handleSubmit}
-                  className="w-full btn-order rounded-2xl py-4 text-base tracking-wide hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
+                  className="w-full btn-order rounded-2xl py-4 text-base tracking-wide bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
                 >
                   Confirm Order • ৳{grandTotal.toLocaleString()}
                 </button>

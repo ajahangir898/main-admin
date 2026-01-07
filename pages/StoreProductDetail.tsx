@@ -635,7 +635,7 @@ const StoreProductDetail = ({
                         key={idx}
                         onMouseEnter={() => handleThumbnailSelect(img, idx)}
                         onClick={() => handleThumbnailSelect(img, idx)}
-                        className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 p-1 transition-all overflow-hidden ${
+                        className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 p-1 transition-all overflow-hidden transform hover:scale-105 ${
                           selectedImageIndex === idx
                             ? 'border-theme-primary shadow-md'
                             : 'border-gray-200 hover:border-theme-primary/70'
@@ -786,14 +786,14 @@ const StoreProductDetail = ({
                     <button 
                       onClick={handleAddToCart}
                       disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-order'}`}
+                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
                     >
                        <ShoppingCart size={20} /> Add to cart
                     </button>
                     <button 
                       onClick={handleBuyNow}
                       disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-order'}`}
+                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-green-600 text-white hover:bg-green-700'}`}
                     >
                        <ShoppingBag size={20} /> Buy Now
                     </button>

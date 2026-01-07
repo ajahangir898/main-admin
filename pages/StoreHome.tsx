@@ -219,6 +219,24 @@ const StoreHome = ({
   const showPopupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextPopupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialPopupShownRef = useRef(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
   // Category view state - shows category products page when a category is selected
   const [selectedCategoryView, setSelectedCategoryView] = useState<string | null>(null);
@@ -951,6 +969,29 @@ const StoreHome = ({
           />
         </Suspense>
       )}
+
+      {/* Scroll to Top Button */}
+      <button
+        className={`fixed bottom-4 right-4 bg-purple-600 text-white rounded-full p-3 shadow-lg hover:bg-purple-700 transition-all duration-300 ${
+          showScrollToTop ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={scrollToTop}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
+      </button>
     </div>
   );
 };

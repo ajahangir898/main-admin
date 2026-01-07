@@ -29,16 +29,23 @@ export interface StoreFooterProps {
 }
 
 export const StoreFooter: React.FC<StoreFooterProps> = ({ websiteConfig, logo, onOpenChat }) => {
+  const socialIconMap: { [key: string]: React.ReactNode } = {
+    facebook: <Facebook size={18} className="text-current" />,
+    instagram: <Instagram size={18} className="text-current" />,
+    twitter: <Twitter size={18} className="text-current" />,
+    youtube: <Youtube size={18} className="text-current" />,
+    linkedin: <Linkedin size={18} className="text-current" />,
+    whatsapp: <MessageCircle size={18} className="text-current" />,
+    messenger: <MessageCircle size={18} className="text-current" />,
+    fb: <Facebook size={18} className="text-current" />,
+    ig: <Instagram size={18} className="text-current" />,
+    x: <Twitter size={18} className="text-current" />,
+    yt: <Youtube size={18} className="text-current" />,
+  };
+
   const resolveSocialIcon = (platform?: string): React.ReactNode => {
     const key = platform?.toLowerCase() || '';
-    if (key.includes('facebook') || key === 'fb') return <Facebook size={18} className="text-current" />;
-    if (key.includes('instagram') || key === 'ig') return <Instagram size={18} className="text-current" />;
-    if (key.includes('twitter') || key === 'x') return <Twitter size={18} className="text-current" />;
-    if (key.includes('youtube') || key.includes('yt')) return <Youtube size={18} className="text-current" />;
-    if (key.includes('linkedin')) return <Linkedin size={18} className="text-current" />;
-    if (key.includes('whatsapp') || key.includes('messenger'))
-      return <MessageCircle size={18} className="text-current" />;
-    return <Globe size={18} className="text-current" />;
+    return socialIconMap[key] || <Globe size={18} className="text-current" />;
   };
 
   const whatsappLink = buildWhatsAppLink(websiteConfig?.whatsappNumber);
@@ -234,7 +241,7 @@ export const StoreFooter: React.FC<StoreFooterProps> = ({ websiteConfig, logo, o
                   target="_blank"
                   rel="noreferrer"
                   aria-label={link.platform}
-                  className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-theme-primary hover:text-white hover:border-theme-primary hover:shadow-lg transition-all"
+                  className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-theme-primary hover:text-white hover:border-theme-primary hover:shadow-lg transition-all transform hover:scale-110"
                 >
                   {resolveSocialIcon(link.platform)}
                 </a>
