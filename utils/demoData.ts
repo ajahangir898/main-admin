@@ -193,7 +193,7 @@ export const DEMO_PRODUCTS: Product[] = [
 export const DEMO_WEBSITE_CONFIG: Partial<WebsiteConfig> = {
   websiteName: 'SystemNext IT',
   shortDescription: 'Professional E-commerce & Software Solutions',
-  headerLogo: '/systemnext-logo.png',
+  headerLogo: 'https://hdnfltv.com/image/nitimages/04aad350-812e-4678-a009-7d576378b603.webp',
   carouselItems: DEMO_CAROUSEL_ITEMS,
   socialLinks: [
     { id: '1', platform: 'facebook', url: 'https://facebook.com/systemnextit' },
