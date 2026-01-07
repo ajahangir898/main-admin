@@ -5,16 +5,18 @@ import type { Product, User, WebsiteConfig, Order, ProductVariantSelection } fro
 // Custom hook with all business logic
 import { useStoreHome, formatSegment } from '../hooks/useStoreHome';
 
-// Critical above-the-fold components - loaded EAGERLY
+// Critical above-the-fold components - loaded EAGERLY (minimal set for first paint)
 import { StoreHeader } from '../components/StoreHeader';
 import { HeroSection } from '../components/store/HeroSection';
-import { FlashSalesSection } from '../components/store/FlashSalesSection';
-import { ProductGridSection } from '../components/store/ProductGridSection';
 import { CategoriesSection } from '../components/store/CategoriesSection';
-import { LazySection } from '../components/store/LazySection';
 
 // Skeletons
 import { SectionSkeleton, FooterSkeleton } from '../components/store/skeletons';
+
+// Near-fold components - lazy loaded but eagerly prefetched
+const FlashSalesSection = lazy(() => import('../components/store/FlashSalesSection').then(m => ({ default: m.FlashSalesSection })));
+const ProductGridSection = lazy(() => import('../components/store/ProductGridSection').then(m => ({ default: m.ProductGridSection })));
+const LazySection = lazy(() => import('../components/store/LazySection').then(m => ({ default: m.LazySection })));
 
 // Below-the-fold - lazy loaded
 const StorePopup = lazy(() => import('../components/StorePopup').then(m => ({ default: m.StorePopup })));
@@ -307,74 +309,82 @@ const StoreHome: React.FC<StoreHomeProps> = ({
           <>
             {/* Flash Deals */}
             {flashSalesProducts.length > 0 && (
-              <FlashSalesSection
-                products={flashSalesProducts}
-                showCounter={showFlashSaleCounter}
-                countdown={flashSaleCountdown}
-                onProductClick={onProductClick}
-                onBuyNow={handleBuyNow}
-                onQuickView={setQuickViewProduct}
-                onAddToCart={handleAddProductToCartFromCard}
-                productCardStyle={websiteConfig?.productCardStyle}
-                sectionRef={productsSectionRef}
-              />
+              <Suspense fallback={<SectionSkeleton />}>
+                <FlashSalesSection
+                  products={flashSalesProducts}
+                  showCounter={showFlashSaleCounter}
+                  countdown={flashSaleCountdown}
+                  onProductClick={onProductClick}
+                  onBuyNow={handleBuyNow}
+                  onQuickView={setQuickViewProduct}
+                  onAddToCart={handleAddProductToCartFromCard}
+                  productCardStyle={websiteConfig?.productCardStyle}
+                  sectionRef={productsSectionRef}
+                />
+              </Suspense>
             )}
 
             {/* Best Sale Products */}
             {bestSaleProducts.length > 0 && (
-              <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="400px">
-                <ProductGridSection
-                  title="Best Sale Products"
-                  products={bestSaleProducts}
-                  accentColor="green"
-                  keyPrefix="best"
-                  maxProducts={10}
-                  reverseOrder={true}
-                  onProductClick={onProductClick}
-                  onBuyNow={handleBuyNow}
-                  onQuickView={setQuickViewProduct}
-                  onAddToCart={handleAddProductToCartFromCard}
-                  productCardStyle={websiteConfig?.productCardStyle}
-                />
-              </LazySection>
+              <Suspense fallback={<SectionSkeleton />}>
+                <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="400px">
+                  <ProductGridSection
+                    title="Best Sale Products"
+                    products={bestSaleProducts}
+                    accentColor="green"
+                    keyPrefix="best"
+                    maxProducts={10}
+                    reverseOrder={true}
+                    onProductClick={onProductClick}
+                    onBuyNow={handleBuyNow}
+                    onQuickView={setQuickViewProduct}
+                    onAddToCart={handleAddProductToCartFromCard}
+                    productCardStyle={websiteConfig?.productCardStyle}
+                  />
+                </LazySection>
+              </Suspense>
             )}
 
             {/* Popular Products */}
             {popularProducts.length > 0 && (
-              <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="400px">
-                <ProductGridSection
-                  title="Popular products"
-                  products={popularProducts}
-                  accentColor="purple"
-                  keyPrefix="pop"
-                  maxProducts={10}
-                  reverseOrder={false}
-                  onProductClick={onProductClick}
-                  onBuyNow={handleBuyNow}
-                  onQuickView={setQuickViewProduct}
-                  onAddToCart={handleAddProductToCartFromCard}
-                  productCardStyle={websiteConfig?.productCardStyle}
-                />
-              </LazySection>
+              <Suspense fallback={<SectionSkeleton />}>
+                <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="400px">
+                  <ProductGridSection
+                    title="Popular products"
+                    products={popularProducts}
+                    accentColor="purple"
+                    keyPrefix="pop"
+                    maxProducts={10}
+                    reverseOrder={false}
+                    onProductClick={onProductClick}
+                    onBuyNow={handleBuyNow}
+                    onQuickView={setQuickViewProduct}
+                    onAddToCart={handleAddProductToCartFromCard}
+                    productCardStyle={websiteConfig?.productCardStyle}
+                  />
+                </LazySection>
+              </Suspense>
             )}
 
             {/* All Products */}
             {activeProducts.length > 0 && (
-              <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="500px">
-                <ProductGridSection
-                  title="Our Products"
-                  products={activeProducts}
-                  accentColor="blue"
-                  keyPrefix="all"
-                  maxProducts={50}
-                  reverseOrder={false}
-                  onProductClick={onProductClick}
-                  onBuyNow={handleBuyNow}
-                  onQuickView={setQuickViewProduct}
-                  onAddToCart={handleAddProductToCartFromCard}
-                  productCardStyle={websiteConfig?.productCardStyle}
-                />
-              </LazySection>
+              <Suspense fallback={<SectionSkeleton />}>
+                <LazySection fallback={<SectionSkeleton />} rootMargin="0px 0px 300px" minHeight="500px">
+                  <ProductGridSection
+                    title="Our Products"
+                    products={activeProducts}
+                    accentColor="blue"
+                    keyPrefix="all"
+                    maxProducts={50}
+                    reverseOrder={false}
+                    onProductClick={onProductClick}
+                    onBuyNow={handleBuyNow}
+                    onQuickView={setQuickViewProduct}
+                    onAddToCart={handleAddProductToCartFromCard}
+                    productCardStyle={websiteConfig?.productCardStyle}
+                  />
+                </LazySection>
+              </Suspense>
             )}
           </>
         )}

@@ -145,9 +145,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                     <div className={`hero-carousel group ${isMobile ? 'hero-carousel-mobile' : 'hero-carousel-desktop'}`}>
                         {items.map((item, i) => {
                             const isActive = i === currentIndex;
+                            const isNearActive = Math.abs(i - currentIndex) <= 1 || 
+                                                 (currentIndex === 0 && i === items.length - 1) ||
+                                                 (currentIndex === items.length - 1 && i === 0);
                             const { href, isExternal } = getCarouselHref(item);
                             const rawImgSrc = isMobile ? (item.mobileImage || item.image || '') : (item.image || '');
                             const imgSrc = normalizeImageUrl(rawImgSrc);
+                            
+                            // Only load first image with priority, defer others
+                            // Load adjacent slides for smooth transitions
+                            const shouldLoad = i === 0 || isNearActive;
+                            
                             return (
                                 <a 
                                     key={item.id || i} 
@@ -156,12 +164,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                     rel={isExternal ? 'noopener noreferrer' : undefined}
                                     className={`hero-slide ${isActive ? 'hero-slide-active' : 'hero-slide-inactive'}`}
                                 >
-                                    <OptimizedImage
-                                        src={imgSrc}
-                                        alt={item.name || 'Banner'}
-                                        className="hero-slide-image"
-                                        priority={i === 0}
-                                    />
+                                    {shouldLoad ? (
+                                        <OptimizedImage
+                                            src={imgSrc}
+                                            alt={item.name || 'Banner'}
+                                            className="hero-slide-image"
+                                            priority={i === 0}
+                                            eager={isNearActive && i !== 0}
+                                        />
+                                    ) : (
+                                        <div className="hero-slide-image bg-gray-100" />
+                                    )}
                                 </a>
                             );
                         })}

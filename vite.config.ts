@@ -15,19 +15,17 @@ const CRITICAL_JS_CHUNKS = [
   'react-jsx-runtime',
   // App entry chunks ONLY
   'index-',
-  'App-',
-  // Store home critical path ONLY - minimal set for storefront
-  'page-storehome',
-  'store-core',
-  'store-header'
-  // NOTE: Admin, SuperAdmin, Registration pages are NOT preloaded
-  // They load on-demand when user navigates to those routes
+  'App-'
+  // NOTE: store-core, store-header, page-storehome load on-demand via lazy import
+  // This reduces initial bundle and speeds up first paint
+  // Admin, SuperAdmin, Registration pages are NOT preloaded
 ];
 
 // Critical CSS patterns for preloading (ordered by priority)
+// NOTE: CSS is loaded async with media="print" onload pattern to avoid render blocking
 const CRITICAL_CSS_PATTERNS = [
   { pattern: 'tailwind-', priority: 1 }  // Tailwind CSS only - highest priority
-  // REMOVED: cmp-storeheader CSS - not critical for first paint
+  // Store/component CSS loads on-demand with their chunks
 ];
 
 /**
@@ -246,13 +244,17 @@ const manualChunkResolver = (id: string): string | undefined => {
     if (segment) {
       const componentName = segment.split('/')[0].replace(/\.(tsx|ts|jsx|js)$/, '').toLowerCase();
       
-      // Core storefront components - loaded with StoreHome
-      const coreStoreComponents = [
-        'herosection', 'categoriessection', 'productgridsection', 
-        'flashsalessection', 'productcard', 'lazysection', 'promobanner'
-      ];
-      if (coreStoreComponents.includes(componentName)) {
+      // Critical above-fold components - HeroSection and Categories only
+      // These load synchronously with StoreHome for instant render
+      const criticalStoreComponents = ['herosection', 'categoriessection'];
+      if (criticalStoreComponents.includes(componentName)) {
         return 'store-core';
+      }
+      
+      // Product display components - lazy loaded after initial render
+      const productComponents = ['productgridsection', 'flashsalessection', 'productcard', 'lazysection'];
+      if (productComponents.includes(componentName)) {
+        return 'store-products';
       }
       
       // Header components - separate chunk (used across store pages)

@@ -44,8 +44,8 @@ const CategoryButton = memo(({
             src={category.icon} 
             alt="" 
             className="w-5 h-5 object-contain" 
-            loading="lazy"
-            decoding="async"
+            loading="eager"
+            fetchPriority="high"
           />
         ) : (
           getIcon(category.icon, 18, 2)
