@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, memo } from 'react';
-import { getCDNImageUrl, isCDNEnabled } from '../config/cdnConfig';
 
 interface Props {
   src: string;
@@ -52,43 +51,25 @@ const generateBlurPlaceholder = (s: string): string => {
   return EMPTY;
 };
 
-const applyCDN = (url: string, w?: number) =>
-  url && isCDNEnabled()
-    ? getCDNImageUrl(url, {
-        width: w,
-        quality: 80,
-        format: supportsWebP ? 'webp' : 'auto',
-        fit: 'cover'
-      })
-    : url;
+const applyCDN = (url: string, w?: number) => {
+  // Skip CDN for now - just return the original URL
+  // CDN transformation was causing issues with some images
+  return url;
+};
 
 const getOptimizedUrl = (src: string, w?: number): string => {
   if (!src) return EMPTY;
   if (isDataUrl(src) || isBlobUrl(src)) return src.trim();
-  const tw = w || 640;
-
-  if (src.includes('unsplash.com')) {
-    let u = w
-      ? src.includes('w=')
-        ? src.replace(/w=\d+/, `w=${w}`)
-        : `${src}${src.includes('?') ? '&' : '?'}w=${w}`
-      : src;
-
-    if (supportsWebP && !u.includes('fm=')) u += `${u.includes('?') ? '&' : '?'}fm=webp`;
-    if (!u.includes('q=')) u += `${u.includes('?') ? '&' : '?'}q=80`;
-    return applyCDN(u, tw);
-  }
-
-  return applyCDN(src, tw);
+  
+  // Return the original URL without transformation
+  // This fixes broken images that were showing placeholder
+  return src.trim();
 };
 
-const generateSrcSet = (s: string): string =>
-  !s ||
-  isDataUrl(s) ||
-  isBlobUrl(s) ||
-  (!s.includes('unsplash.com') && !s.includes('systemnextit.com'))
-    ? ''
-    : [320, 640, 960, 1280, 1920].map(w => `${getOptimizedUrl(s, w)} ${w}w`).join(', ');
+const generateSrcSet = (s: string): string => {
+  // Disable srcset generation for now - it was causing issues
+  return '';
+};
 
 const OptimizedImage = memo(
   ({
