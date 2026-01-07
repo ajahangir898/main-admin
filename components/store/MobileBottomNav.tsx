@@ -92,21 +92,21 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
     // Default Style: 5 Columns - Clean Modern Design
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2 px-1 flex justify-around items-end md:hidden z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] pb-safe h-[60px]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2 px-1 flex justify-around items-center md:hidden z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] pb-safe h-[60px]">
             {/* Chat */}
             {chatEnabled && onChatClick ? (
                 <button onClick={onChatClick} className={`flex flex-col items-center gap-0.5 transition w-1/5 group ${activeTab === 'chat' ? 'scale-110' : 'hover:scale-110'}`}>
-                    <GradientChatIcon size={44} />
+                    <GradientChatIcon size={48} />
                     <span className="text-[10px] font-medium text-gray-600">Chat</span>
                 </button>
             ) : chatFallbackLink ? (
                 <a href={chatFallbackLink} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-0.5 transition w-1/5 group hover:scale-110">
-                    <GradientChatIcon size={44} />
+                    <GradientChatIcon size={48} />
                     <span className="text-[10px] font-medium text-gray-600">Chat</span>
                 </a>
             ) : (
                 <button className="flex flex-col items-center gap-0.5 transition w-1/5 opacity-50" type="button" disabled>
-                    <GradientChatIcon size={44} />
+                    <GradientChatIcon size={48} />
                     <span className="text-[10px] font-medium text-gray-400">Chat</span>
                 </button>
             )}
@@ -129,8 +129,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             )}
 
             {/* Home - Center Elevated */}
-            <button onClick={onHomeClick} className={`flex flex-col items-center transition w-1/5 group -mt-5 ${activeTab === 'home' ? 'scale-110' : 'hover:scale-110'}`}>
-                <div className="w-16 h-16 rounded-full bg-theme-primary flex items-center justify-center shadow-lg shadow-theme-primary/30 group-hover:shadow-theme-primary/50 group-active:scale-95 transition-all border-4 border-white">
+            <button onClick={onHomeClick} className={`flex flex-col items-center transition w-1/5 group ${activeTab === 'home' ? 'scale-110' : 'hover:scale-110'}`}>
+                <div className="w-16 h-16 rounded-full bg-theme-primary flex items-center justify-center shadow-lg shadow-theme-primary/30 group-hover:shadow-theme-primary/50 group-active:scale-95 transition-all border-4 border-white transform -translate-y-2">
                     <Home size={28} strokeWidth={2.5} className="text-white" />
                 </div>
                 <span className="text-[10px] font-bold text-theme-primary mt-0.5">Home</span>
