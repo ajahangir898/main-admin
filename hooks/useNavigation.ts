@@ -6,7 +6,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Product, User } from '../types';
 import { isAdminRole, SESSION_STORAGE_KEY } from '../utils/appHelpers';
 
-export type ViewState = 'store' | 'detail' | 'checkout' | 'success' | 'profile' | 'admin' | 'landing_preview' | 'admin-login' | 'visual-search' | 'super-admin';
+export type ViewState = 'store' | 'detail' | 'checkout' | 'success' | 'profile' | 'admin' | 'landing_preview' | 'admin-login' | 'visual-search' | 'super-admin' | 'register';
 
 // Parse order ID from URL for success page
 export function getOrderIdFromUrl(): string | null {
@@ -29,9 +29,18 @@ const isSuperAdminSubdomain = typeof window !== 'undefined' &&
 const isAdminPath = typeof window !== 'undefined' && 
   (window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/'));
 
+// Check if URL path is /register (for tenant self-registration)
+const isRegisterPath = typeof window !== 'undefined' && 
+  (window.location.pathname === '/register' || window.location.pathname.startsWith('/register'));
+
 // Get initial view based on stored session
 function getInitialView(): ViewState {
   if (typeof window === 'undefined') return 'store';
+  
+  // Check if /register path on main domain
+  if (isRegisterPath) {
+    return 'register';
+  }
   
   // Super admin subdomain - always show super-admin dashboard (requires login)
   if (isSuperAdminSubdomain) {
@@ -125,6 +134,14 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
     const trimmedPath = (path ?? window.location.pathname).replace(/^\/+|\/+$/g, '');
     const activeView = currentViewRef.current;
     const activeUser = userRef.current;
+
+    // Handle register route (public tenant registration)
+    if (trimmedPath === 'register') {
+      if (activeView !== 'register') {
+        setCurrentView('register');
+      }
+      return;
+    }
 
     // Handle admin login route FIRST
     if (trimmedPath === 'admin/login') {

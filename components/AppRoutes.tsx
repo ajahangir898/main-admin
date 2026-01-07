@@ -20,6 +20,7 @@ const LandingPagePreview = lazy(() => import('../pages/LandingPagePreview'));
 const SuperAdminDashboard = lazy(() => import('../pages/SuperAdminDashboard'));
 const AdminLogin = lazy(() => import('../pages/AdminLogin'));
 const AdminAppWithAuth = lazy(() => import('../pages/AdminAppWithAuth'));
+const TenantRegistration = lazy(() => import('../pages/TenantRegistration'));
 const MobileBottomNav = lazy(() => import('./store/MobileBottomNav').then(m => ({ default: m.MobileBottomNav })));
 const StoreChatModal = lazy(() => import('./store/StoreChatModal').then(m => ({ default: m.StoreChatModal })));
 
@@ -234,7 +235,11 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
         </Suspense>
       )}
 
-      {currentView === 'admin-login' ? (
+      {currentView === 'register' ? (
+        <Suspense fallback={<StorePageSkeleton />}>
+          <TenantRegistration />
+        </Suspense>
+      ) : currentView === 'admin-login' ? (
         <Suspense fallback={null}>
           <AdminLogin
             onLoginSuccess={(loggedUser) => {

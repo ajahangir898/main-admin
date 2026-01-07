@@ -10,9 +10,9 @@ import type { Product, WebsiteConfig, CarouselItem, Category, Brand } from '../t
 export const DEMO_CAROUSEL_ITEMS: CarouselItem[] = [
   {
     id: 'demo-1',
-    name: 'Start Your Online Business Today',
-    image: 'https://placehold.co/1200x400/E91E8C/white?text=Start+Your+Business',
-    mobileImage: 'https://placehold.co/600x300/E91E8C/white?text=Start+Your+Business',
+    name: 'SystemNext IT - Professional E-commerce Solutions',
+    image: 'https://placehold.co/1200x400/6366F1/white?text=SystemNext+IT+-+E-commerce+Solutions',
+    mobileImage: 'https://placehold.co/600x300/6366F1/white?text=SystemNext+IT',
     url: '#features',
     urlType: 'Internal',
     status: 'Publish',
@@ -20,9 +20,9 @@ export const DEMO_CAROUSEL_ITEMS: CarouselItem[] = [
   },
   {
     id: 'demo-2',
-    name: 'Multi-Tenant E-commerce Platform',
-    image: 'https://placehold.co/1200x400/7C3AED/white?text=E-commerce+Platform',
-    mobileImage: 'https://placehold.co/600x300/7C3AED/white?text=E-commerce+Platform',
+    name: 'Build Your Online Business with SystemNext IT',
+    image: 'https://placehold.co/1200x400/7C3AED/white?text=Build+Your+Business',
+    mobileImage: 'https://placehold.co/600x300/7C3AED/white?text=Build+Your+Business',
     url: '#pricing',
     urlType: 'Internal',
     status: 'Publish',
@@ -30,7 +30,7 @@ export const DEMO_CAROUSEL_ITEMS: CarouselItem[] = [
   },
   {
     id: 'demo-3',
-    name: 'Launch Your Store in Minutes',
+    name: 'Launch Your Store in Minutes - SystemNext IT',
     image: 'https://placehold.co/1200x400/10B981/white?text=Launch+Your+Store',
     mobileImage: 'https://placehold.co/600x300/10B981/white?text=Launch+Your+Store',
     url: '#contact',
@@ -52,7 +52,7 @@ export const DEMO_CATEGORIES: Category[] = [
 
 // Demo Brands - using placeholder images
 export const DEMO_BRANDS: Brand[] = [
-  { id: '1', name: 'SystemNext', logo: 'https://placehold.co/120x40/E91E8C/white?text=SystemNext', status: 'Active' },
+  { id: '1', name: 'SystemNext IT', logo: 'https://placehold.co/120x40/6366F1/white?text=SystemNext+IT', status: 'Active' },
   { id: '2', name: 'TechPro', logo: 'https://placehold.co/120x40/3B82F6/white?text=TechPro', status: 'Active' },
   { id: '3', name: 'StyleHub', logo: 'https://placehold.co/120x40/8B5CF6/white?text=StyleHub', status: 'Active' },
 ];
@@ -165,7 +165,7 @@ export const DEMO_PRODUCTS: Product[] = [
     image: 'https://placehold.co/400x400/6366F1/white?text=Laptop+Stand',
     galleryImages: ['https://placehold.co/400x400/6366F1/white?text=Laptop+Stand'],
     category: 'Electronics',
-    brand: 'SystemNext',
+    brand: 'SystemNext IT',
     stock: 80,
     status: 'Active',
     rating: 4.5,
@@ -192,7 +192,8 @@ export const DEMO_PRODUCTS: Product[] = [
 // Demo Website Config
 export const DEMO_WEBSITE_CONFIG: Partial<WebsiteConfig> = {
   websiteName: 'SystemNext IT',
-  shortDescription: 'Build Your E-commerce Empire',
+  shortDescription: 'Professional E-commerce & Software Solutions',
+  headerLogo: '/systemnext-logo.png',
   carouselItems: DEMO_CAROUSEL_ITEMS,
   socialLinks: [
     { id: '1', platform: 'facebook', url: 'https://facebook.com/systemnextit' },
