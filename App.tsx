@@ -15,7 +15,7 @@
  * - hooks/useNavigation.ts - URL routing and navigation
  * - components/AppRoutes.tsx - All view rendering logic
  */
-import React, { useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useEffect, useCallback, lazy, Suspense, useMemo } from 'react';
 import type { FacebookPixelConfig } from './types';
 
 // Core services
@@ -591,8 +591,9 @@ const App = () => {
   }, [tenant, handleTenantChange]);
 
   // === COMPUTED VALUES ===
-  const platformOperator = isPlatformOperator(user?.role);
-  const canAccessAdminChat = isAdminRole(user?.role);
+  // Memoize role checks to avoid re-calculation on every render
+  const platformOperator = useMemo(() => isPlatformOperator(user?.role), [user]);
+  const canAccessAdminChat = useMemo(() => isAdminRole(user?.role), [user]);
   const selectedTenantRecord = tenants.find(t => t.id === activeTenantId) || tenantsRef.current.find(t => t.id === activeTenantId) || null;
   const isTenantLockedByHost = Boolean(hostTenantId);
   const scopedTenants = isTenantLockedByHost ? tenants.filter((t) => t.id === hostTenantId) : tenants;
