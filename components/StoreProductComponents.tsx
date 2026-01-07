@@ -20,7 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onBu
   const handleCart = (e: React.MouseEvent) => { e.stopPropagation(); onAddToCart?.(product); };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-xl transition-shadow duration-300" style={{ minHeight: '320px', contain: 'layout' }}>
+    <div className="bg-white rounded-xl overflow-hidden flex flex-col relative shadow-sm hover:shadow-xl transition-shadow duration-300" style={{ contain: 'layout' }}>
       {/* Purple gradient top bar */}
       <div 
         className="absolute top-0 left-0 right-0 h-1 z-10"
