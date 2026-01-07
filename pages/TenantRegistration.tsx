@@ -5,8 +5,10 @@
  * - 14-day free trial
  * - Shop name and subdomain selection
  * - Real-time subdomain availability check
+ * - Beautiful loading animation during creation
+ * - Comprehensive success page with all details
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Store, 
   Mail, 
@@ -24,7 +26,14 @@ import {
   CreditCard,
   Hexagon,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy,
+  ExternalLink,
+  Rocket,
+  PartyPopper,
+  KeyRound,
+  Building2,
+  ArrowLeft
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
@@ -50,6 +59,14 @@ interface FormErrors {
   confirmPassword?: string;
 }
 
+interface CreatedShopInfo {
+  subdomain: string;
+  shopName: string;
+  email: string;
+  shopUrl: string;
+  adminUrl: string;
+}
+
 type SubdomainStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
 const FEATURES = [
@@ -59,7 +76,14 @@ const FEATURES = [
   { icon: CreditCard, title: 'সব পেমেন্ট মেথড', desc: 'বিকাশ, নগদ, কার্ড সাপোর্ট' },
 ];
 
-const RESERVED_SUBDOMAINS = ['www', 'admin', 'superadmin', 'api', 'app', 'mail', 'smtp', 'ftp', 'cpanel', 'webmail', 'ns1', 'ns2'];
+const RESERVED_SUBDOMAINS = ['www', 'admin', 'superadmin', 'api', 'app', 'mail', 'smtp', 'ftp', 'cpanel', 'webmail', 'ns1', 'ns2', 'test', 'demo'];
+
+const CREATION_STEPS = [
+  { label: 'একাউন্ট তৈরি হচ্ছে', duration: 15 },
+  { label: 'শপ সেটআপ হচ্ছে', duration: 20 },
+  { label: 'ডেটাবেস কনফিগার হচ্ছে', duration: 15 },
+  { label: 'থিম ইনস্টল হচ্ছে', duration: 10 },
+];
 
 export default function TenantRegistration() {
   const [formData, setFormData] = useState<FormData>({
@@ -75,19 +99,25 @@ export default function TenantRegistration() {
   const [subdomainStatus, setSubdomainStatus] = useState<SubdomainStatus>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState(1); // 1: Shop Info, 2: Account Info
+  const [step, setStep] = useState(1);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [createdSubdomain, setCreatedSubdomain] = useState('');
+  const [createdShopInfo, setCreatedShopInfo] = useState<CreatedShopInfo | null>(null);
+  
+  // Loading progress state
+  const [creationProgress, setCreationProgress] = useState(0);
+  const [currentCreationStep, setCurrentCreationStep] = useState(0);
+  const [isCreating, setIsCreating] = useState(false);
 
   // Auto-generate subdomain from shop name
   useEffect(() => {
-    if (formData.shopName && !formData.subdomain) {
+    if (formData.shopName) {
       const generated = formData.shopName
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '')
         .slice(0, 30);
       setFormData(prev => ({ ...prev, subdomain: generated }));
     }
@@ -97,6 +127,7 @@ export default function TenantRegistration() {
   useEffect(() => {
     const subdomain = formData.subdomain.toLowerCase().trim();
     
+    // Show idle/waiting message if less than 3 chars
     if (!subdomain || subdomain.length < 3) {
       setSubdomainStatus('idle');
       return;
@@ -107,9 +138,14 @@ export default function TenantRegistration() {
       return;
     }
 
-    if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(subdomain) && subdomain.length > 2) {
-      setSubdomainStatus('invalid');
-      return;
+    // Validate format: must start and end with alphanumeric
+    if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(subdomain) && subdomain.length >= 3) {
+      if (subdomain.length === 3 && /^[a-z0-9]{3}$/.test(subdomain)) {
+        // Allow 3 char subdomains without hyphen
+      } else if (subdomain.startsWith('-') || subdomain.endsWith('-')) {
+        setSubdomainStatus('invalid');
+        return;
+      }
     }
 
     setSubdomainStatus('checking');
@@ -123,10 +159,35 @@ export default function TenantRegistration() {
         console.error('Subdomain check failed:', error);
         setSubdomainStatus('idle');
       }
-    }, 500);
+    }, 600);
 
     return () => clearTimeout(checkAvailability);
   }, [formData.subdomain]);
+
+  // Progress animation during creation
+  useEffect(() => {
+    if (!isCreating) return;
+    
+    let progress = 0;
+    const totalDuration = CREATION_STEPS.reduce((acc, step) => acc + step.duration, 0);
+    
+    const interval = setInterval(() => {
+      progress += 1;
+      setCreationProgress(Math.min((progress / totalDuration) * 100, 95));
+      
+      // Update current step
+      let elapsed = 0;
+      for (let i = 0; i < CREATION_STEPS.length; i++) {
+        elapsed += CREATION_STEPS[i].duration;
+        if (progress <= elapsed) {
+          setCurrentCreationStep(i);
+          break;
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isCreating]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -204,7 +265,9 @@ export default function TenantRegistration() {
   const handleNextStep = () => {
     if (validateStep1() && subdomainStatus === 'available') {
       setStep(2);
-    } else if (subdomainStatus !== 'available') {
+    } else if (subdomainStatus === 'checking') {
+      toast.error('সাবডোমেইন চেক হচ্ছে, একটু অপেক্ষা করুন...');
+    } else if (subdomainStatus !== 'available' && formData.subdomain.length >= 3) {
       toast.error('অনুগ্রহ করে একটি available সাবডোমেইন বাছাই করুন');
     }
   };
@@ -215,6 +278,9 @@ export default function TenantRegistration() {
     if (!validateStep2()) return;
 
     setIsSubmitting(true);
+    setIsCreating(true);
+    setCreationProgress(0);
+    setCurrentCreationStep(0);
 
     try {
       const response = await fetch('/api/tenants/register', {
@@ -238,15 +304,32 @@ export default function TenantRegistration() {
         throw new Error(data.error || 'Registration failed');
       }
 
-      setCreatedSubdomain(formData.subdomain);
+      // Complete the progress
+      setCreationProgress(100);
+      
+      // Small delay before showing success
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setCreatedShopInfo({
+        subdomain: formData.subdomain,
+        shopName: formData.shopName,
+        email: formData.email,
+        shopUrl: `https://${formData.subdomain}.systemnextit.com`,
+        adminUrl: `https://${formData.subdomain}.systemnextit.com/admin`
+      });
       setRegistrationSuccess(true);
-      toast.success('🎉 অভিনন্দন! আপনার শপ তৈরি হয়েছে!');
     } catch (error) {
       console.error('Registration error:', error);
       toast.error(error instanceof Error ? error.message : 'রেজিস্ট্রেশন ব্যর্থ হয়েছে');
+      setIsCreating(false);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${label} কপি হয়েছে!`);
   };
 
   const getSubdomainIcon = () => {
@@ -264,68 +347,299 @@ export default function TenantRegistration() {
   };
 
   const getSubdomainMessage = () => {
+    const subdomain = formData.subdomain.trim();
+    
+    if (!subdomain) {
+      return <span className="text-slate-400">সাবডোমেইন লিখুন (কমপক্ষে ৩ অক্ষর)</span>;
+    }
+    
+    if (subdomain.length < 3) {
+      return <span className="text-amber-600">আরো {3 - subdomain.length}টি অক্ষর দিন</span>;
+    }
+    
     switch (subdomainStatus) {
       case 'checking':
-        return <span className="text-blue-600">চেক করা হচ্ছে...</span>;
+        return <span className="text-blue-600 flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> চেক করা হচ্ছে...</span>;
       case 'available':
-        return <span className="text-green-600">✓ এই সাবডোমেইন available!</span>;
+        return <span className="text-green-600 font-medium">✓ Available!</span>;
       case 'taken':
-        return <span className="text-red-600">✗ এই সাবডোমেইন নেওয়া হয়েছে</span>;
+        return <span className="text-red-600">✗ নেওয়া হয়েছে, অন্য নাম চেষ্টা করুন</span>;
       case 'invalid':
-        return <span className="text-red-600">✗ সাবডোমেইন শুধু a-z, 0-9, - দিয়ে হবে</span>;
+        return <span className="text-red-600">✗ শুধু a-z, 0-9, হাইফেন ব্যবহার করুন</span>;
       default:
         return null;
     }
   };
 
-  // Success screen
-  if (registrationSuccess) {
+  // Loading/Creating Screen
+  if (isCreating && !registrationSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4">
         <Helmet>
-          <title>রেজিস্ট্রেশন সফল! - SystemNext IT</title>
+          <title>শপ তৈরি হচ্ছে... - SystemNext IT</title>
         </Helmet>
         
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-green-600" />
-          </div>
-          
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">🎉 অভিনন্দন!</h1>
-          <p className="text-slate-600 mb-6">আপনার শপ সফলভাবে তৈরি হয়েছে</p>
-          
-          <div className="bg-indigo-50 rounded-2xl p-4 mb-6">
-            <p className="text-sm text-slate-600 mb-1">আপনার শপের ঠিকানা:</p>
-            <a 
-              href={`https://${createdSubdomain}.systemnextit.com`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-lg font-bold text-indigo-600 hover:text-indigo-700"
-            >
-              {createdSubdomain}.systemnextit.com
-            </a>
+        <div className="max-w-md w-full">
+          {/* Animated Logo */}
+          <div className="text-center mb-8">
+            <div className="w-24 h-24 bg-white/20 backdrop-blur-lg rounded-3xl flex items-center justify-center mx-auto mb-6 animate-pulse">
+              <Rocket className="w-12 h-12 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">আপনার শপ তৈরি হচ্ছে</h1>
+            <p className="text-white/80">অনুগ্রহ করে অপেক্ষা করুন...</p>
           </div>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-            <p className="text-sm text-amber-800">
-              <Clock className="w-4 h-4 inline mr-1" />
-              <strong>১৪ দিন ফ্রি ট্রায়াল</strong> শুরু হয়েছে!
+          {/* Progress Card */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20">
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-sm text-white/80 mb-2">
+                <span>Progress</span>
+                <span>{Math.round(creationProgress)}%</span>
+              </div>
+              <div className="h-3 bg-white/20 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${creationProgress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Steps */}
+            <div className="space-y-3">
+              {CREATION_STEPS.map((stepItem, idx) => (
+                <div 
+                  key={idx}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                    idx === currentCreationStep 
+                      ? 'bg-white/20 text-white' 
+                      : idx < currentCreationStep 
+                        ? 'text-white/60' 
+                        : 'text-white/40'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    idx < currentCreationStep 
+                      ? 'bg-green-500' 
+                      : idx === currentCreationStep 
+                        ? 'bg-white/30' 
+                        : 'bg-white/10'
+                  }`}>
+                    {idx < currentCreationStep ? (
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                    ) : idx === currentCreationStep ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <span className="text-xs">{idx + 1}</span>
+                    )}
+                  </div>
+                  <span className="font-medium">{stepItem.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Shop Preview */}
+            <div className="mt-6 p-4 bg-white/10 rounded-2xl text-center">
+              <p className="text-white/60 text-sm mb-1">আপনার শপ:</p>
+              <p className="text-white font-bold text-lg">{formData.subdomain}.systemnextit.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Success Screen
+  if (registrationSuccess && createdShopInfo) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+        <Helmet>
+          <title>🎉 শপ তৈরি সফল! - SystemNext IT</title>
+        </Helmet>
+
+        {/* Confetti effect placeholder */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+          <div className="absolute top-10 right-1/4 w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="absolute top-5 left-1/2 w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+        </div>
+
+        <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+          {/* Success Header */}
+          <div className="text-center mb-8">
+            <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-200 animate-bounce">
+              <PartyPopper className="w-12 h-12 text-white" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">🎉 অভিনন্দন!</h1>
+            <p className="text-lg text-slate-600">
+              <span className="font-semibold text-emerald-600">{createdShopInfo.shopName}</span> সফলভাবে তৈরি হয়েছে
             </p>
           </div>
 
-          <div className="space-y-3">
-            <a
-              href={`https://${createdSubdomain}.systemnextit.com/admin`}
-              className="w-full bg-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
-            >
-              এডমিন প্যানেলে যান <ArrowRight className="w-5 h-5" />
-            </a>
-            <a
-              href={`https://${createdSubdomain}.systemnextit.com`}
-              className="w-full bg-slate-100 text-slate-700 py-3 px-6 rounded-xl font-semibold hover:bg-slate-200 transition-colors block"
-            >
-              শপ দেখুন
-            </a>
+          {/* Main Card */}
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+            {/* Trial Banner */}
+            <div className="bg-gradient-to-r from-amber-400 to-orange-400 px-6 py-4 text-center">
+              <div className="flex items-center justify-center gap-2 text-white font-semibold">
+                <Clock className="w-5 h-5" />
+                <span>১৪ দিন ফ্রি ট্রায়াল শুরু হয়েছে!</span>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8 space-y-6">
+              {/* Shop URL */}
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-5 border border-indigo-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <Store className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">আপনার শপের ঠিকানা</p>
+                    <p className="font-bold text-indigo-600">Shop URL</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-white rounded-xl p-3 border border-indigo-100">
+                  <input 
+                    type="text" 
+                    value={createdShopInfo.shopUrl}
+                    readOnly
+                    className="flex-1 bg-transparent text-slate-700 font-medium text-sm md:text-base outline-none"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(createdShopInfo.shopUrl, 'Shop URL')}
+                    className="p-2 hover:bg-indigo-50 rounded-lg transition-colors"
+                    title="Copy"
+                  >
+                    <Copy className="w-4 h-4 text-indigo-600" />
+                  </button>
+                  <a
+                    href={createdShopInfo.shopUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 hover:bg-indigo-50 rounded-lg transition-colors"
+                    title="Open"
+                  >
+                    <ExternalLink className="w-4 h-4 text-indigo-600" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Admin URL */}
+              <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-5 border border-emerald-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <Building2 className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">এডমিন প্যানেল</p>
+                    <p className="font-bold text-emerald-600">Admin Panel</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-white rounded-xl p-3 border border-emerald-100">
+                  <input 
+                    type="text" 
+                    value={createdShopInfo.adminUrl}
+                    readOnly
+                    className="flex-1 bg-transparent text-slate-700 font-medium text-sm md:text-base outline-none"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(createdShopInfo.adminUrl, 'Admin URL')}
+                    className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+                  >
+                    <Copy className="w-4 h-4 text-emerald-600" />
+                  </button>
+                  <a
+                    href={createdShopInfo.adminUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4 text-emerald-600" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Login Credentials */}
+              <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-2xl p-5 border border-slate-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-slate-200 rounded-xl flex items-center justify-center">
+                    <KeyRound className="w-5 h-5 text-slate-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">লগইন তথ্য</p>
+                    <p className="font-bold text-slate-700">Login Credentials</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between bg-white rounded-xl p-3 border border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-slate-400" />
+                      <div>
+                        <p className="text-xs text-slate-400">ইমেইল</p>
+                        <p className="font-medium text-slate-700">{createdShopInfo.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => copyToClipboard(createdShopInfo.email, 'Email')}
+                      className="p-2 hover:bg-slate-50 rounded-lg transition-colors"
+                    >
+                      <Copy className="w-4 h-4 text-slate-400" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between bg-white rounded-xl p-3 border border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <Lock className="w-4 h-4 text-slate-400" />
+                      <div>
+                        <p className="text-xs text-slate-400">পাসওয়ার্ড</p>
+                        <p className="font-medium text-slate-700">আপনার দেওয়া পাসওয়ার্ড</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                <a
+                  href={createdShopInfo.adminUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-2xl font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  <Building2 className="w-5 h-5" />
+                  এডমিন প্যানেল
+                </a>
+                <a
+                  href={createdShopInfo.shopUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-white text-slate-700 py-4 px-6 rounded-2xl font-bold text-lg border-2 border-slate-200 hover:border-indigo-200 hover:bg-indigo-50 transition-all"
+                >
+                  <Store className="w-5 h-5" />
+                  শপ দেখুন
+                </a>
+              </div>
+
+              {/* Tips */}
+              <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                <p className="text-sm text-blue-800 font-medium mb-2">💡 পরবর্তী কাজ:</p>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• এডমিন প্যানেলে লগইন করুন</li>
+                  <li>• প্রোডাক্ট যোগ করুন</li>
+                  <li>• শপের লোগো ও থিম সেট করুন</li>
+                  <li>• পেমেন্ট মেথড কনফিগার করুন</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center mt-8">
+            <p className="text-slate-500 text-sm">
+              সাহায্য দরকার? <a href="mailto:support@systemnextit.com" className="text-indigo-600 hover:underline">support@systemnextit.com</a>
+            </p>
           </div>
         </div>
       </div>
@@ -341,26 +655,27 @@ export default function TenantRegistration() {
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <Hexagon className="text-white" size={24} fill="white" />
+        <div className="max-w-7xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+              <Hexagon className="text-white" size={20} fill="white" />
             </div>
-            <span className="text-xl font-bold text-slate-900">SystemNext IT</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900">SystemNext IT</span>
           </a>
           <a 
             href="/" 
-            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors"
+            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1"
           >
-            হোমপেজে ফিরুন
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">হোমপেজে ফিরুন</span>
           </a>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Features */}
-          <div className="lg:sticky lg:top-24">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          {/* Left: Features - Hidden on mobile, shown on lg */}
+          <div className="hidden lg:block lg:sticky lg:top-24">
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full text-indigo-700 text-sm font-semibold mb-4">
                 <Sparkles className="w-4 h-4" />
@@ -398,235 +713,276 @@ export default function TenantRegistration() {
           </div>
 
           {/* Right: Registration Form */}
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
-            {/* Progress Steps */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className={`flex items-center gap-2 ${step >= 1 ? 'text-indigo-600' : 'text-slate-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 1 ? 'bg-indigo-600 text-white' : 'bg-slate-200'}`}>
-                  1
-                </div>
-                <span className="font-medium">শপ তথ্য</span>
+          <div>
+            {/* Mobile Header */}
+            <div className="lg:hidden text-center mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 rounded-full text-indigo-700 text-xs font-semibold mb-3">
+                <Sparkles className="w-3 h-3" />
+                ১৪ দিন ফ্রি ট্রায়াল
               </div>
-              <div className="flex-1 h-1 bg-slate-200 rounded">
-                <div className={`h-full bg-indigo-600 rounded transition-all ${step >= 2 ? 'w-full' : 'w-0'}`} />
-              </div>
-              <div className={`flex items-center gap-2 ${step >= 2 ? 'text-indigo-600' : 'text-slate-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 2 ? 'bg-indigo-600 text-white' : 'bg-slate-200'}`}>
-                  2
-                </div>
-                <span className="font-medium">একাউন্ট</span>
-              </div>
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                আপনার <span className="text-indigo-600">অনলাইন শপ</span> তৈরি করুন
+              </h1>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              {/* Step 1: Shop Info */}
-              {step === 1 && (
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      শপের নাম *
-                    </label>
-                    <div className="relative">
-                      <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type="text"
-                        name="shopName"
-                        value={formData.shopName}
-                        onChange={handleInputChange}
-                        placeholder="যেমন: Fashion Hub BD"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.shopName ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all`}
-                      />
-                    </div>
-                    {errors.shopName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.shopName}</p>
-                    )}
+            <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 p-5 md:p-8">
+              {/* Progress Steps */}
+              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                <div className={`flex items-center gap-2 ${step >= 1 ? 'text-indigo-600' : 'text-slate-400'}`}>
+                  <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold ${step >= 1 ? 'bg-indigo-600 text-white' : 'bg-slate-200'}`}>
+                    1
                   </div>
+                  <span className="font-medium text-sm md:text-base">শপ তথ্য</span>
+                </div>
+                <div className="flex-1 h-1 bg-slate-200 rounded">
+                  <div className={`h-full bg-indigo-600 rounded transition-all ${step >= 2 ? 'w-full' : 'w-0'}`} />
+                </div>
+                <div className={`flex items-center gap-2 ${step >= 2 ? 'text-indigo-600' : 'text-slate-400'}`}>
+                  <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold ${step >= 2 ? 'bg-indigo-600 text-white' : 'bg-slate-200'}`}>
+                    2
+                  </div>
+                  <span className="font-medium text-sm md:text-base">একাউন্ট</span>
+                </div>
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      সাবডোমেইন (আপনার শপের ঠিকানা) *
-                    </label>
-                    <div className="relative">
-                      {getSubdomainIcon()}
-                      <input
-                        type="text"
-                        name="subdomain"
-                        value={formData.subdomain}
-                        onChange={handleInputChange}
-                        placeholder="yourshop"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.subdomain || subdomainStatus === 'taken' || subdomainStatus === 'invalid' ? 'border-red-300 bg-red-50' : subdomainStatus === 'available' ? 'border-green-300 bg-green-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all`}
-                        style={{ paddingLeft: '3rem' }}
-                      />
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        {getSubdomainIcon()}
+              <form onSubmit={handleSubmit}>
+                {/* Step 1: Shop Info */}
+                {step === 1 && (
+                  <div className="space-y-4 md:space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        শপের নাম *
+                      </label>
+                      <div className="relative">
+                        <Store className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="text"
+                          name="shopName"
+                          value={formData.shopName}
+                          onChange={handleInputChange}
+                          placeholder="যেমন: Fashion Hub BD"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${errors.shopName ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-base`}
+                        />
                       </div>
+                      {errors.shopName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.shopName}</p>
+                      )}
                     </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <p className="text-sm text-slate-500">
-                        {formData.subdomain && <span className="font-medium text-indigo-600">{formData.subdomain}.systemnextit.com</span>}
-                      </p>
-                      {getSubdomainMessage()}
-                    </div>
-                    {errors.subdomain && (
-                      <p className="text-red-500 text-sm mt-1">{errors.subdomain}</p>
-                    )}
-                  </div>
 
-                  <button
-                    type="button"
-                    onClick={handleNextStep}
-                    disabled={subdomainStatus === 'checking'}
-                    className="w-full bg-indigo-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                  >
-                    পরবর্তী ধাপ <ArrowRight className="w-5 h-5" />
-                  </button>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        সাবডোমেইন (আপনার শপের ঠিকানা) *
+                      </label>
+                      <div className="relative">
+                        <div className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2">
+                          {getSubdomainIcon()}
+                        </div>
+                        <input
+                          type="text"
+                          name="subdomain"
+                          value={formData.subdomain}
+                          onChange={handleInputChange}
+                          placeholder="yourshop"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${
+                            errors.subdomain || subdomainStatus === 'taken' || subdomainStatus === 'invalid' 
+                              ? 'border-red-300 bg-red-50' 
+                              : subdomainStatus === 'available' 
+                                ? 'border-green-300 bg-green-50' 
+                                : 'border-slate-200'
+                          } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-base`}
+                        />
+                      </div>
+                      
+                      {/* Subdomain Preview & Status - Only show preview if 3+ chars */}
+                      <div className="mt-2 space-y-1">
+                        {formData.subdomain && formData.subdomain.length >= 3 && (
+                          <p className="text-sm">
+                            <span className="text-slate-500">আপনার শপ: </span>
+                            <span className={`font-semibold ${subdomainStatus === 'available' ? 'text-green-600' : 'text-indigo-600'}`}>
+                              {formData.subdomain}.systemnextit.com
+                            </span>
+                          </p>
+                        )}
+                        <p className="text-sm">{getSubdomainMessage()}</p>
+                      </div>
+                      
+                      {errors.subdomain && (
+                        <p className="text-red-500 text-sm mt-1">{errors.subdomain}</p>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleNextStep}
+                      disabled={subdomainStatus === 'checking' || formData.subdomain.length < 3}
+                      className="w-full bg-indigo-600 text-white py-3.5 px-6 rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-base"
+                    >
+                      পরবর্তী ধাপ <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Step 2: Account Info */}
+                {step === 2 && (
+                  <div className="space-y-4 md:space-y-5">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 flex items-center gap-1"
+                    >
+                      <ArrowLeft className="w-4 h-4" /> পিছনে যান
+                    </button>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        আপনার নাম *
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="text"
+                          name="ownerName"
+                          value={formData.ownerName}
+                          onChange={handleInputChange}
+                          placeholder="আপনার পুরো নাম"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${errors.ownerName ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`}
+                        />
+                      </div>
+                      {errors.ownerName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.ownerName}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        ইমেইল *
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="your@email.com"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${errors.email ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`}
+                        />
+                      </div>
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        ফোন নম্বর *
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="01XXXXXXXXX"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${errors.phone ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`}
+                        />
+                      </div>
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        পাসওয়ার্ড *
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          name="password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          placeholder="কমপক্ষে ৬ অক্ষর"
+                          className={`w-full pl-10 md:pl-12 pr-12 py-3 rounded-xl border ${errors.password ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                        >
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
+                      {errors.password && (
+                        <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        পাসওয়ার্ড নিশ্চিত করুন *
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleInputChange}
+                          placeholder="আবার পাসওয়ার্ড দিন"
+                          className={`w-full pl-10 md:pl-12 pr-4 py-3 rounded-xl border ${errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`}
+                        />
+                      </div>
+                      {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                      )}
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-200"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          তৈরি হচ্ছে...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5" />
+                          ফ্রি শপ তৈরি করুন
+                        </>
+                      )}
+                    </button>
+
+                    <p className="text-xs text-slate-500 text-center">
+                      রেজিস্ট্রেশন করে আপনি আমাদের{' '}
+                      <a href="/terms" className="text-indigo-600 hover:underline">শর্তাবলী</a> ও{' '}
+                      <a href="/privacy" className="text-indigo-600 hover:underline">প্রাইভেসি পলিসি</a> মেনে নিচ্ছেন।
+                    </p>
+                  </div>
+                )}
+              </form>
+            </div>
+
+            {/* Mobile Features - Shown only on mobile */}
+            <div className="lg:hidden mt-6 grid grid-cols-2 gap-3">
+              {FEATURES.map((feature, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm"
+                >
+                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center mb-2">
+                    <feature.icon className="w-4 h-4 text-indigo-600" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 text-sm">{feature.title}</h3>
+                  <p className="text-xs text-slate-500">{feature.desc}</p>
                 </div>
-              )}
-
-              {/* Step 2: Account Info */}
-              {step === 2 && (
-                <div className="space-y-5">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 mb-2"
-                  >
-                    ← পিছনে যান
-                  </button>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      আপনার নাম *
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type="text"
-                        name="ownerName"
-                        value={formData.ownerName}
-                        onChange={handleInputChange}
-                        placeholder="আপনার পুরো নাম"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.ownerName ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      />
-                    </div>
-                    {errors.ownerName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.ownerName}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      ইমেইল *
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="your@email.com"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.email ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      />
-                    </div>
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      ফোন নম্বর *
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="01XXXXXXXXX"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.phone ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      />
-                    </div>
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      পাসওয়ার্ড *
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="কমপক্ষে ৬ অক্ষর"
-                        className={`w-full pl-12 pr-12 py-3 rounded-xl border ${errors.password ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      পাসওয়ার্ড নিশ্চিত করুন *
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        placeholder="আবার পাসওয়ার্ড দিন"
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl border ${errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-slate-200'} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                      />
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                    )}
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-indigo-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        তৈরি হচ্ছে...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-5 h-5" />
-                        ফ্রি শপ তৈরি করুন
-                      </>
-                    )}
-                  </button>
-
-                  <p className="text-xs text-slate-500 text-center">
-                    রেজিস্ট্রেশন করে আপনি আমাদের{' '}
-                    <a href="/terms" className="text-indigo-600 hover:underline">শর্তাবলী</a> ও{' '}
-                    <a href="/privacy" className="text-indigo-600 hover:underline">প্রাইভেসি পলিসি</a> মেনে নিচ্ছেন।
-                  </p>
-                </div>
-              )}
-            </form>
+              ))}
+            </div>
           </div>
         </div>
       </div>
