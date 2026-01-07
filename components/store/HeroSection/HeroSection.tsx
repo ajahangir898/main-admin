@@ -136,7 +136,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                     rel={isExternal ? 'noopener noreferrer' : undefined}
                                     className={`hero-slide ${isActive ? 'hero-slide-active' : 'hero-slide-inactive'}`}
                                 >
-                                    <img src={imgSrc} alt={item.name || 'Banner'} className="hero-slide-image" />
+                                    <OptimizedImage
+                                        src={imgSrc}
+                                        alt={item.name || 'Banner'}
+                                        className="hero-slide-image"
+                                        loading="lazy"
+                                    />
                                 </a>
                             );
                         })}

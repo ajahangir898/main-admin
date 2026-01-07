@@ -94,7 +94,10 @@ export const CategoriesSection = memo(({ categories, onCategoryClick, sectionRef
           <h2 className="text-lg font-bold text-gray-900">Categories</h2>
           <div className="h-1 w-20 rounded-full bg-gradient-to-r from-pink-500 to-cyan-500 mt-1"></div>
         </div>
-        <button className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+        <button
+          className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
+          onClick={() => onCategoryClick('all')}
+        >
           View All
           <ChevronRight size={16} className="text-blue-600" />
         </button>
