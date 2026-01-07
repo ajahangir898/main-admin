@@ -7,8 +7,11 @@
     <meta name="theme-color" content="#E91E8C">
     <link rel="icon" type="image/png" href="/icons/icon-32x32.png">
     
-    <!-- Preload carousel image placeholder - will be replaced by script -->
-    <link rel="preload" as="image" id="carousel-preload" href="" fetchpriority="high">
+    <!-- Preconnect to main domain for faster image loading -->
+    <link rel="preconnect" href="https://systemnextit.com">
+    <link rel="dns-prefetch" href="https://systemnextit.com">
+
+
     
     <!-- Critical CSS - Inline skeleton for instant display -->
     <style>
@@ -75,8 +78,14 @@
                   var firstItem = items[0];
                   var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
                   if (imgUrl) {
-                    var preloadEl = document.getElementById('carousel-preload');
-                    if (preloadEl) preloadEl.href = imgUrl;
+                    // Create preload link dynamically
+                    var link = document.createElement('link');
+                    link.rel = 'preload';
+                    link.as = 'image';
+                    link.href = imgUrl;
+                    link.crossOrigin = 'anonymous';
+                    link.fetchPriority = 'high';
+                    document.head.appendChild(link);
                   }
                 }
               }
