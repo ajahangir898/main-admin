@@ -262,6 +262,13 @@ const App = () => {
       return;
     }
     
+    // Helper to hide preload skeleton
+    const hidePreloadSkeleton = () => {
+      if (typeof (window as any).__hidePreloadSkeleton__ === 'function') {
+        (window as any).__hidePreloadSkeleton__();
+      }
+    };
+    
     if (isSuperAdminSubdomain) {
       const stored = window.localStorage.getItem(SESSION_STORAGE_KEY);
       if (stored) {
@@ -271,6 +278,7 @@ const App = () => {
             setUser(parsed);
             setCurrentView('super-admin');
             refs.sessionRestoredRef.current = true;
+            hidePreloadSkeleton();
             return;
           }
         } catch (e) {
@@ -279,12 +287,16 @@ const App = () => {
       }
       setCurrentView('admin-login');
       refs.sessionRestoredRef.current = true;
+      hidePreloadSkeleton();
       return;
     }
     
     const stored = window.localStorage.getItem(SESSION_STORAGE_KEY);
     if (!stored) {
-      if (isAdminSubdomain) setCurrentView('admin-login');
+      if (isAdminSubdomain) {
+        setCurrentView('admin-login');
+        hidePreloadSkeleton();
+      }
       refs.sessionRestoredRef.current = true;
       return;
     }
@@ -378,7 +390,14 @@ const App = () => {
           }
         }
         
-        if (!resolvedTenantId) return;
+        if (!resolvedTenantId) {
+          // No tenant ID resolved - hide skeleton anyway to prevent infinite loading
+          if (typeof window !== 'undefined' && typeof (window as any).__hidePreloadSkeleton__ === 'function') {
+            (window as any).__hidePreloadSkeleton__();
+          }
+          setIsLoading(false);
+          return;
+        }
         
         const bootstrapData = await DataService.bootstrap(resolvedTenantId);
         if (!isMounted) return;
@@ -434,6 +453,10 @@ const App = () => {
         if (isMounted) {
           setIsLoading(false);
           completeTenantSwitch(loadError);
+          // Hide preload skeleton now that data is ready
+          if (typeof window !== 'undefined' && typeof (window as any).__hidePreloadSkeleton__ === 'function') {
+            (window as any).__hidePreloadSkeleton__();
+          }
         }
       }
     };

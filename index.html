@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,7 @@
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
       body{font-family:system-ui,-apple-system,sans-serif;background:#f9fafb}
+      #root{min-height:100vh;background:#f9fafb}
       .sk{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:sh 1.2s ease-in-out infinite;border-radius:8px}
       @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
       #preload{position:fixed;inset:0;z-index:9999;background:#f9fafb}
@@ -40,21 +41,7 @@
       #preload.done{opacity:0;pointer-events:none;transition:opacity .3s}
     </style>
     
-    <!-- DNS Prefetch & Preconnect for faster external connections -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="//static.systemnextit.com">
-    <link rel="dns-prefetch" href="//images.systemnextit.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://static.systemnextit.com" crossorigin>
-    <link rel="preconnect" href="https://images.systemnextit.com" crossorigin>
-    
-    <!-- Preload critical fonts with font-display: swap -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap"></noscript>
-    
-    <!-- Early bootstrap prefetch with parallel secondary data -->
+
     <script>
       (function(){
         var h = location.hostname, p = h.split('.'), t = p[0];

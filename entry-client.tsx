@@ -63,6 +63,22 @@ const container = document.getElementById('root')!;
 const cssPromise = import('./styles/tailwind.css');
 const appPromise = import('./App');
 
+// Global function to hide preload skeleton - called by App.tsx when data is ready
+if (typeof window !== 'undefined') {
+  (window as any).__hidePreloadSkeleton__ = () => {
+    const preload = document.getElementById('preload');
+    if (preload) {
+      preload.classList.add('done');
+      setTimeout(() => preload.remove(), 350);
+    }
+    const initialLoader = document.getElementById('initial-loader');
+    if (initialLoader) {
+      initialLoader.style.opacity = '0';
+      setTimeout(() => initialLoader.remove(), 150);
+    }
+  };
+}
+
 // Start rendering as soon as App loads - don't wait for CSS
 appPromise.then(({ default: App }) => {
   // Render immediately - CSS will apply when ready
@@ -72,21 +88,13 @@ appPromise.then(({ default: App }) => {
     createRoot(container).render(<App />);
   }
   
-  // Remove skeleton after React has rendered first frame
-  requestAnimationFrame(() => {
-    // Hide preload skeleton with smooth transition
-    const preload = document.getElementById('preload');
-    if (preload) {
-      preload.classList.add('done');
-      setTimeout(() => preload.remove(), 350);
+  // Fallback: hide skeleton after 5 seconds if App.tsx doesn't call it
+  // This prevents infinite skeleton if something goes wrong
+  setTimeout(() => {
+    if (typeof (window as any).__hidePreloadSkeleton__ === 'function') {
+      (window as any).__hidePreloadSkeleton__();
     }
-    // Legacy loader (if exists)
-    const initialLoader = document.getElementById('initial-loader');
-    if (initialLoader) {
-      initialLoader.style.opacity = '0';
-      setTimeout(() => initialLoader.remove(), 150);
-    }
-  });
+  }, 5000);
 });
 
 // Ensure CSS is loaded (for error handling)
