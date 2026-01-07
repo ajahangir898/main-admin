@@ -115,7 +115,10 @@ app.use(morgan('dev'));
 // Use image optimization route first (handles ?w=&q= params)
 app.use('/uploads', imageOptimizeRouter);
 // Fallback to static files for non-optimized requests
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+  maxAge: '1y', // 1 year cache for immutable assets
+  immutable: true,
+}));
 
 app.get('/', (_req, res) => {
   res.json({ name: 'seven-days-backend', version: '0.1.0' });
