@@ -62,17 +62,21 @@
         var cachedId;
         try { cachedId = localStorage.getItem('tenant_id_' + t); } catch(e) {}
         var scope = cachedId || t;
-        // Start bootstrap fetch immediately
-        var x1 = new XMLHttpRequest();
-        x1.open('GET', '/api/tenant-data/' + scope + '/bootstrap', true);
-        x1.onload = function() {
-          if (x1.status === 200) {
-            try {
-              var data = JSON.parse(x1.responseText);
-              window.__BOOTSTRAP_DATA__ = data;
+        
+        // Check sessionStorage cache first for instant reload (5 min TTL)
+        var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+        var bootstrapCacheKey = 'bs_' + scope;
+        var secondaryCacheKey = 'sc_' + scope;
+        
+        try {
+          var cachedBootstrap = sessionStorage.getItem(bootstrapCacheKey);
+          if (cachedBootstrap) {
+            var parsed = JSON.parse(cachedBootstrap);
+            if (parsed.ts && (Date.now() - parsed.ts) < CACHE_TTL) {
+              window.__BOOTSTRAP_DATA__ = parsed.data;
               window.__BOOTSTRAP_READY__ = true;
-              // Preload first carousel image with high priority
-              var ws = data.websiteConfig;
+              // Preload first carousel image immediately from cache
+              var ws = parsed.data?.data?.website_config;
               if (ws && ws.carouselItems && ws.carouselItems.length > 0) {
                 var items = ws.carouselItems.filter(function(i) { 
                   return (i.status || '').toLowerCase() === 'publish'; 
@@ -81,7 +85,6 @@
                   var firstItem = items[0];
                   var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
                   if (imgUrl) {
-                    // Create preload link dynamically
                     var link = document.createElement('link');
                     link.rel = 'preload';
                     link.as = 'image';
@@ -92,17 +95,77 @@
                   }
                 }
               }
-            } catch(e) {}
+              // Background revalidation
+              setTimeout(function() { fetchBootstrap(true); }, 100);
+              // Load secondary from cache
+              var cachedSecondary = sessionStorage.getItem(secondaryCacheKey);
+              if (cachedSecondary) {
+                var parsedSec = JSON.parse(cachedSecondary);
+                if (parsedSec.ts && (Date.now() - parsedSec.ts) < CACHE_TTL) {
+                  window.__SECONDARY_DATA__ = parsedSec.data;
+                }
+              }
+              return;
+            }
           }
-        };
-        x1.send();
+        } catch(e) {}
+        
+        function fetchBootstrap(isBackground) {
+          var x1 = new XMLHttpRequest();
+          x1.open('GET', '/api/tenant-data/' + scope + '/bootstrap', true);
+          x1.onload = function() {
+            if (x1.status === 200) {
+              try {
+                var data = JSON.parse(x1.responseText);
+                if (!isBackground) {
+                  window.__BOOTSTRAP_DATA__ = data;
+                  window.__BOOTSTRAP_READY__ = true;
+                }
+                // Cache in sessionStorage
+                try {
+                  sessionStorage.setItem(bootstrapCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
+                } catch(e) {}
+                // Preload first carousel image with high priority
+                var ws = data.data?.website_config;
+                if (!isBackground && ws && ws.carouselItems && ws.carouselItems.length > 0) {
+                  var items = ws.carouselItems.filter(function(i) { 
+                    return (i.status || '').toLowerCase() === 'publish'; 
+                  }).sort(function(a, b) { return (a.serial || 0) - (b.serial || 0); });
+                  if (items.length > 0) {
+                    var firstItem = items[0];
+                    var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
+                    if (imgUrl) {
+                      var link = document.createElement('link');
+                      link.rel = 'preload';
+                      link.as = 'image';
+                      link.href = imgUrl;
+                      link.crossOrigin = 'anonymous';
+                      link.fetchPriority = 'high';
+                      document.head.appendChild(link);
+                    }
+                  }
+                }
+              } catch(e) {}
+            }
+          };
+          x1.send();
+        }
+        
+        // Start bootstrap fetch immediately
+        fetchBootstrap(false);
+        
         // Start secondary data fetch in parallel (categories, brands, etc)
         var x2 = new XMLHttpRequest();
         x2.open('GET', '/api/tenant-data/' + scope + '/secondary', true);
         x2.onload = function() {
           if (x2.status === 200) {
             try {
-              window.__SECONDARY_DATA__ = JSON.parse(x2.responseText);
+              var data = JSON.parse(x2.responseText);
+              window.__SECONDARY_DATA__ = data;
+              // Cache in sessionStorage
+              try {
+                sessionStorage.setItem(secondaryCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
+              } catch(e) {}
             } catch(e) {}
           }
         };
