@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CarouselItem, WebsiteConfig, Campaign } from '../../../types';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
@@ -117,11 +118,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
     if (!items.length) return null;
 
     const hasCampaigns = websiteConfig?.campaigns?.some(c => normalizeStatus(c.status) === 'publish');
+    const firstItem = items[0];
+    const lcpImageUrl = firstItem ? normalizeImageUrl(isMobile ? (firstItem.mobileImage || firstItem.image || '') : (firstItem.image || '')) : '';
 
     return (
-        <section className="hero-section max-w-7xl mx-auto px-4 pt-4 pb-2">
-            <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-                <div className="flex-1 min-w-0">
+        <>
+            <Helmet>
+                {lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} />}
+            </Helmet>
+            <section className="hero-section max-w-7xl mx-auto px-4 pt-4 pb-2">
+                <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+                    <div className="flex-1 min-w-0">
                     <div className={`hero-carousel group ${isMobile ? 'hero-carousel-mobile' : 'hero-carousel-desktop'}`}>
                         {items.map((item, i) => {
                             const isActive = i === currentIndex;
@@ -140,7 +147,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                         src={imgSrc}
                                         alt={item.name || 'Banner'}
                                         className="hero-slide-image"
-                                        loading="lazy"
+                                        loading={i === 0 ? undefined : "lazy"}
+                                        fetchpriority={i === 0 ? "high" : undefined}
                                     />
                                 </a>
                             );
@@ -172,6 +180,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                 {hasCampaigns && <UpcomingCampaigns campaigns={websiteConfig?.campaigns} />}
             </div>
         </section>
+    </>
     );
 };
 
