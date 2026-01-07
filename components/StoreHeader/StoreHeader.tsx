@@ -99,6 +99,7 @@ export const StoreHeader: React.FC<StoreHeaderProps> = (props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isCatalogDropdownOpen, setIsCatalogDropdownOpen] = useState(false);
   const [activeCatalogSection, setActiveCatalogSection] = useState<string>('categories');
   const [isSearchSuggestionsOpen, setIsSearchSuggestionsOpen] = useState(false);
@@ -415,7 +416,8 @@ export const StoreHeader: React.FC<StoreHeaderProps> = (props) => {
           onWishlistOpen={() => setIsWishlistDrawerOpen(true)}
           onCartOpen={() => setIsCartDrawerOpen(true)}
           onAccountClick={user ? onProfileClick : onLoginClick}
-          searchProps={searchBarProps}
+          onMenuOpen={() => setIsMobileMenuOpen(true)}
+          onSearchOpen={() => setIsMobileSearchOpen(true)}
         />
 
         <DesktopHeaderBar
@@ -460,6 +462,9 @@ export const StoreHeader: React.FC<StoreHeaderProps> = (props) => {
         onCheckoutFromCart={handleCheckoutFromCartClick}
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+        isMobileSearchOpen={isMobileSearchOpen}
+        onMobileSearchClose={() => setIsMobileSearchOpen(false)}
+        searchProps={searchBarProps}
         logo={logo}
         logoKey={logoKey}
         catalogGroups={catalogGroups}
