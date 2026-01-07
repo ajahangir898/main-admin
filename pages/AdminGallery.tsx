@@ -91,7 +91,8 @@ const AdminGallery: React.FC = () => {
       if (!file) return;
 
       try {
-         const imageUrl = await convertFileToWebP(file, { quality: 0.82, maxDimension: 1600 });
+         const rawImageUrl = await convertFileToWebP(file, { quality: 0.82, maxDimension: 1600 });
+         const imageUrl = normalizeImageUrl(rawImageUrl);
          const newItem: GalleryItem = {
             id: Date.now(),
             title: file.name.split('.')[0],

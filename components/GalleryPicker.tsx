@@ -65,23 +65,24 @@ export const GalleryPicker: React.FC<GalleryPickerProps> = ({
   });
 
   const handleImageClick = (imageUrl: string) => {
+    const normalizedUrl = normalizeImageUrl(imageUrl);
     if (multiple) {
       setSelectedUrls(prev => 
-        prev.includes(imageUrl) 
-          ? prev.filter(url => url !== imageUrl)
-          : [...prev, imageUrl]
+        prev.includes(normalizedUrl) 
+          ? prev.filter(url => url !== normalizedUrl)
+          : [...prev, normalizedUrl]
       );
     } else {
-      onSelect(imageUrl);
+      onSelect(normalizedUrl);
       onClose();
     }
   };
 
   const handleConfirm = () => {
     if (multiple && onSelectMultiple) {
-      onSelectMultiple(selectedUrls);
+      onSelectMultiple(selectedUrls.map(url => normalizeImageUrl(url)));
     } else if (selectedUrls.length === 1) {
-      onSelect(selectedUrls[0]);
+      onSelect(normalizeImageUrl(selectedUrls[0]));
     }
     onClose();
   };

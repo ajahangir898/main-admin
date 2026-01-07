@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background:#f9fafb">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,10 +7,14 @@
     <meta name="theme-color" content="#E91E8C">
     <link rel="icon" type="image/png" href="/icons/icon-32x32.png">
     
+    <!-- Preload carousel image placeholder - will be replaced by script -->
+    <link rel="preload" as="image" id="carousel-preload" href="" fetchpriority="high">
+    
     <!-- Critical CSS - Inline skeleton for instant display -->
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:system-ui,-apple-system,sans-serif;background:#f9fafb}
+      html,body{background:#f9fafb !important}
+      body{font-family:system-ui,-apple-system,sans-serif}
       #root{min-height:100vh;background:#f9fafb}
       .sk{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:sh 1.2s ease-in-out infinite;border-radius:8px}
       @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -45,6 +49,7 @@
     <script>
       (function(){
         var h = location.hostname, p = h.split('.'), t = p[0];
+        var isMobile = window.innerWidth < 768;
         // Skip for admin/superadmin subdomains
         if (!t || t === 'www' || t === 'admin' || t === 'superadmin' || p.length < 3) return;
         // Check cached tenant ID for faster resolution
@@ -57,8 +62,24 @@
         x1.onload = function() {
           if (x1.status === 200) {
             try {
-              window.__BOOTSTRAP_DATA__ = JSON.parse(x1.responseText);
+              var data = JSON.parse(x1.responseText);
+              window.__BOOTSTRAP_DATA__ = data;
               window.__BOOTSTRAP_READY__ = true;
+              // Preload first carousel image with high priority
+              var ws = data.websiteConfig;
+              if (ws && ws.carouselItems && ws.carouselItems.length > 0) {
+                var items = ws.carouselItems.filter(function(i) { 
+                  return (i.status || '').toLowerCase() === 'publish'; 
+                }).sort(function(a, b) { return (a.serial || 0) - (b.serial || 0); });
+                if (items.length > 0) {
+                  var firstItem = items[0];
+                  var imgUrl = isMobile ? (firstItem.mobileImage || firstItem.image) : firstItem.image;
+                  if (imgUrl) {
+                    var preloadEl = document.getElementById('carousel-preload');
+                    if (preloadEl) preloadEl.href = imgUrl;
+                  }
+                }
+              }
             } catch(e) {}
           }
         };
