@@ -1,8 +1,6 @@
 import React from 'react';
-import { ShoppingCart, Heart, User } from 'lucide-react';
+import { ShoppingCart, Heart, User, Search, Menu } from 'lucide-react';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
-import type { HeaderSearchProps } from './headerTypes';
-import { MobileSearchBar } from './HeaderSearchBar';
 
 interface MobileHeaderBarProps {
   resolvedHeaderLogo: string | null;
@@ -13,7 +11,8 @@ interface MobileHeaderBarProps {
   onWishlistOpen: () => void;
   onCartOpen: () => void;
   onAccountClick?: () => void;
-  searchProps: HeaderSearchProps;
+  onMenuOpen: () => void;
+  onSearchOpen: () => void;
 }
 
 export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
@@ -25,32 +24,50 @@ export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
   onWishlistOpen,
   onCartOpen,
   onAccountClick,
-  searchProps
+  onMenuOpen,
+  onSearchOpen
 }) => (
-  <header className="md:hidden bg-white px-3 py-3 border-b border-gray-100 shadow-sm sticky top-0 z-50">
-    {/* Top Row: Logo Left, Icons Right */}
-    <div className="flex items-center justify-between gap-3 mb-3">
-      {/* Left: Logo */}
-      <button type="button" className="flex items-center" onClick={onHomeClick}>
-        {resolvedHeaderLogo ? (
-          <img
-            key={logoKey}
-            src={normalizeImageUrl(resolvedHeaderLogo)}
-            alt="Store logo"
-            width={130}
-            height={36}
-            className="h-9 max-w-[130px] object-contain"
-          />
-        ) : (
-          <h1 className="text-xl font-black tracking-tight">
-            <span className="text-theme-primary">YOUR</span>
-            <span className="text-gray-800">SHOP</span>
-          </h1>
-        )}
-      </button>
+  <header className="md:hidden bg-white px-3 py-2 border-b border-gray-100 shadow-sm sticky top-0 z-50">
+    <div className="flex items-center justify-between gap-3">
+      {/* Left: Menu and Logo */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className="w-10 h-10 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors"
+          onClick={onMenuOpen}
+          aria-label="Open menu"
+        >
+          <Menu size={22} />
+        </button>
+        <button type="button" className="flex items-center" onClick={onHomeClick}>
+          {resolvedHeaderLogo ? (
+            <img
+              key={logoKey}
+              src={normalizeImageUrl(resolvedHeaderLogo)}
+              alt="Store logo"
+              width={120}
+              height={32}
+              className="h-8 max-w-[120px] object-contain"
+            />
+          ) : (
+            <h1 className="text-lg font-black tracking-tight">
+              <span className="text-theme-primary">YOUR</span>
+              <span className="text-gray-800">SHOP</span>
+            </h1>
+          )}
+        </button>
+      </div>
 
       {/* Right: Action Icons */}
       <div className="flex items-center gap-1">
+        <button
+          type="button"
+          className="relative w-10 h-10 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors"
+          onClick={onSearchOpen}
+          aria-label="Search"
+        >
+          <Search size={21} />
+        </button>
         <button 
           type="button" 
           className="relative w-10 h-10 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors" 
@@ -87,8 +104,5 @@ export const MobileHeaderBar: React.FC<MobileHeaderBarProps> = ({
         </button>
       </div>
     </div>
-
-    {/* Bottom Row: Search Bar */}
-    <MobileSearchBar {...searchProps} />
   </header>
 );

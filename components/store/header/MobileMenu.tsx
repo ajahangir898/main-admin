@@ -1,6 +1,6 @@
-// MobileDrawer - Mobile navigation drawer (Redesigned)
+// MobileMenu - Mobile navigation menu
 import React, { useEffect } from 'react';
-import { X, Grid, ChevronRight, ChevronDown, Gift, Heart, HelpCircle, Sparkles } from 'lucide-react';
+import { X, Grid, ChevronRight, ChevronDown } from 'lucide-react';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
 
 type CatalogGroup = {
@@ -9,15 +9,7 @@ type CatalogGroup = {
   items: string[];
 };
 
-type DrawerLinkItem = {
-  key: string;
-  label: string;
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
-  action?: () => void;
-  color?: string;
-};
-
-interface MobileDrawerProps {
+interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   logo?: string | null;
@@ -31,7 +23,7 @@ interface MobileDrawerProps {
   onTrackOrder?: () => void;
 }
 
-export const MobileDrawer: React.FC<MobileDrawerProps> = ({
+export const MobileMenu: React.FC<MobileMenuProps> = ({
   isOpen,
   onClose,
   logo,
@@ -53,17 +45,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
     }
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
-
-  const mobileDrawerLinks: DrawerLinkItem[] = [
-    { key: 'campaign', label: 'Campaign', icon: Sparkles, color: 'text-amber-500 bg-amber-50' },
-    { key: 'recommend', label: 'Recommend', icon: Heart, action: onTrackOrder, color: 'text-rose-500 bg-rose-50' },
-    { key: 'faqs', label: 'FAQs', icon: HelpCircle, color: 'text-blue-500 bg-blue-50' },
-  ];
-
-  const handleDrawerNavClick = (action?: () => void) => {
-    onClose();
-    setTimeout(() => action?.(), 150);
-  };
 
   return (
     <>
@@ -91,7 +72,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               />
             ) : (
               <span className="text-xl font-black tracking-tight text-gray-900">
-                GADGET<span className="text-theme-primary">SHOB</span>
+                MENU
               </span>
             )}
           </div>
@@ -166,42 +147,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Quick Links */}
-          <div className="px-4 pb-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">Quick Links</p>
-            <div className="space-y-2">
-              {mobileDrawerLinks.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button 
-                    key={item.key} 
-                    type="button" 
-                    className="w-full flex items-center gap-3 rounded-2xl bg-white border border-gray-100 px-4 py-3.5 text-left font-medium text-gray-700 shadow-sm hover:shadow-md hover:border-gray-200 active:scale-[0.98] transition-all duration-200" 
-                    onClick={() => handleDrawerNavClick(item.action)}
-                  >
-                    <div className={`p-2 rounded-xl ${item.color}`}>
-                      <Icon size={18} />
-                    </div>
-                    <span className="text-[15px]">{item.label}</span>
-                    <ChevronRight size={16} className="ml-auto text-gray-300" />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-100 bg-white">
-          <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-            <Gift size={14} />
-            <span>Free shipping on orders over ৳500</span>
-          </div>
         </div>
       </aside>
     </>
   );
 };
 
-export default MobileDrawer;
+export default MobileMenu;

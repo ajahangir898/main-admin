@@ -4,7 +4,8 @@ import type { CatalogGroup } from './headerTypes';
 
 const CartModal = lazy(() => import('./CartModal'));
 const WishlistModal = lazy(() => import('./WishlistModal'));
-const MobileDrawer = lazy(() => import('./MobileDrawer'));
+const MobileMenu = lazy(() => import('./MobileMenu'));
+const MobileSearchModal = lazy(() => import('./MobileSearchModal'));
 
 interface StoreHeaderModalsProps {
   onCartToggle: (productId: number) => void;
@@ -19,6 +20,9 @@ interface StoreHeaderModalsProps {
   onCheckoutFromCart: (productId: number) => void;
   isMobileMenuOpen: boolean;
   onMobileMenuClose: () => void;
+  isMobileSearchOpen: boolean;
+  onMobileSearchClose: () => void;
+  searchProps: HeaderSearchProps;
   logo?: string | null;
   logoKey: string;
   catalogGroups: CatalogGroup[];
@@ -43,6 +47,9 @@ export const StoreHeaderModals: React.FC<StoreHeaderModalsProps> = ({
   onCheckoutFromCart,
   isMobileMenuOpen,
   onMobileMenuClose,
+  isMobileSearchOpen,
+  onMobileSearchClose,
+  searchProps,
   logo,
   logoKey,
   catalogGroups,
@@ -81,7 +88,7 @@ export const StoreHeaderModals: React.FC<StoreHeaderModalsProps> = ({
 
     {isMobileMenuOpen && (
       <Suspense fallback={null}>
-        <MobileDrawer
+        <MobileMenu
           isOpen={isMobileMenuOpen}
           onClose={onMobileMenuClose}
           logo={logo}
@@ -93,6 +100,16 @@ export const StoreHeaderModals: React.FC<StoreHeaderModalsProps> = ({
           onCatalogSectionToggle={onCatalogSectionToggle}
           onCatalogItemClick={onCatalogItemClick}
           onTrackOrder={onTrackOrder}
+        />
+      </Suspense>
+    )}
+
+    {isMobileSearchOpen && (
+      <Suspense fallback={null}>
+        <MobileSearchModal
+          isOpen={isMobileSearchOpen}
+          onClose={onMobileSearchClose}
+          searchProps={searchProps}
         />
       </Suspense>
     )}
