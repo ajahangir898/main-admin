@@ -7,6 +7,7 @@ import type {
   ProductVariantSelection, LandingPage, FacebookPixelConfig, CourierConfig,
   Category, SubCategory, ChildCategory, Brand, Tag, User, ChatMessage
 } from '../types';
+import FrostedGlassOverlay from './FrostedGlassOverlay';
 import { SuperAdminDashboardSkeleton, StorePageSkeleton, ProductDetailSkeleton, RegistrationPageSkeleton } from './SkeletonLoaders';
 import { ensureVariantSelection } from '../utils/appHelpers';
 
@@ -305,7 +306,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
       ) : (
         <>
           {currentView === 'store' && (
-            <Suspense fallback={<StorePageSkeleton />}>
+            <Suspense fallback={<><StorePageSkeleton /><FrostedGlassOverlay /></>}>
               <>
                 <StoreHome
                   products={products}
