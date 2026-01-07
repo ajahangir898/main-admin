@@ -1,17 +1,51 @@
-import { Redis } from '@upstash/redis';
+import IORedis from 'ioredis';
 
 // Singleton Redis client
-let redis: Redis | null = null;
+let redis: IORedis | null = null;
+let redisReady = false;
 
-const getRedis = (): Redis | null => {
+const getRedis = (): IORedis | null => {
   if (redis) return redis;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
   
-  redis = new Redis({ url, token });
-  return redis;
+  // Check for Upstash (cloud) first, then local Redis
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const localUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+  
+  // Skip if explicitly disabled
+  if (process.env.REDIS_DISABLED === 'true') return null;
+  
+  try {
+    redis = new IORedis(localUrl, {
+      maxRetriesPerRequest: 1,
+      retryStrategy: (times) => {
+        if (times > 3) return null; // Stop retrying
+        return Math.min(times * 100, 1000);
+      },
+      lazyConnect: true,
+    });
+    
+    redis.on('ready', () => {
+      redisReady = true;
+      console.log('[Redis] Connected to local Redis');
+    });
+    
+    redis.on('error', (err) => {
+      console.warn('[Redis] Connection error:', err.message);
+      redisReady = false;
+    });
+    
+    // Connect asynchronously
+    redis.connect().catch(() => {});
+    
+    return redis;
+  } catch (err) {
+    console.warn('[Redis] Failed to initialize:', err);
+    return null;
+  }
 };
+
+// Check if Redis is actually connected
+const isRedisReady = (): boolean => redisReady;
 
 // Cache configuration - optimized for fast store loading
 const TTL = {
@@ -74,8 +108,9 @@ export async function getCached<T>(key: string): Promise<T | null> {
   if (!client) return null;
 
   try {
-    const data = await client.get<T>(key);
-    if (data !== null) {
+    const raw = await client.get(key);
+    if (raw !== null) {
+      const data = JSON.parse(raw) as T;
       // Warm L1 cache
       L1.set(key, { data, expires: Date.now() + TTL.MEMORY_MS });
       return data;
@@ -97,7 +132,7 @@ export async function setCached<T>(key: string, data: T): Promise<void> {
   // L2: Set Redis (fire and forget for speed)
   const client = getRedis();
   if (client) {
-    client.set(key, data, { ex: TTL.REDIS_SEC }).catch(e => console.error('[Redis] SET error:', e));
+    client.set(key, JSON.stringify(data), 'EX', TTL.REDIS_SEC).catch(e => console.error('[Redis] SET error:', e));
   }
 }
 
@@ -155,7 +190,7 @@ export async function setCachedWithTTL<T>(
   // L2: Set in Redis with appropriate TTL
   const client = getRedis();
   if (client) {
-    client.set(key, data, { ex: ttlMap[type] })
+    client.set(key, JSON.stringify(data), 'EX', ttlMap[type])
       .catch(e => console.error('[Redis] SET error:', e));
   }
 }
@@ -263,10 +298,9 @@ export function getCacheStats(): {
   memoryEntries: number;
   redisConnected: boolean;
 } {
-  const client = getRedis();
   return {
     memoryEntries: L1.size,
-    redisConnected: client !== null
+    redisConnected: isRedisReady()
   };
 }
 

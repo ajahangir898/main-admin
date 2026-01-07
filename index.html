@@ -10,7 +10,10 @@
     <!-- Preconnect to main domain for faster image loading -->
     <link rel="preconnect" href="https://systemnextit.com">
     <link rel="dns-prefetch" href="https://systemnextit.com">
-
+    <link rel="preconnect" href="https://images.systemnextit.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.systemnextit.com">
+    <link rel="preconnect" href="https://static.systemnextit.com" crossorigin>
+    <link rel="dns-prefetch" href="https://static.systemnextit.com">
 
     
     <!-- Critical CSS - Inline skeleton for instant display -->
@@ -48,7 +51,7 @@
       #preload.done{opacity:0;pointer-events:none;transition:opacity .3s}
     </style>
     
-
+    <!-- Early bootstrap prefetch with parallel secondary data -->
     <script>
       (function(){
         var h = location.hostname, p = h.split('.'), t = p[0];
