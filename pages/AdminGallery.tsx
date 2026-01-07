@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, FolderOpen, Upload, CheckCircle, Smartphone, Copy, Download, Check } from 'lucide-react';
 import { GalleryItem } from '../types';
 import { DataService } from '../services/DataService';
-import { convertFileToWebP } from '../services/imageUtils';
+import { uploadImageToServer } from '../services/imageUploadService';
 import { normalizeImageUrl } from '../utils/imageUrlHelper';
 import { ImageGridSkeleton } from '../components/SkeletonLoaders';
 
@@ -91,8 +91,8 @@ const AdminGallery: React.FC = () => {
       if (!file) return;
 
       try {
-         const rawImageUrl = await convertFileToWebP(file, { quality: 0.82, maxDimension: 1600 });
-         const imageUrl = normalizeImageUrl(rawImageUrl);
+         // Upload to server instead of converting to base64
+         const imageUrl = await uploadImageToServer(file, undefined, 'gallery');
          const newItem: GalleryItem = {
             id: Date.now(),
             title: file.name.split('.')[0],
@@ -102,8 +102,8 @@ const AdminGallery: React.FC = () => {
          };
          setImages(prev => [newItem, ...prev]);
       } catch (error) {
-         console.error('Failed to process gallery upload', error);
-         alert('Unable to process this image. Please try another file.');
+         console.error('Failed to upload gallery image', error);
+         alert('Unable to upload this image. Please try again.');
       } finally {
          if (input) input.value = '';
       }
