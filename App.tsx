@@ -22,6 +22,7 @@ import type { FacebookPixelConfig } from './types';
 import { DataService, joinTenantRoom, leaveTenantRoom } from './services/DataService';
 import { useDataRefreshDebounced } from './hooks/useDataRefresh';
 import { ThemeProvider } from './context/ThemeContext';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Extracted hooks
 import { useAppState, DEFAULT_CATEGORIES, DEFAULT_SUB_CATEGORIES, DEFAULT_BRANDS, DEFAULT_TAGS } from './hooks/useAppState';
@@ -600,12 +601,13 @@ const App = () => {
 
   // === RENDER ===
   return (
-    <ThemeProvider themeConfig={themeConfig || undefined}>
-      <Suspense fallback={null}>
-        <Toaster position="top-right" toastOptions={{ duration: 2500 }} />
-        <div className="relative bg-gray-50">
-          <AppRoutes
-            currentView={currentView}
+    <HelmetProvider>
+      <ThemeProvider themeConfig={themeConfig || undefined}>
+        <Suspense fallback={null}>
+          <Toaster position="top-right" toastOptions={{ duration: 2500 }} />
+          <div className="relative bg-gray-50">
+            <AppRoutes
+              currentView={currentView}
             isSuperAdminSubdomain={isSuperAdminSubdomain}
             products={products}
             orders={orders}
@@ -688,6 +690,7 @@ const App = () => {
         </div>
       </Suspense>
     </ThemeProvider>
+  </HelmetProvider>
   );
 };
 
