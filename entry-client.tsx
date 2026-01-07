@@ -66,16 +66,21 @@ const appPromise = import('./App');
 // Global function to hide preload skeleton - called by App.tsx when data is ready
 if (typeof window !== 'undefined') {
   (window as any).__hidePreloadSkeleton__ = () => {
-    const preload = document.getElementById('preload');
-    if (preload) {
-      preload.classList.add('done');
-      setTimeout(() => preload.remove(), 350);
-    }
-    const initialLoader = document.getElementById('initial-loader');
-    if (initialLoader) {
-      initialLoader.style.opacity = '0';
-      setTimeout(() => initialLoader.remove(), 150);
-    }
+    // Wait for next frame to ensure React content is painted
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const preload = document.getElementById('preload');
+        if (preload) {
+          preload.classList.add('done');
+          setTimeout(() => preload.remove(), 300);
+        }
+        const initialLoader = document.getElementById('initial-loader');
+        if (initialLoader) {
+          initialLoader.style.opacity = '0';
+          setTimeout(() => initialLoader.remove(), 150);
+        }
+      });
+    });
   };
 }
 
