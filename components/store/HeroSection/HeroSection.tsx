@@ -121,10 +121,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
     const firstItem = items[0];
     const lcpImageUrl = firstItem ? normalizeImageUrl(isMobile ? (firstItem.mobileImage || firstItem.image || '') : (firstItem.image || '')) : '';
 
+    const getOrigin = (url: string): string | null => {
+        if (!url) return null;
+        try {
+            const urlObj = new URL(url);
+            return urlObj.origin;
+        } catch (e) {
+            // Handle cases where the URL is relative, etc.
+            return null;
+        }
+    };
+
+    const lcpImageOrigin = getOrigin(lcpImageUrl);
+
     return (
         <>
             <Helmet>
-                {lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} />}
+                {lcpImageOrigin && <link rel="preconnect" href={lcpImageOrigin} />}
             </Helmet>
             <section className="hero-section max-w-7xl mx-auto px-4 pt-4 pb-2">
                 <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
@@ -147,8 +160,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                         src={imgSrc}
                                         alt={item.name || 'Banner'}
                                         className="hero-slide-image"
-                                        loading={i === 0 ? undefined : "lazy"}
-                                        fetchpriority={i === 0 ? "high" : undefined}
+                                        priority={i === 0}
                                     />
                                 </a>
                             );
