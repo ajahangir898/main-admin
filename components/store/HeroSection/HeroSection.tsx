@@ -107,7 +107,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
 
     const pickImage = (item: CarouselItem) => {
         const raw = isMobile ? (item.mobileImage || item.image || '') : (item.image || item.mobileImage || '');
-        const optimized = getOptimizedImageUrl(raw, isMobile ? 'large' : 'full');
+        // Smaller targets for faster LCP on mobile and desktop
+        const optimized = getOptimizedImageUrl(raw, isMobile ? 'small' : 'medium');
         return { raw, optimized };
     };
 
@@ -192,8 +193,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                             src={imgSrc}
                                             alt={item.name || 'Banner'}
                                             className="hero-slide-image"
-                                            width={isMobile ? 960 : 1400}
-                                            height={isMobile ? 320 : 420}
+                                            width={isMobile ? 720 : 1100}
+                                            height={isMobile ? 280 : 360}
+                                            style={{ aspectRatio: isMobile ? '12 / 5' : '11 / 4' }}
                                             priority={i === 0}
                                             eager={isNearActive && i !== 0}
                                             placeholder="blur"

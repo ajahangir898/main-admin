@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, memo } from 'react';
+import { getOptimizedImageUrl, normalizeImageUrl } from '../utils/imageUrlHelper';
 
 interface Props {
   src: string;
@@ -13,6 +14,7 @@ interface Props {
   onError?: () => void;
   rootMargin?: string;
   eager?: boolean;
+  style?: React.CSSProperties;
 }
 
 const EMPTY =
@@ -46,29 +48,41 @@ const supportsWebP = (() => {
 
 const generateBlurPlaceholder = (s: string): string => {
   if (isDataUrl(s) || isBlobUrl(s)) return s.trim();
-  if (s.includes('unsplash.com')) return s.replace(/w=\d+/, 'w=20').replace(/q=\d+/, 'q=10');
-  if (s.includes('systemnextit.com')) return `${s}${s.includes('?') ? '&' : '?'}w=20&q=10`;
+  const normalized = normalizeImageUrl(s);
+  if (!normalized) return EMPTY;
+  if (normalized.includes('unsplash.com')) return normalized.replace(/w=\d+/, 'w=20').replace(/q=\d+/, 'q=10');
+  if (normalized.includes('systemnextit.com') || normalized.includes('/uploads/')) return `${normalized}${normalized.includes('?') ? '&' : '?'}w=20&q=10`;
   return EMPTY;
 };
 
-const applyCDN = (url: string, w?: number) => {
-  // Skip CDN for now - just return the original URL
-  // CDN transformation was causing issues with some images
-  return url;
+const pickSizeToken = (width?: number): Parameters<typeof getOptimizedImageUrl>[1] => {
+  if (!width) return 'medium';
+  if (width <= 320) return 'thumb';
+  if (width <= 480) return 'small';
+  if (width <= 720) return 'medium';
+  if (width <= 1024) return 'large';
+  return 'full';
 };
 
 const getOptimizedUrl = (src: string, w?: number): string => {
   if (!src) return EMPTY;
   if (isDataUrl(src) || isBlobUrl(src)) return src.trim();
-  
-  // Return the original URL without transformation
-  // This fixes broken images that were showing placeholder
-  return src.trim();
+
+  const normalized = normalizeImageUrl(src);
+  const sized = getOptimizedImageUrl(normalized, pickSizeToken(w));
+  return sized || normalized || EMPTY;
 };
 
-const generateSrcSet = (s: string): string => {
-  // Disable srcset generation for now - it was causing issues
-  return '';
+const generateSrcSet = (s: string, width?: number): string => {
+  if (!s || isDataUrl(s) || isBlobUrl(s)) return '';
+  const normalized = normalizeImageUrl(s);
+  if (!normalized) return '';
+  const candidates = [320, 480, 720, 960, 1280].filter(w => !width || w <= Math.max(width, 1280));
+  const entries = candidates
+    .map(w => getOptimizedImageUrl(normalized, pickSizeToken(w)))
+    .filter(Boolean)
+    .map((url, idx) => `${url} ${candidates[idx]}w`);
+  return entries.join(', ');
 };
 
 const OptimizedImage = memo(
@@ -84,7 +98,8 @@ const OptimizedImage = memo(
     onLoad,
     onError,
     rootMargin = '400px',
-    eager = false
+    eager = false,
+    style
   }: Props) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
@@ -130,7 +145,7 @@ const OptimizedImage = memo(
 
     const rawSrc = src?.trim() || '';
     const optSrc = fallback ? rawSrc : getOptimizedUrl(rawSrc, width);
-    const srcSet = fallback ? '' : generateSrcSet(rawSrc);
+    const srcSet = fallback ? '' : generateSrcSet(rawSrc, width);
     const phSrc = placeholder === 'blur' ? generateBlurPlaceholder(rawSrc) : EMPTY;
     const sizes = width
       ? `(max-width: ${width}px) 100vw, ${width}px`
@@ -178,6 +193,7 @@ const OptimizedImage = memo(
             className={`w-full h-full transition-opacity duration-300 ${
               objectFit === 'contain' ? 'object-contain' : 'object-cover'
             } ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            style={style}
             {...(priority ? ({ fetchpriority: 'high' } as any) : {})}
           />
         )}
