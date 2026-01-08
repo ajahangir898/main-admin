@@ -11,7 +11,7 @@ import { HeroSection } from '../components/store/HeroSection';
 import { CategoriesSection } from '../components/store/CategoriesSection';
 
 // Skeletons
-import { SectionSkeleton, FooterSkeleton } from '../components/store/skeletons';
+import { SectionSkeleton, FooterSkeleton, StoreHomeSkeleton } from '../components/store/skeletons';
 
 // Near-fold components - lazy loaded but eagerly prefetched
 const FlashSalesSection = lazy(() => import('../components/store/FlashSalesSection').then(m => ({ default: m.FlashSalesSection })));
@@ -91,6 +91,10 @@ const StoreHome: React.FC<StoreHomeProps> = ({
   onCategoryFilterChange,
   onMobileMenuOpenRef
 }) => {
+  // Display skeleton if products are not yet available.
+  if (!products || products.length === 0) {
+    return <StoreHomeSkeleton />;
+  }
   // All state and logic from custom hook
   const {
     isTrackOrderOpen,
