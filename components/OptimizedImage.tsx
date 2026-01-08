@@ -50,8 +50,8 @@ const generateBlurPlaceholder = (s: string): string => {
   if (isDataUrl(s) || isBlobUrl(s)) return s.trim();
   const normalized = normalizeImageUrl(s);
   if (!normalized) return EMPTY;
-  if (normalized.includes('unsplash.com')) return normalized.replace(/w=\d+/, 'w=20').replace(/q=\d+/, 'q=10');
-  if (normalized.includes('systemnextit.com') || normalized.includes('/uploads/')) return `${normalized}${normalized.includes('?') ? '&' : '?'}w=20&q=10`;
+  if (normalized.includes('unsplash.com')) return normalized.replace(/w=\d+/, 'w=40').replace(/q=\d+/, 'q=30');
+  if (normalized.includes('systemnextit.com') || normalized.includes('/uploads/')) return `${normalized}${normalized.includes('?') ? '&' : '?'}w=40&q=30`;
   return EMPTY;
 };
 

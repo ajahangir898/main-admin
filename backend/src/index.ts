@@ -93,7 +93,22 @@ io.on('connection', (socket) => {
 
 // CORS - Allow all origins for now (wildcard) to support all subdomains
 const corsOptions: cors.CorsOptions = {
-  origin: true, // Allow all origins
+  origin: (origin, callback) => {
+    // Allow requests with no origin (same-origin, mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Allow all systemnextit.com and cartnget.shop subdomains
+    const systemnextPattern = /^https?:\/\/([a-z0-9-]+\.)?systemnextit\.com$/i;
+    const cartngetPattern = /^https?:\/\/([a-z0-9-]+\.)?cartnget\.shop$/i;
+    const localhostPattern = /^https?:\/\/localhost(:\d+)?$/i;
+    
+    if (systemnextPattern.test(origin) || cartngetPattern.test(origin) || localhostPattern.test(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow any origin for now (can be restricted later)
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-subdomain', 'X-Requested-With', 'Accept', 'Origin'],
@@ -102,6 +117,24 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Manually set CORS headers for all requests (backup for Cloudflare)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Requested-With, Accept, Origin');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  next();
+});
 
 // Handle preflight OPTIONS requests explicitly for all routes
 app.options('*', cors(corsOptions));
