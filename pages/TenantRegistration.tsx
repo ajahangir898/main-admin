@@ -303,6 +303,10 @@ export default function TenantRegistration() {
     setCurrentCreationStep(0);
     setCompletedSteps([]);
 
+    // Start time for 60 second minimum loading
+    const startTime = Date.now();
+    const MIN_LOADING_DURATION = TOTAL_CREATION_DURATION * 1000; // 60 seconds in ms
+
     try {
       const response = await fetch('/api/tenants/register', {
         method: 'POST',
@@ -323,6 +327,15 @@ export default function TenantRegistration() {
 
       if (!response.ok) {
         throw new Error(data.error || 'Registration failed');
+      }
+
+      // Calculate remaining time to reach 60 seconds
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, MIN_LOADING_DURATION - elapsedTime);
+      
+      // Wait for the remaining time to complete 60 seconds
+      if (remainingTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
       }
 
       // Complete the progress - mark all steps as done
