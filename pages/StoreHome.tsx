@@ -280,7 +280,7 @@ const StoreHome: React.FC<StoreHomeProps> = ({
 
       {/* Categories Section */}
       {displayCategories.length > 0 && (
-        <section ref={categoriesSectionRef} className="max-w-7xl mx-auto px-4 pt-1">
+        <section ref={categoriesSectionRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-1">
           <CategoriesSection
             style={(websiteConfig?.categorySectionStyle as any) || 'style6'}
             categories={displayCategories}
@@ -291,7 +291,7 @@ const StoreHome: React.FC<StoreHomeProps> = ({
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 space-y-4 pb-4" style={{ minHeight: '680px', contain: 'layout' }}>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 pb-4" style={{ minHeight: '680px', contain: 'layout' }}>
         {hasSearchQuery ? (
           <Suspense fallback={<SectionSkeleton />}>
             <SearchResultsSection

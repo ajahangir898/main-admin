@@ -70,10 +70,10 @@ interface CreatedShopInfo {
 type SubdomainStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
 const FEATURES = [
-  { icon: Store, title: 'নিজের অনলাইন শপ', desc: 'মিনিটেই আপনার শপ তৈরি' },
-  { icon: Shield, title: 'সিকিউর পেমেন্ট', desc: 'SSL সার্টিফিকেট ফ্রি' },
-  { icon: Clock, title: '১৪ দিন ফ্রি ট্রায়াল', desc: 'কোনো কার্ড লাগবে না' },
-  { icon: CreditCard, title: 'সব পেমেন্ট মেথড', desc: 'বিকাশ, নগদ, কার্ড সাপোর্ট' },
+  { icon: Store, title: 'নিজের অনলাইন শপ', desc: 'মিনিটেই প্রফেশনাল শপ তৈরি', color: 'from-blue-500 to-indigo-600' },
+  { icon: Shield, title: 'সিকিউর পেমেন্ট', desc: 'SSL সার্টিফিকেট ও ডাটা এনক্রিপশন', color: 'from-green-500 to-emerald-600' },
+  { icon: Clock, title: '১৪ দিন ফ্রি ট্রায়াল', desc: 'কোনো কার্ড বা পেমেন্ট লাগবে না', color: 'from-amber-500 to-orange-600' },
+  { icon: CreditCard, title: 'সব পেমেন্ট মেথড', desc: 'বিকাশ, নগদ, রকেট, কার্ড সাপোর্ট', color: 'from-purple-500 to-pink-600' },
 ];
 
 const RESERVED_SUBDOMAINS = ['www', 'admin', 'superadmin', 'api', 'app', 'mail', 'smtp', 'ftp', 'cpanel', 'webmail', 'ns1', 'ns2', 'test', 'demo'];
@@ -736,46 +736,74 @@ export default function TenantRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 relative overflow-hidden">
+      {/* Animated background blobs */}
+      <div className="absolute top-0 -left-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+      <div className="absolute top-0 -right-40 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+      <div className="absolute bottom-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+      
       <Helmet>
-        <title>ফ্রি শপ তৈরি করুন - SystemNext IT</title>
-        <meta name="description" content="১৪ দিন ফ্রি ট্রায়াল দিয়ে আপনার নিজের অনলাইন শপ তৈরি করুন। কোনো ক্রেডিট কার্ড লাগবে না।" />
+        <title>ফ্রি শপ তৈরি করুন - SystemNext IT | বাংলাদেশের সেরা ই-কমার্স প্ল্যাটফর্ম</title>
+        <meta name="description" content="১৪ দিন ফ্রি ট্রায়াল দিয়ে আপনার নিজের অনলাইন শপ তৈরি করুন। কোনো ক্রেডিট কার্ড লাগবে না। বিকাশ, নগদ, কার্ড পেমেন্ট সাপোর্ট।" />
       </Helmet>
 
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <Hexagon className="text-white" size={20} fill="white" />
+      {/* Premium Header */}
+      <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/50 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2 md:gap-3 group">
+            <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:shadow-indigo-300 transition-all group-hover:scale-105">
+              <Hexagon className="text-white" size={22} fill="white" />
             </div>
-            <span className="text-lg md:text-xl font-bold text-slate-900">SystemNext IT</span>
+            <div className="flex flex-col">
+              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">SystemNext IT</span>
+              <span className="text-[10px] text-slate-400 font-medium -mt-1 hidden sm:block">বাংলাদেশের #১ ই-কমার্স প্ল্যাটফর্ম</span>
+            </div>
           </a>
-          <a 
-            href="/" 
-            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">হোমপেজে ফিরুন</span>
-          </a>
+          <div className="flex items-center gap-3">
+            <a href="tel:+8801XXXXXXXXX" className="hidden md:flex items-center gap-2 text-sm text-slate-600 hover:text-indigo-600 transition-colors">
+              <Phone className="w-4 h-4" />
+              <span>সাপোর্ট</span>
+            </a>
+            <a 
+              href="/" 
+              className="text-sm text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-indigo-50"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">হোমপেজ</span>
+            </a>
+          </div>
         </div>
       </header>
+
+      {/* Blob animation styles */}
+      <style>{`
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+      `}</style>
 
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-12">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left: Features - Hidden on mobile, shown on lg */}
           <div className="hidden lg:block lg:sticky lg:top-24">
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full text-indigo-700 text-sm font-semibold mb-4">
-                <Sparkles className="w-4 h-4" />
-                ১৪ দিন ফ্রি ট্রায়াল
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full text-indigo-700 text-sm font-semibold mb-4 border border-indigo-200/50 shadow-sm">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+                ১৪ দিন ফ্রি ট্রায়াল • কোনো কার্ড লাগবে না
               </div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-                আজই আপনার <span className="text-indigo-600">অনলাইন শপ</span> শুরু করুন
+              <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4 leading-tight">
+                আজই আপনার <br/>
+                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">অনলাইন শপ</span> শুরু করুন
               </h1>
-              <p className="text-lg text-slate-600">
-                কোনো টেকনিক্যাল জ্ঞান ছাড়াই মিনিটেই নিজের ই-কমার্স শপ তৈরি করুন। 
-                সব ফিচার ১৪ দিন ফ্রিতে ব্যবহার করুন।
+              <p className="text-lg text-slate-600 leading-relaxed">
+                কোনো টেকনিক্যাল জ্ঞান ছাড়াই মিনিটেই নিজের প্রফেশনাল ই-কমার্স শপ তৈরি করুন। 
+                সব প্রিমিয়াম ফিচার ১৪ দিন সম্পূর্ণ ফ্রিতে ব্যবহার করুন।
               </p>
             </div>
 
@@ -783,10 +811,10 @@ export default function TenantRegistration() {
               {FEATURES.map((feature, idx) => (
                 <div 
                   key={idx}
-                  className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+                  className="group bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-3">
-                    <feature.icon className="w-6 h-6 text-indigo-600" />
+                  <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-semibold text-slate-900 mb-1">{feature.title}</h3>
                   <p className="text-sm text-slate-500">{feature.desc}</p>
@@ -794,10 +822,21 @@ export default function TenantRegistration() {
               ))}
             </div>
 
-            <div className="mt-8 p-4 bg-slate-50 rounded-2xl">
-              <p className="text-sm text-slate-600">
-                <strong>১০০০+</strong> ব্যবসায়ী ইতোমধ্যে SystemNext IT ব্যবহার করছেন
-              </p>
+            {/* Trust badges */}
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
+                  <CheckCircle2 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800">১০০০+ সফল ব্যবসায়ী</p>
+                  <p className="text-sm text-slate-600">ইতোমধ্যে SystemNext IT ব্যবহার করছেন</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-slate-500">
+                <Shield className="w-4 h-4 text-green-500" />
+                <span>১০০% সিকিউর • SSL এনক্রিপ্টেড • ডাটা প্রোটেক্টেড</span>
+              </div>
             </div>
           </div>
 
@@ -814,9 +853,12 @@ export default function TenantRegistration() {
               </h1>
             </div>
 
-            <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 p-5 md:p-8">
+            <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl shadow-indigo-100/50 border border-slate-200/50 p-6 md:p-8 relative overflow-hidden">
+              {/* Decorative gradient border top */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+              
               {/* Progress Steps */}
-              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8 mt-2">
                 <div className={`flex items-center gap-2 ${step >= 1 ? 'text-indigo-600' : 'text-slate-400'}`}>
                   <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold ${step >= 1 ? 'bg-indigo-600 text-white' : 'bg-slate-200'}`}>
                     1
@@ -1062,15 +1104,21 @@ export default function TenantRegistration() {
               {FEATURES.map((feature, idx) => (
                 <div 
                   key={idx}
-                  className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm"
+                  className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all"
                 >
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center mb-2">
-                    <feature.icon className="w-4 h-4 text-indigo-600" />
+                  <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-3 shadow-md`}>
+                    <feature.icon className="w-5 h-5 text-white" />
                   </div>
                   <h3 className="font-semibold text-slate-900 text-sm">{feature.title}</h3>
-                  <p className="text-xs text-slate-500">{feature.desc}</p>
+                  <p className="text-xs text-slate-500 mt-1">{feature.desc}</p>
                 </div>
               ))}
+            </div>
+            
+            {/* Mobile trust badge */}
+            <div className="lg:hidden mt-4 flex items-center justify-center gap-2 text-xs text-slate-500 bg-white/80 backdrop-blur rounded-full px-4 py-2 border border-slate-100">
+              <Shield className="w-3 h-3 text-green-500" />
+              <span>১০০% সিকিউর • SSL এনক্রিপ্টেড</span>
             </div>
           </div>
         </div>

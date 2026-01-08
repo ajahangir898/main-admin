@@ -15,20 +15,20 @@ export interface ProductImageOptions {
   minQuality?: number;   // Minimum quality threshold (default: 0.3)
 }
 
-// Carousel standard dimensions: 1100 x 330 pixels
-export const CAROUSEL_WIDTH = 1100;
-export const CAROUSEL_HEIGHT = 330;
+// Carousel standard dimensions: 1400 x 420 pixels (HD quality)
+export const CAROUSEL_WIDTH = 1400;
+export const CAROUSEL_HEIGHT = 420;
 
-// Mobile carousel dimensions: 400 x 192 pixels
-export const CAROUSEL_MOBILE_WIDTH = 400;
-export const CAROUSEL_MOBILE_HEIGHT = 192;
+// Mobile carousel dimensions: 600 x 288 pixels (Retina quality)
+export const CAROUSEL_MOBILE_WIDTH = 600;
+export const CAROUSEL_MOBILE_HEIGHT = 288;
 
-// Product image fixed dimensions: 800 x 800 pixels (1:1 square)
-export const PRODUCT_IMAGE_WIDTH = 800;
-export const PRODUCT_IMAGE_HEIGHT = 800;
+// Product image fixed dimensions: 1000 x 1000 pixels (1:1 square, HD quality)
+export const PRODUCT_IMAGE_WIDTH = 1000;
+export const PRODUCT_IMAGE_HEIGHT = 1000;
 
-// Product image target size
-export const PRODUCT_IMAGE_TARGET_KB = 15; // Target under 15KB
+// Product image target size (increased for HD quality)
+export const PRODUCT_IMAGE_TARGET_KB = 25; // Target under 25KB for HD images
 
 const fileToDataUrl = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {

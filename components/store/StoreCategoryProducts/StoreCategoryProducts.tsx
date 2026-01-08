@@ -118,7 +118,7 @@ export const StoreCategoryProducts = ({ products, categories, subCategories, chi
       </Suspense>
 
       <div className="bg-white border-b border-gray-100 sticky top-[60px] z-20">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button onClick={onBack} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition">
               <ChevronLeft size={20} /><span className="text-sm font-medium hidden sm:inline">Back</span>
@@ -140,7 +140,7 @@ export const StoreCategoryProducts = ({ products, categories, subCategories, chi
         </div>
       </div>
 
-      <div className="flex-1"><div className="max-w-7xl mx-auto px-4 py-6"><div className="flex gap-6">
+      <div className="flex-1"><div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><div className="flex gap-6">
         <aside className="hidden lg:block w-64 flex-shrink-0 space-y-4"><Sidebar /></aside>
         <div className="flex-1 min-w-0">
           {selectedBrand && <div className="mb-4 flex flex-wrap items-center gap-2">

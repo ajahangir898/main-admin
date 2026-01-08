@@ -269,7 +269,7 @@ const StoreCheckout = ({
         />
       </Suspense>
 
-      <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         <section className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 md:p-6 top-16 z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>

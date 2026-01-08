@@ -163,7 +163,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                     />
                 )}
             </Helmet>
-            <section className="hero-section max-w-7xl mx-auto px-4 pt-4 pb-2">
+            <section className="hero-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
                 <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
                     <div className="flex-1 min-w-0">
                     <div className={`hero-carousel group ${isMobile ? 'hero-carousel-mobile' : 'hero-carousel-desktop'}`}>
@@ -193,9 +193,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                             src={imgSrc}
                                             alt={item.name || 'Banner'}
                                             className="hero-slide-image"
-                                            width={isMobile ? 720 : 1100}
-                                            height={isMobile ? 280 : 360}
-                                            style={{ aspectRatio: isMobile ? '12 / 5' : '11 / 4' }}
+                                            width={isMobile ? 600 : 1400}
+                                            height={isMobile ? 288 : 420}
+                                            style={{ aspectRatio: isMobile ? '25 / 12' : '10 / 3' }}
                                             priority={i === 0}
                                             eager={isNearActive && i !== 0}
                                             placeholder="blur"
