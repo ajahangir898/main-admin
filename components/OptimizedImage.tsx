@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { getOptimizedImageUrl, normalizeImageUrl } from '../utils/imageUrlHelper';
 
 interface Props {
