@@ -247,8 +247,9 @@ const bootstrap = async () => {
   await ensureTenantIndexes();
   
   // Changed from app.listen to httpServer.listen for Socket.IO
-  httpServer.listen(env.port, () => {
-    console.log(`[backend] API listening on port ${env.port}`);
+  // Explicitly bind to 0.0.0.0 to ensure IPv4 compatibility
+  httpServer.listen(env.port, '0.0.0.0', () => {
+    console.log(`[backend] API listening on port ${env.port} (0.0.0.0)`);
   });
 };
 
