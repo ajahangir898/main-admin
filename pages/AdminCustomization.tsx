@@ -877,7 +877,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
 
       // Save theme configuration
       if (onUpdateTheme) {
-        await onUpdateTheme({
+        const themePayload = {
           primaryColor: themeColors.primary,
           secondaryColor: themeColors.secondary,
           tertiaryColor: themeColors.tertiary,
@@ -889,7 +889,12 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           adminInputBgColor: themeColors.adminInputBg,
           adminBorderColor: themeColors.adminBorder,
           adminFocusColor: themeColors.adminFocus
-        });
+        };
+        console.log('[AdminCustomization] Saving theme config:', themePayload);
+        await onUpdateTheme(themePayload);
+        console.log('[AdminCustomization] Theme config saved successfully');
+      } else {
+        console.warn('[AdminCustomization] onUpdateTheme is not defined!');
       }
 
       // Ensure minimum 1 second loading time for better UX

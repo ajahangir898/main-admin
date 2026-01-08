@@ -42,6 +42,12 @@ export function useThemeEffects({
     if(!themeConfig || !activeTenantId) return;
     const root = document.documentElement;
 
+    console.log('[useThemeEffects] Applying theme colors:', {
+      primaryColor: themeConfig.primaryColor,
+      secondaryColor: themeConfig.secondaryColor,
+      tertiaryColor: themeConfig.tertiaryColor
+    });
+
     // Store theme colors - apply for ALL views (store needs these too)
     root.style.setProperty('--color-primary-rgb', hexToRgb(themeConfig.primaryColor));
     root.style.setProperty('--color-secondary-rgb', hexToRgb(themeConfig.secondaryColor));
@@ -49,6 +55,12 @@ export function useThemeEffects({
     root.style.setProperty('--color-font-rgb', hexToRgb(themeConfig.fontColor));
     root.style.setProperty('--color-hover-rgb', hexToRgb(themeConfig.hoverColor));
     root.style.setProperty('--color-surface-rgb', hexToRgb(themeConfig.surfaceColor));
+
+    console.log('[useThemeEffects] CSS variables set:', {
+      primary: root.style.getPropertyValue('--color-primary-rgb'),
+      secondary: root.style.getPropertyValue('--color-secondary-rgb'),
+      tertiary: root.style.getPropertyValue('--color-tertiary-rgb')
+    });
 
     // Admin-only theme tokens - only apply when admin shell is active
     const isAdminView = currentView === 'admin' || currentView === 'admin-login';

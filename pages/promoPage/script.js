@@ -152,8 +152,8 @@ function initChat() {
         'feature': '✨ Our main features: Mobile friendly UI, 0.5s load time, Unlimited landing pages, Facebook pixel tracking!',
         'ডেমো': '🎯 ডেমো দেখতে চাইলে opbd.systemnextit.com ভিজিট করুন অথবা আমাদের সাথে যোগাযোগ করুন!',
         'demo': '🎯 For demo, visit opbd.systemnextit.com or contact us!',
-        'যোগাযোগ': '📞 যোগাযোগ করুন: saleecom.info@gmail.com অথবা আমাদের ফেসবুক পেজে মেসেজ করুন!',
-        'contact': '📞 Contact us: saleecom.info@gmail.com or message us on our Facebook page!',
+        'যোগাযোগ': '📞 যোগাযোগ করুন: info.systemnexit.com@gmail.com অথবা আমাদের ফেসবুক পেজে মেসেজ করুন!',
+        'contact': '📞 Contact us: info.systemnexit.com@gmail.com or message us on our Facebook page!',
         'default': '👋 ধন্যবাদ আপনার মেসেজের জন্য! আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।'
     };
 

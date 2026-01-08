@@ -265,9 +265,12 @@ export function useAppHandlers(props: UseAppHandlersProps) {
   const handleUpdateLogo = useCallback((newLogo: string | null) => setLogo(newLogo), [setLogo]);
   
   const handleUpdateTheme = useCallback(async (newConfig: ThemeConfig) => {
+    console.log('[handleUpdateTheme] Updating theme config:', newConfig);
     setThemeConfig(newConfig);
     if (activeTenantId) {
+      console.log('[handleUpdateTheme] Saving to DataService for tenant:', activeTenantId);
       await DataService.saveImmediate('theme_config', newConfig, activeTenantId);
+      console.log('[handleUpdateTheme] Saved to DataService successfully');
     }
   }, [activeTenantId, setThemeConfig]);
 
