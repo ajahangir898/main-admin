@@ -47,7 +47,7 @@ interface TrashItem {
 }
 
 const AdminGallery: React.FC = () => {
-  const { tenantId } = useTenant();
+  const { activeTenantId: tenantId } = useTenant();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [images, setImages] = useState<GalleryItem[]>([]);
@@ -442,7 +442,7 @@ const AdminGallery: React.FC = () => {
 
     const uploadPromises = Array.from(files).map(async (file) => {
       try {
-        const imageUrl = await uploadImageToServer(file, tenantId, 'gallery');
+        const imageUrl = await uploadImageToServer(file, tenantId);
         const newItem: GalleryItem = {
           id: Date.now() + Math.random(),
           title: file.name.split('.')[0],

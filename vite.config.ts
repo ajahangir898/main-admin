@@ -125,14 +125,34 @@ function criticalPreloadPlugin(): Plugin {
 }
 
 const vendorChunkMatchers = [
+  // React core - split for optimal caching
+  { name: 'react-dom-client', matcher: /node_modules\/react-dom\/client/ },
+  { name: 'react-dom-server', matcher: /node_modules\/react-dom\/server/ },
   { name: 'react-dom', matcher: /node_modules\/react-dom\// },
   { name: 'react-jsx-runtime', matcher: /node_modules\/react\/jsx-runtime/ },
   { name: 'react-core', matcher: /node_modules\/react\// },
   { name: 'scheduler', matcher: /node_modules\/scheduler\// },
   // Split heavy dependencies into separate chunks for better caching
   { name: 'pkg-toast', matcher: /node_modules\/react-hot-toast\// },
-  { name: 'pkg-socket', matcher: /node_modules\/socket\.io/ },
-  { name: 'icons-chunk', matcher: /node_modules\/lucide-react\// }
+  { name: 'pkg-socket', matcher: /node_modules\/socket\.io-client\// },
+  { name: 'pkg-engine-io', matcher: /node_modules\/engine\.io/ },
+  { name: 'icons-chunk', matcher: /node_modules\/lucide-react\// },
+  // Lodash - split into separate chunk
+  { name: 'pkg-lodash', matcher: /node_modules\/lodash/ },
+  // D3 libraries - split by module for smaller chunks
+  { name: 'pkg-d3-shape', matcher: /node_modules\/d3-shape\// },
+  { name: 'pkg-d3-scale', matcher: /node_modules\/d3-scale\// },
+  { name: 'pkg-d3-array', matcher: /node_modules\/d3-array\// },
+  { name: 'pkg-d3-path', matcher: /node_modules\/d3-path\// },
+  { name: 'pkg-d3-time', matcher: /node_modules\/d3-time\// },
+  { name: 'pkg-d3-format', matcher: /node_modules\/d3-format\// },
+  { name: 'pkg-d3-color', matcher: /node_modules\/d3-color\// },
+  { name: 'pkg-d3-interpolate', matcher: /node_modules\/d3-interpolate\// },
+  { name: 'pkg-d3-time-format', matcher: /node_modules\/d3-time-format\// },
+  // React-smooth for animations
+  { name: 'pkg-react-smooth', matcher: /node_modules\/react-smooth\// },
+  // Helmet for SEO
+  { name: 'pkg-react-helmet', matcher: /node_modules\/react-helmet-async\// }
 ];
 
 const resolveRechartsChunk = (normalized: string) => {
@@ -151,7 +171,39 @@ const resolveRechartsChunk = (normalized: string) => {
     return `recharts-${area}-${baseName || 'index'}`;
   }
 
-  // Coarser split for other areas (cartesian/polar/shape/util/etc.)
+  // Split cartesian into smaller chunks
+  if (top === 'es6' && area === 'cartesian') {
+    if (baseName) {
+      return `recharts-cartesian-${baseName}`;
+    }
+    return 'recharts-cartesian-core';
+  }
+
+  // Split util into smaller chunks
+  if (top === 'es6' && area === 'util') {
+    if (baseName) {
+      return `recharts-util-${baseName}`;
+    }
+    return 'recharts-util-core';
+  }
+
+  // Split shape into smaller chunks  
+  if (top === 'es6' && area === 'shape') {
+    if (baseName) {
+      return `recharts-shape-${baseName}`;
+    }
+    return 'recharts-shape-core';
+  }
+
+  // Split polar into smaller chunks
+  if (top === 'es6' && area === 'polar') {
+    if (baseName) {
+      return `recharts-polar-${baseName}`;
+    }
+    return 'recharts-polar-core';
+  }
+
+  // Coarser split for other areas
   return `recharts-${top}-${area}`.replace(/\W+/g, '-');
 };
 
@@ -223,9 +275,47 @@ const manualChunkResolver = (id: string): string | undefined => {
         return 'page-adminlogin';
       }
       
-      // === ADMIN PAGES - Group together ===
+      // === ADMIN PAGES - Split into individual chunks for code splitting ===
+      // Heavy admin pages get their own chunks to keep each under 50KB
+      const heavyAdminPages = [
+        'adminproducts',      // Product management - largest admin page
+        'adminorders',        // Order management - very large
+        'admincustomization', // Theme customization - large
+        'admindashboard',     // Dashboard with charts
+        'admincatalog',       // Category/brand management
+        'admincustomers',     // Customer management
+        'admingallery',       // Image gallery
+        'admincontrolnew',    // Admin control panel
+        'adminsettings',      // Settings page
+        'adminexpenses',      // Expense tracking
+        'adminincome',        // Income tracking
+        'adminprofitloss',    // Profit/loss reports
+        'adminduelist',       // Due management
+        'admininventory',     // Inventory management
+        'adminreviews',       // Review management
+        'adminpopups',        // Popup management
+        'adminsupport',       // Support system
+        'adminnote',          // Notes
+        'adminfacebookpixel', // Facebook pixel
+        'admingtm',           // GTM integration
+        'adminfigmaintegration', // Figma integration
+        'admindeliverysettings', // Delivery settings
+        'admincouriersettings',  // Courier settings
+        'admindailytarget',      // Daily targets
+        'adminbusinessreport',   // Business reports
+        'adminlandingpage',      // Landing page editor
+        'admintenantmanagement', // Tenant management
+        'adminapp',              // Admin app wrapper
+        'adminappwithauth'       // Auth wrapper
+      ];
+      
       if (pageName.startsWith('admin')) {
-        return 'page-admin';
+        const cleanName = pageName.replace(/-tsx$/, '').replace(/\W+/g, '');
+        if (heavyAdminPages.includes(cleanName)) {
+          return `page-${cleanName}`;
+        }
+        // Other admin pages go to admin-misc chunk
+        return 'page-admin-misc';
       }
       
       return `page-${pageName}`;
@@ -337,6 +427,31 @@ const manualChunkResolver = (id: string): string | undefined => {
     const componentSegment = normalized.split('/components/')[1];
     if (componentSegment) {
       const componentName = componentSegment.split('/')[0].replace(/\W+/g, '-').toLowerCase();
+      
+      // Heavy components get individual chunks
+      const heavyComponents = [
+        'admincomponents-tsx',
+        'adminproductmanager-tsx', 
+        'landingpagecomponents-tsx',
+        'gallerypicker-tsx',
+        'richtexteditor-tsx',
+        'skeletonloaders-tsx',
+        'storecomponents-tsx',
+        'storeproductcomponents-tsx',
+        'productpricingandstock-tsx',
+        'optimizedimage-tsx',
+        'productfilter-tsx',
+        'duehistorymodal-tsx',
+        'addnewduemodal-tsx',
+        'storecategoryproducts-tsx',
+        'emptystates-tsx',
+        'approutes-tsx'
+      ];
+      
+      if (heavyComponents.includes(componentName)) {
+        return `cmp-${componentName}`;
+      }
+      
       return `cmp-${componentName}`;
     }
   }
