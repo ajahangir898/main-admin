@@ -341,14 +341,34 @@ const manualChunkResolver = (id: string): string | undefined => {
         return 'store-core';
       }
       
-      // Product display components - lazy loaded after initial render
-      const productComponents = ['productgridsection', 'flashsalessection', 'productcard', 'lazysection'];
-      if (productComponents.includes(componentName)) {
-        return 'store-products';
-      }
+      // Product display components - split into individual chunks
+      if (componentName === 'productgridsection') return 'store-productgrid';
+      if (componentName === 'flashsalessection') return 'store-flashsales';
+      if (componentName === 'productcard') return 'store-productcard';
+      if (componentName === 'lazysection') return 'store-lazysection';
       
-      // Header components - separate chunk (used across store pages)
-      if (componentName === 'header' || segment.startsWith('header/')) {
+      // Header components - split into smaller chunks
+      if (segment.startsWith('header/') || segment.startsWith('StoreHeader/')) {
+        const headerFile = segment.split('/')[1]?.replace(/\.(tsx|ts|jsx|js)$/, '').toLowerCase();
+        if (headerFile) {
+          // Modals in header folder - individual chunks
+          if (headerFile === 'cartmodal') return 'store-modal-cart';
+          if (headerFile === 'wishlistmodal') return 'store-modal-wishlist';
+          if (headerFile === 'mobilesearchmodal') return 'store-modal-search';
+          if (headerFile === 'storeheadermodals') return 'store-header-modals';
+          
+          // Search components
+          if (headerFile.includes('search')) return 'store-header-search';
+          
+          // Mobile components
+          if (headerFile.includes('mobile')) return 'store-header-mobile';
+          
+          // Desktop header bar
+          if (headerFile === 'desktopheaderbar') return 'store-header-desktop';
+          
+          // Types and index
+          if (headerFile === 'headertypes' || headerFile === 'index') return 'store-header-core';
+        }
         return 'store-header';
       }
       
@@ -357,9 +377,14 @@ const manualChunkResolver = (id: string): string | undefined => {
         return 'store-footer';
       }
       
-      // Modals - loaded on demand
-      if (componentName.includes('modal')) {
-        return 'store-modals';
+      // Modals - split each modal into its own chunk for on-demand loading
+      if (componentName.includes('modal') || segment.includes('Modal')) {
+        if (componentName === 'loginmodal') return 'store-modal-login';
+        if (componentName === 'productquickviewmodal') return 'store-modal-quickview';
+        if (componentName === 'addtocartsuccess' || componentName === 'addtocartsuccesmodal') return 'store-modal-addtocart';
+        if (componentName === 'trackordermodal') return 'store-modal-track';
+        if (componentName === 'storechatmodal') return 'store-chat';
+        return `store-modal-misc`;
       }
       
       // Chat - loaded on demand
@@ -380,6 +405,16 @@ const manualChunkResolver = (id: string): string | undefined => {
       // Popup components - loaded on demand
       if (segment.startsWith('StorePopup/')) {
         return 'store-popup';
+      }
+      
+      // Mobile bottom nav - separate chunk
+      if (componentName.includes('mobilebottom') || componentName.includes('bottomnav')) {
+        return 'store-mobilenav';
+      }
+      
+      // Search results - separate chunk
+      if (componentName.includes('searchresults')) {
+        return 'store-searchresults';
       }
       
       // Other store components - individual chunks
