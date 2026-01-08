@@ -79,15 +79,15 @@ if (typeof window !== 'undefined') {
     });
   };
 }
-
+//updated for mismatches with Cloudflare
 // Start rendering as soon as App loads - don't wait for CSS
 appPromise.then(({ default: App }) => {
-  // Render immediately - CSS will apply when ready
+  // Always use createRoot to avoid hydration mismatches with Cloudflare
+  // Clear any server-rendered or skeleton content
   if (container.hasChildNodes()) {
-    hydrateRoot(container, <App />);
-  } else {
-    createRoot(container).render(<App />);
+    container.innerHTML = '';
   }
+  createRoot(container).render(<App />);
   
   // Fallback: hide skeleton after 5 seconds if App.tsx doesn't call it
   // This prevents infinite skeleton if something goes wrong
