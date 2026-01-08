@@ -57,6 +57,24 @@ const canAccess = (resource: string, userRole?: User['role'], permissions?: Perm
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNavigate, logo, isOpen, onClose, userRole, permissions }) => {
 	const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
+	const scrollPositionRef = useRef<number>(0);
+
+	// Save scroll position before navigation
+	const handleNavigate = (page: string) => {
+		if (scrollContainerRef.current) {
+			scrollPositionRef.current = scrollContainerRef.current.scrollTop;
+		}
+		onNavigate && onNavigate(page);
+		onClose && onClose();
+	};
+
+	// Restore scroll position after render
+	useEffect(() => {
+		if (scrollContainerRef.current && scrollPositionRef.current > 0) {
+			scrollContainerRef.current.scrollTop = scrollPositionRef.current;
+		}
+	}, [activePage]);
 
 	// Main Menu items
 	const mainMenuItems = [
@@ -138,14 +156,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 			</div>
 
 			{/* Sidebar Menu */}
-			<div className="p-4 space-y-1 flex-1 overflow-y-auto scrollbar-hide bg-white">
+			<div ref={scrollContainerRef} className="p-4 space-y-1 flex-1 overflow-y-auto scrollbar-hide bg-white">
 				{/* Main Menu Section */}
 				<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 text-gray-400">Main Menu</div>
 				
 				{filteredMainMenuItems.map((item) => (
 					<div
 						key={item.id}
-						onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+						onClick={() => handleNavigate(item.id)}
 						className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 						style={getMenuItemStyle(item.id, isItemActive(item.id))}
 					>
@@ -174,7 +192,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 								{catalogItems.map(item => (
 									<div
 										key={item.id}
-										onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+										onClick={() => handleNavigate(item.id)}
 										className={`py-2 px-3 rounded-lg text-sm cursor-pointer transition hover:bg-gray-50`}
 										style={{
 										color: activePage === item.id ? '#0D9488' : '#6B7280',
@@ -197,7 +215,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 						{filteredConfigItems.map((item) => (
 							<div
 								key={item.id}
-								onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+								onClick={() => handleNavigate(item.id)}
 								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
@@ -216,7 +234,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 						{filteredSystemItems.map((item) => (
 							<div
 								key={item.id}
-								onClick={() => { onNavigate && onNavigate(item.id); onClose && onClose(); }}
+								onClick={() => handleNavigate(item.id)}
 								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>

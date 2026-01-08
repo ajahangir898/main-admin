@@ -34,6 +34,19 @@ import cloudflareUploadRouter from './routes/cloudflareUpload';
 const app = express();
 const httpServer = createServer(app);
 
+// VERY FIRST: Handle preflight OPTIONS requests before anything else
+// This MUST be before any other middleware
+app.options('*', (req, res) => {
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Cache-Control', 'no-store'); // Prevent Cloudflare caching
+  res.status(204).end();
+});
+
 // Socket.IO setup
 const io = new SocketIOServer(httpServer, {
   cors: {
@@ -129,6 +142,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, X-Requested-With, Accept, Origin');
+  res.setHeader('Cache-Control', 'no-store'); // Prevent Cloudflare caching CORS headers
   
   if (req.method === 'OPTIONS') {
     return res.status(204).end();

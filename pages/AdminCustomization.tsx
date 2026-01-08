@@ -1865,10 +1865,114 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
         )}
         {activeTab === 'theme_colors' && (
-          <div className="space-y-8 max-w-1xl">
-            <div><h3 className="font-bold text-xl mb-4">Theme Colors</h3><p className="text-gray-500 text-sm mb-6">Dial in your storefront + admin palette.</p><div className="space-y-4">{COLOR_GUIDE_CONFIG.map(f => <div key={f.key} className="flex items-center gap-4 p-4 border rounded-2xl bg-white shadow-sm"><div className="flex flex-col items-center gap-2"><input type="color" value={themeColors[f.key]} onChange={e => updateThemeColor(f.key, e.target.value)} className="w-14 h-14 rounded-full border border-gray-300 shadow cursor-pointer"/><span className="text-[10px] uppercase tracking-[0.25em] text-gray-400">Pick</span></div><div className="flex-1"><p className="text-sm font-semibold text-gray-800">{f.label}</p><p className="text-xs text-gray-500 mb-2">{f.helper}</p><input type="text" value={colorDrafts[f.key]} onChange={e => setColorDrafts(p => ({ ...p, [f.key]: e.target.value }))} onBlur={() => updateThemeColor(f.key, colorDrafts[f.key])} className="w-full px-3 py-2 border rounded-lg font-mono uppercase focus:ring-1 focus:ring-green-500"/></div></div>)}</div></div>
-            <div><h3 className="font-bold text-xl mb-4">Search Hints</h3><input type="text" value={websiteConfiguration.searchHints || ''} onChange={e => setWebsiteConfiguration(p => ({ ...p, searchHints: e.target.value }))} className="w-full px-4 py-3 border rounded-lg focus:ring-1 focus:ring-green-500" placeholder="gadget, gift, toy..."/></div>
-            <div><h3 className="font-bold text-xl mb-4">Order Language</h3><div className="space-y-3">{['English', 'Bangla'].map(l => <label key={l} className="flex items-center gap-3 border p-4 rounded-lg cursor-pointer hover:bg-gray-50"><input type="radio" name="lang" className="w-5 h-5 text-green-600" checked={websiteConfiguration.orderLanguage === l} onChange={() => setWebsiteConfiguration(p => ({ ...p, orderLanguage: l }))}/><span className="font-bold">{l}</span></label>)}</div></div>
+          <div className="space-y-8 max-w-4xl">
+            {/* Theme Colors Header */}
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+              <h3 className="font-bold text-2xl text-gray-800 mb-2">🎨 Theme Colors</h3>
+              <p className="text-gray-500 text-sm">Customize your storefront and admin panel color palette to match your brand.</p>
+            </div>
+
+            {/* Colors Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {COLOR_GUIDE_CONFIG.map(f => (
+                <div 
+                  key={f.key} 
+                  className="group relative bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all duration-300"
+                >
+                  {/* Color Preview Header */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="relative">
+                      <input 
+                        type="color" 
+                        value={themeColors[f.key]} 
+                        onChange={e => updateThemeColor(f.key, e.target.value)} 
+                        className="w-16 h-16 rounded-xl border-2 border-gray-200 shadow-md cursor-pointer hover:scale-105 transition-transform duration-200"
+                        style={{ backgroundColor: themeColors[f.key] }}
+                      />
+                      <div 
+                        className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border-2 border-gray-200 shadow flex items-center justify-center"
+                        style={{ backgroundColor: themeColors[f.key] }}
+                      >
+                        <Palette size={12} className="text-white drop-shadow" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-800 text-base">{f.label}</p>
+                      <p className="text-xs text-gray-500 mt-1 leading-relaxed">{f.helper}</p>
+                    </div>
+                  </div>
+
+                  {/* Hex Input */}
+                  <div className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-md border border-gray-200" style={{ backgroundColor: themeColors[f.key] }}></div>
+                    <input 
+                      type="text" 
+                      value={colorDrafts[f.key]} 
+                      onChange={e => setColorDrafts(p => ({ ...p, [f.key]: e.target.value }))} 
+                      onBlur={() => updateThemeColor(f.key, colorDrafts[f.key])} 
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl font-mono text-sm uppercase bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all"
+                      placeholder="#000000"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Search Hints Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow">
+                  <Search size={18} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Search Hints</h3>
+                  <p className="text-xs text-gray-500">Suggest keywords to help customers find products</p>
+                </div>
+              </div>
+              <input 
+                type="text" 
+                value={websiteConfiguration.searchHints || ''} 
+                onChange={e => setWebsiteConfiguration(p => ({ ...p, searchHints: e.target.value }))} 
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all" 
+                placeholder="gadget, gift, toy, electronics..."
+              />
+            </div>
+
+            {/* Order Language Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow">
+                  <Globe size={18} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Order Language</h3>
+                  <p className="text-xs text-gray-500">Choose the language for order notifications and invoices</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {['English', 'Bangla'].map(l => (
+                  <label 
+                    key={l} 
+                    className={`flex items-center gap-3 border-2 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                      websiteConfiguration.orderLanguage === l 
+                        ? 'border-green-500 bg-green-50 shadow-sm' 
+                        : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50'
+                    }`}
+                  >
+                    <input 
+                      type="radio" 
+                      name="lang" 
+                      className="w-5 h-5 text-green-600 focus:ring-green-500" 
+                      checked={websiteConfiguration.orderLanguage === l} 
+                      onChange={() => setWebsiteConfiguration(p => ({ ...p, orderLanguage: l }))}
+                    />
+                    <span className={`font-semibold ${websiteConfiguration.orderLanguage === l ? 'text-green-700' : 'text-gray-700'}`}>
+                      {l === 'Bangla' ? '🇧🇩 ' : '🇬🇧 '}{l}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

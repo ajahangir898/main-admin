@@ -11,7 +11,6 @@ import {
   LayoutGrid,
   TrendingUp,
   Download,
-  Search,
   Wallet,
   Calendar,
   ChevronDown,
@@ -27,9 +26,8 @@ import {
   AlertCircle,
   Star,
   Package,
-  Moon,
   MessageCircle,
-  Bell
+  Search
 } from 'lucide-react';
 import { Order, Product } from '../types';
 import { useVisitorStats } from '../hooks/useVisitorStats';
@@ -154,7 +152,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onCreatePayment,
   onSearch
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [language, setLanguage] = useState<'Eng' | 'বাংলা'>('Eng');
 
   // Visitor stats
@@ -247,27 +244,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
               <Play className="w-4 h-4" />
               Tutorials
-            </button>
-            
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-44 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
-              />
-            </div>
-            
-            {/* Icons */}
-            <button className="p-2 hover:bg-gray-50 rounded-lg transition">
-              <Moon className="w-5 h-5 text-gray-500" />
-            </button>
-            <button className="p-2 hover:bg-gray-50 rounded-lg transition relative">
-              <Bell className="w-5 h-5 text-gray-500" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             
             {/* Avatar */}
