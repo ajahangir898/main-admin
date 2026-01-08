@@ -17,18 +17,57 @@ const imageCache = new Map<string, Buffer>();
 const MAX_CACHE_SIZE = 100; // Max cached images
 
 /**
- * Image optimization route
+ * Image optimization route for /uploads/images/*
  * Supports: ?w=width&h=height&q=quality&f=format
- * Example: /uploads/images/product.jpg?w=400&q=75
+ * Example: /uploads/images/product.jpg?w=400&h=300&q=75&f=webp
  */
 router.get('/images/*', async (req: Request, res: Response) => {
   try {
     const imagePath = req.params[0];
     const fullPath = path.join(process.cwd(), 'uploads', 'images', imagePath);
+    await processImage(req, res, fullPath);
+  } catch (error) {
+    console.error('[ImageOptimize] Error:', error);
+    res.status(500).json({ error: 'Image processing failed' });
+  }
+});
+
+/**
+ * Image optimization route for root /uploads/* (products, tenants, etc.)
+ * Supports: ?w=width&h=height&q=quality&f=format
+ * Example: /uploads/product.jpg?w=400&h=300&q=75&f=webp
+ */
+router.get('/*', async (req: Request, res: Response) => {
+  try {
+    const imagePath = req.params[0];
+    // Skip if it's the images subfolder (handled above)
+    if (imagePath.startsWith('images/')) {
+      return res.status(404).json({ error: 'Use /uploads/images/ route' });
+    }
+    const fullPath = path.join(process.cwd(), 'uploads', imagePath);
+    await processImage(req, res, fullPath);
+  } catch (error) {
+    console.error('[ImageOptimize] Error:', error);
+    res.status(500).json({ error: 'Image processing failed' });
+  }
+});
+
+/**
+ * Process and optimize an image
+ */
+async function processImage(req: Request, res: Response, fullPath: string) {
+  try {
     
     // Check if original file exists
     if (!fs.existsSync(fullPath)) {
       return res.status(404).json({ error: 'Image not found' });
+    }
+    
+    // Check if it's an image file
+    const ext = path.extname(fullPath).toLowerCase();
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.svg'];
+    if (!imageExtensions.includes(ext)) {
+      return res.sendFile(fullPath);
     }
 
     // Parse optimization parameters
@@ -36,6 +75,9 @@ router.get('/images/*', async (req: Request, res: Response) => {
     const height = parseInt(req.query.h as string) || undefined;
     const quality = Math.min(100, Math.max(1, parseInt(req.query.q as string) || 80));
     const format = (req.query.f as string) || 'webp';
+    
+    // Generate cache key using file path
+    const relativePath = fullPath.replace(process.cwd(), '');
 
     // If no optimization needed or sharp not available, serve original
     if (!sharp || (!width && !height && !req.query.q && !req.query.f)) {
@@ -46,7 +88,7 @@ router.get('/images/*', async (req: Request, res: Response) => {
     }
 
     // Generate cache key
-    const cacheKey = `${imagePath}:${width}:${height}:${quality}:${format}`;
+    const cacheKey = `${relativePath}:${width}:${height}:${quality}:${format}`;
     
     // Check cache
     if (imageCache.has(cacheKey)) {
@@ -111,20 +153,16 @@ router.get('/images/*', async (req: Request, res: Response) => {
     
     res.send(buffer);
   } catch (error) {
-    console.error('[ImageOptimize] Error:', error);
+    console.error('[ImageOptimize] processImage Error:', error);
     
     // Fallback: try to serve original
-    try {
-      const imagePath = req.params[0];
-      const fullPath = path.join(process.cwd(), 'uploads', 'images', imagePath);
-      if (fs.existsSync(fullPath)) {
-        return res.sendFile(fullPath);
-      }
-    } catch {}
+    if (fs.existsSync(fullPath)) {
+      return res.sendFile(fullPath);
+    }
     
     res.status(500).json({ error: 'Image processing failed' });
   }
-});
+}
 
 /**
  * Clear image cache (for admin use)

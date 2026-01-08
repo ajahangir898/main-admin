@@ -80,10 +80,13 @@ const RESERVED_SUBDOMAINS = ['www', 'admin', 'superadmin', 'api', 'app', 'mail',
 
 const CREATION_STEPS = [
   { label: 'একাউন্ট তৈরি হচ্ছে', duration: 15 },
-  { label: 'শপ সেটআপ হচ্ছে', duration: 20 },
+  { label: 'শপ সেটআপ হচ্ছে', duration: 18 },
   { label: 'ডেটাবেস কনফিগার হচ্ছে', duration: 15 },
-  { label: 'থিম ইনস্টল হচ্ছে', duration: 10 },
+  { label: 'থিম ইনস্টল হচ্ছে', duration: 12 },
 ];
+
+// Total duration: 60 seconds for premium feel
+const TOTAL_CREATION_DURATION = 60;
 
 export default function TenantRegistration() {
   const [formData, setFormData] = useState<FormData>({
@@ -107,6 +110,7 @@ export default function TenantRegistration() {
   const [creationProgress, setCreationProgress] = useState(0);
   const [currentCreationStep, setCurrentCreationStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   // Auto-generate subdomain from shop name
   useEffect(() => {
@@ -164,26 +168,42 @@ export default function TenantRegistration() {
     return () => clearTimeout(checkAvailability);
   }, [formData.subdomain]);
 
-  // Progress animation during creation
+  // Progress animation during creation - Premium 60 second experience
   useEffect(() => {
     if (!isCreating) return;
     
     let progress = 0;
-    const totalDuration = CREATION_STEPS.reduce((acc, step) => acc + step.duration, 0);
+    const stepDurations = CREATION_STEPS.map(s => s.duration);
+    const totalDuration = TOTAL_CREATION_DURATION;
+    
+    // Calculate cumulative step thresholds
+    let cumulative = 0;
+    const stepThresholds = stepDurations.map(d => {
+      cumulative += d;
+      return (cumulative / totalDuration) * 100;
+    });
     
     const interval = setInterval(() => {
-      progress += 1;
-      setCreationProgress(Math.min((progress / totalDuration) * 100, 95));
+      progress += (100 / totalDuration);
+      const newProgress = Math.min(progress, 95);
+      setCreationProgress(newProgress);
       
-      // Update current step
-      let elapsed = 0;
-      for (let i = 0; i < CREATION_STEPS.length; i++) {
-        elapsed += CREATION_STEPS[i].duration;
-        if (progress <= elapsed) {
-          setCurrentCreationStep(i);
+      // Update current step and mark completed steps with tick
+      let newCurrentStep = 0;
+      const newCompletedSteps: number[] = [];
+      
+      for (let i = 0; i < stepThresholds.length; i++) {
+        if (newProgress >= stepThresholds[i]) {
+          newCompletedSteps.push(i);
+          newCurrentStep = Math.min(i + 1, CREATION_STEPS.length - 1);
+        } else if (newProgress < stepThresholds[i] && (i === 0 || newProgress >= (stepThresholds[i - 1] || 0))) {
+          newCurrentStep = i;
           break;
         }
       }
+      
+      setCompletedSteps(newCompletedSteps);
+      setCurrentCreationStep(newCurrentStep);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -281,6 +301,7 @@ export default function TenantRegistration() {
     setIsCreating(true);
     setCreationProgress(0);
     setCurrentCreationStep(0);
+    setCompletedSteps([]);
 
     try {
       const response = await fetch('/api/tenants/register', {
@@ -304,11 +325,13 @@ export default function TenantRegistration() {
         throw new Error(data.error || 'Registration failed');
       }
 
-      // Complete the progress
+      // Complete the progress - mark all steps as done
       setCreationProgress(100);
+      setCompletedSteps([0, 1, 2, 3]);
+      setCurrentCreationStep(3);
       
-      // Small delay before showing success
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Small delay before showing success for premium feel
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       setCreatedShopInfo({
         subdomain: formData.subdomain,
@@ -371,7 +394,7 @@ export default function TenantRegistration() {
     }
   };
 
-  // Loading/Creating Screen
+  // Loading/Creating Screen - Premium Experience
   if (isCreating && !registrationSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4">
@@ -380,71 +403,124 @@ export default function TenantRegistration() {
         </Helmet>
         
         <div className="max-w-md w-full">
-          {/* Animated Logo */}
+          {/* Animated Logo with Glow Effect */}
           <div className="text-center mb-8">
-            <div className="w-24 h-24 bg-white/20 backdrop-blur-lg rounded-3xl flex items-center justify-center mx-auto mb-6 animate-pulse">
-              <Rocket className="w-12 h-12 text-white" />
+            <div className="relative w-24 h-24 mx-auto mb-6">
+              <div className="absolute inset-0 bg-white/30 rounded-3xl animate-ping" style={{ animationDuration: '2s' }} />
+              <div className="relative w-24 h-24 bg-white/20 backdrop-blur-lg rounded-3xl flex items-center justify-center shadow-2xl">
+                <Rocket className="w-12 h-12 text-white animate-bounce" style={{ animationDuration: '2s' }} />
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">আপনার শপ তৈরি হচ্ছে</h1>
-            <p className="text-white/80">অনুগ্রহ করে অপেক্ষা করুন...</p>
+            <h1 className="text-3xl font-bold text-white mb-2 animate-pulse">আপনার শপ তৈরি হচ্ছে</h1>
+            <p className="text-white/80 text-lg">অনুগ্রহ করে অপেক্ষা করুন...</p>
           </div>
 
-          {/* Progress Card */}
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20">
-            {/* Progress Bar */}
-            <div className="mb-6">
-              <div className="flex justify-between text-sm text-white/80 mb-2">
-                <span>Progress</span>
-                <span>{Math.round(creationProgress)}%</span>
+          {/* Premium Progress Card */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+            {/* Progress Bar with Glow */}
+            <div className="mb-8">
+              <div className="flex justify-between text-sm text-white/80 mb-3">
+                <span className="font-medium">Progress</span>
+                <span className="font-bold text-lg">{Math.round(creationProgress)}%</span>
               </div>
-              <div className="h-3 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-4 bg-white/20 rounded-full overflow-hidden shadow-inner">
                 <div 
-                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 rounded-full transition-all duration-1000 ease-out relative"
                   style={{ width: `${creationProgress}%` }}
-                />
+                >
+                  <div className="absolute inset-0 bg-white/30 animate-pulse" />
+                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse" />
+                </div>
               </div>
             </div>
 
-            {/* Steps */}
-            <div className="space-y-3">
-              {CREATION_STEPS.map((stepItem, idx) => (
-                <div 
-                  key={idx}
-                  className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                    idx === currentCreationStep 
-                      ? 'bg-white/20 text-white' 
-                      : idx < currentCreationStep 
-                        ? 'text-white/60' 
-                        : 'text-white/40'
-                  }`}
-                >
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    idx < currentCreationStep 
-                      ? 'bg-green-500' 
-                      : idx === currentCreationStep 
-                        ? 'bg-white/30' 
-                        : 'bg-white/10'
-                  }`}>
-                    {idx < currentCreationStep ? (
-                      <CheckCircle2 className="w-4 h-4 text-white" />
-                    ) : idx === currentCreationStep ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <span className="text-xs">{idx + 1}</span>
+            {/* Steps with Premium Tick Animation */}
+            <div className="space-y-4">
+              {CREATION_STEPS.map((stepItem, idx) => {
+                const isCompleted = completedSteps.includes(idx);
+                const isCurrent = idx === currentCreationStep && !isCompleted;
+                const isPending = !isCompleted && !isCurrent;
+                
+                return (
+                  <div 
+                    key={idx}
+                    className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-500 transform ${
+                      isCurrent 
+                        ? 'bg-white/25 text-white scale-[1.02] shadow-lg' 
+                        : isCompleted 
+                          ? 'bg-green-500/20 text-white' 
+                          : 'text-white/40'
+                    }`}
+                  >
+                    {/* Step Icon with Animation */}
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
+                      isCompleted 
+                        ? 'bg-green-500 shadow-lg shadow-green-500/50 scale-110' 
+                        : isCurrent 
+                          ? 'bg-white/30 shadow-lg' 
+                          : 'bg-white/10'
+                    }`}>
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-6 h-6 text-white animate-[bounceIn_0.5s_ease-out]" />
+                      ) : isCurrent ? (
+                        <Loader2 className="w-6 h-6 animate-spin text-white" />
+                      ) : (
+                        <span className="text-sm font-bold">{idx + 1}</span>
+                      )}
+                    </div>
+                    
+                    {/* Step Label */}
+                    <div className="flex-1">
+                      <span className={`font-semibold text-lg transition-all duration-300 ${
+                        isCompleted ? 'line-through opacity-80' : ''
+                      }`}>
+                        {stepItem.label}
+                      </span>
+                      {isCurrent && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Completion Indicator */}
+                    {isCompleted && (
+                      <span className="text-green-300 text-sm font-medium">✓ সম্পন্ন</span>
                     )}
                   </div>
-                  <span className="font-medium">{stepItem.label}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Shop Preview */}
-            <div className="mt-6 p-4 bg-white/10 rounded-2xl text-center">
-              <p className="text-white/60 text-sm mb-1">আপনার শপ:</p>
-              <p className="text-white font-bold text-lg">{formData.subdomain}.systemnextit.com</p>
+            {/* Shop Preview with Animation */}
+            <div className="mt-8 p-5 bg-gradient-to-r from-white/10 to-white/5 rounded-2xl text-center border border-white/10">
+              <p className="text-white/60 text-sm mb-2">আপনার শপ:</p>
+              <p className="text-white font-bold text-xl tracking-wide">{formData.subdomain}.systemnextit.com</p>
+              <div className="mt-3 flex items-center justify-center gap-2 text-white/50 text-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span>লাইভ হতে প্রস্তুত</span>
+              </div>
             </div>
           </div>
+          
+          {/* Bottom Text */}
+          <p className="text-center text-white/60 text-sm mt-6">
+            এই প্রক্রিয়াটি সাধারণত ১ মিনিট সময় নেয়
+          </p>
         </div>
+        
+        {/* Custom Animation Styles */}
+        <style>{`
+          @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        `}</style>
       </div>
     );
   }

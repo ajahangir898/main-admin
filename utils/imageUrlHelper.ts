@@ -24,13 +24,14 @@ const PRODUCTION_URL = 'https://systemnextit.com';
 
 // Image size presets for different use cases
 export type ImageSize = 'thumb' | 'small' | 'medium' | 'large' | 'full';
+export type ImageFormat = 'webp' | 'jpeg' | 'png' | 'avif' | 'auto';
 
-const IMAGE_SIZES: Record<ImageSize, { width: number; quality: number }> = {
-  thumb: { width: 100, quality: 60 },   // For tiny thumbnails
-  small: { width: 200, quality: 70 },   // For cart items, lists
-  medium: { width: 400, quality: 75 },  // For product cards
-  large: { width: 800, quality: 80 },   // For product details
-  full: { width: 1200, quality: 85 },   // For hero images
+const IMAGE_SIZES: Record<ImageSize, { width: number; height?: number; quality: number }> = {
+  thumb: { width: 100, height: 100, quality: 60 },   // For tiny thumbnails
+  small: { width: 200, height: 200, quality: 70 },   // For cart items, lists
+  medium: { width: 400, height: 400, quality: 75 },  // For product cards
+  large: { width: 800, height: 800, quality: 80 },   // For product details
+  full: { width: 1200, quality: 85 },                // For hero images
 };
 
 const stripWrappingQuotes = (value: string): string => {
@@ -137,12 +138,94 @@ export const normalizeImageUrl = (url: string | undefined | null, options?: Norm
 };
 
 /**
+ * Options for custom image optimization
+ */
+export interface ImageOptimizeOptions {
+  width?: number;
+  height?: number;
+  quality?: number;
+  format?: ImageFormat;
+}
+
+/**
+ * Build optimized image URL with width, height, quality, and format
+ * Example: buildOptimizedUrl('/uploads/image.jpg', { width: 400, height: 300, format: 'webp' })
+ * Output: /uploads/image.jpg?w=400&h=300&q=80&f=webp
+ */
+export const buildOptimizedUrl = (
+  url: string | undefined | null,
+  options: ImageOptimizeOptions = {}
+): string => {
+  const normalizedUrl = normalizeImageUrl(url);
+  if (!normalizedUrl) return '';
+  
+  // For data URIs or blob URLs, return as-is
+  if (normalizedUrl.startsWith('data:') || normalizedUrl.startsWith('blob:')) {
+    return normalizedUrl;
+  }
+  
+  // For external URLs (not on our domain), return as-is
+  const baseUrl = getBaseUrl();
+  if (!normalizedUrl.includes(baseUrl) && 
+      !normalizedUrl.includes(PRODUCTION_URL) && 
+      !normalizedUrl.includes('systemnextit.com')) {
+    return normalizedUrl;
+  }
+  
+  // Build query params
+  const params: string[] = [];
+  if (options.width) params.push(`w=${options.width}`);
+  if (options.height) params.push(`h=${options.height}`);
+  if (options.quality) params.push(`q=${options.quality}`);
+  if (options.format && options.format !== 'auto') params.push(`f=${options.format}`);
+  
+  if (params.length === 0) return normalizedUrl;
+  
+  // Remove existing optimization params to avoid duplicates
+  const urlWithoutParams = normalizedUrl.split('?')[0];
+  return `${urlWithoutParams}?${params.join('&')}`;
+};
+
+/**
+ * Get WebP optimized image URL (most common use case)
+ * Example: getWebPUrl('/uploads/image.jpg', 400, 300) 
+ * Output: /uploads/image.jpg?w=400&h=300&q=80&f=webp
+ */
+export const getWebPUrl = (
+  url: string | undefined | null,
+  width?: number,
+  height?: number,
+  quality: number = 80
+): string => {
+  return buildOptimizedUrl(url, { width, height, quality, format: 'webp' });
+};
+
+/**
+ * Get responsive image srcset for modern browsers
+ * Returns srcset string with multiple sizes in WebP format
+ */
+export const getResponsiveSrcSet = (
+  url: string | undefined | null,
+  sizes: number[] = [320, 480, 720, 960, 1280]
+): string => {
+  const normalizedUrl = normalizeImageUrl(url);
+  if (!normalizedUrl || normalizedUrl.startsWith('data:') || normalizedUrl.startsWith('blob:')) {
+    return '';
+  }
+  
+  return sizes
+    .map(w => `${buildOptimizedUrl(normalizedUrl, { width: w, format: 'webp' })} ${w}w`)
+    .join(', ');
+};
+
+/**
  * Get optimized image URL with size parameters
  * Falls back to original if optimization not available
  */
 export const getOptimizedImageUrl = (
   url: string | undefined | null, 
-  size: ImageSize = 'medium'
+  size: ImageSize = 'medium',
+  format: ImageFormat = 'webp'
 ): string => {
   const normalizedUrl = normalizeImageUrl(url);
   if (!normalizedUrl) return '';
@@ -158,12 +241,9 @@ export const getOptimizedImageUrl = (
     return normalizedUrl;
   }
   
-  const { width, quality } = IMAGE_SIZES[size];
+  const { width, height, quality } = IMAGE_SIZES[size];
   
-  // Add optimization params (will work if backend supports it)
-  // Format: /uploads/image.jpg?w=400&q=75
-  const separator = normalizedUrl.includes('?') ? '&' : '?';
-  return `${normalizedUrl}${separator}w=${width}&q=${quality}`;
+  return buildOptimizedUrl(normalizedUrl, { width, height, quality, format });
 };
 
 /**
