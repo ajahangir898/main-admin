@@ -103,36 +103,62 @@
       })();
     </script>
     <style>
-      .custom-loader {
-        --r1: 154%;
-        --r2: 68.5%;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background:
-          radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #8DCEF4 80%),
-          radial-gradient(var(--r1) var(--r2) at bottom, #8DCEF4 79.5%, #0000 80%),
-          radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #8DCEF4 80%),
-          #E4E4ED;
-        background-size: 50.5% 220%;
-        background-position: -100% 0%, 0% 0%, 100% 0%;
-        background-repeat: no-repeat;
-        animation: p9 2s infinite linear;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+      #preload-skeleton {
+        opacity: 1;
+        transition: opacity 0.3s ease;
       }
-      @keyframes p9 {
-        33% { background-position: 0% 33%, 100% 33%, 200% 33%; }
-        66% { background-position: -100% 66%, 0% 66%, 100% 66%; }
-        100% { background-position: 0% 100%, 100% 100%, 200% 100%; }
+      #preload-skeleton.done {
+        opacity: 0;
+      }
+      .skeleton-bone {
+        background-color: #e5e7eb;
+        border-radius: 0.25rem;
+        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      .skeleton-search-bar {
+        display: none;
+      }
+      @media (min-width: 768px) {
+        .skeleton-search-bar {
+          display: block;
+        }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
       }
     </style>
   </head>
   <body>
-    <div id="initial-loader" class="custom-loader"></div>
-    <div id="root"></div>
+    <div id="root">
+      <div id="preload-skeleton">
+        <div style="min-height: 100vh; background-color: #f9fafb;">
+          <div style="background-color: white; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 50; padding: 0.75rem 1rem;">
+            <div style="max-width: 80rem; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+              <div class="skeleton-bone" style="height: 2.5rem; width: 8rem;"></div>
+              <div class="skeleton-bone skeleton-search-bar" style="height: 2.5rem; flex: 1; max-width: 42rem; border-radius: 9999px;"></div>
+              <div style="display: flex; gap: 0.75rem;">
+                <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
+                <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="max-width: 80rem; margin: auto; padding: 1rem;">
+            <div class="skeleton-bone" style="width: 100%; padding-top: 40%; border-radius: 1rem;"></div>
+          </div>
+          <div style="max-width: 80rem; margin: auto; padding: 1rem; padding-top: 0;">
+            <div style="display: flex; gap: 0.75rem; overflow: hidden; padding: 0.5rem 0;">
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/entry-client.tsx"></script>
   </body>
 </html>
