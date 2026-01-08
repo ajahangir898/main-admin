@@ -143,15 +143,21 @@ const staleWhileRevalidate = async (request) => {
   const cache = await caches.open(DYNAMIC_CACHE);
   const cachedResponse = await cache.match(request);
   
+  // Clone cached response if available (can only read body once)
+  const cachedResponseClone = cachedResponse ? cachedResponse.clone() : null;
+  
   const networkPromise = fetch(request)
-    .then((networkResponse) => {
+    .then(async (networkResponse) => {
       if (networkResponse.ok) {
-        cache.put(request, networkResponse.clone());
+        // Clone before putting in cache
+        const responseToCache = networkResponse.clone();
+        await cache.put(request, responseToCache);
       }
       return networkResponse;
     })
-    .catch(() => cachedResponse);
+    .catch(() => cachedResponseClone);
   
+  // Return cached response immediately if available, otherwise wait for network
   return cachedResponse || networkPromise;
 };
 

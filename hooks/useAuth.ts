@@ -206,6 +206,13 @@ export function useAuth({
     localStorage.removeItem('admin_auth_user');
     localStorage.removeItem('admin_auth_permissions');
     
+    // Clear admin section from sessionStorage
+    try {
+      sessionStorage.removeItem('adminSection');
+    } catch (e) {
+      // Ignore storage errors
+    }
+    
     setUser(null);
     setSelectedVariant(null);
     setAdminSection('dashboard');

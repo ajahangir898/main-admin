@@ -105,10 +105,34 @@ interface UseNavigationOptions {
   user: User | null;
 }
 
+// Get initial admin section from sessionStorage to prevent flashing
+const getInitialAdminSection = (): string => {
+  if (typeof window === 'undefined') return 'dashboard';
+  try {
+    const stored = window.sessionStorage.getItem('adminSection');
+    if (stored) return stored;
+  } catch (e) {
+    // Ignore errors
+  }
+  return 'dashboard';
+};
+
 export function useNavigation({ products, user }: UseNavigationOptions) {
   // Start with correct view based on stored session
   const [currentView, setCurrentView] = useState<ViewState>(getInitialView);
-  const [adminSection, setAdminSection] = useState('dashboard');
+  const [adminSection, setAdminSectionInternal] = useState(getInitialAdminSection);
+
+  // Wrapper to persist adminSection to sessionStorage
+  const setAdminSection = (section: string) => {
+    setAdminSectionInternal(section);
+    if (typeof window !== 'undefined') {
+      try {
+        window.sessionStorage.setItem('adminSection', section);
+      } catch (e) {
+        // Ignore storage errors
+      }
+    }
+  };
   const [urlCategoryFilter, setUrlCategoryFilter] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [storeSearchQuery, setStoreSearchQuery] = useState('');
