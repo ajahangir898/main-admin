@@ -81,7 +81,10 @@ const AdminGallery: React.FC = () => {
   // Load folders
   const loadFolders = useCallback(async () => {
     try {
-      const res = await fetch(`${apiBase}/api/upload/folders?tenantId=${tenantId}`);
+      const res = await fetch(`${apiBase}/api/upload/folders?tenantId=${tenantId}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
       const data = await res.json();
       if (data.success) {
         setFolders(data.folders || []);
@@ -95,7 +98,10 @@ const AdminGallery: React.FC = () => {
   const loadTrash = useCallback(async () => {
     setIsLoadingTrash(true);
     try {
-      const res = await fetch(`${apiBase}/api/upload/trash?tenantId=${tenantId}`);
+      const res = await fetch(`${apiBase}/api/upload/trash?tenantId=${tenantId}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
       const data = await res.json();
       if (data.success) {
         setTrashItems(data.items || []);
@@ -145,6 +151,7 @@ const AdminGallery: React.FC = () => {
     try {
       const res = await fetch(`${apiBase}/api/upload/trash`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageUrl: image.imageUrl, tenantId })
       });
@@ -174,6 +181,7 @@ const AdminGallery: React.FC = () => {
       try {
         const res = await fetch(`${apiBase}/api/upload/trash`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ imageUrl: img.imageUrl, tenantId })
         });
@@ -196,6 +204,7 @@ const AdminGallery: React.FC = () => {
     try {
       const res = await fetch(`${apiBase}/api/upload/restore`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ trashPath: item.trashPath, tenantId })
       });
@@ -228,6 +237,7 @@ const AdminGallery: React.FC = () => {
     try {
       const res = await fetch(`${apiBase}/api/upload/folders`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tenantId, folderName: newFolderName.trim() })
       });
@@ -257,6 +267,7 @@ const AdminGallery: React.FC = () => {
     try {
       const res = await fetch(`${apiBase}/api/upload/folders`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tenantId, oldName, newName: editFolderName.trim() })
       });
@@ -284,6 +295,7 @@ const AdminGallery: React.FC = () => {
     try {
       const res = await fetch(`${apiBase}/api/upload/folders`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tenantId, folderName })
       });
@@ -312,6 +324,7 @@ const AdminGallery: React.FC = () => {
       try {
         const res = await fetch(`${apiBase}/api/upload/move`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             imageUrl: img.imageUrl, 

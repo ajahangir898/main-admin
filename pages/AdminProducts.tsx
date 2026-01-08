@@ -1611,17 +1611,17 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
       {/* Add/Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">
-                 <div className="flex items-center gap-3">
-                   <h3 className="text-xl font-bold text-gray-800">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in duration-200">
+           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col">
+              <div className="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">
+                 <div className="flex items-center gap-2 sm:gap-3">
+                   <h3 className="text-lg sm:text-xl font-bold text-gray-800">
                      {editingProduct ? 'Edit Product' : editingDraft ? 'Edit Draft' : 'Add New Product'}
                    </h3>
                    {hasUnsavedChanges && (
                      <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full flex items-center gap-1">
                        <AlertCircle size={12} />
-                       Unsaved changes
+                       <span className="hidden sm:inline">Unsaved changes</span>
                      </span>
                    )}
                  </div>
@@ -1630,7 +1630,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                  </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                  <form id="productForm" onSubmit={handleSubmit} className="space-y-4">
                     
                     {/* GENERAL INFORMATION SECTION */}
@@ -1638,7 +1638,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('general')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>📋 General Information</span>
@@ -1647,7 +1647,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
                       
                       {expandedSections.general && (
-                        <div className="p-4 space-y-4 bg-white">
+                        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 bg-white">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Product Name*</label>
@@ -1764,7 +1764,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('description')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>📝 Description</span>
@@ -1773,7 +1773,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
                       
                       {expandedSections.description && (
-                        <div className="p-4 space-y-4 bg-white">
+                        <div className="p-3 sm:p-4 space-y-4 bg-white">
                           <RichTextEditor
                             value={formData.description || ''}
                             onChange={handleDescriptionChange}
@@ -1789,7 +1789,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('images')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>🖼️ Product Images</span>
@@ -1798,7 +1798,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
                       
                       {expandedSections.images && (
-                        <div className="p-4 space-y-4 bg-white">
+                        <div className="p-3 sm:p-4 space-y-4 bg-white">
                        
                        <input 
                          type="file" 
@@ -1831,12 +1831,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                           </div>
                        ) : (
                           <div className="space-y-3">
-                             <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                                 {formData.galleryImages.map((img, idx) => (
                                    <div key={idx} className="relative group aspect-square bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-                                      <img src={normalizeImageUrl(img)} alt={`Gallery ${idx + 1}`} className="w-full h-full object-contain p-2" />
+                                      <img src={normalizeImageUrl(img)} alt={`Gallery ${idx + 1}`} className="w-full h-full object-contain p-1 sm:p-2" />
                                       {idx === 0 && (
-                                         <span className="absolute top-1 left-1 bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Primary</span>
+                                         <span className="absolute top-1 left-1 bg-purple-600 text-white text-[8px] sm:text-[9px] font-bold px-1 sm:px-1.5 py-0.5 rounded">Primary</span>
                                       )}
                                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-1">
                                          {idx > 0 && (
@@ -1872,18 +1872,18 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                 ))}
                              </div>
                              {formData.galleryImages.length < 10 && (
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <button 
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="flex-1 py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-purple-500 hover:text-purple-600 transition flex items-center justify-center gap-2"
+                                    className="flex-1 py-2 sm:py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:border-purple-500 hover:text-purple-600 transition flex items-center justify-center gap-2"
                                   >
                                     <Upload size={16} /> Upload ({formData.galleryImages.length}/10)
                                   </button>
                                   <button 
                                     type="button"
                                     onClick={() => setIsGalleryPickerOpen(true)}
-                                    className="flex-1 py-2.5 border-2 border-dashed border-indigo-300 rounded-lg text-sm font-medium text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 transition flex items-center justify-center gap-2"
+                                    className="flex-1 py-2 sm:py-2.5 border-2 border-dashed border-indigo-300 rounded-lg text-xs sm:text-sm font-medium text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 transition flex items-center justify-center gap-2"
                                   >
                                     <FolderOpen size={16} /> Gallery
                                   </button>
@@ -1900,7 +1900,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('variants')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>📐 Size Information</span>
@@ -1909,7 +1909,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
 
                       {expandedSections.variants && (
-                        <div className="p-4 space-y-4 bg-white">
+                        <div className="p-3 sm:p-4 space-y-4 bg-white">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700 flex items-center gap-2"><Palette size={16}/> Colors</label>
@@ -1967,7 +1967,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('pricing')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>💰 Pricing & Stock</span>
@@ -1976,7 +1976,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
 
                       {expandedSections.pricing && (
-                        <div className="p-4 bg-white">
+                        <div className="p-3 sm:p-4 bg-white">
                           <ProductPricingAndStock
                             initialData={pricingData}
                             onDataChange={handlePricingDataChange}
@@ -1990,7 +1990,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleSection('tags')}
-                        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between transition font-semibold text-gray-900 text-sm sm:text-base"
                       >
                         <span className="flex items-center gap-2">
                           <span>🏷️ Tags & Classification</span>
@@ -1999,9 +1999,9 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       </button>
 
                       {expandedSections.tags && (
-                        <div className="p-4 space-y-4 bg-white">
+                        <div className="p-3 sm:p-4 space-y-4 bg-white">
                           {/* Quick Sale Toggles */}
-                          <div className="flex flex-wrap gap-3 pb-4 border-b border-gray-200">
+                          <div className="flex flex-wrap gap-2 sm:gap-3 pb-4 border-b border-gray-200">
                             <button
                               type="button"
                               onClick={() => {
@@ -2012,13 +2012,13 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                   setFormData({ ...formData, tags: [...(formData.tags || []), 'Flash Sale'] });
                                 }
                               }}
-                              className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 font-medium transition-all ${
+                              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm sm:text-base ${
                                 formData.tags?.some(t => t.toLowerCase() === 'flash sale')
                                   ? 'bg-orange-50 border-orange-400 text-orange-700'
                                   : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-orange-300'
                               }`}
                             >
-                              <span className="text-lg">⚡</span>
+                              <span className="text-base sm:text-lg">⚡</span>
                               <span>Flash Sale</span>
                               {formData.tags?.some(t => t.toLowerCase() === 'flash sale') && (
                                 <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
@@ -2035,13 +2035,13 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                   setFormData({ ...formData, tags: [...(formData.tags || []), 'Best Sale'] });
                                 }
                               }}
-                              className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 font-medium transition-all ${
+                              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm sm:text-base ${
                                 formData.tags?.some(t => t.toLowerCase() === 'best sale')
                                   ? 'bg-blue-50 border-blue-400 text-blue-700'
                                   : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-blue-300'
                               }`}
                             >
-                              <span className="text-lg">🏆</span>
+                              <span className="text-base sm:text-lg">🏆</span>
                               <span>Best Sale</span>
                               {formData.tags?.some(t => t.toLowerCase() === 'best sale') && (
                                 <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
@@ -2055,12 +2055,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               <input 
                                 type="text" 
                                 placeholder="Add tag..."
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm sm:text-base"
                                 value={tagInput}
                                 onChange={e => setTagInput(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                               />
-                              <button type="button" onClick={addTag} className="bg-gray-100 px-4 rounded-lg hover:bg-gray-200 text-gray-600 font-bold">+</button>
+                              <button type="button" onClick={addTag} className="bg-gray-100 px-3 sm:px-4 rounded-lg hover:bg-gray-200 text-gray-600 font-bold">+</button>
                             </div>
                             
                             {/* Quick Tag Select from Catalog */}
@@ -2129,7 +2129,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
               {/* Saving Progress Bar */}
               {isSaving && (
-                <div className="px-6 py-3 bg-purple-50 border-t border-purple-100">
+                <div className="px-4 sm:px-6 py-3 bg-purple-50 border-t border-purple-100">
                   <div className="flex items-center gap-3">
                     <Loader2 size={18} className="text-purple-600 animate-spin" />
                     <span className="text-sm font-medium text-purple-700">
@@ -2145,12 +2145,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                 </div>
               )}
 
-              <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
+              <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
                  <button 
                    type="button" 
                    onClick={handleCloseModal}
                    disabled={isSaving}
-                   className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                   className="w-full sm:w-auto px-4 sm:px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                  >
                    Cancel
                  </button>
@@ -2158,7 +2158,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                    type="submit" 
                    form="productForm"
                    disabled={isSaving}
-                   className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg transition text-sm font-medium shadow-lg hover:bg-purple-700 disabled:opacity-70 disabled:cursor-not-allowed"
+                   className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-lg transition text-sm font-medium shadow-lg hover:bg-purple-700 disabled:opacity-70 disabled:cursor-not-allowed"
                  >
                    {isSaving ? (
                      <>

@@ -544,7 +544,7 @@ export const useDataRefresh = ({
     }
   }, [products.length, categories.length, skipNextChatSaveRef, chatMessagesRef, isAdminChatOpenRef, setChatMessages, setHasUnreadChat, activeTenantIdRef, currentViewRef, refs]);
 
-  useDataRefreshDebounced(handleDataRefresh, 150);
+  useDataRefreshDebounced(handleDataRefresh, 500);
 };
 
 /**
