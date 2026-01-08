@@ -91,8 +91,9 @@ const StoreHome: React.FC<StoreHomeProps> = ({
   onCategoryFilterChange,
   onMobileMenuOpenRef
 }) => {
-  // Display skeleton if products are not yet available.
-  if (!products || products.length === 0) {
+  // Display skeleton only if products is undefined (still loading)
+  // If products is an empty array, the store has no products yet - show the page anyway
+  if (products === undefined) {
     return <StoreHomeSkeleton />;
   }
   // All state and logic from custom hook
