@@ -179,36 +179,6 @@ const COLOR_GUIDE_CONFIG: Array<{
     key: 'font',
     label: 'Global Font Color',
     helper: 'Header links, footer text, storefront typography'
-  },
-  {
-    key: 'hover',
-    label: 'Hover Accent',
-    helper: 'Header & footer hover states, interactive link highlights'
-  },
-  {
-    key: 'surface',
-    label: 'Surface Glow',
-    helper: 'Footer background wash, elevated cards, wishlist buttons'
-  },
-  {
-    key: 'adminBg',
-    label: 'Admin Background',
-    helper: 'Admin panel main background color'
-  },
-  {
-    key: 'adminInputBg',
-    label: 'Admin Input Background',
-    helper: 'Admin input fields, select boxes, text areas background'
-  },
-  {
-    key: 'adminBorder',
-    label: 'Admin Border Color',
-    helper: 'Admin panel borders, dividers, outlines'
-  },
-  {
-    key: 'adminFocus',
-    label: 'Admin Focus Color',
-    helper: 'Input focus states, active highlights in admin'
   }
 ];
 
@@ -1891,7 +1861,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         )}
         {activeTab === 'theme_colors' && (
           <div className="space-y-8 max-w-1xl">
-            <div><h3 className="font-bold text-xl mb-4">Theme Colors</h3><p className="text-gray-500 text-sm mb-6">Dial in your storefront + admin palette.</p><div className="space-y-4">{COLOR_GUIDE_CONFIG.map(f => <div key={f.key} className="flex items-center gap-4 p-4 border rounded-2xl bg-black shadow-sm"><div className="flex flex-col items-center gap-2"><input type="color" value={themeColors[f.key]} onChange={e => updateThemeColor(f.key, e.target.value)} className="w-14 h-14 rounded-full border border-white shadow cursor-pointer"/><span className="text-[10px] uppercase tracking-[0.25em] text-gray-400">Pick</span></div><div className="flex-1"><p className="text-sm font-semibold text-gray-800">{f.label}</p><p className="text-xs text-gray-500 mb-2">{f.helper}</p><input type="text" value={colorDrafts[f.key]} onChange={e => setColorDrafts(p => ({ ...p, [f.key]: e.target.value }))} onBlur={() => updateThemeColor(f.key, colorDrafts[f.key])} className="w-full px-3 py-2 border rounded-lg font-mono uppercase focus:ring-1 focus:ring-green-500"/></div></div>)}</div></div>
+            <div><h3 className="font-bold text-xl mb-4">Theme Colors</h3><p className="text-gray-500 text-sm mb-6">Dial in your storefront + admin palette.</p><div className="space-y-4">{COLOR_GUIDE_CONFIG.map(f => <div key={f.key} className="flex items-center gap-4 p-4 border rounded-2xl bg-white shadow-sm"><div className="flex flex-col items-center gap-2"><input type="color" value={themeColors[f.key]} onChange={e => updateThemeColor(f.key, e.target.value)} className="w-14 h-14 rounded-full border border-gray-300 shadow cursor-pointer"/><span className="text-[10px] uppercase tracking-[0.25em] text-gray-400">Pick</span></div><div className="flex-1"><p className="text-sm font-semibold text-gray-800">{f.label}</p><p className="text-xs text-gray-500 mb-2">{f.helper}</p><input type="text" value={colorDrafts[f.key]} onChange={e => setColorDrafts(p => ({ ...p, [f.key]: e.target.value }))} onBlur={() => updateThemeColor(f.key, colorDrafts[f.key])} className="w-full px-3 py-2 border rounded-lg font-mono uppercase focus:ring-1 focus:ring-green-500"/></div></div>)}</div></div>
             <div><h3 className="font-bold text-xl mb-4">Search Hints</h3><input type="text" value={websiteConfiguration.searchHints || ''} onChange={e => setWebsiteConfiguration(p => ({ ...p, searchHints: e.target.value }))} className="w-full px-4 py-3 border rounded-lg focus:ring-1 focus:ring-green-500" placeholder="gadget, gift, toy..."/></div>
             <div><h3 className="font-bold text-xl mb-4">Order Language</h3><div className="space-y-3">{['English', 'Bangla'].map(l => <label key={l} className="flex items-center gap-3 border p-4 rounded-lg cursor-pointer hover:bg-gray-50"><input type="radio" name="lang" className="w-5 h-5 text-green-600" checked={websiteConfiguration.orderLanguage === l} onChange={() => setWebsiteConfiguration(p => ({ ...p, orderLanguage: l }))}/><span className="font-bold">{l}</span></label>)}</div></div>
           </div>

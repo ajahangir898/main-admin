@@ -9,6 +9,20 @@ import { isAdminRole, getAuthErrorMessage } from '../utils/appHelpers';
 // Default tenant ID
 const DEFAULT_TENANT_ID = 'opbd';
 
+// API Base URL
+const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL
+  ? String(import.meta.env.VITE_API_BASE_URL)
+  : 'https://systemnextit.com';
+
+// Get tenant subdomain from URL for multi-tenant support
+const getTenantSubdomain = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  const hostname = window.location.hostname;
+  // Match subdomain.systemnextit.com or subdomain.cartnget.shop
+  const match = hostname.match(/^([a-z0-9-]+)\.(systemnextit\.com|cartnget\.shop)$/i);
+  return match ? match[1] : null;
+};
+
 interface UseAuthOptions {
   tenants: Tenant[];
   users: User[];
@@ -115,9 +129,15 @@ export function useAuth({
     const normalizedEmail = email.trim();
     const normalizedPass = pass.trim();
     
-    const response = await fetch('https://systemnextit.com/api/auth/login', {
+    const subdomain = getTenantSubdomain();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (subdomain) {
+      headers['x-tenant-subdomain'] = subdomain;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ email: normalizedEmail, password: normalizedPass }),
     });
     

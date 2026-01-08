@@ -93,9 +93,18 @@ export interface AuthContextType extends AuthState {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Get tenant subdomain from URL for multi-tenant support
+const getTenantSubdomain = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  const hostname = window.location.hostname;
+  // Match subdomain.systemnextit.com or subdomain.cartnget.shop
+  const match = hostname.match(/^([a-z0-9-]+)\.(systemnextit\.com|cartnget\.shop)$/i);
+  return match ? match[1] : null;
+};
+
 const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL
   ? String(import.meta.env.VITE_API_BASE_URL)
-  : 'https://systemnextit.com/api';
+  : 'https://systemnextit.com';
 
 const TOKEN_KEY = 'admin_auth_token';
 const USER_KEY = 'admin_auth_user';
@@ -129,11 +138,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           // Validate token with backend
           try {
+            const subdomain = getTenantSubdomain();
+            const headers: Record<string, string> = {
+              'Authorization': `Bearer ${storedToken}`,
+              'Content-Type': 'application/json'
+            };
+            if (subdomain) {
+              headers['x-tenant-subdomain'] = subdomain;
+            }
+            
             const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
-              headers: {
-                'Authorization': `Bearer ${storedToken}`,
-                'Content-Type': 'application/json'
-              }
+              headers
             });
 
             if (response.ok) {
@@ -202,11 +217,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
+      const subdomain = getTenantSubdomain();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (subdomain) {
+        headers['x-tenant-subdomain'] = subdomain;
+      }
+      
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(credentials)
       });
 
@@ -244,11 +265,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
+      const subdomain = getTenantSubdomain();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (subdomain) {
+        headers['x-tenant-subdomain'] = subdomain;
+      }
+      
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(credentials)
       });
 
@@ -298,12 +325,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!state.token) return;
 
     try {
+      const subdomain = getTenantSubdomain();
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${state.token}`,
+        'Content-Type': 'application/json'
+      };
+      if (subdomain) {
+        headers['x-tenant-subdomain'] = subdomain;
+      }
+      
       const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${state.token}`,
-          'Content-Type': 'application/json'
-        }
+        headers
       });
 
       const data = await response.json();
