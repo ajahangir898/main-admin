@@ -12,6 +12,8 @@
     "validate:products": "node -e \"const s=require('./src/scripts/seedProductsStandalone.js');console.log('✅',s.PRODUCTS.length,'products ready')\""
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.965.0",
+    "@aws-sdk/s3-request-presigner": "^3.965.0",
     "@google/generative-ai": "^0.24.1",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.14.0",
