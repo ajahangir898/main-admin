@@ -608,7 +608,7 @@ const SuperAdminDashboard: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // For demo purposes, show what would happen
-      console.log(`Would redirect to: https://${tenant.subdomain}.systemnextit.com/admin with impersonation token`);
+      console.log(`Would redirect to: https://admin.systemnextit.com?tenant=${tenant.subdomain} with impersonation token`);
       
       // In production: window.location.href = impersonationUrl;
     } catch (error) {

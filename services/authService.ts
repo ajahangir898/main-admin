@@ -37,6 +37,15 @@ const getCurrentSubdomain = (): string | null => {
     if (subdomain !== 'www' && subdomain !== 'admin' && subdomain !== 'superadmin') {
       return subdomain;
     }
+    
+    // On admin subdomain, check for tenant query parameter
+    if (subdomain === 'admin') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tenantParam = urlParams.get('tenant');
+      if (tenantParam) {
+        return tenantParam;
+      }
+    }
   }
   
   return null;

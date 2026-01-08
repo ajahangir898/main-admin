@@ -338,7 +338,7 @@ export default function TenantRegistration() {
         shopName: formData.shopName,
         email: formData.email,
         shopUrl: `https://${formData.subdomain}.systemnextit.com`,
-        adminUrl: `https://${formData.subdomain}.systemnextit.com/admin`
+        adminUrl: `https://admin.systemnextit.com?tenant=${formData.subdomain}`
       });
       setRegistrationSuccess(true);
     } catch (error) {
