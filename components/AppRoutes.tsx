@@ -10,9 +10,9 @@ import type {
 import FrostedGlassOverlay from './FrostedGlassOverlay';
 import { SuperAdminDashboardSkeleton, StorePageSkeleton, ProductDetailSkeleton, RegistrationPageSkeleton } from './SkeletonLoaders';
 import { ensureVariantSelection } from '../utils/appHelpers';
+import StoreHome from '../pages/StoreHome';
 
 // Lazy load pages - loaded on demand when view changes
-const StoreHome = lazy(() => import('../pages/StoreHome'));
 const StoreProductDetail = lazy(() => import('../pages/StoreProductDetail'));
 const StoreCheckout = lazy(() => import('../pages/StoreCheckout'));
 const StoreOrderSuccess = lazy(() => import('../pages/StoreOrderSuccess'));
@@ -306,11 +306,10 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
       ) : (
         <>
           {currentView === 'store' && (
-            <Suspense fallback={<><StorePageSkeleton /><FrostedGlassOverlay /></>}>
-              <>
-                <StoreHome
-                  products={products}
-                  orders={orders}
+            <>
+              <StoreHome
+                products={products}
+                orders={orders}
                   tenantId={activeTenantId}
                   onProductClick={onProductClick}
                   onQuickCheckout={onQuickCheckout}
@@ -350,8 +349,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
                   user={user}
                   onLogoutClick={onLogout}
                 />
-              </>
-            </Suspense>
+            </>
           )}
 
           {currentView === 'detail' && selectedProduct && (
