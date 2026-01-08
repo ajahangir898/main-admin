@@ -39,27 +39,40 @@ export function useThemeEffects({
 
   // Apply theme colors to CSS variables
   useEffect(() => { 
-    if(!themeConfig || !activeTenantId) return;
+    if(!themeConfig || !activeTenantId) {
+      console.log('[useThemeEffects] Skipping - themeConfig:', !!themeConfig, 'activeTenantId:', activeTenantId);
+      return;
+    }
     const root = document.documentElement;
 
     console.log('[useThemeEffects] Applying theme colors:', {
       primaryColor: themeConfig.primaryColor,
       secondaryColor: themeConfig.secondaryColor,
-      tertiaryColor: themeConfig.tertiaryColor
+      tertiaryColor: themeConfig.tertiaryColor,
+      fontColor: themeConfig.fontColor,
+      hoverColor: themeConfig.hoverColor,
+      surfaceColor: themeConfig.surfaceColor
     });
 
     // Store theme colors - apply for ALL views (store needs these too)
-    root.style.setProperty('--color-primary-rgb', hexToRgb(themeConfig.primaryColor));
-    root.style.setProperty('--color-secondary-rgb', hexToRgb(themeConfig.secondaryColor));
-    root.style.setProperty('--color-tertiary-rgb', hexToRgb(themeConfig.tertiaryColor));
-    root.style.setProperty('--color-font-rgb', hexToRgb(themeConfig.fontColor));
-    root.style.setProperty('--color-hover-rgb', hexToRgb(themeConfig.hoverColor));
-    root.style.setProperty('--color-surface-rgb', hexToRgb(themeConfig.surfaceColor));
+    const primaryRgb = hexToRgb(themeConfig.primaryColor || '#22c55e');
+    const secondaryRgb = hexToRgb(themeConfig.secondaryColor || '#ec4899');
+    const tertiaryRgb = hexToRgb(themeConfig.tertiaryColor || '#9333ea');
+    const fontRgb = hexToRgb(themeConfig.fontColor || '#0f172a');
+    const hoverRgb = hexToRgb(themeConfig.hoverColor || '#f97316');
+    const surfaceRgb = hexToRgb(themeConfig.surfaceColor || '#e2e8f0');
+    
+    root.style.setProperty('--color-primary-rgb', primaryRgb);
+    root.style.setProperty('--color-secondary-rgb', secondaryRgb);
+    root.style.setProperty('--color-tertiary-rgb', tertiaryRgb);
+    root.style.setProperty('--color-font-rgb', fontRgb);
+    root.style.setProperty('--color-hover-rgb', hoverRgb);
+    root.style.setProperty('--color-surface-rgb', surfaceRgb);
 
     console.log('[useThemeEffects] CSS variables set:', {
-      primary: root.style.getPropertyValue('--color-primary-rgb'),
-      secondary: root.style.getPropertyValue('--color-secondary-rgb'),
-      tertiary: root.style.getPropertyValue('--color-tertiary-rgb')
+      primary: primaryRgb,
+      secondary: secondaryRgb,
+      tertiary: tertiaryRgb
     });
 
     // Admin-only theme tokens - only apply when admin shell is active
