@@ -19,40 +19,6 @@
     <link rel="dns-prefetch" href="https://static.systemnextit.com">
 
     
-    <!-- Critical CSS - Inline skeleton for instant display -->
-    <style>
-      *{box-sizing:border-box;margin:0;padding:0}
-      html,body{background:#f9fafb !important}
-      body{font-family:system-ui,-apple-system,sans-serif}
-      #root{min-height:100vh;background:#f9fafb}
-      .sk{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:sh 1.2s ease-in-out infinite;border-radius:8px}
-      @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-      #preload{position:fixed;inset:0;z-index:9999;background:#f9fafb}
-      .sk-header{height:64px;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1280px;margin:0 auto}
-      .sk-logo{width:120px;height:40px}
-      .sk-search{flex:1;max-width:480px;height:40px;border-radius:20px}
-      .sk-actions{display:flex;gap:12px}
-      .sk-actions>div{width:40px;height:40px;border-radius:50%}
-      .sk-hero{max-width:1280px;margin:16px auto;padding:0 16px}
-      .sk-hero>div{width:100%;aspect-ratio:3/1;border-radius:16px}
-      .sk-cats{max-width:1280px;margin:0 auto;padding:16px;display:flex;gap:12px;overflow:hidden}
-      .sk-cats>div{width:100px;height:40px;border-radius:20px;flex-shrink:0}
-      .sk-products{max-width:1280px;margin:0 auto;padding:16px}
-      .sk-title{width:150px;height:24px;margin-bottom:16px}
-      .sk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-      @media(min-width:768px){.sk-grid{grid-template-columns:repeat(3,1fr)}}
-      @media(min-width:1024px){.sk-grid{grid-template-columns:repeat(4,1fr)}}
-      @media(min-width:1280px){.sk-grid{grid-template-columns:repeat(5,1fr)}}
-      .sk-card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #f3f4f6}
-      .sk-card .img{aspect-ratio:1;border-radius:0}
-      .sk-card .cnt{padding:12px;display:flex;flex-direction:column;gap:8px}
-      .sk-card .t1{height:16px;width:100%}
-      .sk-card .t2{height:16px;width:60%}
-      .sk-card .btns{display:flex;gap:8px;margin-top:8px}
-      .sk-card .btns>div{flex:1;height:36px;border-radius:8px}
-      @media(max-width:640px){.sk-search{display:none}.sk-hero>div{aspect-ratio:2/1}}
-      #preload.done{opacity:0;pointer-events:none;transition:opacity .3s}
-    </style>
     
     <!-- Early bootstrap prefetch with parallel secondary data -->
     <script>
@@ -138,13 +104,6 @@
     </script>
   </head>
   <body>
-    <!-- Instant skeleton - shows before any JS loads -->
-    <div id="preload">
-      <div class="sk-header"><div class="sk sk-logo"></div><div class="sk sk-search"></div><div class="sk-actions"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div>
-      <div class="sk-hero"><div class="sk"></div></div>
-      <div class="sk-cats"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
-      <div class="sk-products"><div class="sk sk-title"></div><div class="sk-grid"><div class="sk-card"><div class="sk img"></div><div class="cnt"><div class="sk t1"></div><div class="sk t2"></div><div class="btns"><div class="sk"></div><div class="sk"></div></div></div></div><div class="sk-card"><div class="sk img"></div><div class="cnt"><div class="sk t1"></div><div class="sk t2"></div><div class="btns"><div class="sk"></div><div class="sk"></div></div></div></div><div class="sk-card"><div class="sk img"></div><div class="cnt"><div class="sk t1"></div><div class="sk t2"></div><div class="btns"><div class="sk"></div><div class="sk"></div></div></div></div><div class="sk-card"><div class="sk img"></div><div class="cnt"><div class="sk t1"></div><div class="sk t2"></div><div class="btns"><div class="sk"></div><div class="sk"></div></div></div></div><div class="sk-card"><div class="sk img"></div><div class="cnt"><div class="sk t1"></div><div class="sk t2"></div><div class="btns"><div class="sk"></div><div class="sk"></div></div></div></div></div></div>
-    </div>
     <div id="root"></div>
     <script type="module" src="/entry-client.tsx"></script>
   </body>
