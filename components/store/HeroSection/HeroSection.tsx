@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CarouselItem, WebsiteConfig, Campaign } from '../../../types';
-import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
+import { getOptimizedImageUrl, normalizeImageUrl } from '../../../utils/imageUrlHelper';
 import { OptimizedImage } from '../../OptimizedImage';
 import { useIsMobile } from '../../../utils/viewportHelpers';
 import './HeroSection.css';
@@ -105,6 +105,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
     const [isPaused, setIsPaused] = useState(false);
     const isMobile = useIsMobile();
 
+    const pickImage = (item: CarouselItem) => {
+        const raw = isMobile ? (item.mobileImage || item.image || '') : (item.image || item.mobileImage || '');
+        const optimized = getOptimizedImageUrl(raw, isMobile ? 'large' : 'full');
+        return { raw, optimized };
+    };
+
     useEffect(() => {
         if (items.length <= 1 || isPaused) return;
         const timer = setInterval(() => setCurrentIndex(p => (p + 1) % items.length), 4500);
@@ -119,7 +125,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
 
     const hasCampaigns = websiteConfig?.campaigns?.some(c => normalizeStatus(c.status) === 'publish');
     const firstItem = items[0];
-    const lcpImageUrl = firstItem ? normalizeImageUrl(isMobile ? (firstItem.mobileImage || firstItem.image || '') : (firstItem.image || '')) : '';
+    const firstItemImages = firstItem ? pickImage(firstItem) : { raw: '', optimized: '' };
+    const lcpImageUrl = firstItemImages.optimized || normalizeImageUrl(firstItemImages.raw);
 
     const getOrigin = (url: string): string | null => {
         if (!url) return null;
@@ -127,17 +134,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
             const urlObj = new URL(url);
             return urlObj.origin;
         } catch (e) {
-            // Handle cases where the URL is relative, etc.
             return null;
         }
     };
 
     const lcpImageOrigin = getOrigin(lcpImageUrl);
 
+    const preloadSrcSet = lcpImageUrl
+        ? [
+            getOptimizedImageUrl(firstItemImages.raw, 'large') && `${getOptimizedImageUrl(firstItemImages.raw, 'large')} 960w`,
+            getOptimizedImageUrl(firstItemImages.raw, 'full') && `${getOptimizedImageUrl(firstItemImages.raw, 'full')} 1400w`
+          ].filter(Boolean).join(', ')
+        : '';
+
     return (
         <>
             <Helmet>
                 {lcpImageOrigin && <link rel="preconnect" href={lcpImageOrigin} />}
+                {lcpImageUrl && (
+                    <link
+                        rel="preload"
+                        as="image"
+                        href={lcpImageUrl}
+                        imagesrcset={preloadSrcSet || undefined}
+                        imagesizes={preloadSrcSet ? '(max-width: 768px) 100vw, 1200px' : undefined}
+                        fetchpriority="high"
+                    />
+                )}
             </Helmet>
             <section className="hero-section max-w-7xl mx-auto px-4 pt-4 pb-2">
                 <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
@@ -149,8 +172,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                                  (currentIndex === 0 && i === items.length - 1) ||
                                                  (currentIndex === items.length - 1 && i === 0);
                             const { href, isExternal } = getCarouselHref(item);
-                            const rawImgSrc = isMobile ? (item.mobileImage || item.image || '') : (item.image || '');
-                            const imgSrc = normalizeImageUrl(rawImgSrc);
+                            const { raw, optimized } = pickImage(item);
+                            const imgSrc = optimized || normalizeImageUrl(raw);
                             
                             // Only load first image with priority, defer others
                             // Load adjacent slides for smooth transitions
@@ -169,8 +192,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                             src={imgSrc}
                                             alt={item.name || 'Banner'}
                                             className="hero-slide-image"
+                                            width={isMobile ? 960 : 1400}
+                                            height={isMobile ? 320 : 420}
                                             priority={i === 0}
                                             eager={isNearActive && i !== 0}
+                                            placeholder="blur"
                                         />
                                     ) : (
                                         <div className="hero-slide-image bg-gray-100" />
