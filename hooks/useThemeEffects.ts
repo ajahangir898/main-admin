@@ -69,11 +69,18 @@ export function useThemeEffects({
     root.style.setProperty('--color-hover-rgb', hoverRgb);
     root.style.setProperty('--color-surface-rgb', surfaceRgb);
 
+    // Set hex color values for CSS that needs them
+    root.style.setProperty('--theme-primary-color', themeConfig.primaryColor || '#22c55e');
+    root.style.setProperty('--theme-secondary-color', themeConfig.secondaryColor || '#ec4899');
+    root.style.setProperty('--theme-tertiary-color', themeConfig.tertiaryColor || '#9333ea');
+    
     // Sync enhanced UI CSS variables with theme colors
     root.style.setProperty('--store-accent-color', themeConfig.primaryColor || '#22c55e');
     root.style.setProperty('--store-accent-hover', themeConfig.hoverColor || themeConfig.primaryColor || '#22c55e');
     root.style.setProperty('--store-accent-light', `${themeConfig.primaryColor || '#22c55e'}15`);
     root.style.setProperty('--store-accent-dark', themeConfig.tertiaryColor || '#9333ea');
+    root.style.setProperty('--store-secondary-color', themeConfig.secondaryColor || '#ec4899');
+    root.style.setProperty('--store-tertiary-color', themeConfig.tertiaryColor || '#9333ea');
 
     console.log('[useThemeEffects] CSS variables set:', {
       primary: primaryRgb,

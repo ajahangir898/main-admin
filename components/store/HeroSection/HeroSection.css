@@ -193,9 +193,9 @@
 }
 
 .category-circle:hover .category-circle-icon {
-  background: var(--color-primary-500, #8b5cf6);
+  background: var(--theme-primary-color, rgb(var(--color-primary-rgb, 34 197 94)));
   color: white;
-  border-color: var(--color-primary-500, #8b5cf6);
+  border-color: var(--theme-primary-color, rgb(var(--color-primary-rgb, 34 197 94)));
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   transform: translateY(-0.25rem);
 }
@@ -223,7 +223,7 @@
 
 .category-pill:hover {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  border-color: var(--color-primary-300, #c4b5fd);
+  border-color: var(--theme-primary-color, rgb(var(--color-primary-rgb, 34 197 94)));
   background: linear-gradient(to right, #f5f3ff, white);
 }
 
@@ -231,8 +231,8 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  background: linear-gradient(to bottom right, var(--color-primary-100, #ede9fe), var(--color-secondary-100, #dbeafe));
-  color: var(--color-primary-600, #7c3aed);
+  background: linear-gradient(to bottom right, var(--theme-primary-color, #22c55e)20, var(--theme-secondary-color, #ec4899)20);
+  color: var(--theme-primary-color, rgb(var(--color-primary-rgb, 34 197 94)));
   display: flex;
   align-items: center;
   justify-content: center;
