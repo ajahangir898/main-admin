@@ -79,19 +79,27 @@ const networkFirst = async (request) => {
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
-      // Clone and cache the response with timestamp
-      const responseToCache = networkResponse.clone();
-      const headers = new Headers(responseToCache.headers);
-      headers.set('sw-cached-at', Date.now().toString());
+      // Clone response BEFORE reading body to avoid "body already used" error
+      const responseForCache = networkResponse.clone();
       
-      const body = await responseToCache.blob();
-      const cachedResponse = new Response(body, {
-        status: responseToCache.status,
-        statusText: responseToCache.statusText,
-        headers: headers
-      });
-      
-      cache.put(request, cachedResponse);
+      // Cache asynchronously without blocking the response
+      (async () => {
+        try {
+          const headers = new Headers(responseForCache.headers);
+          headers.set('sw-cached-at', Date.now().toString());
+          
+          const body = await responseForCache.blob();
+          const cachedResponse = new Response(body, {
+            status: responseForCache.status,
+            statusText: responseForCache.statusText,
+            headers: headers
+          });
+          
+          await cache.put(request, cachedResponse);
+        } catch (e) {
+          // Silently fail caching - don't break the response
+        }
+      })();
     }
     
     return networkResponse;
@@ -127,8 +135,11 @@ const cacheFirst = async (request) => {
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
+      // Clone BEFORE any body access
+      const responseForCache = networkResponse.clone();
       const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
+      // Don't await - cache in background
+      cache.put(request, responseForCache).catch(() => {});
     }
     
     return networkResponse;
@@ -143,22 +154,23 @@ const staleWhileRevalidate = async (request) => {
   const cache = await caches.open(DYNAMIC_CACHE);
   const cachedResponse = await cache.match(request);
   
-  // Clone cached response if available (can only read body once)
-  const cachedResponseClone = cachedResponse ? cachedResponse.clone() : null;
-  
   const networkPromise = fetch(request)
     .then(async (networkResponse) => {
       if (networkResponse.ok) {
-        // Clone before putting in cache
-        const responseToCache = networkResponse.clone();
-        await cache.put(request, responseToCache);
+        // Clone BEFORE any other operations
+        const responseForCache = networkResponse.clone();
+        // Cache in background without awaiting
+        cache.put(request, responseForCache).catch(() => {});
       }
       return networkResponse;
     })
-    .catch(() => cachedResponseClone);
+    .catch(() => {
+      // Return cached on network failure
+      return cachedResponse ? cachedResponse.clone() : null;
+    });
   
   // Return cached response immediately if available, otherwise wait for network
-  return cachedResponse || networkPromise;
+  return cachedResponse ? cachedResponse.clone() : networkPromise;
 };
 
 // Fetch event - route requests to appropriate strategy
