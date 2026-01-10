@@ -1,8 +1,9 @@
 import React, { memo, useMemo } from 'react';
-import { ShoppingCart, User, LogOut, ChevronDown, Truck, UserCircle, Search } from 'lucide-react';
+import { ShoppingCart, User, LogOut, ChevronDown, Truck, UserCircle, Search, Mic, Camera, Loader2 } from 'lucide-react';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
 import type { HeaderSearchProps } from './headerTypes';
 import { SimpleSearchBar } from './HeaderSearchBar';
+import { SearchSuggestions, VoiceStreamOverlay } from './SearchBar';
 import type { User as UserType, WebsiteConfig } from '../../../types';
 import { TopBar } from './TopBar';
 
@@ -88,23 +89,60 @@ export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
             )}
           </button>
 
-          {/* Search Bar - Clean CocoKids style */}
-          <div className="flex-1 max-w-2xl">
+          {/* Search Bar - Google Chrome style with voice & image search */}
+          <div ref={searchProps.containerRef} className="flex-1 max-w-2xl">
             <div className="relative">
               <input
                 type="text"
-                placeholder={searchProps.placeholder || "Search products..."}
-                value={searchProps.value}
-                onChange={(e) => searchProps.onChange(e.target.value)}
-                onFocus={searchProps.onFocus}
-                className="w-full h-12 pl-5 pr-14 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
+                placeholder="Search products..."
+                value={searchProps.activeSearchValue}
+                onChange={(e) => searchProps.onInputChange(e.target.value)}
+                className="w-full h-12 pl-5 pr-36 rounded-full border border-gray-200 focus:border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/10 text-gray-700 placeholder-gray-400 bg-gray-50 focus:bg-white transition-all shadow-sm hover:shadow-md"
               />
+              <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {/* Voice Search - Colorful Google style */}
+                {searchProps.supportsVoiceSearch && (
+                  <button 
+                    type="button"
+                    onClick={searchProps.onVoiceSearch}
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all group"
+                    title="Voice Search"
+                  >
+                    {searchProps.isListening ? (
+                      <Loader2 size={18} className="animate-spin text-theme-primary" />
+                    ) : (
+                      <Mic size={18} className="text-theme-primary group-hover:scale-110 transition-transform" />
+                    )}
+                  </button>
+                )}
+                {/* Image Search - Colorful Google style */}
+                <button 
+                  type="button"
+                  onClick={() => window.location.href = '/search'}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all group"
+                  title="Image Search"
+                >
+                  <Camera size={18} className="text-amber-500 group-hover:scale-110 transition-transform" />
+                </button>
+              </div>
               <button 
                 type="button"
-                className="absolute right-0 top-0 h-12 w-12 bg-theme-primary text-white rounded-r-lg flex items-center justify-center hover:brightness-110 transition-all"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 bg-theme-primary text-white rounded-full flex items-center justify-center hover:brightness-110 transition-all shadow-md"
               >
-                <Search size={20} />
+                <Search size={18} />
               </button>
+              {/* Search Suggestions */}
+              {searchProps.isSuggestionsOpen && searchProps.suggestions.length > 0 && (
+                <SearchSuggestions 
+                  suggestions={searchProps.suggestions} 
+                  onSuggestionClick={searchProps.onSuggestionClick} 
+                />
+              )}
+              {/* Voice Stream Overlay */}
+              <VoiceStreamOverlay 
+                isListening={searchProps.isListening} 
+                liveTranscript={searchProps.liveTranscript} 
+              />
             </div>
           </div>
 
