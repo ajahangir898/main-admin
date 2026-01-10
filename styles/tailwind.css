@@ -1,6 +1,3 @@
-/* Import Enhanced UI Styles */
-@import './enhanced-ui.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
