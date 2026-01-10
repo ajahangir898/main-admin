@@ -143,30 +143,31 @@ export const SimpleSearchBar: React.FC<SimpleSearchBarProps> = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onFocus={onFocus}
-      className="w-full h-12 pl-5 pr-36 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
+      className="w-full h-12 pl-5 pr-40 rounded-full border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400 bg-white"
     />
-    <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-1">
+    <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
       <button 
         type="button"
         onClick={() => window.location.href = '/search'}
-        className="p-2 text-gray-400 hover:text-theme-primary transition-colors"
+        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:text-theme-primary hover:bg-theme-primary/10 transition-all"
         title="Image Search"
       >
-        <Camera size={20} />
+        <Camera size={18} />
       </button>
+      <div className="w-px h-5 bg-gray-300"></div>
       <button 
         type="button"
-        className="p-2 text-gray-400 hover:text-theme-primary transition-colors"
+        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:text-theme-primary hover:bg-theme-primary/10 transition-all"
         title="Voice Search"
       >
-        <Mic size={20} />
+        <Mic size={18} />
       </button>
     </div>
     <button 
       type="button"
-      className="absolute right-0 top-0 h-12 w-12 bg-theme-primary text-white rounded-r-lg flex items-center justify-center hover:brightness-110 transition-all"
+      className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 bg-theme-primary text-white rounded-full flex items-center justify-center hover:brightness-110 transition-all shadow-md"
     >
-      <Search size={20} />
+      <Search size={18} />
     </button>
   </div>
 );
