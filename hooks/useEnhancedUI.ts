@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, RefObject } from 'react';
 
 interface CartAnimation {
   triggerBadgeBounce: () => void;
@@ -47,30 +47,22 @@ interface ColorTheme {
   applyColorTheme: () => void;
 }
 
+// NOTE: This hook is deprecated in favor of the theme system in useThemeEffects
+// The --store-accent-color variable is now automatically synced with the primary theme color
+// Keep this for backward compatibility but it won't override the theme
 export const useColorTheme = (initialColor: string = '#8b5cf6'): ColorTheme => {
   const [accentColor, setAccentColor] = useState(initialColor);
 
   const applyColorTheme = useCallback(() => {
-    document.documentElement.style.setProperty('--store-accent-color', accentColor);
-    
-    // Calculate hover color (slightly darker)
-    const rgb = hexToRgb(accentColor);
-    if (rgb) {
-      const hoverColor = rgbToHex(
-        Math.max(0, rgb.r - 20),
-        Math.max(0, rgb.g - 20),
-        Math.max(0, rgb.b - 20)
-      );
-      document.documentElement.style.setProperty('--store-accent-hover', hoverColor);
-    }
+    // DO NOT set --store-accent-color here as it's managed by useThemeEffects
+    // This function is kept for backward compatibility
+    console.warn('[useColorTheme] This hook is deprecated. Colors are managed by theme system.');
+  }, []);
 
-    // Calculate light color (with transparency)
-    document.documentElement.style.setProperty('--store-accent-light', `${accentColor}15`);
-  }, [accentColor]);
-
-  useEffect(() => {
-    applyColorTheme();
-  }, [applyColorTheme]);
+  // Don't apply on mount to avoid conflicts with theme system
+  // useEffect(() => {
+  //   applyColorTheme();
+  // }, [applyColorTheme]);
 
   return {
     accentColor,
@@ -100,7 +92,7 @@ function rgbToHex(r: number, g: number, b: number): string {
 
 interface StickyElement {
   isSticky: boolean;
-  targetRef: React.RefObject<HTMLElement>;
+  targetRef: RefObject<HTMLElement>;
 }
 
 export const useStickyElement = (offset: number = 0): StickyElement => {
@@ -147,7 +139,7 @@ export const useImagePreloader = (): ImagePreloader => {
 
 interface IntersectionObserverHook {
   isVisible: boolean;
-  ref: React.RefObject<HTMLElement>;
+  ref: RefObject<HTMLElement>;
 }
 
 export const useIntersectionObserver = (

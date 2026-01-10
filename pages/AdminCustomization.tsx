@@ -48,6 +48,7 @@ import {
   convertBase64ToUploadedUrl
 } from '../services/imageUploadService';
 import { GalleryPicker } from '../components/GalleryPicker';
+import { ThemeColorsTab } from '../components/customization/ThemeColorsTab';
 
 // ============================================================================
 // Types & Interfaces
@@ -1865,6 +1866,18 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
         )}
         {activeTab === 'theme_colors' && (
+          <ThemeColorsTab
+            themeColors={themeColors}
+            colorDrafts={colorDrafts}
+            searchHints={websiteConfiguration.searchHints || ''}
+            orderLanguage={websiteConfiguration.orderLanguage || 'English'}
+            onUpdateColor={updateThemeColor}
+            onSetColorDraft={(key, value) => setColorDrafts(p => ({ ...p, [key]: value }))}
+            onUpdateSearchHints={(value) => setWebsiteConfiguration(p => ({ ...p, searchHints: value }))}
+            onUpdateOrderLanguage={(value) => setWebsiteConfiguration(p => ({ ...p, orderLanguage: value }))}
+          />
+        )}
+        {activeTab === 'theme_colors_OLD_REMOVE' && (
           <div className="space-y-8 max-w-4xl">
             {/* Theme Colors Header */}
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">

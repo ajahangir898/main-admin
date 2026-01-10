@@ -2,7 +2,8 @@
 
 /* ==================== CSS Variables ==================== */
 :root {
-  /* Store accent color - can be overridden dynamically */
+  /* Store accent color - dynamically synced with theme system via useThemeEffects */
+  /* These are set by JavaScript and fallback to purple if not set */
   --store-accent-color: #8b5cf6;
   --store-accent-hover: #7c3aed;
   --store-accent-light: #ede9fe;
@@ -33,6 +34,12 @@
   --transition-base: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
 }
+
+/* NOTE: The --store-accent-* variables above are automatically synchronized 
+   with your theme colors from the admin panel via useThemeEffects hook.
+   Primary Color -> --store-accent-color
+   Hover Color -> --store-accent-hover
+   Tertiary Color -> --store-accent-dark */
 
 /* ==================== Sticky Header Enhancement ==================== */
 .enhanced-sticky-header {

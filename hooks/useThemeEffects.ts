@@ -69,6 +69,12 @@ export function useThemeEffects({
     root.style.setProperty('--color-hover-rgb', hoverRgb);
     root.style.setProperty('--color-surface-rgb', surfaceRgb);
 
+    // Sync enhanced UI CSS variables with theme colors
+    root.style.setProperty('--store-accent-color', themeConfig.primaryColor || '#22c55e');
+    root.style.setProperty('--store-accent-hover', themeConfig.hoverColor || themeConfig.primaryColor || '#22c55e');
+    root.style.setProperty('--store-accent-light', `${themeConfig.primaryColor || '#22c55e'}15`);
+    root.style.setProperty('--store-accent-dark', themeConfig.tertiaryColor || '#9333ea');
+
     console.log('[useThemeEffects] CSS variables set:', {
       primary: primaryRgb,
       secondary: secondaryRgb,
