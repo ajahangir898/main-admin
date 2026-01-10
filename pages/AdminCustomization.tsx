@@ -1889,6 +1889,15 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                         className="w-16 h-16 rounded-xl border-2 border-gray-200 shadow-md cursor-pointer hover:scale-105 transition-transform duration-200"
                         style={{ backgroundColor: themeColors[f.key] }}
                       />
+                      {/* Gradient Preview Overlay */}
+                      <div 
+                        className="absolute inset-0 w-16 h-16 rounded-xl border-2 border-gray-200 shadow-md pointer-events-none"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${themeColors[f.key]} 0%, ${themeColors[f.key]}dd 50%, ${themeColors[f.key]}aa 100%)`,
+                          mixBlendMode: 'multiply',
+                          opacity: 0.3
+                        }}
+                      />
                       <div 
                         className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border-2 border-gray-200 shadow flex items-center justify-center"
                         style={{ backgroundColor: themeColors[f.key] }}
@@ -1903,7 +1912,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                   </div>
 
                   {/* Hex Input */}
-                  <div className="relative">
+                  <div className="relative mb-3">
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-md border border-gray-200" style={{ backgroundColor: themeColors[f.key] }}></div>
                     <input 
                       type="text" 
@@ -1914,8 +1923,132 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                       placeholder="#000000"
                     />
                   </div>
+
+                  {/* Gradient Preview Samples */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Gradient Previews:</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div 
+                        className="h-8 rounded-lg border border-gray-200"
+                        style={{ 
+                          background: `linear-gradient(to right, ${themeColors[f.key]}, ${themeColors[f.key]}dd)`,
+                        }}
+                        title="Linear gradient"
+                      />
+                      <div 
+                        className="h-8 rounded-lg border border-gray-200"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${themeColors[f.key]}, ${themeColors.secondary || '#ec4899'})`,
+                        }}
+                        title="Diagonal gradient"
+                      />
+                      <div 
+                        className="h-8 rounded-lg border border-gray-200"
+                        style={{ 
+                          background: `radial-gradient(circle, ${themeColors[f.key]}, ${themeColors[f.key]}88)`,
+                        }}
+                        title="Radial gradient"
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
+            </div>
+
+            {/* Gradient Showcase Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm mt-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow">
+                  <Layers size={18} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Your Gradient Palette</h3>
+                  <p className="text-xs text-gray-500">Preview how your colors work together in various gradient combinations</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Primary + Secondary */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-600">Primary + Secondary</p>
+                  <div 
+                    className="h-24 rounded-xl shadow-lg flex items-center justify-center"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${themeColors.primary}, ${themeColors.secondary})`,
+                    }}
+                  >
+                    <p className="text-white font-semibold text-sm drop-shadow-lg">Hero Banner</p>
+                  </div>
+                </div>
+
+                {/* Primary + Tertiary */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-600">Primary + Tertiary</p>
+                  <div 
+                    className="h-24 rounded-xl shadow-lg flex items-center justify-center"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${themeColors.primary}, ${themeColors.tertiary})`,
+                    }}
+                  >
+                    <p className="text-white font-semibold text-sm drop-shadow-lg">CTA Button</p>
+                  </div>
+                </div>
+
+                {/* Secondary + Tertiary */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-600">Secondary + Tertiary</p>
+                  <div 
+                    className="h-24 rounded-xl shadow-lg flex items-center justify-center"
+                    style={{ 
+                      background: `linear-gradient(to right, ${themeColors.secondary}, ${themeColors.tertiary})`,
+                    }}
+                  >
+                    <p className="text-white font-semibold text-sm drop-shadow-lg">Badge/Tag</p>
+                  </div>
+                </div>
+
+                {/* Radial Primary */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-600">Radial Primary</p>
+                  <div 
+                    className="h-24 rounded-xl shadow-lg flex items-center justify-center"
+                    style={{ 
+                      background: `radial-gradient(circle at top left, ${themeColors.primary}, ${themeColors.primary}88)`,
+                    }}
+                  >
+                    <p className="text-white font-semibold text-sm drop-shadow-lg">Card Background</p>
+                  </div>
+                </div>
+
+                {/* Multi-color Gradient */}
+                <div className="space-y-2 md:col-span-2">
+                  <p className="text-xs font-medium text-gray-600">Multi-color Brand Gradient</p>
+                  <div 
+                    className="h-32 rounded-xl shadow-lg flex items-center justify-center"
+                    style={{ 
+                      background: `linear-gradient(90deg, ${themeColors.primary} 0%, ${themeColors.secondary} 50%, ${themeColors.tertiary} 100%)`,
+                    }}
+                  >
+                    <p className="text-white font-bold text-lg drop-shadow-lg">Premium Feature Section</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gradient CSS Code Examples */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <p className="text-xs font-semibold text-gray-700 mb-3">💡 CSS Gradient Examples:</p>
+                <div className="space-y-2 text-xs font-mono">
+                  <div className="bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+                    <span className="text-gray-500">/* Linear: */</span> background: linear-gradient(135deg, {themeColors.primary}, {themeColors.secondary});
+                  </div>
+                  <div className="bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+                    <span className="text-gray-500">/* Radial: */</span> background: radial-gradient(circle, {themeColors.primary}, {themeColors.tertiary});
+                  </div>
+                  <div className="bg-white p-2 rounded border border-gray-200 overflow-x-auto">
+                    <span className="text-gray-500">/* Multi: */</span> background: linear-gradient(to right, {themeColors.primary}, {themeColors.secondary}, {themeColors.tertiary});
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Search Hints Section */}
