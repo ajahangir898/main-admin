@@ -43,6 +43,7 @@ const AnalyticsTab = React.lazy(() => import('../components/superadmin/Analytics
 const AuditLogsTab = React.lazy(() => import('../components/superadmin/AuditLogsTab'));
 const SystemHealthTab = React.lazy(() => import('../components/superadmin/SystemHealthTab'));
 const BulkOperationsTab = React.lazy(() => import('../components/superadmin/BulkOperationsTab'));
+const TutorialsTab = React.lazy(() => import('../components/superadmin/TutorialsTab'));
 
 // Lazy load AdminTenantManagement
 const AdminTenantManagement = React.lazy(() => import('./AdminTenantManagement'));
@@ -1151,6 +1152,13 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        );
+
+      case 'tutorials':
+        return (
+          <React.Suspense fallback={<TabLoadingFallback />}>
+            <TutorialsTab />
+          </React.Suspense>
         );
 
       default:

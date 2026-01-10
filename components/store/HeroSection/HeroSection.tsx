@@ -158,13 +158,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                         as="image"
                         href={lcpImageUrl}
                         imagesrcset={preloadSrcSet || undefined}
-                        imagesizes={preloadSrcSet ? '(max-width: 768px) 100vw, 1200px' : undefined}
+                        imagesizes={preloadSrcSet ? '(max-width: 768px) 100vw, 1400px' : undefined}
                         fetchpriority="high"
                     />
                 )}
             </Helmet>
-            <section className="hero-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-                <div className="flex gap-4" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+            <section className="hero-section w-full">
+                <div className="flex gap-4 max-w-full" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
                     <div className="flex-1 min-w-0">
                     <div className={`hero-carousel group ${isMobile ? 'hero-carousel-mobile' : 'hero-carousel-desktop'}`}>
                         {items.map((item, i) => {
@@ -193,9 +193,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                             src={imgSrc}
                                             alt={item.name || 'Banner'}
                                             className="hero-slide-image"
-                                            width={isMobile ? 600 : 1400}
-                                            height={isMobile ? 288 : 420}
-                                            style={{ aspectRatio: isMobile ? '25 / 12' : '10 / 3' }}
+                                            width={isMobile ? 800 : 1920}
+                                            height={isMobile ? 450 : 600}
+                                            style={{ aspectRatio: isMobile ? '16 / 9' : '16 / 5' }}
                                             priority={i === 0}
                                             eager={isNearActive && i !== 0}
                                             placeholder="blur"

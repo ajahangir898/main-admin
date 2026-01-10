@@ -27,3 +27,131 @@
   animation: adminNoticeTicker 30s linear infinite;
   white-space: nowrap;
 }
+
+/* Professional Modern Relaxing Header Styles */
+.store-header-modern {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-header-modern:hover {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Smooth icon transitions */
+.store-header-icon {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-header-icon:hover {
+  transform: translateY(-2px);
+}
+
+/* Elegant search bar */
+.store-search-elegant {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-search-elegant:focus-within {
+  background: white;
+  border-color: var(--theme-primary-color, #22c55e);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Glassmorphism navigation */
+.store-nav-glass {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(249, 250, 251, 0.95));
+  backdrop-filter: blur(8px);
+}
+
+/* Smooth menu animations */
+.store-menu-dropdown {
+  animation: menuSlideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top center;
+}
+
+@keyframes menuSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Badge pulse animation */
+.store-badge-pulse {
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--theme-primary-rgb, 34, 197, 94), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(var(--theme-primary-rgb, 34, 197, 94), 0);
+  }
+}
+
+/* Mobile header refined */
+.mobile-header-refined {
+  background: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.97));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Touch-friendly mobile buttons */
+.mobile-action-btn {
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-action-btn:active {
+  transform: scale(0.94);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Soft scrollbar for mobile menu */
+.store-mobile-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.store-mobile-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.store-mobile-menu::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* Cart/Wishlist drawer elegant entrance */
+.drawer-elegant-enter {
+  animation: drawerEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes drawerEnter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Relaxing color transitions */
+.relaxing-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.relaxing-hover:hover {
+  color: var(--theme-primary-color, #22c55e);
+  transform: translateX(2px);
+}

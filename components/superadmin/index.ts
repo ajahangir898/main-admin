@@ -14,6 +14,7 @@ export { default as SubscriptionsTab } from './SubscriptionsTab';
 export { default as BulkAnnouncementsTab } from './BulkAnnouncementsTab';
 export { default as SupportTicketsTab } from './SupportTicketsTab';
 export { default as MerchantSuccessTab } from './MerchantSuccessTab';
+export { default as TutorialsTab } from './TutorialsTab';
 
 // Export types
 export * from './types';

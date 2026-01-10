@@ -321,4 +321,5 @@ export type TabType =
   | 'website-config'
   | 'announcements'
   | 'support-tickets'
-  | 'merchant-success';
+  | 'merchant-success'
+  | 'tutorials';
