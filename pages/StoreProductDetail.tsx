@@ -680,7 +680,7 @@ const StoreProductDetail = ({
                     <button
                       type="button"
                       onClick={handleShareLink}
-                      className="inline-flex items-center gap-2 rounded-full bg-[#0064d1] hover:bg-[#0055b2] text-white text-sm font-semibold px-4 py-2 shadow-sm"
+                      className="inline-flex items-center gap-2 rounded-full btn-gradient text-sm font-semibold px-4 py-2 shadow-sm"
                     >
                         <Share2 size={16} /> Share
                      </button>
@@ -786,14 +786,14 @@ const StoreProductDetail = ({
                     <button 
                       onClick={handleAddToCart}
                       disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
+                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-gradient'}`}
                     >
                        <ShoppingCart size={20} /> Add to cart
                     </button>
                     <button 
                       onClick={handleBuyNow}
                       disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-green-600 text-white hover:bg-green-700'}`}
+                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-gradient'}`}
                     >
                        <ShoppingBag size={20} /> Buy Now
                     </button>
@@ -979,7 +979,7 @@ const StoreProductDetail = ({
             className={`h-12 rounded-xl text-base font-semibold flex items-center justify-center gap-2 transition ${
               isOutOfStock
                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'btn-order active:scale-95'
+                : 'btn-gradient active:scale-95'
             }`}
           >
             <ShoppingCart size={20} />
@@ -991,7 +991,7 @@ const StoreProductDetail = ({
             className={`h-12 rounded-xl text-base font-semibold flex items-center justify-center gap-2 transition ${
               isOutOfStock
                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'bg-theme-primary text-white shadow-lg active:scale-95'
+                : 'btn-gradient active:scale-95'
             }`}
           >
             <ShoppingBag size={20} />

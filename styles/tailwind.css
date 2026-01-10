@@ -26,9 +26,9 @@
     @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors;
   }
   
-  /* Order/Buy Now button - uses theme primary color */
+  /* Order/Buy Now button - gradient from primary to secondary */
   .btn-order {
-    background: rgb(var(--color-primary-rgb, 139 92 246));
+    background: linear-gradient(135deg, rgb(var(--color-primary-rgb, 139 92 246)), rgb(var(--color-secondary-rgb, 236 72 153)));
     color: white;
     font-weight: 600;
     transition: all 0.2s ease;
@@ -36,7 +36,7 @@
   
   .btn-order:hover {
     filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 139 92 246), 0.35);
+    box-shadow: 0 4px 15px rgba(var(--color-primary-rgb, 139 92 246), 0.4);
   }
   
   .btn-order:active {
@@ -46,6 +46,27 @@
   .btn-order:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  /* Gradient text for icons */
+  .icon-gradient {
+    background: linear-gradient(135deg, rgb(var(--color-primary-rgb, 139 92 246)), rgb(var(--color-secondary-rgb, 236 72 153)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gradient background button */
+  .btn-gradient {
+    background: linear-gradient(135deg, rgb(var(--color-primary-rgb, 139 92 246)), rgb(var(--color-secondary-rgb, 236 72 153)));
+    color: white;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .btn-gradient:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 15px rgba(var(--color-primary-rgb, 139 92 246), 0.4);
   }
 }
 
