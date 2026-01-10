@@ -1,9 +1,9 @@
+/* Import Enhanced UI Styles */
+@import './enhanced-ui.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Enhanced UI Styles */
-@import './enhanced-ui.css';
 
 /* Custom base styles */
 @layer base {
