@@ -275,8 +275,10 @@ const StoreHome: React.FC<StoreHomeProps> = ({
         </Suspense>
       )}
       
-      {/* Hero Section */}
-      <HeroSection carouselItems={websiteConfig?.carouselItems} websiteConfig={websiteConfig} />
+      {/* Hero Section - Full Width */}
+      <div className="w-full">
+        <HeroSection carouselItems={websiteConfig?.carouselItems} websiteConfig={websiteConfig} />
+      </div>
 
       {/* Categories Section */}
       {displayCategories.length > 0 && (
