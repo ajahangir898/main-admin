@@ -30,14 +30,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
     return (
         <div 
-            className="bg-white rounded-xl border border-gray-100 hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col relative"
-            style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
+            className="bg-white rounded-lg border border-gray-100 hover:shadow-lg transition-all duration-300 group overflow-hidden flex flex-col relative"
+            style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
         >
             {/* Discount Badge */}
             {(product.discount || discountPercent) && (
-                <div className="absolute top-2.5 left-2.5 z-10">
+                <div className="absolute top-2 left-2 z-10">
                     <span 
-                        className="inline-flex items-center text-white text-[11px] font-bold px-2.5 py-1 rounded-md"
+                        className="inline-flex items-center text-white text-[9px] font-semibold px-1.5 py-0.5 rounded"
                         style={{ background: 'linear-gradient(to right, #ef4444, #f97316)' }}
                     >
                         {product.discount || `-${discountPercent}%`}
@@ -47,7 +47,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
             {/* Product Image */}
             <div 
-                className="relative aspect-square p-4 cursor-pointer overflow-hidden" 
+                className="relative aspect-square p-3 cursor-pointer overflow-hidden" 
                 style={{ background: 'linear-gradient(to bottom, #f9fafb, #ffffff)' }}
                 onClick={() => onClick(product)}
             >
@@ -57,36 +57,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     width={400}
                     height={400}
                     placeholder="blur"
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                 />
             </div>
 
             {/* Product Details */}
-            <div className="px-3.5 pb-3.5 pt-2 flex-1 flex flex-col border-t border-gray-100">
+            <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col border-t border-gray-50">
                 <h3 
-                    className="font-semibold text-gray-800 text-[13px] leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-orange-500 transition-colors"
-                    style={{ minHeight: '36px' }}
+                    className="font-medium text-gray-700 text-[11px] leading-snug mb-1.5 line-clamp-2 cursor-pointer hover:text-orange-500 transition-colors"
+                    style={{ minHeight: '28px' }}
                     onClick={() => onClick(product)}
                 >
                     {product.name}
                 </h3>
 
-                <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-lg font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
+                <div className="flex items-baseline gap-1 mb-2">
+                    <span className="text-[13px] font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
                     {product.originalPrice && (
-                        <span className="text-xs text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
+                        <span className="text-[9px] text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
                     )}
                 </div>
 
-                <div className="flex gap-2 mt-auto">
+                <div className="flex gap-1.5 mt-auto">
                     <button 
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:border-theme-primary hover:text-theme-primary hover:bg-theme-primary/10 transition-all"
+                        className="flex items-center justify-center gap-1 px-2 py-1.5 border border-gray-200 text-gray-500 text-[10px] font-medium rounded-md hover:border-theme-primary hover:text-theme-primary hover:bg-theme-primary/5 transition-all"
                         onClick={(e) => { e.stopPropagation(); onAddToCart?.(product); }}
                     >
-                        <ShoppingCart size={16} /> Cart
+                        <ShoppingCart size={12} />
                     </button>
                     <button 
-                        className="flex-1 btn-order text-sm py-2 px-4 rounded-lg"
+                        className="flex-1 btn-order text-[11px] font-medium py-1.5 px-3 rounded-md"
                         onClick={handleBuyNow}
                     >
                         Buy Now
