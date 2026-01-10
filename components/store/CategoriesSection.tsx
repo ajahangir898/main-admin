@@ -21,7 +21,7 @@ interface Props {
   style?: string; // Style prop (unused for now, but accepted)
 }
 
-// Memoized category button for better performance
+// Memoized category button for better performance - CocoKids style with icon and text
 const CategoryButton = memo(({ 
   category, 
   onClick 
@@ -36,9 +36,9 @@ const CategoryButton = memo(({
   return (
     <button
       onClick={handleClick}
-      className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-theme-primary bg-white hover:bg-theme-primary/10 transition-colors duration-150"
+      className="flex-shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-full border border-gray-200 bg-white hover:border-theme-primary hover:bg-theme-primary/5 transition-all duration-200 group"
     >
-      <div className="w-6 h-6 flex items-center justify-center text-theme-primary">
+      <div className="w-7 h-7 flex items-center justify-center text-theme-primary rounded-full bg-theme-primary/10 group-hover:bg-theme-primary/20 transition-colors">
         {isImageUrl(category.icon) ? (
           <img 
             src={category.icon} 
@@ -48,10 +48,10 @@ const CategoryButton = memo(({
             fetchPriority="high"
           />
         ) : (
-          getIcon(category.icon, 18, 2)
+          getIcon(category.icon, 16, 2)
         )}
       </div>
-      <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
+      <span className="text-sm font-semibold text-gray-700 whitespace-nowrap group-hover:text-theme-primary transition-colors">
         {category.name}
       </span>
     </button>
@@ -87,22 +87,23 @@ export const CategoriesSection = memo(({ categories, onCategoryClick, sectionRef
   const duplicatedItems = useMemo(() => [...processed, ...processed], [processed]);
 
   return (
-    <div ref={ref} className="relative py-3 overflow-hidden">
-      {/* Header with title and View All */}
-      <div className="flex items-center justify-between mb-2">
+    <div ref={ref} className="relative py-4 overflow-hidden bg-white">
+      {/* Header with title and View All - CocoKids style */}
+      <div className="flex items-center justify-between mb-4 px-1">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Categories</h2>
-          <div className="h-1 w-20 rounded-full bg-gradient-to-r from-pink-500 to-cyan-500 mt-1"></div>
+          <h2 className="text-xl font-bold text-gray-900">Categories</h2>
+          <div className="h-1 w-24 rounded-full bg-theme-primary mt-1.5"></div>
         </div>
         <button
-          className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
+          className="flex items-center gap-1.5 text-sm font-semibold text-theme-primary hover:underline transition-colors"
           onClick={() => onCategoryClick('all')}
         >
           View All
-          <ChevronRight size={16} className="text-blue-600" />
+          <ChevronRight size={18} className="text-theme-primary" />
         </button>
       </div>
       
+      {/* Category pills - horizontal scroll with marquee */}
       <div 
         className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-40px),transparent)]"
         onMouseEnter={() => setIsPaused(true)}
@@ -119,7 +120,8 @@ export const CategoriesSection = memo(({ categories, onCategoryClick, sectionRef
         </div>
       </div>
 
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-lg flex items-center justify-center border border-gray-200 pointer-events-none">
+      {/* Right arrow indicator */}
+      <div className="absolute right-0 top-1/2 mt-4 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-lg flex items-center justify-center border border-gray-200 pointer-events-none">
         <ChevronRight size={18} className="text-gray-400" />
       </div>
     </div>

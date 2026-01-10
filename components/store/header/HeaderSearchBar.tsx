@@ -121,3 +121,35 @@ export const MobileSearchBar: React.FC<HeaderSearchProps> = ({
     <VoiceStreamOverlay isListening={isListening} liveTranscript={liveTranscript} />
   </div>
 );
+
+// Simple search bar for CocoKids style header
+export interface SimpleSearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+  onFocus?: () => void;
+  placeholder?: string;
+}
+
+export const SimpleSearchBar: React.FC<SimpleSearchBarProps> = ({
+  value,
+  onChange,
+  onFocus,
+  placeholder = "Search products..."
+}) => (
+  <div className="flex-1 max-w-2xl relative">
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onFocus={onFocus}
+      className="w-full h-12 pl-5 pr-14 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
+    />
+    <button 
+      type="button"
+      className="absolute right-0 top-0 h-12 w-12 bg-theme-primary text-white rounded-r-lg flex items-center justify-center hover:brightness-110 transition-all"
+    >
+      <Search size={20} />
+    </button>
+  </div>
+);

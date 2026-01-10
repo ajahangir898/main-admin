@@ -1,5 +1,5 @@
 import { useState, useEffect, RefObject } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Play } from 'lucide-react';
 import { Product } from '../../types';
 import { ProductCard } from '../StoreProductComponents';
 import { getViewportWidth } from '../../utils/viewportHelpers';
@@ -43,41 +43,42 @@ export const FlashSalesSection = ({ products, showCounter, countdown, onProductC
   }, [products.length, visible]);
 
   return (
-    <section ref={sectionRef} className="py-3" style={{ minHeight: products.length > 0 ? '360px' : 'auto', contain: 'layout' }}>
-      {/* Header row - fixed height to prevent CLS */}
-      <div className="flex items-center justify-between pb-2 mb-4 min-h-[48px]">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-3 w-3 flex-shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500" />
-            </span>
-            <h2 className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 to-cyan-500 bg-clip-text text-transparent whitespace-nowrap">
-              ⚡ Flash Sale
-            </h2>
-          </div>
-          {/* Countdown container - always rendered with fixed dimensions */}
-          <div className="flex items-center gap-1 min-w-[180px] h-[44px]" style={{ visibility: showCounter ? 'visible' : 'hidden' }}>
-            {displayCountdown.map((s, i) => (
-              <div key={s.label} className="flex items-center">
-                <div className="flex flex-col items-center bg-gradient-to-br from-pink-500 to-cyan-500 rounded-lg px-2.5 py-1.5 w-[42px] shadow-md">
-                  <span className="text-base font-bold text-white tabular-nums leading-none font-mono">{s.value}</span>
-                  <span className="text-[9px] text-white/80 uppercase tracking-wider mt-0.5">{s.label}</span>
-                </div>
-                {i < displayCountdown.length - 1 && <span className="text-pink-500 font-bold mx-0.5 text-lg animate-pulse">:</span>}
-              </div>
-            ))}
-          </div>
+    <section 
+      ref={sectionRef} 
+      className="py-6 px-4 md:px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600" 
+      style={{ minHeight: products.length > 0 ? '420px' : 'auto', contain: 'layout' }}
+    >
+      {/* Header row - CocoKids "Deal of The Day" style */}
+      <div className="flex items-center justify-between pb-4 mb-4">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white">
+            Deal of The Day
+          </h2>
+          <p className="text-white/80 text-sm mt-1">Best Price, Top Products</p>
         </div>
-        <button onClick={onViewAll} className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex-shrink-0">
+        
+        <button 
+          onClick={onViewAll} 
+          className="flex items-center gap-2 px-5 py-2.5 bg-white text-theme-primary rounded-full font-semibold text-sm hover:bg-gray-100 transition-colors shadow-lg"
+        >
           View All
-          <ChevronRight size={16} className="text-blue-600" />
+          <Play size={14} fill="currentColor" />
         </button>
       </div>
-      {/* Product grid - min-height based on expected card height */}
-      <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" style={{ minHeight: '280px' }}>
+
+      {/* Product grid */}
+      <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" style={{ minHeight: '320px' }}>
         {products.slice(0, visible).map(p => (
-          <ProductCard key={`flash-${p.id}`} product={p} onClick={onProductClick} onBuyNow={onBuyNow} variant={productCardStyle} onQuickView={onQuickView} onAddToCart={onAddToCart} />
+          <ProductCard 
+            key={`flash-${p.id}`} 
+            product={p} 
+            onClick={onProductClick} 
+            onBuyNow={onBuyNow} 
+            variant={productCardStyle} 
+            onQuickView={onQuickView} 
+            onAddToCart={onAddToCart}
+            showSaleBadge={true}
+          />
         ))}
       </div>
     </section>

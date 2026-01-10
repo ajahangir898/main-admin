@@ -1,9 +1,10 @@
 import React, { memo, useMemo } from 'react';
-import { ShoppingCart, Heart, User, LogOut, ChevronDown, Truck, UserCircle } from 'lucide-react';
+import { ShoppingCart, User, LogOut, ChevronDown, Truck, UserCircle, Search } from 'lucide-react';
 import { normalizeImageUrl } from '../../../utils/imageUrlHelper';
 import type { HeaderSearchProps } from './headerTypes';
-import { DesktopSearchBar } from './HeaderSearchBar';
+import { SimpleSearchBar } from './HeaderSearchBar';
 import type { User as UserType, WebsiteConfig } from '../../../types';
+import { TopBar } from './TopBar';
 
 interface DesktopHeaderBarProps {
   resolvedHeaderLogo: string | null;
@@ -34,7 +35,7 @@ interface DesktopHeaderBarProps {
 }
 
 const Badge = memo<{ count: number }>(({ count }) => 
-  count > 0 ? <span className="absolute -top-2 -right-2 bg-theme-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{count}</span> : null
+  count > 0 ? <span className="absolute -top-1.5 -right-1.5 bg-theme-primary text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">{count > 99 ? '99+' : count}</span> : null
 );
 
 export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
@@ -55,100 +56,111 @@ export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
   const handleMenuClick = (action?: () => void) => { onMenuClose(); action?.(); };
 
   return (
-    <header className="hidden md:block bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 store-header-modern">
-      {/* Top Bar */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-6">
-        {/* Logo */}
-        <button type="button" className="flex items-center flex-shrink-0 group" onClick={onHomeClick}>
-          {resolvedHeaderLogo ? (
-            <img 
-              key={logoKey} 
-              src={normalizeImageUrl(resolvedHeaderLogo)} 
-              alt={websiteConfig?.websiteName || 'Logo'} 
-              width={192}
-              height={48}
-              className="h-10 md:h-12 object-contain transition-all duration-300 group-hover:scale-105 group-hover:brightness-110" 
-            />
-          ) : (
-            <h2 className="text-2xl font-black tracking-tight text-theme-primary transition-all duration-300 group-hover:opacity-80">
-              {websiteConfig?.websiteName || 'My Store'}
-            </h2>
-          )}
-        </button>
-
-        <DesktopSearchBar {...searchProps} />
-
-        {/* Actions */}
-        <div className="flex items-center gap-2 text-gray-600">
-          {[
-            { icon: <Heart size={20} strokeWidth={1.8} />, label: 'Wishlist', badge: wishlistBadgeCount, onClick: onWishlistOpen },
-            { icon: <ShoppingCart size={20} strokeWidth={1.8} />, label: 'Cart', badge: cartBadgeCount, onClick: onCartOpen }
-          ].map(({ icon, label, badge, onClick }) => (
-            <button key={label} type="button" className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl hover:bg-gray-50/80 hover:text-theme-primary transition-all duration-300 group store-header-icon" onClick={onClick}>
-              <div className="relative">
-                {icon}
-                <Badge count={badge} />
-              </div>
-              <span className="text-sm font-medium text-gray-700 group-hover:text-theme-primary transition-colors duration-300">{label}</span>
-            </button>
-          ))}
-
-          {/* User Menu */}
-          <div className="relative" ref={menuRef}>
-            <button type="button" className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-gray-50/80 hover:text-theme-primary transition-all duration-300 group store-header-icon" onClick={user ? onMenuToggle : onLoginClick}>
-              <div className="bg-gradient-to-br from-theme-primary/10 to-theme-primary/5 p-2.5 rounded-full group-hover:from-theme-primary/15 group-hover:to-theme-primary/10 transition-all duration-300 group-hover:shadow-md">
-                <User size={17} strokeWidth={1.8} className="text-theme-primary" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">
-                {user ? <>{user.name.split(' ')[0]} <ChevronDown size={14} className="inline ml-0.5 transition-transform duration-300 group-hover:translate-y-0.5" /></> : 'Login'}
-              </span>
-            </button>
-            {user && isMenuOpen && (
-              <div className="absolute right-0 top-full mt-2.5 w-56 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-100/80 py-2 z-50 store-menu-dropdown">
-                <div className="px-4 py-3.5 border-b border-gray-100/80 bg-gradient-to-r from-theme-primary/5 to-transparent rounded-t-2xl">
-                  <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
-                  <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
-                </div>
-                {menuItems.map(({ icon, label, action, danger }) => (
-                  <button key={label} type="button" onClick={() => handleMenuClick(action)} 
-                    className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-all duration-200 ${danger ? 'text-red-600 hover:bg-red-50/80' : 'text-gray-700 hover:bg-gray-50/80 hover:text-theme-primary hover:translate-x-1'}`}>
-                    {icon} {label}
-                  </button>
-                ))}
-              </div>
+    <>
+      {/* Top utility bar */}
+      <TopBar
+        websiteConfig={websiteConfig}
+        user={user}
+        onWishlistClick={onWishlistOpen}
+        onTrackOrderClick={onTrackOrder}
+        onLoginClick={onLoginClick}
+        wishlistCount={wishlistBadgeCount}
+      />
+      
+      {/* Main header */}
+      <header className="hidden md:block bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-8">
+          {/* Logo */}
+          <button type="button" className="flex items-center flex-shrink-0 group" onClick={onHomeClick}>
+            {resolvedHeaderLogo ? (
+              <img 
+                key={logoKey} 
+                src={normalizeImageUrl(resolvedHeaderLogo)} 
+                alt={websiteConfig?.websiteName || 'Logo'} 
+                width={180}
+                height={50}
+                className="h-12 md:h-14 object-contain transition-all duration-300 group-hover:scale-105" 
+              />
+            ) : (
+              <h2 className="text-2xl font-black tracking-tight text-theme-primary transition-all duration-300 group-hover:opacity-80">
+                {websiteConfig?.websiteName || 'My Store'}
+              </h2>
             )}
-          </div>
-        </div>
-      </div>
+          </button>
 
-      {/* Navigation */}
-      <nav className="border-t border-gray-100/60 store-nav-glass">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-1 py-1.5 text-sm font-medium text-gray-600 items-center">
-          <button type="button" onClick={onHomeClick} className="px-4 py-2.5 rounded-xl hover:bg-white/80 hover:text-theme-primary hover:shadow-sm transition-all duration-300">Home</button>
-          
-          {websiteConfig?.showMobileHeaderCategory && (
-            <div ref={categoryMenuRef} className="relative" onMouseEnter={() => onCategoryMenuOpen(true)} onMouseLeave={() => onCategoryMenuOpen(false)}>
-              <button type="button" onClick={onCategoriesClick} className="px-4 py-2.5 rounded-xl hover:bg-white/80 hover:text-theme-primary hover:shadow-sm transition-all duration-300 flex items-center gap-1.5">
-                Categories <ChevronDown size={14} className={`transition-transform duration-300 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
+          {/* Search Bar - Clean CocoKids style */}
+          <div className="flex-1 max-w-2xl">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={searchProps.placeholder || "Search products..."}
+                value={searchProps.value}
+                onChange={(e) => searchProps.onChange(e.target.value)}
+                onFocus={searchProps.onFocus}
+                className="w-full h-12 pl-5 pr-14 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
+              />
+              <button 
+                type="button"
+                className="absolute right-0 top-0 h-12 w-12 bg-theme-primary text-white rounded-r-lg flex items-center justify-center hover:brightness-110 transition-all"
+              >
+                <Search size={20} />
               </button>
-              {isCategoryMenuOpen && categoriesList?.length ? (
-                <div className="absolute left-0 top-full mt-1.5 w-60 rounded-2xl border border-gray-100/80 bg-white/95 backdrop-blur-lg py-2 shadow-2xl z-50 store-menu-dropdown">
-                  {categoriesList.map(cat => (
-                    <button key={cat} type="button" onClick={() => { onCategorySelect?.(cat); onCategoryMenuOpen(false); }} 
-                      className="block w-full px-4 py-3 text-left text-sm hover:bg-gray-50/80 hover:text-theme-primary transition-all duration-200 hover:translate-x-1">{cat}</button>
+            </div>
+          </div>
+
+          {/* Right Actions - Cart and Login */}
+          <div className="flex items-center gap-4">
+            {/* Cart */}
+            <button 
+              type="button" 
+              onClick={onCartOpen}
+              className="relative flex items-center gap-2 text-gray-700 hover:text-theme-primary transition-colors"
+            >
+              <div className="relative">
+                <ShoppingCart size={26} strokeWidth={1.5} />
+                <Badge count={cartBadgeCount} />
+              </div>
+            </button>
+
+            {/* User/Login */}
+            <div className="relative" ref={menuRef}>
+              <button 
+                type="button" 
+                onClick={user ? onMenuToggle : onLoginClick}
+                className="flex items-center gap-2 text-gray-700 hover:text-theme-primary transition-colors"
+              >
+                <User size={24} strokeWidth={1.5} />
+                <span className="text-sm font-medium">
+                  {user ? user.name.split(' ')[0] : 'Login / SignUp'}
+                </span>
+              </button>
+              
+              {user && isMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+                  </div>
+                  {menuItems.map(({ icon, label, action, danger }) => (
+                    <button 
+                      key={label} 
+                      type="button" 
+                      onClick={() => handleMenuClick(action)} 
+                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${
+                        danger ? 'text-red-600 hover:bg-red-50' : 'text-gray-700 hover:bg-gray-50 hover:text-theme-primary'
+                      }`}
+                    >
+                      {icon} {label}
+                    </button>
                   ))}
                 </div>
-              ) : null}
+              )}
             </div>
-          )}
-          
-          <button type="button" onClick={onProductsClick} className="px-4 py-2.5 rounded-xl hover:bg-white/80 hover:text-theme-primary hover:shadow-sm transition-all duration-300">Products</button>
-          <button type="button" onClick={onTrackOrder} className="px-4 py-2.5 rounded-xl hover:bg-white/80 hover:text-theme-primary hover:shadow-sm transition-all duration-300 flex items-center gap-2">
-            <Truck size={15} strokeWidth={1.8} /> Track Order
-          </button>
+          </div>
         </div>
-      </nav>
-    </header>
+      </header>
+    </>
   );
 });
-// RR
+
+DesktopHeaderBar.displayName = 'DesktopHeaderBar';
