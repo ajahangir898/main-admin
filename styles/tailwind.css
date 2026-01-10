@@ -28,7 +28,7 @@
   
   /* Order/Buy Now button - uses theme primary color */
   .btn-order {
-    background: rgb(var(--color-primary-rgb, 249 115 22));
+    background: rgb(var(--color-primary-rgb, 139 92 246));
     color: white;
     font-weight: 600;
     transition: all 0.2s ease;
@@ -36,7 +36,7 @@
   
   .btn-order:hover {
     filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 249 115 22), 0.35);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 139 92 246), 0.35);
   }
   
   .btn-order:active {

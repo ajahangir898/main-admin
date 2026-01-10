@@ -97,7 +97,7 @@ type CampaignFilterStatus = 'All' | 'Publish' | 'Draft';
 // ============================================================================
 
 const DEFAULT_COLORS: Record<ColorKey, string> = {
-  primary: '#22c55e',
+  primary: '#8b5cf6',
   secondary: '#ec4899',
   tertiary: '#9333ea',
   font: '#0f172a',

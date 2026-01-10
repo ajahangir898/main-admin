@@ -3,11 +3,11 @@
 /* ==================== CSS Variables ==================== */
 :root {
   /* Store accent color - dynamically synced with theme system via useThemeEffects */
-  /* These are set by JavaScript and fallback to purple if not set */
+  /* Purple to Pink gradient theme */
   --store-accent-color: #8b5cf6;
   --store-accent-hover: #7c3aed;
-  --store-accent-light: #ede9fe;
-  --store-accent-dark: #6d28d9;
+  --store-accent-light: #f5f3ff;
+  --store-accent-dark: #a855f7;
   
   /* Surface colors */
   --surface-white: #ffffff;

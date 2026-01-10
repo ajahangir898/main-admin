@@ -55,9 +55,9 @@ export function useThemeEffects({
     });
 
     // Store theme colors - apply for ALL views (store needs these too)
-    const primaryRgb = hexToRgb(themeConfig.primaryColor || '#22c55e');
+    const primaryRgb = hexToRgb(themeConfig.primaryColor || '#8b5cf6');
     const secondaryRgb = hexToRgb(themeConfig.secondaryColor || '#ec4899');
-    const tertiaryRgb = hexToRgb(themeConfig.tertiaryColor || '#9333ea');
+    const tertiaryRgb = hexToRgb(themeConfig.tertiaryColor || '#a855f7');
     const fontRgb = hexToRgb(themeConfig.fontColor || '#0f172a');
     const hoverRgb = hexToRgb(themeConfig.hoverColor || '#f97316');
     const surfaceRgb = hexToRgb(themeConfig.surfaceColor || '#e2e8f0');
@@ -70,17 +70,17 @@ export function useThemeEffects({
     root.style.setProperty('--color-surface-rgb', surfaceRgb);
 
     // Set hex color values for CSS that needs them
-    root.style.setProperty('--theme-primary-color', themeConfig.primaryColor || '#22c55e');
+    root.style.setProperty('--theme-primary-color', themeConfig.primaryColor || '#8b5cf6');
     root.style.setProperty('--theme-secondary-color', themeConfig.secondaryColor || '#ec4899');
-    root.style.setProperty('--theme-tertiary-color', themeConfig.tertiaryColor || '#9333ea');
+    root.style.setProperty('--theme-tertiary-color', themeConfig.tertiaryColor || '#a855f7');
     
     // Sync enhanced UI CSS variables with theme colors
-    root.style.setProperty('--store-accent-color', themeConfig.primaryColor || '#22c55e');
-    root.style.setProperty('--store-accent-hover', themeConfig.hoverColor || themeConfig.primaryColor || '#22c55e');
-    root.style.setProperty('--store-accent-light', `${themeConfig.primaryColor || '#22c55e'}15`);
-    root.style.setProperty('--store-accent-dark', themeConfig.tertiaryColor || '#9333ea');
+    root.style.setProperty('--store-accent-color', themeConfig.primaryColor || '#8b5cf6');
+    root.style.setProperty('--store-accent-hover', themeConfig.hoverColor || themeConfig.primaryColor || '#7c3aed');
+    root.style.setProperty('--store-accent-light', `${themeConfig.primaryColor || '#8b5cf6'}15`);
+    root.style.setProperty('--store-accent-dark', themeConfig.tertiaryColor || '#a855f7');
     root.style.setProperty('--store-secondary-color', themeConfig.secondaryColor || '#ec4899');
-    root.style.setProperty('--store-tertiary-color', themeConfig.tertiaryColor || '#9333ea');
+    root.style.setProperty('--store-tertiary-color', themeConfig.tertiaryColor || '#a855f7');
 
     console.log('[useThemeEffects] CSS variables set:', {
       primary: primaryRgb,
