@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Camera } from 'lucide-react';
+import { Search, Camera, Mic } from 'lucide-react';
 import {
   VoiceButton,
   SearchSuggestions,
@@ -143,8 +143,25 @@ export const SimpleSearchBar: React.FC<SimpleSearchBarProps> = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onFocus={onFocus}
-      className="w-full h-12 pl-5 pr-14 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
+      className="w-full h-12 pl-5 pr-36 rounded-lg border-2 border-theme-primary focus:outline-none focus:ring-2 focus:ring-theme-primary/20 text-gray-700 placeholder-gray-400"
     />
+    <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-1">
+      <button 
+        type="button"
+        onClick={() => window.location.href = '/search'}
+        className="p-2 text-gray-400 hover:text-theme-primary transition-colors"
+        title="Image Search"
+      >
+        <Camera size={20} />
+      </button>
+      <button 
+        type="button"
+        className="p-2 text-gray-400 hover:text-theme-primary transition-colors"
+        title="Voice Search"
+      >
+        <Mic size={20} />
+      </button>
+    </div>
     <button 
       type="button"
       className="absolute right-0 top-0 h-12 w-12 bg-theme-primary text-white rounded-r-lg flex items-center justify-center hover:brightness-110 transition-all"
