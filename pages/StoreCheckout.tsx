@@ -248,7 +248,7 @@ const StoreCheckout = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-slate-900">
+    <div className="min-h-screen font-sans text-slate-900 mobile-smooth-scroll" style={{ background: 'linear-gradient(to bottom, #f0f4f8, #e8ecf1)' }}>
       <Suspense fallback={null}>
         <StoreHeader 
           onHomeClick={onBack}
@@ -269,8 +269,8 @@ const StoreCheckout = ({
         />
       </Suspense>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        <section className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 md:p-6 top-16 z-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24 md:pb-6">
+        <section className="glass-card rounded-2xl p-4 md:p-6 top-16 z-10 animate-slide-up">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-gray-400">Checkout</p>
@@ -296,11 +296,11 @@ const StoreCheckout = ({
               return (
                 <div key={step.key} className="flex-1 flex items-center gap-2 md:gap-3">
                   <div
-                    className={`h-10 w-10 rounded-full flex items-center justify-center border-2 text-sm font-bold transition-all ${
+                    className={`mobile-progress-step h-10 w-10 rounded-full flex items-center justify-center border-2 text-sm font-bold transition-all ${
                       isCompleted 
-                        ? 'border-emerald-500 bg-emerald-500 text-white shadow-md' 
+                        ? 'completed border-emerald-500 text-white' 
                         : active 
-                        ? 'border-emerald-500 text-emerald-600 bg-emerald-50 shadow-sm' 
+                        ? 'active border-emerald-500 text-emerald-600' 
                         : 'border-gray-200 text-gray-400'
                     }`}
                   >
@@ -319,8 +319,8 @@ const StoreCheckout = ({
           </div>
         </section>
 
-        <div className="flex flex-col lg:flex-row gap-8 shadow-lg">
-          <div className="flex-1 space-y-8">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+          <div className="flex-1 space-y-6 md:space-y-8">
             {isLoading && (
               <div className="space-y-8">
                 <div className="animate-pulse space-y-4">
@@ -333,12 +333,12 @@ const StoreCheckout = ({
             {!isLoading && (
               <>
                 {deliveryConfigs && deliveryConfigs.length > 0 && (
-              <div className="store-card p-6 rounded-3xl border border-gray-200 shadow-lg">
+              <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-800">Delivery Options</h2>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800">Delivery Options</h2>
                   <span className="text-xs text-gray-500">Choose the best speed for you</span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                   {deliveryConfigs.map(config => {
                     const isActive = selectedDeliveryType === config.type;
                     return (
@@ -346,8 +346,8 @@ const StoreCheckout = ({
                         key={config.type}
                         type="button"
                         onClick={() => setSelectedDeliveryType(config.type)}
-                        className={`rounded-2xl border p-4 text-left transition flex flex-col gap-1 transform hover:scale-105 ${
-                          isActive ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100' : 'border-gray-200 bg-white hover:shadow-lg'
+                        className={`mobile-delivery-card mobile-touch-feedback text-left flex flex-col gap-1 ${
+                          isActive ? 'selected' : ''
                         } ${!config.isEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         disabled={!config.isEnabled}
                       >
@@ -370,7 +370,7 @@ const StoreCheckout = ({
               </div>
             )}
 
-            <div className="store-card p-6 rounded-3xl shadow-lg border border-gray-200">
+            <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
               <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 1</p>
@@ -379,19 +379,17 @@ const StoreCheckout = ({
                 <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Auto-fill</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2.5">Full Name <span className="text-rose-500">*</span></label>
                   <div className="relative group">
-                    <UserIcon className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.fullName && touchedFields.fullName ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                    <UserIcon className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.fullName && touchedFields.fullName ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
                     <input
                       type="text"
                       placeholder="John Doe"
                       autoComplete="name"
-                      className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-gray-800 placeholder:text-gray-400 ${
-                        formErrors.fullName && touchedFields.fullName 
-                          ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100' 
-                          : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
+                      className={`mobile-form-input w-full ${
+                        formErrors.fullName && touchedFields.fullName ? 'error' : ''
                       }`}
                       value={formData.fullName}
                       onChange={e => updateField('fullName', e.target.value)}
@@ -532,23 +530,23 @@ const StoreCheckout = ({
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 2</p>
-                  <h2 className="text-xl font-bold text-gray-900">Payment Method</h2>
-                </div>
-                <span className="text-xs text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5 font-bold"><ShieldCheck size={14} /> Secure Payment</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button className="border-2 border-emerald-500 bg-emerald-50 hover:bg-emerald-100 rounded-2xl p-4 flex flex-col gap-2 transition-colors text-left">
-                  <div className="flex items-center gap-2 text-sm font-bold text-emerald-700">
-                    <CheckCircle2 size={16} /> Cash on Delivery
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 2</p>
+                    <h2 className="text-lg md:text-xl font-bold text-gray-900">Payment Method</h2>
                   </div>
-                  <p className="text-xs text-gray-500">Pay when the order arrives.</p>
-                  <Banknote size={40} className="text-emerald-500" />
-                </button>
-                <div className="border border-dashed border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
+                  <span className="mobile-badge mobile-badge-success flex items-center gap-1.5"><ShieldCheck size={14} /> Secure</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <button className="mobile-payment-option selected mobile-touch-feedback flex flex-col gap-2 text-left">
+                    <div className="flex items-center gap-2 text-sm font-bold text-emerald-700">
+                      <CheckCircle2 size={16} /> Cash on Delivery
+                    </div>
+                    <p className="text-xs text-gray-500">Pay when the order arrives.</p>
+                    <Banknote size={36} className="text-emerald-500 mt-1" />
+                  </button>
+                  <div className="border border-dashed border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
                   
                   <div className="grid grid-cols-1 gap-3">
                    
@@ -566,7 +564,7 @@ const StoreCheckout = ({
           </div>
 
           <div className="w-full lg:w-96">
-            <div className="store-card p-6 rounded-3xl top-24 border border-gray-100 shadow-xl shadow-emerald-50/50">
+            <div className="mobile-order-summary glass-card rounded-2xl md:rounded-3xl top-24 animate-scale-in">
               <h2 className="text-lg font-bold text-gray-800 mb-6">Order Items ({quantity} Items)</h2>
 
               <div className="flex gap-3 mb-6">
@@ -656,13 +654,13 @@ const StoreCheckout = ({
               <div className="mt-6 flex flex-col gap-3">
                 <button
                   onClick={handleSubmit}
-                  className="w-full btn-order rounded-2xl py-4 text-base tracking-wide bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
+                  className="mobile-place-order-btn w-full mobile-touch-feedback"
                 >
                   Confirm Order • ৳{grandTotal.toLocaleString()}
                 </button>
                 <button
                   onClick={onBack}
-                  className="w-full rounded-2xl border-2 border-theme-primary/30 text-theme-primary font-semibold py-3.5 text-sm hover:bg-theme-primary/10 hover:border-theme-primary flex items-center justify-center gap-2 transition-all duration-200"
+                  className="glass-button w-full rounded-xl border-2 border-theme-primary/30 text-theme-primary font-semibold py-3.5 text-sm flex items-center justify-center gap-2 mobile-touch-feedback"
                 >
                   <ArrowLeft size={16} /> Continue Shopping
                 </button>

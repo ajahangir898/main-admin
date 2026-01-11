@@ -1,0 +1,240 @@
+diff --git a/components/AppRoutes.tsx b/components/AppRoutes.tsx
+index 1fabb27..ddf609b 100644
+--- a/components/AppRoutes.tsx
++++ b/components/AppRoutes.tsx
+@@ -385,6 +385,21 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
+             </Suspense>
+           )}
+ 
++          {currentView === 'checkout' && !selectedProduct && (
++            <div className="min-h-screen flex items-center justify-center bg-gray-50">
++              <div className="text-center p-8">
++                <h2 className="text-2xl font-bold text-gray-900 mb-4">No Product Selected</h2>
++                <p className="text-gray-600 mb-6">Please select a product before proceeding to checkout.</p>
++                <button
++                  onClick={() => setCurrentView('store')}
++                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
++                >
++                  Return to Store
++                </button>
++              </div>
++            </div>
++          )}
++
+           {currentView === 'checkout' && selectedProduct && (
+             <Suspense fallback={null}>
+               <StoreCheckout
+diff --git a/hooks/useNavigation.ts b/hooks/useNavigation.ts
+index 7331305..7028a52 100644
+--- a/hooks/useNavigation.ts
++++ b/hooks/useNavigation.ts
+@@ -37,6 +37,12 @@ const isRegisterPath = typeof window !== 'undefined' &&
+ function getInitialView(): ViewState {
+   if (typeof window === 'undefined') return 'store';
+   
++  // Check if on product detail page
++  const pathname = window.location.pathname;
++  if (pathname.includes('/product-details/')) {
++    return 'detail';
++  }
++  
+   // Check if /register path on main domain
+   if (isRegisterPath) {
+     return 'register';
+@@ -174,6 +180,11 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
+       }
+       return;
+     }
++    
++    // If already on admin view, don't change it unless there's a specific route
++    if (activeView.startsWith('admin') && (isAdminSubdomain || trimmedPath === 'admin')) {
++      return;
++    }
+ 
+     // Handle checkout route
+     if (trimmedPath === 'checkout') {
+@@ -218,15 +229,47 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
+       return;
+     }
+ 
+-    // Handle /product-details/slug route
++    // Handle /product-details/slug-id route
+     if (trimmedPath.startsWith('product-details/')) {
+-      const slug = trimmedPath.replace('product-details/', '');
+-      const matchedProduct = products.find(p => p.slug === slug);
++      const slugWithId = trimmedPath.replace('product-details/', '');
++      
++      // Try to extract ID from the end of the slug (format: slug-123)
++      const lastDashIndex = slugWithId.lastIndexOf('-');
++      let matchedProduct = null;
++      
++      if (lastDashIndex > 0) {
++        const potentialId = slugWithId.substring(lastDashIndex + 1);
++        const potentialSlug = slugWithId.substring(0, lastDashIndex);
++        
++        // Try to match by ID first (more reliable)
++        if (/^\d+$/.test(potentialId)) {
++          matchedProduct = products.find(p => p.id === parseInt(potentialId, 10));
++        }
++        
++        // Fallback: try to match by slug only
++        if (!matchedProduct) {
++          matchedProduct = products.find(p => p.slug === potentialSlug);
++        }
++      }
++      
++      // Fallback: try to match the whole string as slug (for backward compatibility)
++      if (!matchedProduct) {
++        matchedProduct = products.find(p => p.slug === slugWithId);
++      }
++      
+       if (matchedProduct) {
+         setSelectedProduct(matchedProduct);
+         setCurrentView('detail');
+         return;
+       }
++      
++      // If product not found yet (products still loading), stay on detail view
++      // This prevents redirecting to home when clicking shared product links
++      if (activeView !== 'detail') {
++        setCurrentView('detail');
++      }
++      // Always return early for product-details URLs to prevent fallthrough
++      return;
+     }
+ 
+     // Handle /products route with optional category filter (legacy)
+@@ -303,6 +346,11 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
+     if (activeView === 'admin-login') {
+       return;
+     }
++    
++    // If we're on detail view with product-details URL, don't redirect (products may still be loading)
++    if (activeView === 'detail' && window.location.pathname.includes('product-details/')) {
++      return;
++    }
+ 
+     if (isSuperAdminSubdomain) {
+       // Keep super admin context even if URL is unexpected
+@@ -330,16 +378,68 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
+     return () => window.removeEventListener('popstate', handlePopState);
+   }, [syncViewWithLocation]);
+ 
+-  // Initial sync
++  // Initial sync and re-sync when products load
+   useEffect(() => {
+     syncViewWithLocation(window.location.pathname);
+   }, [products, syncViewWithLocation]);
++  
++  // Re-sync selected product when products array updates (for shared links)
++  useEffect(() => {
++    if (currentView === 'detail' && !selectedProduct) {
++      const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
++      if (path.startsWith('product-details/')) {
++        const slugWithId = path.replace('product-details/', '');
++        
++        // Try to extract ID from the end of the slug (format: slug-123)
++        const lastDashIndex = slugWithId.lastIndexOf('-');
++        let matchedProduct = null;
++        
++        if (lastDashIndex > 0) {
++          const potentialId = slugWithId.substring(lastDashIndex + 1);
++          const potentialSlug = slugWithId.substring(0, lastDashIndex);
++          
++          // Try to match by ID first (more reliable)
++          if (/^\d+$/.test(potentialId)) {
++            matchedProduct = products.find(p => p.id === parseInt(potentialId, 10));
++          }
++          
++          // Fallback: try to match by slug only
++          if (!matchedProduct) {
++            matchedProduct = products.find(p => p.slug === potentialSlug);
++          }
++        }
++        
++        // Fallback: try to match the whole string as slug
++        if (!matchedProduct) {
++          matchedProduct = products.find(p => p.slug === slugWithId);
++        }
++        
++        if (matchedProduct) {
++          setSelectedProduct(matchedProduct);
++        }
++      }
++    }
++  }, [products, currentView, selectedProduct]);
++
++  // Redirect from checkout if no product is selected (handles direct URL access or page refresh)
++  useEffect(() => {
++    if (currentView === 'checkout' && !selectedProduct && typeof window !== 'undefined') {
++      const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
++      // Only redirect if we're actually on the checkout URL
++      if (path === 'checkout') {
++        console.warn('[Navigation] Checkout accessed without product, redirecting to home');
++        window.history.replaceState({}, '', '/');
++        setCurrentView('store');
++      }
++    }
++  }, [currentView, selectedProduct]);
+ 
+   // Ensure URL matches view
+   useEffect(() => {
+     const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+     if (path === 'admin/login') return;
+     if (path === 'visual-search' || path === 'search') return;
++    if (path.startsWith('product-details/')) return; // Don't modify product detail URLs
+     
+     if (currentView === 'store' && window.location.pathname !== '/' && !window.location.pathname.includes('checkout') && !window.location.pathname.includes('success-order')) {
+       window.history.replaceState({}, '', '/');
+@@ -367,7 +467,11 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
+     setCurrentView('detail');
+     setSelectedProduct(product);
+     
+-    if (product.slug) {
++    if (product.slug && product.id) {
++      // Include unique ID in URL: /product-details/slug-id
++      window.history.pushState({ slug: product.slug, id: product.id }, '', `/product-details/${product.slug}-${product.id}`);
++    } else if (product.slug) {
++      // Fallback to slug only if ID is missing
+       window.history.pushState({ slug: product.slug }, '', `/product-details/${product.slug}`);
+     }
+     
+diff --git a/types.ts b/types.ts
+index 7dceafb..d48986b 100644
+--- a/types.ts
++++ b/types.ts
+@@ -92,6 +92,7 @@ export interface Product {
+   image: string;
+   galleryImages?: string[];
+   slug?: string;
++  productUrl?: string; // Full product URL with slug and ID
+   discount?: string;
+   tag?: string;
+   description?: string;
+@@ -111,6 +112,26 @@ export interface Product {
+   variantStock?: ProductVariantStock[];
+ }
+ 
++export interface Review {
++  id: string;
++  productId: number;
++  productName?: string;
++  userId: string;
++  userName: string;
++  userEmail?: string;
++  rating: number; // 1-5
++  headline?: string;
++  comment: string;
++  status: 'published' | 'pending' | 'flagged';
++  reply?: string;
++  repliedBy?: string;
++  repliedAt?: string;
++  createdAt: string;
++  updatedAt?: string;
++  tenantId?: string;
++  isVerifiedPurchase?: boolean;
++}
++
+ export interface Popup {
+   id: number;
+   name: string;

@@ -21,6 +21,7 @@ import { incomesRouter } from './routes/incomes';
 import dueListRoutes from './routes/dueListRoutes';
 import uploadRouter from './routes/upload';
 import authRouter from './routes/auth';
+import reviewsRouter from './routes/reviews';
 import { notificationsRouter } from './routes/notifications';
 import { courierRouter } from './routes/courier';
 import supportRouter from './routes/support';
@@ -171,6 +172,7 @@ app.get('/', (_req, res) => {
 
 app.use('/health', healthRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/reviews', reviewsRouter);
 app.use('/api/tenants', tenantsRouter);
 app.use('/api/tenant-data', tenantDataRouter);
 app.use('/api/orders', ordersRouter);

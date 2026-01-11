@@ -37,8 +37,11 @@ export const ProductGridSection = ({ title, products, accentColor = 'green', onP
 
   return (
     <section style={{ minHeight: `${gridMinHeight}px`, contain: 'layout' }}>
-      <div className="mb-1 flex items-center gap-3"><div className={`h-8 w-1.5 rounded-full ${colors[accentColor]}`}/><SectionHeader title={title} className="text-xl text-red-600"/></div>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5" style={{ minHeight: `${gridMinHeight - 40}px` }}>
+      <div className="bg-white/75 backdrop-blur-xl border border-white/40 rounded-2xl p-4 md:p-6 mb-4 shadow-lg flex items-center gap-3">
+        <div className={`h-8 w-1.5 rounded-full ${colors[accentColor]}`}/>
+        <SectionHeader title={title} className="text-xl md:text-2xl font-bold text-gray-900"/>
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:gap-4 lg:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" style={{ minHeight: `${gridMinHeight - 40}px` }}>
         {display.slice(0, visible).map(p => <ProductCard key={`${keyPrefix}-${p.id}`} product={p} onClick={onProductClick} onBuyNow={onBuyNow} variant={productCardStyle} onQuickView={onQuickView} onAddToCart={onAddToCart}/>)}
       </div>
     </section>

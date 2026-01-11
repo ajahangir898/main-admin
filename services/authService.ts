@@ -129,11 +129,32 @@ export const register = async (userData: {
   password: string;
   phone?: string;
   role?: User['role'];
+  tenantId?: string;
 }): Promise<{ user: User; token: string }> => {
+  const subdomain = getCurrentSubdomain();
+  
+  // Get tenant ID from subdomain if not explicitly provided
+  let tenantId = userData.tenantId;
+  if (!tenantId && subdomain) {
+    // Fetch tenant info by subdomain
+    try {
+      const tenantResponse = await fetch(`${API_URL}/tenants/by-subdomain/${subdomain}`);
+      if (tenantResponse.ok) {
+        const tenantData = await tenantResponse.json();
+        tenantId = tenantData._id || tenantData.id;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch tenant by subdomain:', err);
+    }
+  }
+  
   const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData),
+    headers: { 
+      'Content-Type': 'application/json',
+      ...(subdomain && { 'X-Tenant-Subdomain': subdomain })
+    },
+    body: JSON.stringify({ ...userData, tenantId }),
   });
   
   const data = await handleResponse(response);
@@ -141,6 +162,7 @@ export const register = async (userData: {
   // Store in localStorage
   localStorage.setItem(TOKEN_KEY, data.token);
   localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(data.permissions || []));
   
   return data;
 };

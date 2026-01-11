@@ -413,7 +413,7 @@ const StoreProductDetail = ({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50 font-sans text-slate-900 pb-20 md:pb-0 animate-fadeIn" style={{ animation: 'fadeIn 0.2s ease-out' }}>
+    <div className="min-h-screen font-sans text-slate-900 pb-20 md:pb-0 animate-fadeIn mobile-smooth-scroll" style={{ animation: 'fadeIn 0.2s ease-out', background: 'linear-gradient(to bottom, #f0f4f8, #e8ecf1)' }}>
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
@@ -501,19 +501,20 @@ const StoreProductDetail = ({
       )}
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8 shadow-lg">
+        <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Main Content: Product Details */}
           <div className="flex-1">
             {/* Product Hero Block */}
-            <div className="store-card rounded-xl p-6 flex flex-col md:flex-row gap-8  shadow-lg border border-gray-200">
+            <div className="glass-card mobile-product-card p-4 md:p-6 flex flex-col md:flex-row gap-6 md:gap-8 animate-slide-up"
+>
               
               {/* Image Section - Enhanced Gallery */}
               <div className="w-full md:w-1/2 flex flex-col gap-4">
                 {/* Main Product Image with Zoom */}
                 <div className="relative">
                   <div
-                    className="aspect-square bg-white rounded-2xl overflow-hidden relative group border border-gray-200 shadow-lg cursor-crosshair"
+                    className="mobile-image-gallery aspect-square bg-white rounded-2xl overflow-hidden relative group border border-gray-200 cursor-crosshair"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                     onMouseMove={(e) => {
@@ -722,16 +723,14 @@ const StoreProductDetail = ({
                               {selectedColor}
                             </span>
                           </label>
-                          <div className="flex flex-wrap gap-3">
+                          <div className="flex flex-wrap gap-2 md:gap-3">
                             {colorOptions.map(color => (
                               <button
                                 key={color}
                                 onClick={() => setSelectedColor(color)}
                                 aria-pressed={selectedColor === color}
-                                className={`px-4 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all transform ${
-                                  selectedColor === color 
-                                    ? 'border-theme-primary bg-theme-primary/10 text-theme-primary shadow-md scale-105' 
-                                    : 'border-gray-200 text-gray-600 hover:border-theme-primary/50 hover:shadow'
+                                className={`mobile-variant-option mobile-touch-feedback ${
+                                  selectedColor === color ? 'selected' : ''
                                 }`}
                               >
                                 {color}
@@ -751,16 +750,14 @@ const StoreProductDetail = ({
                               {selectedSize}
                             </span>
                           </label>
-                          <div className="flex flex-wrap gap-3">
+                          <div className="flex flex-wrap gap-2 md:gap-3">
                             {sizeOptions.map(size => (
                               <button
                                 key={size}
                                 onClick={() => setSelectedSize(size)}
                                 aria-pressed={selectedSize === size}
-                                className={`px-4 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all transform ${
-                                  selectedSize === size 
-                                    ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md scale-105' 
-                                    : 'border-gray-200 text-gray-600 hover:border-blue-300 hover:shadow'
+                                className={`mobile-variant-option mobile-touch-feedback ${
+                                  selectedSize === size ? 'selected' : ''
                                 }`}
                               >
                                 {size}
@@ -813,14 +810,12 @@ const StoreProductDetail = ({
             </div>
 
             {/* Tabs Section */}
-            <div className="mt-8 store-card rounded-xl overflow-hidden border border-gray-200 shadow-lg">
-              <div className="flex border-b border-gray-100 bg-gray-50/50">
+            <div className="mt-8 glass-card rounded-xl overflow-hidden animate-slide-up">
+              <div className="mobile-tab-nav flex border-b border-gray-100">
                   <button 
                     onClick={() => setActiveTab('description')}
-                    className={`flex-1 px-6 py-4 font-bold text-sm transition ${
-                      activeTab === 'description' 
-                        ? 'text-theme-primary border-b-2 border-theme-primary bg-white' 
-                        : 'text-gray-600 hover:text-gray-800'
+                    className={`mobile-tab-button flex-1 mobile-touch-feedback ${
+                      activeTab === 'description' ? 'active' : 'text-gray-600'
                     }`}
                     aria-selected={activeTab === 'description'}
                     role="tab"
@@ -829,10 +824,8 @@ const StoreProductDetail = ({
                   </button>
                   <button 
                     onClick={() => setActiveTab('reviews')}
-                    className={`flex-1 px-6 py-4 font-bold text-sm transition ${
-                      activeTab === 'reviews' 
-                        ? 'text-theme-primary border-b-2 border-theme-primary bg-white' 
-                        : 'text-gray-600 hover:text-gray-800'
+                    className={`mobile-tab-button flex-1 mobile-touch-feedback ${
+                      activeTab === 'reviews' ? 'active' : 'text-gray-600'
                     }`}
                     aria-selected={activeTab === 'reviews'}
                     role="tab"
@@ -888,10 +881,10 @@ const StoreProductDetail = ({
           </div>
 
           {/* Right Sidebar */}
-          <aside className="w-full lg:w-80 space-y-8 shadow-lg">
+          <aside className="w-full lg:w-80 space-y-8">
             
             {/* Related Products Widget */}
-            <div className="store-card rounded-xl p-5 shadow-lg border border-gray-200">
+            <div className="glass-card rounded-xl p-5 animate-slide-up">
                <h3 className="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-100">Related Products</h3>
                <div className="space-y-4">
                   {isLoading ? (
@@ -964,10 +957,10 @@ const StoreProductDetail = ({
       </main>
       
       {/* Mobile Sticky Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 md:hidden z-50 flex items-center gap-3 shadow-[0_-6px_25px_rgba(15,23,42,0.08)]">
+      <div className="mobile-sticky-actions fixed bottom-0 left-0 right-0 md:hidden z-50 flex items-center gap-3 mobile-safe-bottom">
         <button
           onClick={onBack}
-          className="h-12 w-12 flex items-center justify-center rounded-xl text-gray-600 border border-slate-200 bg-white shadow-sm"
+          className="glass-button h-12 w-12 flex items-center justify-center rounded-xl text-gray-600 mobile-touch-feedback"
           aria-label="Go back"
         >
           <ArrowLeft size={20} />
@@ -976,25 +969,21 @@ const StoreProductDetail = ({
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`h-12 rounded-xl text-base font-semibold flex items-center justify-center gap-2 transition ${
-              isOutOfStock
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'btn-order active:scale-95'
+            className={`mobile-action-button-secondary h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${
+              isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            <ShoppingCart size={20} />
+            <ShoppingCart size={18} />
             <span>Add to cart</span>
           </button>
           <button
             onClick={handleBuyNow}
             disabled={isOutOfStock}
-            className={`h-12 rounded-xl text-base font-semibold flex items-center justify-center gap-2 transition ${
-              isOutOfStock
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'bg-theme-primary text-white shadow-lg active:scale-95'
+            className={`mobile-action-button h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${
+              isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            <ShoppingBag size={20} />
+            <ShoppingBag size={18} />
             <span>Buy Now</span>
           </button>
         </div>

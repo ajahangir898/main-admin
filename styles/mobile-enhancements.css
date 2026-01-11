@@ -1,0 +1,383 @@
+/* Mobile UI/UX Enhancements */
+
+/* Smooth scroll behavior */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Compact spacing on mobile */
+  .space-y-6 {
+    gap: 1rem;
+  }
+  
+  .space-x-4 {
+    gap: 0.75rem;
+  }
+}
+
+/* Product Card Enhancements */
+.product-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+}
+
+.product-card-hover:active {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Enhancements */
+.btn-modern {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-modern::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-modern:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Category Pills Mobile Optimization */
+@media (max-width: 640px) {
+  .category-pill {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    gap: 0.375rem;
+  }
+  
+  .category-pill-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* Hero Section Mobile Enhancements */
+@media (max-width: 768px) {
+  .hero-carousel {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+  
+  .hero-nav-button {
+    opacity: 0.9 !important;
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  .hero-dots {
+    bottom: 0.5rem;
+  }
+}
+
+/* Flash Sale Mobile Optimization */
+@media (max-width: 640px) {
+  .flash-sale-section {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .flash-sale-header {
+    margin-bottom: 0.5rem;
+  }
+  
+  .flash-countdown {
+    transform: scale(0.9);
+    transform-origin: left center;
+  }
+}
+
+/* Carousel Touch Improvements */
+.hero-carousel {
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hero-slide {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth Swipe Transitions */
+@media (max-width: 768px) {
+  .hero-slide {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hero-nav-button:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+/* Checkout Mobile Optimization */
+@media (max-width: 768px) {
+  .checkout-container {
+    padding: 1rem;
+  }
+  
+  .checkout-section {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+  
+  .checkout-summary {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 2px solid #f3f4f6;
+    padding: 1rem;
+    margin: 0 -1rem;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .form-input-mobile {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Input Focus Enhancements */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: rgb(var(--color-primary-rgb, 139 92 246));
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 139 92 246), 0.1);
+  transition: all 0.2s ease;
+}
+
+/* Loading States */
+.skeleton {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Toast/Alert Enhancements */
+.toast-notification {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Card Shadow Levels */
+.shadow-soft {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-medium {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-strong {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.hover-lift:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Grid Responsive */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+/* Compact Mobile Typography */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.125rem;
+  }
+  
+  .text-xs {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Badge Enhancements */
+.badge-modern {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Optimization */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Safe Area for iOS */
+@supports (padding: max(0px)) {
+  .safe-top {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+  
+  .safe-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Bottom Sheet for Mobile */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 1.5rem 1.5rem 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.bottom-sheet.active {
+  transform: translateY(0);
+}
+
+/* Sticky Header Mobile */
+@media (max-width: 768px) {
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Pull to Refresh Indicator */
+.pull-indicator {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-60px);
+  transition: transform 0.2s ease;
+}
+
+/* Accessibility - Focus Visible */
+*:focus-visible {
+  outline: 2px solid rgb(var(--color-primary-rgb, 139 92 246));
+  outline-offset: 2px;
+}
+
+/* Performance - GPU Acceleration */
+.gpu-accelerate {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+}
+
+/* Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

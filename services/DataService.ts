@@ -1375,6 +1375,101 @@ class DataServiceImpl {
       method: 'DELETE'
     });
   }
+
+  // Review methods
+  async getProductReviews(productId: number, tenantId: string) {
+    const response = await this.requestTenantApi(`/api/reviews/product/${productId}`, {
+      headers: {
+        'x-tenant-id': tenantId
+      }
+    });
+    return response.reviews || [];
+  }
+
+  async submitReview(data: {
+    productId: number;
+    rating: number;
+    comment: string;
+    headline?: string;
+  }, tenantId: string) {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please login to submit a review.');
+    }
+
+    const response = await this.requestTenantApi('/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'x-tenant-id': tenantId
+      },
+      body: JSON.stringify({ ...data, tenantId })
+    });
+    
+    return response.review;
+  }
+
+  async getMyReviews(tenantId?: string) {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const url = tenantId 
+      ? `/api/reviews/user/my-reviews?tenantId=${tenantId}`
+      : '/api/reviews/user/my-reviews';
+
+    const response = await this.requestTenantApi(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    return response.reviews || [];
+  }
+
+  async updateReview(reviewId: string, data: {
+    rating?: number;
+    comment?: string;
+    headline?: string;
+  }) {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const response = await this.requestTenantApi(`/api/reviews/${reviewId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    
+    return response.review;
+  }
+
+  async deleteReview(reviewId: string) {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    await this.requestTenantApi(`/api/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  async markReviewHelpful(reviewId: string) {
+    await this.requestTenantApi(`/api/reviews/${reviewId}/helpful`, {
+      method: 'PATCH'
+    });
+  }
 }
 
 export const DataService = new DataServiceImpl();

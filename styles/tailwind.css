@@ -56,4 +56,62 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+  
+  /* Glassmorphism utilities using Tailwind */
+  .glass-light {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg;
+  }
+  
+  .glass-medium {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl;
+  }
+  
+  .glass-strong {
+    @apply bg-white/90 backdrop-blur-2xl border border-white/50 shadow-2xl;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors;
+  }
+  
+  /* Order/Buy Now button - uses theme primary color */
+  .btn-order {
+    background: rgb(var(--color-primary-rgb, 249 115 22));
+    color: white;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-order:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 249 115 22), 0.35);
+  }
+  
+  .btn-order:active {
+    transform: scale(0.98);
+  }
+  
+  .btn-order:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

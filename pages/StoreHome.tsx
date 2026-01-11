@@ -221,7 +221,7 @@ const StoreHome: React.FC<StoreHomeProps> = ({
 
   // === MAIN RENDER ===
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-slate-900">
+    <div className="min-h-screen font-sans text-slate-900" style={{ background: 'linear-gradient(to bottom, #f0f4f8, #e8ecf1)' }}>
       <StoreHeader 
         onTrackOrder={() => setIsTrackOrderOpen(true)} 
         onImageSearchClick={onImageSearchClick}
@@ -413,7 +413,7 @@ const StoreHome: React.FC<StoreHomeProps> = ({
 
       {/* Scroll to Top Button */}
       <button
-        className={`fixed bottom-4 right-4 bg-purple-600 text-white rounded-full p-3 shadow-lg hover:bg-purple-700 transition-all duration-300 ${
+        className={`fixed bottom-4 right-4 bg-gradient-to-r from-purple-600 to-purple-500 backdrop-blur-md border border-white/30 text-white rounded-full p-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
           showScrollToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={scrollToTop}

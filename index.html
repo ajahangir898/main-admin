@@ -111,7 +111,9 @@
         opacity: 0;
       }
       .skeleton-bone {
-        background-color: #e5e7eb;
+        background: rgba(229, 231, 235, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border-radius: 0.25rem;
         animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
       }
@@ -129,11 +131,11 @@
       }
     </style>
   </head>
-  <body>
+  <body style="background: linear-gradient(to bottom, #f0f4f8, #e8ecf1);">
     <div id="root">
       <div id="preload-skeleton">
-        <div style="min-height: 100vh; background-color: #f9fafb;">
-          <div style="background-color: white; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 50; padding: 0.75rem 1rem;">
+        <div style="min-height: 100vh;">
+          <div class="bg-white/85 backdrop-blur-xl border-b border-white/30 shadow-lg" style="position: sticky; top: 0; z-index: 50; padding: 0.75rem 1rem;">
             <div style="max-width: 80rem; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
               <div class="skeleton-bone" style="height: 2.5rem; width: 8rem;"></div>
               <div class="skeleton-bone skeleton-search-bar" style="height: 2.5rem; flex: 1; max-width: 42rem; border-radius: 9999px;"></div>

@@ -30,15 +30,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
     return (
         <div 
-            className="bg-white rounded-lg border border-gray-100 hover:shadow-lg transition-all duration-300 group overflow-hidden flex flex-col relative"
-            style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+            className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col relative hover:-translate-y-2 md:hover:-translate-y-3"
         >
             {/* Discount Badge */}
             {(product.discount || discountPercent) && (
                 <div className="absolute top-2 left-2 z-10">
                     <span 
-                        className="inline-flex items-center text-white text-[9px] font-semibold px-1.5 py-0.5 rounded"
-                        style={{ background: 'linear-gradient(to right, #ef4444, #f97316)' }}
+                        className="inline-flex items-center bg-gradient-to-r from-rose-500 to-orange-500 backdrop-blur-sm border border-white/30 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg"
                     >
                         {product.discount || `-${discountPercent}%`}
                     </span>
@@ -47,8 +45,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
             {/* Product Image */}
             <div 
-                className="relative aspect-square p-3 cursor-pointer overflow-hidden" 
-                style={{ background: 'linear-gradient(to bottom, #f9fafb, #ffffff)' }}
+                className="relative aspect-square p-4 cursor-pointer overflow-hidden bg-gradient-to-br from-gray-50/80 to-white/90 rounded-t-xl md:rounded-t-2xl" 
                 onClick={() => onClick(product)}
             >
                 <OptimizedImage
@@ -57,36 +54,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     width={400}
                     height={400}
                     placeholder="blur"
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
                 />
+                {/* Quick View Overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300" />
             </div>
 
             {/* Product Details */}
-            <div className="px-2.5 pb-2.5 pt-1.5 flex-1 flex flex-col border-t border-gray-50">
+            <div className="px-3 pb-3 pt-2 flex-1 flex flex-col">
                 <h3 
-                    className="font-medium text-gray-700 text-[11px] leading-snug mb-1.5 line-clamp-2 cursor-pointer hover:text-orange-500 transition-colors"
-                    style={{ minHeight: '28px' }}
+                    className="font-semibold text-gray-800 text-xs md:text-sm leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-theme-primary transition-colors"
+                    style={{ minHeight: '32px' }}
                     onClick={() => onClick(product)}
                 >
                     {product.name}
                 </h3>
 
-                <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-[13px] font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
+                <div className="flex items-baseline gap-2 mb-3">
+                    <span className="text-lg md:text-xl font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
                     {product.originalPrice && (
-                        <span className="text-[9px] text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
+                        <span className="text-xs text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
                     )}
                 </div>
 
-                <div className="flex gap-1.5 mt-auto">
+                <div className="flex gap-2 mt-auto">
                     <button 
-                        className="flex items-center justify-center gap-1 px-2 py-1.5 border border-gray-200 text-gray-500 text-[10px] font-medium rounded-md hover:border-theme-primary hover:text-theme-primary hover:bg-theme-primary/5 transition-all"
+                        className="flex items-center justify-center w-10 h-10 bg-white/85 backdrop-blur-md border-2 border-gray-200/80 text-gray-600 rounded-lg hover:border-theme-primary hover:text-white hover:bg-theme-primary transition-all duration-200 transform hover:scale-110 active:scale-95"
                         onClick={(e) => { e.stopPropagation(); onAddToCart?.(product); }}
+                        aria-label="Add to cart"
                     >
-                        <ShoppingCart size={12} />
+                        <ShoppingCart size={18} />
                     </button>
                     <button 
-                        className="flex-1 btn-order text-[11px] font-medium py-1.5 px-3 rounded-md"
+                        className="flex-1 bg-gradient-to-r from-theme-primary to-theme-primary/90 backdrop-blur-md border border-white/30 text-white text-sm font-semibold py-2.5 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200"
                         onClick={handleBuyNow}
                     >
                         Buy Now

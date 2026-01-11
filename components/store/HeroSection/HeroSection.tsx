@@ -193,9 +193,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                                             src={imgSrc}
                                             alt={item.name || 'Banner'}
                                             className="hero-slide-image"
-                                            width={isMobile ? 800 : 1920}
-                                            height={isMobile ? 450 : 600}
-                                            style={{ aspectRatio: isMobile ? '16 / 9' : '16 / 5' }}
+                                            width={isMobile ? 400 : 1920}
+                                            height={isMobile ? 120 : 600}
+                                            style={{ aspectRatio: isMobile ? '400 / 120' : '16 / 5' }}
                                             priority={i === 0}
                                             eager={isNearActive && i !== 0}
                                             placeholder="blur"
@@ -211,12 +211,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
                         {items.length > 1 && (
                             <>
                                 <button onClick={navigate(-1)} aria-label="Previous slide" className="hero-nav-button hero-nav-prev">
-                                    <ChevronLeft size={22} strokeWidth={2.5} />
+                                    <ChevronLeft size={isMobile ? 18 : 22} strokeWidth={2.5} />
                                 </button>
                                 <button onClick={navigate(1)} aria-label="Next slide" className="hero-nav-button hero-nav-next">
-                                    <ChevronRight size={22} strokeWidth={2.5} />
+                                    <ChevronRight size={isMobile ? 18 : 22} strokeWidth={2.5} />
                                 </button>
-                                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+                                 <div className="absolute bottom-3 md:bottom-4 left-0 right-0 flex justify-center gap-1.5 md:gap-2 z-20">
                                     {items.map((_, i) => (
                                         <button 
                                             key={i} 
