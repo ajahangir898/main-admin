@@ -1,5 +1,5 @@
-import React from 'react';
-import { ShoppingCart } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingCart, Star, Eye, Heart } from 'lucide-react';
 import { Product } from '../../types';
 import { normalizeImageUrl } from '../../utils/imageUrlHelper';
 import { OptimizedImage } from '../OptimizedImage';
@@ -17,6 +17,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onBuyNow, 
     onAddToCart 
 }) => {
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const imageSrc = normalizeImageUrl(product.galleryImages?.[0] || product.image);
     
     const handleBuyNow = (e?: React.MouseEvent) => {
@@ -28,24 +30,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : null;
 
+    const isOutOfStock = product.stock === 0;
+
     return (
         <div 
-            className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col relative hover:-translate-y-2 md:hover:-translate-y-3"
+            className="group bg-white rounded-lg md:rounded-xl overflow-hidden flex flex-col relative border border-gray-100 shadow-sm hover:shadow-xl hover:border-gray-200 transition-all duration-300 hover:-translate-y-1.5 active:scale-[0.98]"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Discount Badge */}
-            {(product.discount || discountPercent) && (
-                <div className="absolute top-2 left-2 z-10">
-                    <span 
-                        className="inline-flex items-center bg-gradient-to-r from-rose-500 to-orange-500 backdrop-blur-sm border border-white/30 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg"
-                    >
+            {/* Badges */}
+            <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+                {(product.discount || discountPercent) && (
+                    <span className="inline-flex items-center bg-gradient-to-r from-rose-500 to-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
                         {product.discount || `-${discountPercent}%`}
                     </span>
-                </div>
-            )}
+                )}
+                {isOutOfStock && (
+                    <span className="inline-flex items-center bg-gray-700 text-white text-[10px] font-medium px-1.5 py-0.5 rounded">
+                        Out of Stock
+                    </span>
+                )}
+            </div>
 
-            {/* Product Image */}
+            {/* Wishlist Button */}
+            <button
+                onClick={(e) => { e.stopPropagation(); setIsWishlisted(!isWishlisted); }}
+                className="absolute top-2 right-2 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-sm flex items-center justify-center hover:scale-110 transition-all duration-200"
+                aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+                <Heart size={16} className={isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover:text-gray-600'} />
+            </button>
+
+            {/* Image */}
             <div 
-                className="relative aspect-square p-4 cursor-pointer overflow-hidden bg-gradient-to-br from-gray-50/80 to-white/90 rounded-t-xl md:rounded-t-2xl" 
+                className="relative aspect-square p-2 md:p-3 cursor-pointer overflow-hidden bg-gray-50" 
                 onClick={() => onClick(product)}
             >
                 <OptimizedImage
@@ -54,47 +72,73 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     width={400}
                     height={400}
                     placeholder="blur"
-                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
+                    className={`w-full h-full object-contain transition-transform duration-300 group-hover:scale-110 ${isOutOfStock ? 'opacity-50' : ''}`}
                 />
-                {/* Quick View Overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300" />
+                
+                {/* Hover Quick Actions Overlay */}
+                <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent p-3 flex justify-center gap-3 transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onClick(product); }}
+                        className="w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-200"
+                        aria-label="Quick view"
+                    >
+                        <Eye size={16} className="text-gray-700" />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); if (!isOutOfStock) onAddToCart?.(product); }}
+                        className={`w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-200 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        aria-label="Add to cart"
+                        disabled={isOutOfStock}
+                    >
+                        <ShoppingCart size={16} className="text-gray-700" />
+                    </button>
+                </div>
             </div>
 
-            {/* Product Details */}
-            <div className="px-3 pb-3 pt-2 flex-1 flex flex-col">
+            {/* Details */}
+            <div className="px-2.5 md:px-3 pb-2.5 md:pb-3 pt-2 flex-1 flex flex-col">
+                {/* Rating */}
+                {product.rating !== undefined && product.rating > 0 && (
+                    <div className="flex items-center gap-1 mb-1">
+                        <div className="flex">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                                <Star 
+                                    key={s} 
+                                    size={10} 
+                                    className={s <= Math.round(product.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-gray-200'} 
+                                />
+                            ))}
+                        </div>
+                        {product.reviews !== undefined && (
+                            <span className="text-[9px] text-gray-400">({product.reviews})</span>
+                        )}
+                    </div>
+                )}
+
                 <h3 
-                    className="font-semibold text-gray-800 text-xs md:text-sm leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-theme-primary transition-colors"
+                    className="font-medium text-gray-800 text-xs md:text-sm leading-tight mb-1.5 line-clamp-2 cursor-pointer hover:text-theme-primary transition-colors"
                     style={{ minHeight: '32px' }}
                     onClick={() => onClick(product)}
                 >
                     {product.name}
                 </h3>
 
-                <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-lg md:text-xl font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
+                <div className="flex items-baseline gap-1.5 mb-2">
+                    <span className="text-base md:text-lg font-bold text-theme-primary">৳{product.price?.toLocaleString()}</span>
                     {product.originalPrice && (
-                        <span className="text-xs text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
+                        <span className="text-[10px] md:text-xs text-gray-400 line-through">৳{product.originalPrice?.toLocaleString()}</span>
                     )}
                 </div>
 
-                <div className="flex gap-2 mt-auto">
-                    <button 
-                        className="flex items-center justify-center w-10 h-10 bg-white/85 backdrop-blur-md border-2 border-gray-200/80 text-gray-600 rounded-lg hover:border-theme-primary hover:text-white hover:bg-theme-primary transition-all duration-200 transform hover:scale-110 active:scale-95"
-                        onClick={(e) => { e.stopPropagation(); onAddToCart?.(product); }}
-                        aria-label="Add to cart"
-                    >
-                        <ShoppingCart size={18} />
-                    </button>
-                    <button 
-                        className="flex-1 bg-gradient-to-r from-theme-primary to-theme-primary/90 backdrop-blur-md border border-white/30 text-white text-sm font-semibold py-2.5 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200"
-                        onClick={handleBuyNow}
-                    >
-                        Buy Now
-                    </button>
-                </div>
+                {/* Buy Now Button */}
+                <button 
+                    className={`w-full py-2 md:py-2.5 bg-gradient-to-r from-theme-primary to-theme-secondary text-white text-xs md:text-sm font-semibold rounded-lg hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ${isOutOfStock ? 'opacity-40 cursor-not-allowed from-gray-400 to-gray-500' : ''}`}
+                    onClick={handleBuyNow}
+                    disabled={isOutOfStock}
+                >
+                    {isOutOfStock ? 'Out of Stock' : 'Buy Now'}
+                </button>
             </div>
         </div>
     );
 };
-
-export default ProductCard;

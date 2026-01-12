@@ -2049,6 +2049,52 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             </button>
                           </div>
 
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const hasDealOfDay = formData.tags?.some(t => t.toLowerCase() === 'deal of the day');
+                                if (hasDealOfDay) {
+                                  setFormData({ ...formData, tags: formData.tags?.filter(t => t.toLowerCase() !== 'deal of the day') });
+                                } else {
+                                  setFormData({ ...formData, tags: [...(formData.tags || []), 'Deal of the Day'] });
+                                }
+                              }}
+                              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm sm:text-base ${
+                                formData.tags?.some(t => t.toLowerCase() === 'deal of the day')
+                                  ? 'bg-pink-50 border-pink-400 text-pink-700'
+                                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-pink-300'
+                              }`}
+                            >
+                              <span className="text-base sm:text-lg">🔥</span>
+                              <span>Deal of the Day</span>
+                              {formData.tags?.some(t => t.toLowerCase() === 'deal of the day') && (
+                                <span className="bg-pink-500 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
+                              )}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const hasPopular = formData.tags?.some(t => t.toLowerCase() === 'popular');
+                                if (hasPopular) {
+                                  setFormData({ ...formData, tags: formData.tags?.filter(t => t.toLowerCase() !== 'popular') });
+                                } else {
+                                  setFormData({ ...formData, tags: [...(formData.tags || []), 'Popular'] });
+                                }
+                              }}
+                              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm sm:text-base ${
+                                formData.tags?.some(t => t.toLowerCase() === 'popular')
+                                  ? 'bg-purple-50 border-purple-400 text-purple-700'
+                                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-purple-300'
+                              }`}
+                            >
+                              <span className="text-base sm:text-lg">⭐</span>
+                              <span>Popular</span>
+                              {formData.tags?.some(t => t.toLowerCase() === 'popular') && (
+                                <span className="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
+                              )}
+                            </button>
+
                           <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700">Tags</label>
                             <div className="flex gap-2">

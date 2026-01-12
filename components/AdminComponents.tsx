@@ -92,6 +92,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'popups', icon: <Layers size={18} />, label: 'Popups', resource: 'landing_pages' },
 		{ id: 'gallery', icon: <ImageIcon size={18} />, label: 'Gallery', resource: 'gallery' },
 		{ id: 'business_report_expense', icon: <FileText size={18} />, label: 'Business Report', resource: 'business_report' },
+		{ id: 'manage_shop', icon: <Store size={18} />, label: 'Manage Shop', resource: 'settings', isNew: true },
 	];
 
 	// System items
@@ -220,7 +221,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
 								{item.icon}
-								<span>{item.label}</span>
+								<span className="flex-1">{item.label}</span>{(item as any).isNew && <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold bg-purple-500 text-white rounded-full">NEW</span>}
 							</div>
 						))}
 					</>

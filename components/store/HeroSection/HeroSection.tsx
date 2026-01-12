@@ -114,7 +114,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ carouselItems, website
 
     useEffect(() => {
         if (items.length <= 1 || isPaused) return;
-        const timer = setInterval(() => setCurrentIndex(p => (p + 1) % items.length), 4500);
+        const timer = setInterval(() => setCurrentIndex(p => (p + 1) % items.length), 2500);
         return () => clearInterval(timer);
     }, [items.length, isPaused]);
 

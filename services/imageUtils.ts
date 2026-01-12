@@ -28,7 +28,7 @@ export const PRODUCT_IMAGE_WIDTH = 1000;
 export const PRODUCT_IMAGE_HEIGHT = 1000;
 
 // Product image target size (increased for HD quality)
-export const PRODUCT_IMAGE_TARGET_KB = 25; // Target under 25KB for HD images
+export const PRODUCT_IMAGE_TARGET_KB = 100; // Target under 25KB for HD images
 
 const fileToDataUrl = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ const loadImage = (src: string): Promise<HTMLImageElement> => {
 export const convertFileToWebP = async (file: File, options: WebPOptions = {}): Promise<string> => {
   const originalDataUrl = await fileToDataUrl(file);
   try {
-    const { quality = 0.82, maxDimension = 2000 } = options;
+    const { quality = 0.95, maxDimension = 2000 } = options;
     const img = await loadImage(originalDataUrl);
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -92,7 +92,7 @@ export const convertCarouselImage = async (file: File, options: CarouselOptions 
     const { 
       width = CAROUSEL_WIDTH, 
       height = CAROUSEL_HEIGHT, 
-      quality = 0.85 
+      quality = 0.95 
     } = options;
     
     const img = await loadImage(originalDataUrl);
@@ -312,7 +312,7 @@ export const compressProductImage = async (
 
     // Binary search for optimal quality to reach target size
     let minQ = minQuality;
-    let maxQ = 0.9;
+    let maxQ = 0.988;
     let bestDataUrl = canvas.toDataURL('image/webp', maxQ);
     let bestSize = getDataUrlSize(bestDataUrl);
     

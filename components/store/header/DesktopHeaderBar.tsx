@@ -57,7 +57,7 @@ export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
   return (
     <header className="hidden md:block bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 store-header-modern">
       {/* Top Bar */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-6">
+      <div className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-6">
         {/* Logo */}
         <button type="button" className="flex items-center flex-shrink-0 group" onClick={onHomeClick}>
           {resolvedHeaderLogo ? (
@@ -123,7 +123,7 @@ export const DesktopHeaderBar = memo<DesktopHeaderBarProps>(({
 
       {/* Navigation */}
       <nav className="border-t border-gray-100/60 store-nav-glass">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-1 py-1.5 text-sm font-medium text-gray-600 items-center">
+        <div className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8 flex gap-1 py-1.5 text-sm font-medium text-gray-600 items-center">
           <button type="button" onClick={onHomeClick} className="px-4 py-2.5 rounded-xl hover:bg-white/80 hover:text-theme-primary hover:shadow-sm transition-all duration-300">Home</button>
           
           {websiteConfig?.showMobileHeaderCategory && (

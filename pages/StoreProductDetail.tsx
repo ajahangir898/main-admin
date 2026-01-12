@@ -13,7 +13,7 @@ const getTrackPageView = () => import('../hooks/useVisitorStats').then(m => m.tr
 
 // Skeleton loaders removed for faster initial render
 
-import { Heart, Star, ShoppingCart, ShoppingBag, Smartphone, Watch, BatteryCharging, Headphones, Zap, Bluetooth, Gamepad2, Camera, ArrowLeft, Share2, AlertCircle, ZoomIn, X, ChevronLeft, ChevronRight, Grid } from 'lucide-react';
+import { Heart, Star, ShoppingCart, ShoppingBag, Smartphone, Watch, BatteryCharging, Headphones, Zap, Bluetooth, Gamepad2, Camera, ArrowLeft, Share2, AlertCircle, ZoomIn, X, ChevronLeft, ChevronRight, Grid, Home, Shirt, Baby, Gift, Laptop, Tv, Cable, Package, Sparkles, Tag, Layers } from 'lucide-react';
 import { formatCurrency } from '../utils/format';
 import { LazyImage } from '../utils/performanceOptimization';
 import { normalizeImageUrl } from '../utils/imageUrlHelper';
@@ -45,14 +45,58 @@ const StarRating = ({ rating, count }: { rating: number, count?: number }) => (
 
 const iconMap: Record<string, React.ReactNode> = {
   smartphone: <Smartphone size={20} strokeWidth={1.5} />,
+  mobile: <Smartphone size={20} strokeWidth={1.5} />,
+  phone: <Smartphone size={20} strokeWidth={1.5} />,
   watch: <Watch size={20} strokeWidth={1.5} />,
   'battery-charging': <BatteryCharging size={20} strokeWidth={1.5} />,
+  charger: <BatteryCharging size={20} strokeWidth={1.5} />,
   headphones: <Headphones size={20} strokeWidth={1.5} />,
+  headphone: <Headphones size={20} strokeWidth={1.5} />,
+  audio: <Headphones size={20} strokeWidth={1.5} />,
   zap: <Zap size={20} strokeWidth={1.5} />,
   bluetooth: <Bluetooth size={20} strokeWidth={1.5} />,
   'gamepad-2': <Gamepad2 size={20} strokeWidth={1.5} />,
+  gaming: <Gamepad2 size={20} strokeWidth={1.5} />,
+  gadget: <Gamepad2 size={20} strokeWidth={1.5} />,
+  gadgets: <Gamepad2 size={20} strokeWidth={1.5} />,
   camera: <Camera size={20} strokeWidth={1.5} />,
+  home: <Home size={20} strokeWidth={1.5} />,
+  'home supply': <Home size={20} strokeWidth={1.5} />,
+  fashion: <Shirt size={20} strokeWidth={1.5} />,
+  fasion: <Shirt size={20} strokeWidth={1.5} />,
+  clothing: <Shirt size={20} strokeWidth={1.5} />,
+  baby: <Baby size={20} strokeWidth={1.5} />,
+  gift: <Gift size={20} strokeWidth={1.5} />,
+  laptop: <Laptop size={20} strokeWidth={1.5} />,
+  computer: <Laptop size={20} strokeWidth={1.5} />,
+  tv: <Tv size={20} strokeWidth={1.5} />,
+  television: <Tv size={20} strokeWidth={1.5} />,
+  cable: <Cable size={20} strokeWidth={1.5} />,
+  'must have': <Sparkles size={20} strokeWidth={1.5} />,
+  musthave: <Sparkles size={20} strokeWidth={1.5} />,
+  essential: <Sparkles size={20} strokeWidth={1.5} />,
   grid: <Grid size={20} strokeWidth={1.5} />,
+};
+
+// Auto-detect icon from category name
+const getCategoryIcon = (categoryName: string, iconKey?: string): React.ReactNode => {
+  const nameLower = categoryName.toLowerCase().trim();
+  // First check if icon key matches
+  if (iconKey && iconMap[iconKey.toLowerCase()]) {
+    return iconMap[iconKey.toLowerCase()];
+  }
+  // Then try exact match on name
+  if (iconMap[nameLower]) {
+    return iconMap[nameLower];
+  }
+  // Try partial match
+  for (const [key, icon] of Object.entries(iconMap)) {
+    if (nameLower.includes(key) || key.includes(nameLower)) {
+      return icon;
+    }
+  }
+  // Default
+  return <Layers size={20} strokeWidth={1.5} />;
 };
 
 type MatchType = 'compatible' | 'complementary' | 'behavioral';
@@ -205,14 +249,14 @@ interface StoreProductDetailProps {
   onCategoryClick?: (categoryName: string) => void;
 }
 
-const StoreProductDetail = ({ 
-  product, 
+const StoreProductDetail = ({
+  product,
   orders,
   tenantId,
-  onBack, 
-  onProductClick, 
-  wishlistCount, 
-  isWishlisted, 
+  onBack,
+  onProductClick,
+  wishlistCount,
+  isWishlisted,
   onToggleWishlist,
   onCheckout,
   onAddToCart,
@@ -421,8 +465,8 @@ const StoreProductDetail = ({
         }
       `}</style>
       <Suspense fallback={null}>
-        <StoreHeader 
-          onTrackOrder={() => setIsTrackOrderOpen(true)} 
+        <StoreHeader
+          onTrackOrder={() => setIsTrackOrderOpen(true)}
           onHomeClick={onBack}
           onImageSearchClick={onImageSearchClick}
           wishlistCount={wishlistCount}
@@ -441,19 +485,19 @@ const StoreProductDetail = ({
           onProductClick={onProductClick}
         />
       </Suspense>
-      
+
       {isTrackOrderOpen && (
         <Suspense fallback={<ModalLoadingFallback />}>
           <TrackOrderModal onClose={() => setIsTrackOrderOpen(false)} orders={orders} />
         </Suspense>
       )}
       {showCartSuccess && (
-        <AddToCartSuccessModal 
-          product={product} 
+        <AddToCartSuccessModal
+          product={product}
           variant={lastAddedVariant || currentVariant}
           quantity={quantity}
-          onClose={() => setShowCartSuccess(false)} 
-          onCheckout={() => onCheckout(product, quantity, lastAddedVariant || currentVariant)} 
+          onClose={() => setShowCartSuccess(false)}
+          onCheckout={() => onCheckout(product, quantity, lastAddedVariant || currentVariant)}
         />
       )}
 
@@ -468,11 +512,11 @@ const StoreProductDetail = ({
             >
               <X size={28} />
             </button>
-            
+
             <div className="w-full h-full max-h-[90vh] overflow-auto bg-black rounded-lg">
               <div className="relative w-full bg-black flex items-center justify-center min-h-[90vh]">
-                <img 
-                  src={selectedImage} 
+                <img
+                  src={selectedImage}
                   alt={product.name}
                   className="w-full h-auto object-contain"
                 />
@@ -485,11 +529,10 @@ const StoreProductDetail = ({
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`flex-shrink-0 w-12 h-12 rounded border-2 p-0.5 transition-all ${
-                    selectedImage === img
-                      ? 'border-theme-primary bg-theme-primary/10'
-                      : 'border-gray-600 hover:border-theme-primary/70'
-                  }`}
+                  className={`flex-shrink-0 w-12 h-12 rounded border-2 p-0.5 transition-all ${selectedImage === img
+                    ? 'border-theme-primary bg-theme-primary/10'
+                    : 'border-gray-600 hover:border-theme-primary/70'
+                    }`}
                   aria-label={`View image ${idx + 1}`}
                 >
                   <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
@@ -502,13 +545,13 @@ const StoreProductDetail = ({
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Main Content: Product Details */}
           <div className="flex-1">
             {/* Product Hero Block */}
             <div className="glass-card mobile-product-card p-4 md:p-6 flex flex-col md:flex-row gap-6 md:gap-8 animate-slide-up"
->
-              
+            >
+
               {/* Image Section - Enhanced Gallery */}
               <div className="w-full md:w-1/2 flex flex-col gap-4">
                 {/* Main Product Image with Zoom */}
@@ -531,7 +574,7 @@ const StoreProductDetail = ({
                       alt={product.name}
                       className="w-full h-full object-contain"
                     />
-                    
+
                     {/* Hover Zoom Lens Effect */}
                     {isHovering && (
                       <div
@@ -559,11 +602,10 @@ const StoreProductDetail = ({
                         e.stopPropagation();
                         onToggleWishlist();
                       }}
-                      className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${
-                        isWishlisted
-                          ? 'bg-rose-100 text-rose-500 shadow-md'
-                          : 'bg-white text-gray-400 shadow hover:text-rose-500 hover:bg-rose-50'
-                      }`}
+                      className={`absolute top-4 right-4 p-2.5 rounded-full transition-all ${isWishlisted
+                        ? 'bg-rose-100 text-rose-500 shadow-md'
+                        : 'bg-white text-gray-400 shadow hover:text-rose-500 hover:bg-rose-50'
+                        }`}
                       aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                     >
                       <Heart size={22} fill={isWishlisted ? "currentColor" : "none"} strokeWidth={1.5} />
@@ -636,11 +678,10 @@ const StoreProductDetail = ({
                         key={idx}
                         onMouseEnter={() => handleThumbnailSelect(img, idx)}
                         onClick={() => handleThumbnailSelect(img, idx)}
-                        className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 p-1 transition-all overflow-hidden transform hover:scale-105 ${
-                          selectedImageIndex === idx
-                            ? 'border-theme-primary shadow-md'
-                            : 'border-gray-200 hover:border-theme-primary/70'
-                        }`}
+                        className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 p-1 transition-all overflow-hidden transform hover:scale-105 ${selectedImageIndex === idx
+                          ? 'border-theme-primary shadow-md'
+                          : 'border-gray-200 hover:border-theme-primary/70'
+                          }`}
                         aria-label={`View image ${idx + 1}`}
                         aria-pressed={selectedImageIndex === idx}
                       >
@@ -664,298 +705,294 @@ const StoreProductDetail = ({
 
               {/* Info Section */}
               <div className="w-full md:w-1/2 flex flex-col">
-                 <h1 className="text-2xl font-bold text-gray-800 mb-2">{product.name}</h1>
-                 
-                 <div className="mb-4">
-                   <StarRating rating={product.rating || 0} count={product.reviews} />
-                 </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">{product.name}</h1>
 
-                  <div className="flex items-end gap-3 mb-6">
-                    <span className="text-4xl font-bold text-theme-primary">৳ {formattedPrice}</span>
-                    {formattedOriginalPrice && (
-                      <span className="text-lg text-gray-400 line-through mb-1">৳ {formattedOriginalPrice}</span>
-                    )}
-                 </div>
+                <div className="mb-4">
+                  <StarRating rating={product.rating || 0} count={product.reviews} />
+                </div>
 
-                   <div className="flex flex-wrap items-center gap-3 mb-6">
-                    <button
-                      type="button"
-                      onClick={handleShareLink}
-                      className="inline-flex items-center gap-2 rounded-full bg-[#0064d1] hover:bg-[#0055b2] text-white text-sm font-semibold px-4 py-2 shadow-sm"
-                    >
-                        <Share2 size={16} /> Share
-                     </button>
-                     <span className="text-xs text-gray-500 break-all">
-                       
-                     </span>
-                   </div>
+                <div className="flex items-end gap-3 mb-6">
+                  <span className="text-4xl font-bold text-theme-primary">৳ {formattedPrice}</span>
+                  {formattedOriginalPrice && (
+                    <span className="text-lg text-gray-400 line-through mb-1">৳ {formattedOriginalPrice}</span>
+                  )}
+                </div>
 
-                 <div className="space-y-5 mb-6">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-700 mb-2">Quantity</p>
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center border border-theme-primary/30 rounded-lg">
-                           <button 
-                             onClick={decreaseQuantity}
-                             className="px-4 py-2 text-theme-primary hover:bg-theme-primary/10 font-bold transition"
-                           >-</button>
-                           <span className="px-4 py-2 font-bold text-gray-700 w-12 text-center">{quantity}</span>
-                           <button 
-                             onClick={increaseQuantity}
-                             className={`px-4 py-2 font-bold transition ${atStockLimit ? 'text-gray-400 cursor-not-allowed' : 'text-theme-primary hover:bg-theme-primary/10'}`}
-                             disabled={atStockLimit}
-                           >+</button>
-                        </div>
-                        {Number.isFinite(availableStock) && (
-                          <span className={`text-xs font-medium ${isOutOfStock ? 'text-red-500' : 'text-gray-500'}`}>
-                            {isOutOfStock ? 'Out of stock' : `${availableStock} pcs available`}
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                  <button
+                    type="button"
+                    onClick={handleShareLink}
+                    className="inline-flex items-center gap-2 rounded-full bg-[#0064d1] hover:bg-[#0055b2] text-white text-sm font-semibold px-4 py-2 shadow-sm"
+                  >
+                    <Share2 size={16} /> Share
+                  </button>
+                  <span className="text-xs text-gray-500 break-all">
+
+                  </span>
+                </div>
+
+                <div className="space-y-5 mb-6">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Quantity</p>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center border border-theme-primary/30 rounded-lg">
+                        <button
+                          onClick={decreaseQuantity}
+                          className="px-4 py-2 text-theme-primary hover:bg-theme-primary/10 font-bold transition"
+                        >-</button>
+                        <span className="px-4 py-2 font-bold text-gray-700 w-12 text-center">{quantity}</span>
+                        <button
+                          onClick={increaseQuantity}
+                          className={`px-4 py-2 font-bold transition ${atStockLimit ? 'text-gray-400 cursor-not-allowed' : 'text-theme-primary hover:bg-theme-primary/10'}`}
+                          disabled={atStockLimit}
+                        >+</button>
+                      </div>
+                      {Number.isFinite(availableStock) && (
+                        <span className={`text-xs font-medium ${isOutOfStock ? 'text-red-500' : 'text-gray-500'}`}>
+                          {isOutOfStock ? 'Out of stock' : `${availableStock} pcs available`}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {showColorSelector ? (
+                      <div>
+                        <label className="block text-sm font-bold text-gray-800 mb-3">
+                          Color
+                          <span className="text-xs font-normal text-gray-500 ml-2">
+                            {selectedColor}
                           </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {showColorSelector ? (
-                        <div>
-                          <label className="block text-sm font-bold text-gray-800 mb-3">
-                            Color
-                            <span className="text-xs font-normal text-gray-500 ml-2">
-                              {selectedColor}
-                            </span>
-                          </label>
-                          <div className="flex flex-wrap gap-2 md:gap-3">
-                            {colorOptions.map(color => (
-                              <button
-                                key={color}
-                                onClick={() => setSelectedColor(color)}
-                                aria-pressed={selectedColor === color}
-                                className={`mobile-variant-option mobile-touch-feedback ${
-                                  selectedColor === color ? 'selected' : ''
+                        </label>
+                        <div className="flex flex-wrap gap-2 md:gap-3">
+                          {colorOptions.map(color => (
+                            <button
+                              key={color}
+                              onClick={() => setSelectedColor(color)}
+                              aria-pressed={selectedColor === color}
+                              className={`mobile-variant-option mobile-touch-feedback ${selectedColor === color ? 'selected' : ''
                                 }`}
-                              >
-                                {color}
-                              </button>
-                            ))}
-                          </div>
+                            >
+                              {color}
+                            </button>
+                          ))}
                         </div>
-                      ) : (
-                        <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">Color: {fallbackColor}</p>
-                      )}
-
-                      {showSizeSelector ? (
-                        <div>
-                          <label className="block text-sm font-bold text-gray-800 mb-3">
-                            Size
-                            <span className="text-xs font-normal text-gray-500 ml-2">
-                              {selectedSize}
-                            </span>
-                          </label>
-                          <div className="flex flex-wrap gap-2 md:gap-3">
-                            {sizeOptions.map(size => (
-                              <button
-                                key={size}
-                                onClick={() => setSelectedSize(size)}
-                                aria-pressed={selectedSize === size}
-                                className={`mobile-variant-option mobile-touch-feedback ${
-                                  selectedSize === size ? 'selected' : ''
-                                }`}
-                              >
-                                {size}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">Size: {fallbackSize}</p>
-                      )}
-                    </div>
-
-                    {variantError && (
-                      <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-2">
-                        <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
-                        <span>{variantError}</span>
                       </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">Color: {fallbackColor}</p>
                     )}
-                 </div>
 
-                 {/* Desktop Buttons */}
-                 <div className="hidden md:flex gap-3 mb-8">
-                    <button 
-                      onClick={handleAddToCart}
-                      disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
-                    >
-                       <ShoppingCart size={20} /> Add to cart
-                    </button>
-                    <button 
-                      onClick={handleBuyNow}
-                      disabled={isOutOfStock}
-                      className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-green-600 text-white hover:bg-green-700'}`}
-                    >
-                       <ShoppingBag size={20} /> Buy Now
-                    </button>
-                 </div>
+                    {showSizeSelector ? (
+                      <div>
+                        <label className="block text-sm font-bold text-gray-800 mb-3">
+                          Size
+                          <span className="text-xs font-normal text-gray-500 ml-2">
+                            {selectedSize}
+                          </span>
+                        </label>
+                        <div className="flex flex-wrap gap-2 md:gap-3">
+                          {sizeOptions.map(size => (
+                            <button
+                              key={size}
+                              onClick={() => setSelectedSize(size)}
+                              aria-pressed={selectedSize === size}
+                              className={`mobile-variant-option mobile-touch-feedback ${selectedSize === size ? 'selected' : ''
+                                }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">Size: {fallbackSize}</p>
+                    )}
+                  </div>
 
-                 <div className="text-xs text-gray-500 mb-4">
-                    Selected: <span className="font-semibold text-gray-700">{currentVariant.color} / {currentVariant.size}</span>
-                 </div>
+                  {variantError && (
+                    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-2">
+                      <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+                      <span>{variantError}</span>
+                    </div>
+                  )}
+                </div>
 
-                 <div className="space-y-2 text-sm text-gray-600 border-t border-gray-100 pt-4 mt-auto">
-                    <p><span className="font-semibold text-gray-800 w-24 inline-block">Category:</span> <span className="text-theme-primary">{product.category || 'Electronics'}</span></p>
-                    {product.tags && (
-                      <><p><span className="font-semibold text-gray-800 w-24 inline-block">Tags:</span> {product.tags.join(', ')}</p> <p><span className="font-semibold text-gray-800 w-24 inline-block">SKU: {product.sku}</span></p></>   
-                   )}
-                 </div>
+                {/* Desktop Buttons */}
+                <div className="hidden md:flex gap-3 mb-8">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isOutOfStock}
+                    className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-order'}`}
+                  >
+                    <ShoppingCart size={20} /> Add to cart
+                  </button>
+                  <button
+                    onClick={handleBuyNow}
+                    disabled={isOutOfStock}
+                    className={`flex-1 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition transform active:scale-95 ${isOutOfStock ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'btn-order'}`}
+                  >
+                    <ShoppingBag size={20} /> Buy Now
+                  </button>
+                </div>
+
+                <div className="text-xs text-gray-500 mb-4">
+                  Selected: <span className="font-semibold text-gray-700">{currentVariant.color} / {currentVariant.size}</span>
+                </div>
+
+                <div className="space-y-2 text-sm text-gray-600 border-t border-gray-100 pt-4 mt-auto">
+                  <p><span className="font-semibold text-gray-800 w-24 inline-block">Category:</span> <span className="text-theme-primary">{product.category || 'Electronics'}</span></p>
+                  {product.tags && (
+                    <><p><span className="font-semibold text-gray-800 w-24 inline-block">Tags:</span> {product.tags.join(', ')}</p> <p><span className="font-semibold text-gray-800 w-24 inline-block">SKU: {product.sku}</span></p></>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Tabs Section */}
             <div className="mt-8 glass-card rounded-xl overflow-hidden animate-slide-up">
               <div className="mobile-tab-nav flex border-b border-gray-100">
-                  <button 
-                    onClick={() => setActiveTab('description')}
-                    className={`mobile-tab-button flex-1 mobile-touch-feedback ${
-                      activeTab === 'description' ? 'active' : 'text-gray-600'
+                <button
+                  onClick={() => setActiveTab('description')}
+                  className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap border-emerald-500 text-emerald-600 flex-1 mobile-touch-feedback ${activeTab === 'description' ? 'active' : 'text-gray-600'
                     }`}
-                    aria-selected={activeTab === 'description'}
-                    role="tab"
-                  >
-                    Description
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('reviews')}
-                    className={`mobile-tab-button flex-1 mobile-touch-feedback ${
-                      activeTab === 'reviews' ? 'active' : 'text-gray-600'
+                  aria-selected={activeTab === 'description'}
+                  role="tab"
+                >
+                  Description
+                </button>
+                <button
+                  onClick={() => setActiveTab('reviews')}
+                  className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap border-emerald-500 text-emerald-600 flex-1 mobile-touch-feedback ${activeTab === 'reviews' ? 'active' : 'text-gray-600'
                     }`}
-                    aria-selected={activeTab === 'reviews'}
-                    role="tab"
-                  >
-                    Reviews
-                    <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-theme-primary/15 text-xs font-bold text-theme-primary">
-                      {product.reviews || 0}
-                    </span>
-                  </button>
-               </div>
-               <div className="p-8 min-h-[200px]">
-                  {activeTab === 'description' ? (
-                    <div className="text-gray-600 leading-relaxed space-y-4">
-                      <div 
-                        className="prose prose-sm max-w-none"
-                        dangerouslySetInnerHTML={{ 
-                          __html: product.description || "No description available for this product." 
-                        }}
-                      />
-                      <p className="text-sm italic text-gray-500">Experience premium quality with our latest collection. This product features state-of-the-art technology, ergonomic design for comfort, and durable materials that last. Perfect for daily use or special occasions.</p>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      {product.reviews && product.reviews > 0 ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="flex text-yellow-400">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star key={s} size={28} fill="currentColor" />
-                              ))}
-                            </div>
+                  aria-selected={activeTab === 'reviews'}
+                  role="tab"
+                >
+                  Reviews
+                  <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-theme-primary/15 text-xs font-bold text-theme-primary">
+                    {product.reviews || 0}
+                  </span>
+                </button>
+              </div>
+              <div className="p-8 min-h-[200px]">
+                {activeTab === 'description' ? (
+                  <div className="text-gray-600 leading-relaxed space-y-4">
+                    <div
+                      className="prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: product.description || "No description available for this product."
+                      }}
+                    />
+                    <p className="text-sm italic text-gray-500">Experience premium quality with our latest collection. This product features state-of-the-art technology, ergonomic design for comfort, and durable materials that last. Perfect for daily use or special occasions.</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    {product.reviews && product.reviews > 0 ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="flex text-yellow-400">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star key={s} size={28} fill="currentColor" />
+                            ))}
                           </div>
-                          <p className="text-2xl font-bold text-gray-800">{product.rating || 4.5}/5</p>
-                          <p className="text-gray-600">Based on {product.reviews} customer reviews</p>
-                          <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
-                            Write a Review
-                          </button>
                         </div>
-                      ) : (
-                        <div className="py-8 space-y-3">
-                          <Star size={48} className="mx-auto text-gray-300" />
-                          <p className="text-gray-500 font-medium">No reviews yet</p>
-                          <p className="text-gray-400 text-sm">Be the first to review this product and help others make informed decisions.</p>
-                          <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
-                            Write a Review
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-               </div>
+                        <p className="text-2xl font-bold text-gray-800">{product.rating || 4.5}/5</p>
+                        <p className="text-gray-600">Based on {product.reviews} customer reviews</p>
+                        <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
+                          Write a Review
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="py-8 space-y-3">
+                        <Star size={48} className="mx-auto text-gray-300" />
+                        <p className="text-gray-500 font-medium">No reviews yet</p>
+                        <p className="text-gray-400 text-sm">Be the first to review this product and help others make informed decisions.</p>
+                        <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
+                          Write a Review
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Right Sidebar */}
           <aside className="w-full lg:w-80 space-y-8">
-            
+
             {/* Related Products Widget */}
             <div className="glass-card rounded-xl p-5 animate-slide-up">
-               <h3 className="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-100">Related Products</h3>
-               <div className="space-y-4">
-                  {isLoading ? (
-                    [...Array(3)].map((_, i) => <div key={`skeleton-${i}`} className="h-20 bg-gray-100 rounded animate-pulse" />)
-                  ) : (
+              <h3 className="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-100">Related Products</h3>
+              <div className="space-y-4">
+                {isLoading ? (
+                  [...Array(3)].map((_, i) => <div key={`skeleton-${i}`} className="h-20 bg-gray-100 rounded animate-pulse" />)
+                ) : (
                   relatedProducts.map(({ product: related, matchType, reason, stockCount }) => (
-                    <div 
-                      key={related.id} 
+                    <div
+                      key={related.id}
                       onClick={() => onProductClick(related)}
                       className="flex gap-3 group cursor-pointer"
                     >
-                       <div className="w-16 h-16 bg-gray-50 rounded border border-gray-100 overflow-hidden flex-shrink-0">
-                          <LazyImage src={normalizeImageUrl(related.image)} alt={related.name} className="w-full h-full object-cover" />
-                       </div>
-                       <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-sm font-medium text-gray-800 line-clamp-2 group-hover:text-theme-primary transition">
-                              {related.name}
-                            </h4>
-                            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${MATCH_BADGE[matchType].className}`}>
-                              {MATCH_BADGE[matchType].label}
-                            </span>
+                      <div className="w-16 h-16 bg-gray-50 rounded border border-gray-100 overflow-hidden flex-shrink-0">
+                        <LazyImage src={normalizeImageUrl(related.image)} alt={related.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-sm font-medium text-gray-800 line-clamp-2 group-hover:text-theme-primary transition">
+                            {related.name}
+                          </h4>
+                          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${MATCH_BADGE[matchType].className}`}>
+                            {MATCH_BADGE[matchType].label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{reason}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-theme-primary font-bold text-sm">৳ {formatCurrency(related.price)}</span>
+                          <div className="text-[11px] text-gray-500">
+                            {stockCount > 0 ? `${stockCount} in stock` : 'Restocking soon'}
                           </div>
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">{reason}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-theme-primary font-bold text-sm">৳ {formatCurrency(related.price)}</span>
-                            <div className="text-[11px] text-gray-500">
-                              {stockCount > 0 ? `${stockCount} in stock` : 'Restocking soon'}
-                            </div>
-                          </div>
-                       </div>
+                        </div>
+                      </div>
                     </div>
                   ))
-                  )}
-               </div>
+                )}
+              </div>
             </div>
 
             {/* Category Widget */}
             <div className="store-card rounded-xl p-5 shadow-lg border border-gray-200">
-               <h3 className="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-100">Category</h3>
-               <div className="space-y-2">
-                 {(categories && categories.length > 0 ? categories.filter(c => c.status === 'Active').slice(0, 6) : []).map((cat, idx) => (
-                   <div 
-                     key={idx} 
-                     onClick={() => onCategoryClick?.(cat.name)}
-                     className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition cursor-pointer group"
-                   >
-                      <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden border border-gray-100 group-hover:border-theme-primary/30 transition">
-                        {cat.image || (cat.icon && cat.icon.startsWith('http')) ? (
-                          <img 
-                            src={normalizeImageUrl(cat.image || cat.icon || '')} 
-                            alt={cat.name} 
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-gray-400 group-hover:text-theme-primary transition">
-                            {iconMap[cat.icon || 'grid'] || <Grid size={20} strokeWidth={1.5} />}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900">{cat.name}</span>
-                   </div>
-                 ))}
-               </div>
+              <h3 className="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-100">Category</h3>
+              <div className="space-y-2">
+                {(categories && categories.length > 0 ? categories.filter(c => c.status === 'Active').slice(0, 6) : []).map((cat, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => onCategoryClick?.(cat.name)}
+                    className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition cursor-pointer group"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden border border-gray-100 group-hover:border-theme-primary/30 transition">
+                      {cat.image || (cat.icon && cat.icon.startsWith('http')) ? (
+                        <img
+                          src={normalizeImageUrl(cat.image || cat.icon || '')}
+                          alt={cat.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-400 group-hover:text-theme-primary transition">
+                          {getCategoryIcon(cat.name, cat.icon)}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900">{cat.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </aside>
 
         </div>
       </main>
-      
+
       {/* Mobile Sticky Action Bar */}
       <div className="mobile-sticky-actions fixed bottom-0 left-0 right-0 md:hidden z-50 flex items-center gap-3 mobile-safe-bottom">
         <button
@@ -969,9 +1006,8 @@ const StoreProductDetail = ({
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`mobile-action-button-secondary h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${
-              isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`mobile-action-button-secondary h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             <ShoppingCart size={18} />
             <span>Add to cart</span>
@@ -979,9 +1015,8 @@ const StoreProductDetail = ({
           <button
             onClick={handleBuyNow}
             disabled={isOutOfStock}
-            className={`mobile-action-button h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${
-              isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`order-btn h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             <ShoppingBag size={18} />
             <span>Buy Now</span>

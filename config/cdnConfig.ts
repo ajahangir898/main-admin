@@ -44,7 +44,7 @@ const defaultConfig: CDNConfig = {
   staticBaseUrl: '',
   imageTransformation: {
     enabled: false,
-    quality: 80,
+    quality: 95,
     format: 'auto',
     fit: 'cover',
   },

@@ -5,7 +5,7 @@ export const StoreHomeSkeleton: React.FC = () => (
   <div className="min-h-screen bg-gray-50 font-sans text-slate-900">
     {/* Skeleton for StoreHeader */}
     <header className="bg-white shadow-sm sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
           <div className="flex items-center space-x-4">
@@ -19,13 +19,13 @@ export const StoreHomeSkeleton: React.FC = () => (
 
     {/* Skeleton for HeroSection */}
     <div className="bg-gray-200 animate-pulse">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="aspect-[16/7]"></div>
       </div>
     </div>
 
     {/* Skeleton for CategoriesSection */}
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-1 py-6">
+    <section className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8 pt-1 py-6">
         <div className="flex justify-center space-x-4">
             {[...Array(6)].map((_, i) => (
                 <div key={i} className="flex flex-col items-center space-y-2">
@@ -37,7 +37,7 @@ export const StoreHomeSkeleton: React.FC = () => (
     </section>
 
     {/* Skeletons for Product Grids */}
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-4">
+    <main className="max-w-[1408px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pb-4">
       <SectionSkeleton />
       <SectionSkeleton />
       <SectionSkeleton />

@@ -170,31 +170,68 @@ export function useAuth({
     return true;
   }, [activeTenantId, setUser, setActiveTenantId]);
 
+
   const handleRegister = useCallback(async (newUser: User): Promise<boolean> => {
     if (!newUser.email || !newUser.password) {
       throw new Error('Email and password are required');
     }
+    
     const normalizedEmail = newUser.email.trim().toLowerCase();
-    if (users.some((u) => u.email?.toLowerCase() === normalizedEmail)) {
-      throw new Error('Email already registered. Try logging in instead.');
-    }
+    const subdomain = getTenantSubdomain();
+    
     try {
-      const scopedUser: User = {
-        ...newUser,
-        email: normalizedEmail,
-        tenantId: newUser.tenantId || activeTenantId,
-        role: newUser.role || 'customer'
-      };
-      setUsers((prev) => [...prev.filter((u) => u.email !== scopedUser.email), scopedUser]);
-      setUser(scopedUser);
-      if (scopedUser.tenantId) {
-        setActiveTenantId(scopedUser.tenantId);
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (subdomain) {
+        headers['x-tenant-subdomain'] = subdomain;
       }
+      
+      // Call API to register user in database
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: newUser.name,
+          email: normalizedEmail,
+          password: newUser.password,
+          phone: newUser.phone || '',
+          tenantId: newUser.tenantId || subdomain || activeTenantId
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle email already exists error
+        if (response.status === 409 || data.error?.includes('already')) {
+          throw new Error('This email is already registered. Please try logging in instead.');
+        }
+        throw new Error(data.error || data.message || 'Registration failed. Please try again.');
+      }
+      
+      // Store JWT token for authenticated API calls
+      localStorage.setItem('admin_auth_token', data.token);
+      localStorage.setItem('admin_auth_user', JSON.stringify(data.user));
+      localStorage.setItem('admin_auth_permissions', JSON.stringify(data.permissions || []));
+      
+      const registeredUser: User = {
+        name: data.user.name,
+        email: data.user.email,
+        phone: data.user.phone,
+        role: data.user.role || 'customer',
+        tenantId: data.user.tenantId || subdomain || activeTenantId
+      };
+      
+      setUser(registeredUser);
+      setUsers((prev) => [...prev.filter((u) => u.email !== registeredUser.email), registeredUser]);
+      if (registeredUser.tenantId) {
+        setActiveTenantId(registeredUser.tenantId);
+      }
+      
       return true;
     } catch (error) {
-      throw new Error(getAuthErrorMessage(error));
+      throw new Error(error instanceof Error ? error.message : 'Registration failed');
     }
-  }, [users, activeTenantId, setUsers, setUser, setActiveTenantId]);
+  }, [activeTenantId, setUsers, setUser, setActiveTenantId]);
 
   const handleGoogleLogin = useCallback(async (): Promise<never> => {
     throw new Error('Google login is not available in this environment.');

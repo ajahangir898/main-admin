@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Send, User, CheckCircle, X } from 'lucide-react';
+import { Star, Send, User, CheckCircle, X, ThumbsUp, MessageCircle, Award } from 'lucide-react';
 import { Review } from '../../types';
 import { DataService } from '../../services/DataService';
 import toast from 'react-hot-toast';
@@ -92,11 +92,12 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
     }
   };
 
-  const renderStars = (currentRating: number, onRate?: (r: number) => void, onHover?: (r: number) => void) => {
+  const renderStars = (currentRating: number, onRate?: (r: number) => void, onHover?: (r: number) => void, size: 'sm' | 'md' | 'lg' = 'md') => {
     const displayRating = onHover && hoverRating > 0 ? hoverRating : currentRating;
+    const sizeMap = { sm: 14, md: 20, lg: 28 };
     
     return (
-      <div className="flex gap-1">
+      <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -104,16 +105,16 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
             onClick={() => onRate?.(star)}
             onMouseEnter={() => onHover?.(star)}
             onMouseLeave={() => onHover?.(0)}
-            className={`transition-colors ${onRate ? 'cursor-pointer' : 'cursor-default'}`}
+            className={`transition-all duration-200 ${onRate ? 'cursor-pointer hover:scale-110' : 'cursor-default'}`}
             disabled={!onRate}
           >
             <Star
-              size={onRate ? 24 : 16}
-              className={`${
+              size={sizeMap[size]}
+              className={`transition-colors ${
                 star <= displayRating
-                  ? 'fill-yellow-400 text-yellow-400'
+                  ? 'fill-amber-400 text-amber-400'
                   : 'text-gray-300'
-              } ${onRate ? 'hover:scale-110 transition-transform' : ''}`}
+              }`}
             />
           </button>
         ))}
@@ -126,23 +127,55 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
     : '0.0';
 
   const publishedReviews = reviews.filter(r => r.status === 'published');
+  
+  const ratingCounts = {
+    5: publishedReviews.filter(r => r.rating === 5).length,
+    4: publishedReviews.filter(r => r.rating === 4).length,
+    3: publishedReviews.filter(r => r.rating === 3).length,
+    2: publishedReviews.filter(r => r.rating === 2).length,
+    1: publishedReviews.filter(r => r.rating === 1).length,
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mt-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div className="flex-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Customer Reviews</h2>
-          {publishedReviews.length > 0 && (
-            <div className="flex items-center gap-2 mt-2">
-              {renderStars(parseFloat(averageRating))}
-              <span className="text-base sm:text-lg font-semibold text-gray-900">{averageRating}</span>
-              <span className="text-sm text-gray-500">({publishedReviews.length} {publishedReviews.length === 1 ? 'review' : 'reviews'})</span>
+    <div className="space-y-6">
+      {/* Rating Summary */}
+      {publishedReviews.length > 0 && (
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            {/* Average Rating */}
+            <div className="text-center">
+              <div className="text-5xl font-bold text-gray-900">{averageRating}</div>
+              <div className="mt-2">{renderStars(parseFloat(averageRating), undefined, undefined, 'md')}</div>
+              <div className="text-sm text-gray-500 mt-1">{publishedReviews.length} reviews</div>
             </div>
-          )}
+            
+            {/* Rating Breakdown */}
+            <div className="flex-1 space-y-2 w-full sm:w-auto">
+              {[5, 4, 3, 2, 1].map((num) => {
+                const count = ratingCounts[num as keyof typeof ratingCounts];
+                const percentage = publishedReviews.length > 0 ? (count / publishedReviews.length) * 100 : 0;
+                return (
+                  <div key={num} className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-600 w-3">{num}</span>
+                    <Star size={14} className="fill-amber-400 text-amber-400" />
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-amber-400 to-orange-400 rounded-full transition-all duration-500"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-500 w-8">{count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        
-        {!showReviewForm && (
+      )}
+
+      {/* Write Review Button */}
+      {!showReviewForm && (
+        <div className="flex justify-center">
           <button
             onClick={() => {
               if (!user) {
@@ -152,172 +185,179 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               }
               setShowReviewForm(true);
             }}
-            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 text-sm sm:text-base"
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-xl active:scale-95"
           >
-            <Send size={18} />
+            <MessageCircle size={20} />
             Write a Review
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Review Form */}
-      {showReviewForm && user && (
-        <form onSubmit={handleSubmitReview} className="mb-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-emerald-100 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Write Your Review</h3>
-            <button
-              type="button"
+      {showReviewForm && (
+        <form onSubmit={handleSubmitReview} className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg space-y-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900">Share Your Experience</h3>
+            <button 
+              type="button" 
               onClick={() => setShowReviewForm(false)}
-              className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <X size={20} />
+              <X size={20} className="text-gray-500" />
             </button>
           </div>
-
-          <div className="space-y-5">
-            {/* Rating */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Rating <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center gap-3">
-                {renderStars(rating, setRating, setHoverRating)}
-                <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                  {rating} {rating === 1 ? 'star' : 'stars'}
-                </span>
-              </div>
+          
+          {/* Rating Selection */}
+          <div className="text-center py-4 bg-gray-50 rounded-xl">
+            <p className="text-sm text-gray-600 mb-3">Rate this product</p>
+            <div className="flex justify-center">
+              {renderStars(rating, setRating, setHoverRating, 'lg')}
             </div>
-
-            {/* Headline */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Review Title <span className="text-gray-400 text-xs">(Optional)</span>
-              </label>
-              <input
-                type="text"
-                value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
-                placeholder="Sum up your experience in a few words..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition text-sm sm:text-base"
-                maxLength={100}
-              />
-            </div>
-
-            {/* Comment */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Review <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Share your detailed experience with this product. What did you like? What could be improved?"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition resize-none text-sm sm:text-base"
-                rows={5}
-                required
-                maxLength={500}
-              />
-              <div className="flex items-center justify-between mt-1">
-                <p className="text-xs text-gray-500">
-                  Minimum 10 characters
-                </p>
-                <p className="text-xs text-gray-500">
-                  {comment.length}/500
-                </p>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={submitting || !comment.trim() || comment.trim().length < 10}
-              className="w-full px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md active:scale-95 flex items-center justify-center gap-2 text-base"
-            >
-              {submitting ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  <Send size={18} />
-                  Submit Review
-                </>
-              )}
-            </button>
+            <p className="text-sm font-medium text-gray-700 mt-2">
+              {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][rating]}
+            </p>
           </div>
+          
+          {/* Headline */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Review Title (optional)
+            </label>
+            <input
+              type="text"
+              value={headline}
+              onChange={(e) => setHeadline(e.target.value)}
+              placeholder="Summarize your experience..."
+              maxLength={100}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+            />
+          </div>
+          
+          {/* Comment */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Your Review
+            </label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Share your thoughts about this product... What did you like? Would you recommend it?"
+              rows={4}
+              minLength={10}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all"
+            />
+            <p className="text-xs text-gray-500 mt-1">{comment.length}/500 characters</p>
+          </div>
+          
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={submitting || comment.length < 10}
+            className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl hover:from-emerald-600 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl active:scale-[0.98]"
+          >
+            {submitting ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                <Send size={18} />
+                Submit Review
+              </>
+            )}
+          </button>
         </form>
       )}
 
       {/* Reviews List */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : publishedReviews.length === 0 ? (
-        <div className="text-center py-12 px-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Star size={32} className="text-emerald-500" />
+        <div className="text-center py-16 px-4">
+          <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+            <Star size={40} className="text-gray-400" />
           </div>
-          <p className="text-gray-700 font-medium mb-2">No reviews yet</p>
-          <p className="text-sm text-gray-500">Be the first to share your thoughts about this product!</p>
-          {!showReviewForm && !user && (
+          <h3 className="text-xl font-bold text-gray-700 mb-2">No reviews yet</h3>
+          <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+            Be the first to share your thoughts about this product and help others make informed decisions.
+          </p>
+          {!showReviewForm && (
             <button
-              onClick={onLoginClick}
-              className="mt-4 text-emerald-600 hover:text-emerald-700 font-medium text-sm underline"
+              onClick={() => {
+                if (!user) {
+                  toast.error('Please login to write a review');
+                  onLoginClick();
+                  return;
+                }
+                setShowReviewForm(true);
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-all shadow-lg"
             >
-              Login to write a review
+              <MessageCircle size={18} />
+              Write a Review
             </button>
           )}
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {publishedReviews.map((review) => (
-            <div key={review.id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0 shadow-md">
-                  {review.userName.charAt(0).toUpperCase()}
+            <div 
+              key={review.id} 
+              className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-start gap-4">
+                {/* Avatar */}
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-md">
+                  {review.userName?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-semibold text-gray-900 text-sm sm:text-base">{review.userName}</span>
+                  {/* Header */}
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="font-bold text-gray-900">{review.userName}</span>
                     {review.isVerifiedPurchase && (
-                      <span className="flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      <span className="flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">
                         <CheckCircle size={12} />
-                        Verified
+                        Verified Purchase
                       </span>
                     )}
                   </div>
                   
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    {renderStars(review.rating)}
-                    <span className="text-xs sm:text-sm text-gray-500">
+                  {/* Rating & Date */}
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    {renderStars(review.rating, undefined, undefined, 'sm')}
+                    <span className="text-sm text-gray-500">
                       {new Date(review.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         day: 'numeric'
                       })}
                     </span>
                   </div>
                   
+                  {/* Headline */}
                   {review.headline && (
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{review.headline}</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{review.headline}</h4>
                   )}
                   
-                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base break-words">{review.comment}</p>
+                  {/* Comment */}
+                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                   
+                  {/* Store Reply */}
                   {review.reply && (
-                    <div className="mt-4 p-3 sm:p-4 bg-gradient-to-br from-gray-50 to-emerald-50 rounded-lg border-l-4 border-emerald-500 shadow-sm">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 flex items-center gap-1">
-                        <span className="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs">
-                          ✓
+                    <div className="mt-4 p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border-l-4 border-emerald-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center">
+                          <Award size={14} />
+                        </div>
+                        <span className="font-semibold text-gray-900 text-sm">
+                          Response from {review.repliedBy || 'Store'}
                         </span>
-                        Response from {review.repliedBy || 'Store'}
-                      </p>
-                      <p className="text-xs sm:text-sm text-gray-700 ml-7">{review.reply}</p>
+                      </div>
+                      <p className="text-sm text-gray-700 ml-8">{review.reply}</p>
                       {review.repliedAt && (
-                        <p className="text-xs text-gray-500 mt-1 ml-7">
+                        <p className="text-xs text-gray-500 mt-2 ml-8">
                           {new Date(review.repliedAt).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',

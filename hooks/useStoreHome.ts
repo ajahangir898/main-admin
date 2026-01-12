@@ -265,7 +265,7 @@ export const useStoreHome = ({
 
   // === PRODUCT FILTERS ===
   const flashSalesProducts = useMemo(
-    () => activeProducts.filter(p => productMatchesAnyTag(p, ['flash', 'flash sale', 'flash sales', 'flash-sale', 'flashsales', 'flash deal', 'flashdeal'])),
+    () => activeProducts.filter(p => productMatchesAnyTag(p, ['flash', 'flash sale', 'flash sales', 'flash-sale', 'flashsales', 'flash deal', 'flashdeal', 'deal of the day', 'deal-of-the-day', 'dealoftheday'])),
     [activeProducts, productMatchesAnyTag]
   );
 

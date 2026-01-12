@@ -146,7 +146,7 @@ async function createServer() {
         template = cachedTemplate;
         
         // Send Early Hints (103) for critical resources - parallel preloading
-        if (criticalAssets.length > 0 && res.writeEarlyHints) {
+        if (false && criticalAssets.length > 0 && res.writeEarlyHints) {
           const linkHeaders = criticalAssets.map(({ path, type }) => {
             if (type === 'script') {
               return `<${path}>; rel=modulepreload`;

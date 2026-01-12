@@ -27,11 +27,11 @@ export type ImageSize = 'thumb' | 'small' | 'medium' | 'large' | 'full';
 export type ImageFormat = 'webp' | 'jpeg' | 'png' | 'avif' | 'auto';
 
 const IMAGE_SIZES: Record<ImageSize, { width: number; height?: number; quality: number }> = {
-  thumb: { width: 100, height: 100, quality: 80 },   // For tiny thumbnails
-  small: { width: 200, height: 200, quality: 82 },   // For cart items, lists
-  medium: { width: 400, height: 400, quality: 85 },  // For product cards
-  large: { width: 800, height: 800, quality: 88 },   // For product details
-  full: { width: 1200, quality: 90 },                // For hero images
+  thumb: { width: 150, height: 150, quality: 95 },   // For tiny thumbnails
+  small: { width: 300, height: 300, quality: 95 },   // For cart items, lists
+  medium: { width: 500, height: 500, quality: 95 },  // For product cards
+  large: { width: 1000, height: 1000, quality: 98 },   // For product details
+  full: { width: 1600, quality: 100 },                // For hero images
 };
 
 const stripWrappingQuotes = (value: string): string => {
@@ -195,7 +195,7 @@ export const getWebPUrl = (
   url: string | undefined | null,
   width?: number,
   height?: number,
-  quality: number = 80
+  quality: number = 95
 ): string => {
   return buildOptimizedUrl(url, { width, height, quality, format: 'webp' });
 };
