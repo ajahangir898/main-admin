@@ -27,14 +27,14 @@ const cachedFetch = async <T>(
 ): Promise<T> => {
   // Generate cache key if not provided
   const key = cacheKey || CacheKeys.apiResponse(endpoint, JSON.stringify(options));
-  
+
   // Check cache first
   const cached = await getCached<T>(key);
   if (cached !== null) {
     if (DEBUG_LOGGING) console.log(`[Cache] Hit for ${endpoint}`);
     return cached;
   }
-  
+
   // Fetch from API
   if (DEBUG_LOGGING) console.log(`[Cache] Miss for ${endpoint}, fetching...`);
   const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, {
@@ -45,16 +45,16 @@ const cachedFetch = async <T>(
       ...options.headers,
     },
   });
-  
+
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`);
   }
-  
+
   const data = await response.json();
-  
+
   // Cache the response
   await setCachedByType(key, data, cacheTTL);
-  
+
   return data;
 };
 
@@ -63,7 +63,7 @@ export const invalidateDataCache = async (tenantId: string, dataType?: string): 
   if (dataType) {
     // Invalidate specific data type
     await deleteCached(CacheKeys.tenantBootstrap(tenantId));
-    
+
     switch (dataType) {
       case 'products':
         await deleteCached(CacheKeys.tenantProducts(tenantId));
@@ -81,7 +81,7 @@ export const invalidateDataCache = async (tenantId: string, dataType?: string): 
     // Clear all cache for tenant
     await clearTenantCache(tenantId);
   }
-  
+
   if (DEBUG_LOGGING) console.log(`[Cache] Invalidated cache for tenant ${tenantId}, type: ${dataType || 'all'}`);
 };
 
@@ -105,21 +105,21 @@ const getSocketIO = async () => {
 const initSocket = async (): Promise<Socket | null> => {
   if (typeof window === 'undefined') return null;
   if (socket?.connected) return socket;
-  
+
   // If socket exists but disconnected, try to reconnect
   if (socket && !socket.connected) {
     socket.connect();
     return socket;
   }
-  
+
   // Only create new socket once
   if (socketInitAttempted) return socket;
-  
+
   socketInitAttempted = true;
   const socketUrl = API_BASE_URL || window.location.origin;
-  
+
   console.log('[Socket.IO] Initializing connection to:', socketUrl);
-  
+
   try {
     const { io } = await getSocketIO();
     socket = io(socketUrl, {
@@ -131,7 +131,7 @@ const initSocket = async (): Promise<Socket | null> => {
       autoConnect: false,
       withCredentials: true
     });
-    
+
     socket.on('connect', () => {
       console.log('[Socket.IO] Connected:', socket?.id);
       // Join pending tenant room after connection
@@ -140,62 +140,62 @@ const initSocket = async (): Promise<Socket | null> => {
         console.log('[Socket.IO] Joined pending tenant room:', pendingTenantJoin);
       }
     });
-    
+
     socket.on('disconnect', (reason) => {
       console.log('[Socket.IO] Disconnected:', reason);
     });
-    
+
     socket.on('connect_error', (error) => {
       console.warn('[Socket.IO] Connection error:', error.message);
     });
-  
-  // Listen for data updates and notify listeners
-  socket.on('data-update', (payload: { tenantId: string; key: string; data: unknown }) => {
-    console.log('[Socket.IO] Data update received:', payload.tenantId, payload.key);
-    // Map server keys to frontend keys if needed
-    const keyMap: Record<string, string> = {
-      'theme_config': 'theme',
-      'website_config': 'website',
-      'delivery_config': 'delivery',
-      'landing_pages': 'landing_pages',
-      'chat_messages': 'chat_messages'
-    };
-    const mappedKey = keyMap[payload.key] || payload.key;
-    
-    // Invalidate both localStorage and Redis cache for this key
-    invalidateCache(payload.key, payload.tenantId);
-    invalidateDataCache(payload.tenantId, payload.key).catch(err => 
-      console.warn('[Cache] Redis invalidation failed:', err)
-    );
-    
-    // Notify UI listeners - mark as from socket to prevent save loops
-    notifyDataRefresh(mappedKey, payload.tenantId, true);
-  });
 
-  // Listen for chat message updates
-  socket.on('chat-update', (payload: { tenantId: string; data: unknown }) => {
-    console.log('[Socket.IO] Chat update received:', payload.tenantId);
-    invalidateCache('chat_messages', payload.tenantId);
-    notifyDataRefresh('chat_messages', payload.tenantId, true);
-  });
-  
-  socket.on('new-order', (payload: { tenantId: string; data: unknown }) => {
-    console.log('[Socket.IO] New order received:', payload.tenantId);
-    invalidateCache('orders', payload.tenantId);
-    notifyDataRefresh('orders', payload.tenantId, true);
-  });
-  
-  socket.on('order-updated', (payload: { tenantId: string; data: unknown }) => {
-    console.log('[Socket.IO] Order updated:', payload.tenantId);
-    invalidateCache('orders', payload.tenantId);
-    notifyDataRefresh('orders', payload.tenantId, true);
-  });
-  
+    // Listen for data updates and notify listeners
+    socket.on('data-update', (payload: { tenantId: string; key: string; data: unknown }) => {
+      console.log('[Socket.IO] Data update received:', payload.tenantId, payload.key);
+      // Map server keys to frontend keys if needed
+      const keyMap: Record<string, string> = {
+        'theme_config': 'theme',
+        'website_config': 'website',
+        'delivery_config': 'delivery',
+        'landing_pages': 'landing_pages',
+        'chat_messages': 'chat_messages'
+      };
+      const mappedKey = keyMap[payload.key] || payload.key;
+
+      // Invalidate both localStorage and Redis cache for this key
+      invalidateCache(payload.key, payload.tenantId);
+      invalidateDataCache(payload.tenantId, payload.key).catch(err =>
+        console.warn('[Cache] Redis invalidation failed:', err)
+      );
+
+      // Notify UI listeners - mark as from socket to prevent save loops
+      notifyDataRefresh(mappedKey, payload.tenantId, true);
+    });
+
+    // Listen for chat message updates
+    socket.on('chat-update', (payload: { tenantId: string; data: unknown }) => {
+      console.log('[Socket.IO] Chat update received:', payload.tenantId);
+      invalidateCache('chat_messages', payload.tenantId);
+      notifyDataRefresh('chat_messages', payload.tenantId, true);
+    });
+
+    socket.on('new-order', (payload: { tenantId: string; data: unknown }) => {
+      console.log('[Socket.IO] New order received:', payload.tenantId);
+      invalidateCache('orders', payload.tenantId);
+      notifyDataRefresh('orders', payload.tenantId, true);
+    });
+
+    socket.on('order-updated', (payload: { tenantId: string; data: unknown }) => {
+      console.log('[Socket.IO] Order updated:', payload.tenantId);
+      invalidateCache('orders', payload.tenantId);
+      notifyDataRefresh('orders', payload.tenantId, true);
+    });
+
   } catch (e) {
     console.error('[Socket.IO] Initialization failed:', e);
     return null;
   }
-  
+
   return socket;
 };
 
@@ -353,7 +353,7 @@ const invalidateCache = (key: string, tenantId?: string): void => {
   const cacheKey = getCacheKey(key, tenantId);
   dataCache.delete(cacheKey);
   if (typeof window !== 'undefined') {
-    try { localStorage.removeItem(LOCAL_CACHE_PREFIX + cacheKey); } catch {}
+    try { localStorage.removeItem(LOCAL_CACHE_PREFIX + cacheKey); } catch { }
   }
 };
 
@@ -366,18 +366,18 @@ const deduplicateRequest = async <T>(
   requestFn: () => Promise<T>
 ): Promise<T> => {
   const cacheKey = getCacheKey(key, tenantId);
-  
+
   // Check if there's already a pending request for this data
   const pending = pendingRequests.get(cacheKey);
   if (pending) {
     return pending as Promise<T>;
   }
-  
+
   // Create new request and track it
   const promise = requestFn().finally(() => {
     pendingRequests.delete(cacheKey);
   });
-  
+
   pendingRequests.set(cacheKey, promise);
   return promise;
 };
@@ -474,7 +474,7 @@ class DataServiceImpl {
     const { headers, body, ...rest } = init || {};
     const normalizedHeaders = this.normalizeHeaders(headers);
     const authHeaders = this.normalizeHeaders(getAuthHeader());
-    
+
     const response = await fetch(buildApiUrl(path), {
       credentials: 'include',
       ...rest,
@@ -556,17 +556,17 @@ class DataServiceImpl {
       themeConfig: ThemeConfig | null;
       websiteConfig: WebsiteConfig;
     }>(cacheKey);
-    
+
     if (cachedBootstrap && cachedBootstrap.products.length > 0) {
       console.log(`[Redis] Bootstrap cache hit for tenant: ${scope}`, {
         socialLinksCount: cachedBootstrap.websiteConfig?.socialLinks?.length || 0,
         addressesCount: cachedBootstrap.websiteConfig?.addresses?.length || 0
       });
-      
+
       // Background revalidation to keep cache fresh
       this.revalidateBootstrap(scope, tenantId, defaultWebsite, cachedBootstrap.products)
         .catch(err => console.warn('[DataService] Bootstrap revalidation failed', err));
-      
+
       return cachedBootstrap;
     }
 
@@ -574,7 +574,7 @@ class DataServiceImpl {
     const cachedProducts = getCachedData<Product[]>('products', tenantId);
     const cachedTheme = getCachedData<ThemeConfig | null>('theme_config', tenantId);
     const cachedWebsite = getCachedData<WebsiteConfig>('website_config', tenantId);
-    
+
     // Only use cache if we have actual products (not empty array)
     const hasValidProductCache = cachedProducts && cachedProducts.length > 0;
     const hasOtherCache = Boolean(cachedTheme || cachedWebsite);
@@ -595,18 +595,18 @@ class DataServiceImpl {
         websiteConfig: cachedWebsite ? { ...defaultWebsite, ...cachedWebsite } : defaultWebsite
       };
     }
-    
+
     // If no product cache but have other cached data, still fetch fresh but use other caches
     if (hasOtherCache) {
       const freshData = await this.fetchFreshBootstrap(scope, tenantId, defaultWebsite);
-      
+
       // Cache in Redis for next request
       await setCachedByType(cacheKey, {
         products: freshData.products,
         themeConfig: freshData.themeConfig,
         websiteConfig: freshData.websiteConfig
       }, 'tenant');
-      
+
       return {
         products: freshData.products,
         themeConfig: freshData.themeConfig ?? cachedTheme ?? null,
@@ -616,14 +616,14 @@ class DataServiceImpl {
 
     // No cache available - fetch fresh data
     const freshData = await this.fetchFreshBootstrap(scope, tenantId, defaultWebsite);
-    
+
     // Cache in Redis for next request
     await setCachedByType(cacheKey, {
       products: freshData.products,
       themeConfig: freshData.themeConfig,
       websiteConfig: freshData.websiteConfig
     }, 'tenant');
-    
+
     return freshData;
   }
 
@@ -633,10 +633,10 @@ class DataServiceImpl {
     const prevTheme = getCachedData<ThemeConfig | null>('theme_config', tenantId);
 
     const freshData = await this.fetchFreshBootstrap(scope, tenantId, defaultWebsite, true);
-    
+
     // If fresh data has different products than cached, notify UI to refresh
     if (freshData.products.length !== (cachedProducts?.length || 0) ||
-        JSON.stringify(freshData.products.map(p => p.id).sort()) !== JSON.stringify((cachedProducts || []).map(p => p.id).sort())) {
+      JSON.stringify(freshData.products.map(p => p.id).sort()) !== JSON.stringify((cachedProducts || []).map(p => p.id).sort())) {
       console.log('[DataService] Background revalidation found new products, notifying UI');
       notifyDataRefresh('products', tenantId, false);
     }
@@ -676,7 +676,7 @@ class DataServiceImpl {
     try {
       // Check if we have prefetched data from index.html XHR (fastest)
       let responseData: { data: { products: Product[] | null; theme_config: ThemeConfig | null; website_config: WebsiteConfig | null } } | null = null;
-      
+
       if (!isBackground && typeof window !== 'undefined') {
         // First check XHR prefetch from index.html (synchronous, already loaded)
         if ((window as any).__BOOTSTRAP_DATA__?.data) {
@@ -698,7 +698,7 @@ class DataServiceImpl {
           }
         }
       }
-      
+
       if (!responseData) {
         responseData = await this.requestTenantApi<{
           data: {
@@ -708,7 +708,7 @@ class DataServiceImpl {
           };
         }>(`/api/tenant-data/${scope}/bootstrap`);
       }
-      
+
       const { products, theme_config, website_config } = responseData.data;
 
       // Cache the results for subsequent fast loads
@@ -716,10 +716,10 @@ class DataServiceImpl {
       if (products !== null && products !== undefined) setCachedData('products', products, tenantId);
       if (theme_config) setCachedData('theme_config', theme_config, tenantId);
       if (website_config) setCachedData('website_config', website_config, tenantId);
-      
+
       // Return products from server (even empty array is valid - tenant has no products yet)
       const finalProducts = (products || []).map((p, i) => ({ ...p, id: p.id ?? i + 1 }));
-      
+
       return {
         products: finalProducts,
         themeConfig: theme_config || null,
@@ -829,7 +829,7 @@ class DataServiceImpl {
         tags: cachedTags || []
       };
     }
-    
+
     return this.fetchFreshSecondary(scope, tenantId);
   }
 
@@ -913,7 +913,7 @@ class DataServiceImpl {
       setCachedData('childcategories', data.childcategories || [], tenantId);
       setCachedData('brands', data.brands || [], tenantId);
       setCachedData('tags', data.tags || [], tenantId);
-      
+
       return {
         orders: data.orders || [],
         logo: data.logo || null,
@@ -948,19 +948,19 @@ class DataServiceImpl {
     // Check cache first
     const cached = getCachedData<T[]>(key, tenantId);
     if (cached && cached.length > 0) return this.filterByTenant(cached as Array<T & { tenantId?: string }>, tenantId);
-    
+
     const remote = await this.fetchTenantDocument<T[]>(key, tenantId);
     if (Array.isArray(remote) && remote.length > 0) {
       setCachedData(key, remote, tenantId);
       return this.filterByTenant(remote as Array<T & { tenantId?: string }>, tenantId);
     }
-    
+
     // If remote is empty but we have cached data (even if expired), prefer cache over defaults
     if (cached && cached.length > 0) {
       if (DEBUG_LOGGING) console.warn(`[DataService] Remote ${key} is empty, using cached data`);
       return this.filterByTenant(cached as Array<T & { tenantId?: string }>, tenantId);
     }
-    
+
     // Only return defaults if we have no cached data at all
     if (DEBUG_LOGGING) console.info(`[DataService] No data for ${key}, using defaults`);
     return defaultValue;
@@ -976,20 +976,20 @@ class DataServiceImpl {
 
   async getOrders(tenantId?: string): Promise<Order[]> {
     const cacheKey = CacheKeys.tenantOrders(tenantId || 'default');
-    
+
     // Check Redis cache first
     const cachedOrders = await getCached<Order[]>(cacheKey);
     if (cachedOrders) {
       console.log(`[Redis] Orders cache hit for tenant: ${tenantId}`);
       return cachedOrders;
     }
-    
+
     // Fetch from API and cache
     const remote = await this.getCollection<Order>('orders', [], tenantId);
-    
+
     // Cache the result
     await setCachedByType(cacheKey, remote, 'api');
-    
+
     return remote;
   }
 
@@ -1003,15 +1003,19 @@ class DataServiceImpl {
 
   async getRoles(tenantId?: string): Promise<Role[]> {
     const defaultRoles: Role[] = [
-      { id: 'manager', name: 'Store Manager', description: 'Can manage products and orders', permissions: [
-        { resource: 'dashboard', actions: ['read'] },
-        { resource: 'orders', actions: ['read', 'write', 'edit'] },
-        { resource: 'products', actions: ['read', 'write', 'edit'] }
-      ] },
-      { id: 'support', name: 'Support Agent', description: 'Can view orders and dashboard', permissions: [
-        { resource: 'dashboard', actions: ['read'] },
-        { resource: 'orders', actions: ['read'] }
-      ] }
+      {
+        id: 'manager', name: 'Store Manager', description: 'Can manage products and orders', permissions: [
+          { resource: 'dashboard', actions: ['read'] },
+          { resource: 'orders', actions: ['read', 'write', 'edit'] },
+          { resource: 'products', actions: ['read', 'write', 'edit'] }
+        ]
+      },
+      {
+        id: 'support', name: 'Support Agent', description: 'Can view orders and dashboard', permissions: [
+          { resource: 'dashboard', actions: ['read'] },
+          { resource: 'orders', actions: ['read'] }
+        ]
+      }
     ];
     const remote = await this.getCollection<Role>('roles', [], tenantId);
     return remote.length ? remote : defaultRoles;
@@ -1023,7 +1027,7 @@ class DataServiceImpl {
       const cached = getCachedData<T>(key, tenantId);
       if (cached !== null) return cached;
     }
-    
+
     // Deduplicate concurrent requests for the same data
     return deduplicateRequest(key, tenantId, async () => {
       const remote = await this.fetchTenantDocument<T>(key, tenantId);
@@ -1073,20 +1077,20 @@ class DataServiceImpl {
       if (DEBUG_LOGGING) console.log(`[DataService] Using cached ${type}`);
       return cached;
     }
-    
+
     const remote = await this.get<any[]>(type, [], tenantId);
-    
+
     // If we got remote data, use it
     if (remote && remote.length > 0) {
       return remote;
     }
-    
+
     // If remote is empty but we have cached data, prefer cache
     if (cached && cached.length > 0) {
       if (DEBUG_LOGGING) console.warn(`[DataService] Remote ${type} is empty, preserving cached data`);
       return cached;
     }
-    
+
     // Only use defaults if we have no data at all (new tenant)
     if (DEBUG_LOGGING) console.info(`[DataService] No ${type} found, using defaults for new tenant`);
     return defaults;
@@ -1135,7 +1139,7 @@ class DataServiceImpl {
         return;
       }
     }
-    
+
     // Cancel any pending debounced save for this key
     const queueKey = this.getSaveQueueKey(key, tenantId);
     const existing = this.saveQueue.get(queueKey);
@@ -1145,13 +1149,13 @@ class DataServiceImpl {
       // Resolve pending promises since we're saving now
       existing.resolvers.forEach(({ resolve }) => resolve());
     }
-    
+
     await this.commitSave(key, data, tenantId);
   }
 
   private async commitSave<T>(key: string, data: T, tenantId?: string): Promise<void> {
     const scope = this.resolveTenantScope(tenantId);
-    
+
     // Safety check: Prevent saving empty products array when cache has data
     // This prevents race conditions from wiping out product data
     if (key === 'products' && Array.isArray(data) && data.length === 0) {
@@ -1161,75 +1165,75 @@ class DataServiceImpl {
         return;
       }
     }
-    
+
     // Safety check: Prevent saving website_config with empty carouselItems when we have cached carousels
     // This prevents stale cache from wiping out carousel data
     if (key === 'website_config' && typeof data === 'object' && data !== null) {
-      const wsData = data as unknown as { 
-        carouselItems?: unknown[]; 
+      const wsData = data as unknown as {
+        carouselItems?: unknown[];
         socialLinks?: unknown[];
         addresses?: unknown[];
         emails?: unknown[];
         phones?: unknown[];
       };
-      const cachedWs = getCachedData<{ 
-        carouselItems?: unknown[]; 
+      const cachedWs = getCachedData<{
+        carouselItems?: unknown[];
         socialLinks?: unknown[];
         addresses?: unknown[];
         emails?: unknown[];
         phones?: unknown[];
       }>('website_config', tenantId);
-      
+
       // Preserve carousel items
-      if ((!wsData.carouselItems || wsData.carouselItems.length === 0) && 
-          cachedWs?.carouselItems && cachedWs.carouselItems.length > 0) {
+      if ((!wsData.carouselItems || wsData.carouselItems.length === 0) &&
+        cachedWs?.carouselItems && cachedWs.carouselItems.length > 0) {
         console.warn(`[DataService] Preserving ${cachedWs.carouselItems.length} cached carousels`);
         (data as any).carouselItems = cachedWs.carouselItems;
       }
-      
+
       // Preserve social links
-      if ((!wsData.socialLinks || wsData.socialLinks.length === 0) && 
-          cachedWs?.socialLinks && cachedWs.socialLinks.length > 0) {
+      if ((!wsData.socialLinks || wsData.socialLinks.length === 0) &&
+        cachedWs?.socialLinks && cachedWs.socialLinks.length > 0) {
         console.warn(`[DataService] Preserving ${cachedWs.socialLinks.length} cached social links`);
         (data as any).socialLinks = cachedWs.socialLinks;
       }
-      
+
       // Preserve addresses
-      if ((!wsData.addresses || wsData.addresses.length === 0) && 
-          cachedWs?.addresses && cachedWs.addresses.length > 0) {
+      if ((!wsData.addresses || wsData.addresses.length === 0) &&
+        cachedWs?.addresses && cachedWs.addresses.length > 0) {
         console.warn(`[DataService] Preserving ${cachedWs.addresses.length} cached addresses`);
         (data as any).addresses = cachedWs.addresses;
       }
-      
+
       // Preserve emails
-      if ((!wsData.emails || wsData.emails.length === 0) && 
-          cachedWs?.emails && cachedWs.emails.length > 0) {
+      if ((!wsData.emails || wsData.emails.length === 0) &&
+        cachedWs?.emails && cachedWs.emails.length > 0) {
         console.warn(`[DataService] Preserving ${cachedWs.emails.length} cached emails`);
         (data as any).emails = cachedWs.emails;
       }
-      
+
       // Preserve phones
-      if ((!wsData.phones || wsData.phones.length === 0) && 
-          cachedWs?.phones && cachedWs.phones.length > 0) {
+      if ((!wsData.phones || wsData.phones.length === 0) &&
+        cachedWs?.phones && cachedWs.phones.length > 0) {
         console.warn(`[DataService] Preserving ${cachedWs.phones.length} cached phones`);
         (data as any).phones = cachedWs.phones;
       }
     }
-    
+
     // Don't log full data objects - they may contain large base64 images
     console.log(`[DataService] Saving ${key} for tenant ${scope}`, Array.isArray(data) ? `(${data.length} items)` : '(object)');
     try {
       await this.persistTenantDocument(key, data, tenantId);
       // Update cache with new data
       setCachedData(key, data, tenantId);
-      
+
       // Invalidate bootstrap cache for keys that are part of bootstrap bundle
       // This ensures on page reload we get fresh data instead of stale cached bootstrap
       if (['website_config', 'theme_config', 'products'].includes(key)) {
         await deleteCached(CacheKeys.tenantBootstrap(scope));
         console.log(`[DataService] Invalidated bootstrap cache for ${scope} after ${key} save`);
       }
-      
+
       // NOTE: Don't call notifyDataRefresh here - the server will emit a socket event
       // that triggers the refresh. Calling it here causes infinite save loops.
       console.log(`[DataService] Saved ${key}`);
@@ -1247,7 +1251,7 @@ class DataServiceImpl {
         return cached;
       }
     }
-    
+
     try {
       const response = await this.requestTenantApi<TenantApiListResponse>('/api/tenants');
       const tenants = Array.isArray(response?.data)
@@ -1267,14 +1271,14 @@ class DataServiceImpl {
   // Fast subdomain resolution - single API call instead of loading all tenants
   async resolveTenantBySubdomain(subdomain: string): Promise<{ id: string; name: string; subdomain: string } | null> {
     if (!subdomain) return null;
-    
+
     // Check cache first for instant resolution
     const cached = getCachedData<{ id: string; name: string; subdomain: string }>(`tenant_resolve_${subdomain}`, 'global');
     if (cached) {
       console.log('[DataService] Using cached tenant resolution for:', subdomain);
       return cached;
     }
-    
+
     try {
       const response = await this.requestTenantApi<{ data: { id?: unknown; _id?: unknown; name: string; subdomain: string; status: string } }>(
         `/api/tenants/resolve/${encodeURIComponent(subdomain)}`
@@ -1378,7 +1382,7 @@ class DataServiceImpl {
 
   // Review methods
   async getProductReviews(productId: number, tenantId: string) {
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}/product/${productId}`, {
+    const response = await this.requestTenantApi<{ reviews?: unknown[] }>(`/api/reviews/${tenantId}/product/${productId}`, {
       headers: {
         'x-tenant-id': tenantId
       }
@@ -1398,7 +1402,7 @@ class DataServiceImpl {
       throw new Error('লগইন করুন রিভিউ দিতে');
     }
 
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}`, {
+    const response = await this.requestTenantApi<{ review?: unknown }>(`/api/reviews/${tenantId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1411,8 +1415,11 @@ class DataServiceImpl {
         images: data.images || []
       })
     });
-    
+
     return response.review;
+  }
+  getToken(): string | null {
+    throw new Error('Method not implemented.');
   }
 
   async getMyReviews(tenantId?: string) {
@@ -1421,16 +1428,16 @@ class DataServiceImpl {
       throw new Error('Authentication required');
     }
 
-    const url = tenantId 
+    const url = tenantId
       ? `/api/reviews/user/my-reviews?tenantId=${tenantId}`
       : '/api/reviews/user/my-reviews';
 
-    const response = await this.requestTenantApi(url, {
+    const response = await this.requestTenantApi<{ reviews?: unknown[] }>(url, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
-    
+
     return response.reviews || [];
   }
 
@@ -1444,7 +1451,7 @@ class DataServiceImpl {
       throw new Error('Authentication required');
     }
 
-    const response = await this.requestTenantApi(`/api/reviews/${reviewId}`, {
+    const response = await this.requestTenantApi<{ review?: unknown }>(`/api/reviews/${reviewId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -1452,7 +1459,7 @@ class DataServiceImpl {
       },
       body: JSON.stringify(data)
     });
-    
+
     return response.review;
   }
 
@@ -1489,7 +1496,7 @@ class DataServiceImpl {
         'Authorization': `Bearer ${token}`
       }
     });
-    
+
     return response;
   }
 
@@ -1507,7 +1514,7 @@ class DataServiceImpl {
       },
       body: JSON.stringify({ status })
     });
-    
+
     return response;
   }
 }
