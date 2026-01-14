@@ -101,6 +101,11 @@ interface AdminAppProps {
   onRefreshTenants: () => Promise<Tenant[]>;
   isTenantCreating: boolean;
   deletingTenantId: string | null;
+  // Landing pages props
+  landingPages: any[];
+  onCreateLandingPage: (page: any) => void;
+  onUpsertLandingPage: (page: any) => void;
+  onToggleLandingPublish: (pageId: string, status: string) => void;
 }
 
 interface AdminLayoutProps {
@@ -280,6 +285,10 @@ const AdminApp: React.FC<AdminAppProps> = ({
   onRefreshTenants,
   isTenantCreating,
   deletingTenantId,
+  landingPages,
+  onCreateLandingPage,
+  onUpsertLandingPage,
+  onToggleLandingPublish,
 }) => {
   const [adminSection, setAdminSectionInternal] = useState('dashboard');
   
@@ -301,7 +310,6 @@ const AdminApp: React.FC<AdminAppProps> = ({
   const [tags, setTags] = useState<Tag[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [landingPages, setLandingPages] = useState<any[]>([]);
   const [hasLoadedAdminData, setHasLoadedAdminData] = useState(false);
 
   // Load admin-only data
@@ -320,7 +328,6 @@ const AdminApp: React.FC<AdminAppProps> = ({
           childCategoriesData,
           brandsData,
           tagsData,
-          landingPagesData,
         ] = await Promise.all([
           authService.getAdminUsers(),
           authService.getRoles(),
@@ -329,7 +336,6 @@ const AdminApp: React.FC<AdminAppProps> = ({
           DataService.getCatalog('childcategories', [], activeTenantId),
           DataService.getCatalog('brands', [], activeTenantId),
           DataService.getCatalog('tags', [], activeTenantId),
-          DataService.getLandingPages(activeTenantId),
         ]);
 
         if (!isMounted) return;
@@ -341,7 +347,6 @@ const AdminApp: React.FC<AdminAppProps> = ({
         setChildCategories(childCategoriesData);
         setBrands(brandsData);
         setTags(tagsData);
-        setLandingPages(landingPagesData);
         setHasLoadedAdminData(true);
       } catch (error) {
         console.error('Failed to load admin data', error);
@@ -493,29 +498,6 @@ const AdminApp: React.FC<AdminAppProps> = ({
     }
   };
 
-  const handleCreateLandingPage = (page: any) => {
-    const scopedPage = { ...page, tenantId: page.tenantId || activeTenantId };
-    setLandingPages(prev => [scopedPage, ...prev]);
-  };
-
-  const handleUpsertLandingPage = (page: any) => {
-    const scopedPage = { ...page, tenantId: page.tenantId || activeTenantId };
-    setLandingPages(prev => {
-      const exists = prev.some(lp => lp.id === scopedPage.id);
-      return exists ? prev.map(lp => lp.id === scopedPage.id ? scopedPage : lp) : [scopedPage, ...prev];
-    });
-  };
-
-  const handleToggleLandingPublish = (pageId: string, status: any) => {
-    const timestamp = new Date().toISOString();
-    setLandingPages(prev => prev.map(lp => lp.id === pageId ? {
-      ...lp,
-      status,
-      updatedAt: timestamp,
-      publishedAt: status === 'published' ? timestamp : undefined
-    } : lp));
-  };
-
   const handlePreviewLandingPage = (page: any) => {
     // Open landing page in new tab using the URL slug
     const baseUrl = window.location.origin;
@@ -543,7 +525,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
         {adminSection === 'dashboard' ? <AdminDashboard orders={orders} products={products} tenantId={activeTenantId} user={user} /> :
          adminSection === 'orders' ? <AdminOrders orders={orders} courierConfig={courierConfig} onUpdateOrder={onUpdateOrder} /> :
          adminSection === 'products' ? <AdminProducts products={products} categories={categories} subCategories={subCategories} childCategories={childCategories} brands={brands} tags={tags} onAddProduct={onAddProduct} onUpdateProduct={onUpdateProduct} onDeleteProduct={onDeleteProduct} onBulkDelete={onBulkDeleteProducts} onBulkUpdate={onBulkUpdateProducts} tenantId={activeTenantId} /> :
-         adminSection === 'landing_pages' ? <AdminLandingPage products={products} landingPages={landingPages} onCreateLandingPage={handleCreateLandingPage} onUpdateLandingPage={handleUpsertLandingPage} onTogglePublish={handleToggleLandingPublish} onPreviewLandingPage={handlePreviewLandingPage} /> :
+         adminSection === 'landing_pages' ? <AdminLandingPage products={products} landingPages={landingPages} onCreateLandingPage={onCreateLandingPage} onUpdateLandingPage={onUpsertLandingPage} onTogglePublish={onToggleLandingPublish} onPreviewLandingPage={handlePreviewLandingPage} /> :
          adminSection === 'due_list' ? <AdminDueList user={user} onLogout={onLogout} /> :
          adminSection === 'inventory' ? <AdminInventory products={products} tenantId={activeTenantId} /> :
          adminSection === 'expenses' ? <AdminExpenses /> :
@@ -554,7 +536,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
          adminSection === 'figma' ? <AdminFigmaIntegration onBack={() => setAdminSection('gallery')} tenantId={activeTenantId} /> :
          adminSection === 'billing' ? <AdminBilling tenant={selectedTenantRecord} onUpgrade={() => setAdminSection('settings')} /> :
          adminSection === 'tutorial' ? <AdminTutorial /> :
-         adminSection === 'manage_shop' ? <AdminManageShop onNavigate={setAdminSection} tenantId={activeTenantId} websiteConfig={websiteConfig} /> :
+         adminSection === 'manage_shop' ? <AdminManageShop onNavigate={setAdminSection} tenantId={activeTenantId} websiteConfig={websiteConfig} tenantSubdomain={selectedTenantRecord?.subdomain} /> :
          adminSection === 'settings' ? <AdminSettings courierConfig={courierConfig} onUpdateCourierConfig={onUpdateCourierConfig} onNavigate={setAdminSection} user={user} onUpdateProfile={onUpdateProfile} activeTenant={selectedTenantRecord} logo={logo} onUpdateLogo={onUpdateLogo} /> :
          adminSection === 'support' ? <AdminSupport user={user} activeTenant={selectedTenantRecord} /> :
          adminSection === 'settings_delivery' ? <AdminDeliverySettings configs={deliveryConfig} onSave={onUpdateDeliveryConfig} onBack={() => setAdminSection('settings')} /> :

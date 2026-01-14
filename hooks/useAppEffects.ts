@@ -336,6 +336,7 @@ export const useInitialDataLoad = ({
             refs.prevDeliveryConfigRef.current = data.deliveryConfig;
             setDeliveryConfig(data.deliveryConfig);
             loadChatMessages(data.chatMessages, activeTenantId);
+            console.log("[useAppEffects] Landing pages loaded:", data.landingPages?.length || 0, data.landingPages?.map(lp => ({ id: lp.id, slug: lp.urlSlug, status: lp.status })));
             refs.prevLandingPagesRef.current = data.landingPages;
             setLandingPages(data.landingPages);
             refs.prevCategoriesRef.current = data.categories;

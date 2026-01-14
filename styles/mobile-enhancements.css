@@ -92,7 +92,7 @@ html {
   
   .hero-nav-button {
     opacity: 0.9 !important;
-    background: rgba(255, 255, 255, 0.95);
+    background: #ffffff;
   }
   
   .hero-dots {
@@ -380,4 +380,24 @@ img {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Mobile Touch Feedback */
+.mobile-touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.mobile-touch-feedback:active {
+  opacity: 0.85;
+}
+
+/* Mobile Touch Feedback */
+.mobile-touch-feedback {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.mobile-touch-feedback:active {
+  opacity: 0.85;
 }

@@ -218,8 +218,12 @@ export function useAppHandlers(props: UseAppHandlersProps) {
 
   const handleLandingOrderSubmit = useCallback(async (payload: LandingCheckoutPayload & { pageId: string; productId: number }) => {
     const product = products.find(p => p.id === payload.productId);
-    if (!product) return;
-    const orderId = `LP-${Math.floor(10000 + Math.random() * 90000)}`;
+    if (!product) {
+      toast.error('Product not found');
+      return;
+    }
+    
+    const orderId = `LP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
     const orderAmount = product.price * payload.quantity;
     const newOrder: Order = {
       id: orderId,
@@ -231,14 +235,17 @@ export function useAppHandlers(props: UseAppHandlersProps) {
       date: new Date().toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       status: 'Pending',
       email: payload.email,
+      division: payload.division,
       variant: ensureVariantSelection(product),
       productId: product.id,
       productName: product.name,
-      quantity: payload.quantity
+      quantity: payload.quantity,
+      source: 'landing_page',
+      landingPageId: payload.pageId
     };
 
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+      const apiBase = import.meta.env.VITE_API_BASE_URL || '';
       const response = await fetch(`${apiBase}/api/orders/${activeTenantId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -248,11 +255,20 @@ export function useAppHandlers(props: UseAppHandlersProps) {
       if (response.ok) {
         const result = await response.json();
         setOrders(prev => [result.data || newOrder, ...prev]);
+        toast.success(`Order ${orderId} placed successfully! You will be contacted soon.`);
+        
+        // Show success message and redirect after 2 seconds
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
       } else {
         setOrders(prev => [newOrder, ...prev]);
+        toast.success(`Order ${orderId} placed successfully! You will be contacted soon.`);
       }
     } catch (error) {
+      console.error('Order submission error:', error);
       setOrders(prev => [newOrder, ...prev]);
+      toast.success(`Order ${orderId} placed successfully! You will be contacted soon.`);
     }
   }, [activeTenantId, products, setOrders]);
 

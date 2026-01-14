@@ -5,6 +5,19 @@ import { authenticateToken } from '../middleware/auth';
 
 export const reviewsRouter = Router();
 
+// Add CORS middleware for reviews
+reviewsRouter.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-tenant-id');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Validation schemas
 const submitReviewSchema = z.object({
   productId: z.number(),
@@ -85,12 +98,12 @@ reviewsRouter.post('/', authenticateToken, async (req: Request, res: Response, n
 
     if (existingReview) {
       return res.status(409).json({
-        error: 'You have already reviewed this product',
+        error: 'You have already submitted a review for this product',
         code: 'REVIEW_EXISTS'
       });
     }
 
-    // Create review
+    // Create review - set to pending by default for admin approval
     const review = new Review({
       productId: data.productId,
       tenantId: data.tenantId,
@@ -101,13 +114,13 @@ reviewsRouter.post('/', authenticateToken, async (req: Request, res: Response, n
       headline: data.headline,
       comment: data.comment,
       verified: false, // Can be set based on purchase history
-      status: 'approved' // Auto-approve for now
+      status: 'pending' // Pending approval by default
     });
 
     await review.save();
 
     res.status(201).json({
-      message: 'Review submitted successfully',
+      message: 'Review submitted successfully and is pending approval',
       review: review.toObject()
     });
   } catch (error) {

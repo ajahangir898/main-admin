@@ -58,7 +58,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
   const [isLoading, setIsLoading] = useState(true);
   const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(null);
   const orderRowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
-  
+
   // Multi-select state
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
   const [openActionDropdown, setOpenActionDropdown] = useState<string | null>(null);
@@ -99,14 +99,14 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
     if (storedOrderId) {
       setHighlightedOrderId(storedOrderId);
       window.sessionStorage.removeItem('highlightOrderId');
-      
+
       // Scroll to the order after a short delay
       setTimeout(() => {
         const orderRow = orderRowRefs.current.get(storedOrderId);
         if (orderRow) {
           orderRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        
+
         // Remove highlight after 3 seconds
         setTimeout(() => {
           setHighlightedOrderId(null);
@@ -170,8 +170,8 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
 
   // Selection handlers
   const toggleOrderSelection = (orderId: string) => {
-    setSelectedOrderIds(prev => 
-      prev.includes(orderId) 
+    setSelectedOrderIds(prev =>
+      prev.includes(orderId)
         ? prev.filter(id => id !== orderId)
         : [...prev, orderId]
     );
@@ -216,7 +216,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
       o.id, o.customer, o.phone || '', o.location, o.amount, o.status, o.date
     ]);
     const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
-    
+
     // Download
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -238,7 +238,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
   const handleAssignCourier = (courierId: string, courierName: string) => {
     if (courierModalOrderId) {
       // Single order assignment
-      onUpdateOrder(courierModalOrderId, { 
+      onUpdateOrder(courierModalOrderId, {
         courierProvider: courierName as Order['courierProvider'],
         status: 'Sent to Courier'
       });
@@ -246,7 +246,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
     } else {
       // Bulk assignment
       selectedOrderIds.forEach(orderId => {
-        onUpdateOrder(orderId, { 
+        onUpdateOrder(orderId, {
           courierProvider: courierName as Order['courierProvider'],
           status: 'Sent to Courier'
         });
@@ -293,7 +293,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
     setIsSendingToSteadfast(true);
     try {
       const result = await CourierService.sendToSteadfast(order, courierConfig);
-      
+
       // Update the order with tracking info
       const updates: Partial<Order> = {
         trackingId: result.trackingId,
@@ -301,12 +301,12 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, courierConfig, onUpda
         courierMeta: result.response,
         status: 'Sent to Courier'
       };
-      
+
       onUpdateOrder(order.id, updates);
-      
+
       // Update draft order to reflect changes
       setDraftOrder(prev => prev ? { ...prev, ...updates } : prev);
-      
+
       toast.success(`Order sent to Steadfast! Tracking ID: ${result.trackingId}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to send order to Steadfast';
@@ -496,7 +496,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {/* Total Orders */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Total Orders</p>
@@ -516,7 +516,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </div>
 
           {/* GMV */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">GMV</p>
@@ -536,7 +536,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </div>
 
           {/* Pending */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Pending</p>
@@ -547,7 +547,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                 <AlertTriangle size={22} className="text-orange-500" />
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setStatusFilter('Pending')}
               className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
             >
@@ -557,7 +557,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </div>
 
           {/* AVG Order */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">AVG Order</p>
@@ -583,41 +583,37 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
         <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              statusFilter === 'all' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'all'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             All order ({tabCounts.all})
           </button>
           <button
             onClick={() => setStatusFilter('Delivered')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              statusFilter === 'Delivered' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Delivered'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             Completed ({tabCounts.completed})
           </button>
           <button
             onClick={() => setStatusFilter('Pending')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              statusFilter === 'Pending' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Pending'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             Pending ({tabCounts.pending})
           </button>
           <button
             onClick={() => setStatusFilter('Cancelled')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              statusFilter === 'Cancelled' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Cancelled'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
           >
             Cancelled ({tabCounts.cancelled})
           </button>
@@ -673,112 +669,111 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                     const isSelected = selectedOrderIds.includes(order.id);
                     const rowNumber = (currentPage - 1) * ordersPerPage + index + 1;
                     const isPaid = order.paymentMethod === 'bKash' || order.paymentMethod === 'Nagad' || order.paymentMethod === 'Card';
-                    
+
                     return (
-                    <tr 
-                      key={order.id} 
-                      ref={(el) => { if (el) orderRowRefs.current.set(order.id, el); }}
-                      className={`transition hover:bg-gray-50 ${
-                        highlightedOrderId === order.id 
-                          ? 'bg-blue-50 ring-2 ring-blue-300' 
+                      <tr
+                        key={order.id}
+                        ref={(el) => { if (el) orderRowRefs.current.set(order.id, el); }}
+                        className={`transition hover:bg-gray-50 ${highlightedOrderId === order.id
+                          ? 'bg-blue-50 ring-2 ring-blue-300'
                           : isSelected
-                          ? 'bg-blue-50/50'
-                          : ''
-                      }`}
-                    >
-                      {/* Checkbox */}
-                      <td className="px-4 py-4">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            toggleOrderSelection(order.id);
-                          }}
-                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        />
-                      </td>
-                      
-                      {/* Row Number */}
-                      <td className="px-4 py-4 text-gray-600 font-medium">{rowNumber}</td>
-                      
-                      {/* Order ID */}
-                      <td className="px-4 py-4">
-                        <span className="text-gray-900 font-medium">#{order.id.slice(-6)}</span>
-                      </td>
-                      
-                      {/* SKU */}
-                      <td className="px-4 py-4 text-gray-600">
-                        {order.sku || `SKU-${order.id.slice(-4)}`}
-                      </td>
-                      
-                      {/* Product */}
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
-                            {order.productImage ? (
-                              <img 
-                                src={normalizeImageUrl(order.productImage)} 
-                                alt={order.productName || 'Product'} 
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <Package2 size={18} className="text-gray-400" />
-                              </div>
-                            )}
+                            ? 'bg-blue-50/50'
+                            : ''
+                          }`}
+                      >
+                        {/* Checkbox */}
+                        <td className="px-4 py-4">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              toggleOrderSelection(order.id);
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                          />
+                        </td>
+
+                        {/* Row Number */}
+                        <td className="px-4 py-4 text-gray-600 font-medium">{rowNumber}</td>
+
+                        {/* Order ID */}
+                        <td className="px-4 py-4">
+                          <span className="text-gray-900 font-medium">#{order.id.slice(-6)}</span>
+                        </td>
+
+                        {/* SKU */}
+                        <td className="px-4 py-4 text-gray-600">
+                          {order.sku || `SKU-${order.id.slice(-4)}`}
+                        </td>
+
+                        {/* Product */}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                              {order.productImage ? (
+                                <img
+                                  src={normalizeImageUrl(order.productImage)}
+                                  alt={order.productName || 'Product'}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <Package2 size={18} className="text-gray-400" />
+                                </div>
+                              )}
+                            </div>
+                            <span className="text-gray-900 font-medium truncate max-w-[150px]">
+                              {order.productName || 'Custom Order'}
+                            </span>
                           </div>
-                          <span className="text-gray-900 font-medium truncate max-w-[150px]">
-                            {order.productName || 'Custom Order'}
+                        </td>
+
+                        {/* Customer Info */}
+                        <td className="px-4 py-4">
+                          <div>
+                            <p className="text-gray-900 font-medium">{order.customer}</p>
+                            <p className="text-gray-500 text-xs">{order.phone || 'No phone'}</p>
+                          </div>
+                        </td>
+
+                        {/* Date */}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 text-xs">
+                              {order.date ? new Date(order.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                            </span>
+                            <button
+                              onClick={() => openOrderModal(order)}
+                              className="px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full hover:bg-blue-600 transition"
+                            >
+                              Details
+                            </button>
+                          </div>
+                        </td>
+
+                        {/* Price */}
+                        <td className="px-4 py-4">
+                          <span className="text-gray-900 font-semibold">{formatCurrency(order.amount)}</span>
+                        </td>
+
+                        {/* Payment */}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-2 h-2 rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-gray-300'}`}></span>
+                            <span className={`text-sm ${isPaid ? 'text-emerald-600 font-medium' : 'text-gray-500'}`}>
+                              {isPaid ? 'Paid' : 'Unpaid'}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-4 py-4">
+                          <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[order.status]}`}>
+                            {order.status}
                           </span>
-                        </div>
-                      </td>
-                      
-                      {/* Customer Info */}
-                      <td className="px-4 py-4">
-                        <div>
-                          <p className="text-gray-900 font-medium">{order.customer}</p>
-                          <p className="text-gray-500 text-xs">{order.phone || 'No phone'}</p>
-                        </div>
-                      </td>
-                      
-                      {/* Date */}
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 text-xs">
-                            {order.date ? new Date(order.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
-                          </span>
-                          <button
-                            onClick={() => openOrderModal(order)}
-                            className="px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full hover:bg-blue-600 transition"
-                          >
-                            Details
-                          </button>
-                        </div>
-                      </td>
-                      
-                      {/* Price */}
-                      <td className="px-4 py-4">
-                        <span className="text-gray-900 font-semibold">{formatCurrency(order.amount)}</span>
-                      </td>
-                      
-                      {/* Payment */}
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-gray-300'}`}></span>
-                          <span className={`text-sm ${isPaid ? 'text-emerald-600 font-medium' : 'text-gray-500'}`}>
-                            {isPaid ? 'Paid' : 'Unpaid'}
-                          </span>
-                        </div>
-                      </td>
-                      
-                      {/* Status */}
-                      <td className="px-4 py-4">
-                        <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[order.status]}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
                     );
                   })
                 ) : (
@@ -823,11 +818,10 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 text-sm font-medium rounded-lg transition ${
-                        currentPage === pageNum
-                          ? 'bg-blue-500 text-white'
-                          : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
-                      }`}
+                      className={`w-8 h-8 text-sm font-medium rounded-lg transition ${currentPage === pageNum
+                        ? 'bg-blue-500 text-white'
+                        : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -863,35 +857,35 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           <span className="flex items-center gap-2 bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold">
             {selectedOrderIds.length} Items selected
           </span>
-          
+
           <button
             onClick={clearSelection}
             className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition"
           >
             <X size={14} /> Clear
           </button>
-          
+
           <button
             onClick={handleDownloadExcel}
             className="flex items-center gap-1.5 bg-teal-500 hover:bg-teal-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
           >
             <Download size={14} /> Export
           </button>
-          
+
           <button
             onClick={handleMultiplePrint}
             className="flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
           >
             <Printer size={14} /> Print
           </button>
-          
+
           <button
             onClick={() => setShowStatusModal(true)}
             className="flex items-center gap-1.5 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
           >
             Change Status
           </button>
-          
+
           <button
             onClick={handleBulkDelete}
             className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
@@ -906,7 +900,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-bold text-gray-900 text-center mb-6">Select Your Courier</h3>
-            
+
             <div className="space-y-3">
               {COURIERS.map((courier) => (
                 <button
@@ -929,7 +923,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                 </button>
               ))}
             </div>
-            
+
             <div className="flex justify-center gap-3 mt-6">
               <button
                 onClick={() => {
@@ -950,7 +944,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
             <h3 className="text-xl font-bold text-gray-900 text-center mb-6">Change Order Status</h3>
-            
+
             <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto">
               {STATUSES.map((status) => (
                 <button
@@ -962,7 +956,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                 </button>
               ))}
             </div>
-            
+
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setShowStatusModal(false)}
@@ -1130,11 +1124,10 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                       <p className="text-xs text-gray-500">Powered by Steadfast API</p>
                     </div>
                     {fraudBadge && (
-                      <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${
-                        fraudBadge.color.includes('emerald') ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                      <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${fraudBadge.color.includes('emerald') ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
                         fraudBadge.color.includes('amber') ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                        'bg-red-50 text-red-600 border-red-200'
-                      }`}>
+                          'bg-red-50 text-red-600 border-red-200'
+                        }`}>
                         {fraudBadge.icon}
                         {fraudBadge.label}
                       </span>

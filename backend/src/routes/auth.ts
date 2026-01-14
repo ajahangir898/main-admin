@@ -135,8 +135,8 @@ authRouter.post('/login', async (req: Request, res: Response, next: NextFunction
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(401).json({ 
-        error: 'Invalid email or password',
-        code: 'INVALID_CREDENTIALS'
+        error: 'User not found. Please sign up first.',
+        code: 'USER_NOT_FOUND'
       });
     }
 
@@ -239,7 +239,7 @@ authRouter.post('/register', async (req: Request, res: Response, next: NextFunct
     const existingUser = await User.findOne({ email: data.email.toLowerCase() });
     if (existingUser) {
       return res.status(409).json({ 
-        error: 'Email already registered',
+        error: 'This email is already registered. Please login instead.',
         code: 'EMAIL_EXISTS'
       });
     }

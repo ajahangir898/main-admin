@@ -64,11 +64,11 @@ type CheckoutFormState = {
   cvv?: string;
 };
 
-const StoreCheckout = ({ 
-  product, 
-  quantity, 
+const StoreCheckout = ({
+  product,
+  quantity,
   variant,
-  onBack, 
+  onBack,
   onConfirmOrder,
   user,
   onLoginClick,
@@ -250,7 +250,7 @@ const StoreCheckout = ({
   return (
     <div className="min-h-screen font-sans text-slate-900 mobile-smooth-scroll" style={{ background: 'linear-gradient(to bottom, #f0f4f8, #e8ecf1)' }}>
       <Suspense fallback={null}>
-        <StoreHeader 
+        <StoreHeader
           onHomeClick={onBack}
           onImageSearchClick={onImageSearchClick}
           onTrackOrder={() => setIsTrackOrderOpen(true)}
@@ -296,13 +296,12 @@ const StoreCheckout = ({
               return (
                 <div key={step.key} className="flex-1 flex items-center gap-2 md:gap-3">
                   <div
-                    className={`mobile-progress-step h-10 w-10 rounded-full flex items-center justify-center border-2 text-sm font-bold transition-all ${
-                      isCompleted 
-                        ? 'completed border-emerald-500 text-white' 
-                        : active 
-                        ? 'active border-emerald-500 text-emerald-600' 
-                        : 'border-gray-200 text-gray-400'
-                    }`}
+                    className={`mobile-progress-step h-10 w-10 rounded-full flex items-center justify-center border-2 text-sm font-bold transition-all ${isCompleted
+                        ? 'completed border-emerald-500 text-white'
+                        : active
+                          ? 'active border-emerald-500 text-emerald-600'
+                          : 'border-gray-200 text-gray-400'
+                      }`}
                   >
                     {isCompleted ? '✓' : index + 1}
                   </div>
@@ -333,246 +332,250 @@ const StoreCheckout = ({
             {!isLoading && (
               <>
                 {deliveryConfigs && deliveryConfigs.length > 0 && (
-              <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800">Delivery Options</h2>
-                  <span className="text-xs text-gray-500">Choose the best speed for you</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                  {deliveryConfigs.map(config => {
-                    const isActive = selectedDeliveryType === config.type;
-                    return (
-                      <button
-                        key={config.type}
-                        type="button"
-                        onClick={() => setSelectedDeliveryType(config.type)}
-                        className={`mobile-delivery-card mobile-touch-feedback text-left flex flex-col gap-1 ${
-                          isActive ? 'selected' : ''
-                        } ${!config.isEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                        disabled={!config.isEnabled}
-                      >
-                        <p className="font-bold text-gray-800 flex items-center gap-2">
-                          {config.type} Delivery
-                          {isActive && <CheckCircle2 size={16} className="text-emerald-500" />}
+                  <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-lg md:text-xl font-bold text-gray-800">Delivery Options</h2>
+                      <span className="text-xs text-gray-500">Choose the best speed for you</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                      {deliveryConfigs.map(config => {
+                        const isActive = selectedDeliveryType === config.type;
+                        return (
+                          <button
+                            key={config.type}
+                            type="button"
+                            onClick={() => setSelectedDeliveryType(config.type)}
+                            className={`mobile-delivery-card mobile-touch-feedback text-left flex flex-col gap-1 ${isActive ? 'selected' : ''
+                              } ${!config.isEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            disabled={!config.isEnabled}
+                          >
+                            <p className="font-bold text-gray-800 flex items-center gap-2">
+                              {config.type} Delivery
+                              {isActive && <CheckCircle2 size={16} className="text-emerald-500" />}
+                            </p>
+                            <p className="text-xs text-gray-500">Inside city: ৳ {config.insideCharge}</p>
+                            <p className="text-xs text-gray-500">Outside city: ৳ {config.outsideCharge}</p>
+                            {config.freeThreshold > 0 && (
+                              <p className="text-xs text-emerald-600 mt-1">Free over ৳ {config.freeThreshold}</p>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {activeConfig && (
+                      <p className="text-xs text-gray-500 mt-4">{activeConfig.note}</p>
+                    )}
+                  </div>
+                )}
+
+                <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
+                  <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 1</p>
+                      <h2 className="text-xl font-bold text-gray-900">Delivery Address</h2>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Auto-fill</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2.5">Full Name <span className="text-rose-500">*</span></label>
+                      <div className="relative group">
+                        <UserIcon className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.fullName && touchedFields.fullName ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                        <input
+                          type="text"
+                          placeholder="John Doe"
+                          autoComplete="name"
+                          className={`mobile-form-input w-full ${formErrors.fullName && touchedFields.fullName ? 'error' : ''
+                            }`}
+                          value={formData.fullName}
+                          onChange={e => updateField('fullName', e.target.value)}
+                          aria-invalid={!!(formErrors.fullName && touchedFields.fullName)}
+                          aria-describedby={formErrors.fullName && touchedFields.fullName ? 'fullName-error' : undefined}
+                        />
+                      </div>
+                      {formErrors.fullName && touchedFields.fullName && (
+                        <p id="fullName-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
+                          <AlertCircle size={14} /> {formErrors.fullName}
                         </p>
-                        <p className="text-xs text-gray-500">Inside city: ৳ {config.insideCharge}</p>
-                        <p className="text-xs text-gray-500">Outside city: ৳ {config.outsideCharge}</p>
-                        {config.freeThreshold > 0 && (
-                          <p className="text-xs text-emerald-600 mt-1">Free over ৳ {config.freeThreshold}</p>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-                {activeConfig && (
-                  <p className="text-xs text-gray-500 mt-4">{activeConfig.note}</p>
-                )}
-              </div>
-            )}
-
-            <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
-              <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 1</p>
-                  <h2 className="text-xl font-bold text-gray-900">Delivery Address</h2>
-                </div>
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Auto-fill</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2.5">Full Name <span className="text-rose-500">*</span></label>
-                  <div className="relative group">
-                    <UserIcon className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.fullName && touchedFields.fullName ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
-                    <input
-                      type="text"
-                      placeholder="John Doe"
-                      autoComplete="name"
-                      className={`mobile-form-input w-full ${
-                        formErrors.fullName && touchedFields.fullName ? 'error' : ''
-                      }`}
-                      value={formData.fullName}
-                      onChange={e => updateField('fullName', e.target.value)}
-                      aria-invalid={!!(formErrors.fullName && touchedFields.fullName)}
-                      aria-describedby={formErrors.fullName && touchedFields.fullName ? 'fullName-error' : undefined}
-                    />
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2.5">Phone Number <span className="text-rose-500">*</span></label>
+                      <div className="relative group">
+                        <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.phone && touchedFields.phone ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                        <input
+                          type="tel"
+                          placeholder="+880 1XXX-XXXXXX"
+                          autoComplete="tel"
+                          className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-gray-800 placeholder:text-gray-400 ${formErrors.phone && touchedFields.phone
+                              ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100'
+                              : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
+                            }`}
+                          value={formData.phone}
+                          onChange={e => updateField('phone', e.target.value)}
+                          aria-invalid={!!(formErrors.phone && touchedFields.phone)}
+                          aria-describedby={formErrors.phone && touchedFields.phone ? 'phone-error' : undefined}
+                        />
+                      </div>
+                      {formErrors.phone && touchedFields.phone && (
+                        <p id="phone-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
+                          <AlertCircle size={14} /> {formErrors.phone}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {formErrors.fullName && touchedFields.fullName && (
-                    <p id="fullName-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
-                      <AlertCircle size={14} /> {formErrors.fullName}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2.5">Phone Number <span className="text-rose-500">*</span></label>
-                  <div className="relative group">
-                    <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.phone && touchedFields.phone ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
-                    <input
-                      type="tel"
-                      placeholder="+880 1XXX-XXXXXX"
-                      autoComplete="tel"
-                      className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-gray-800 placeholder:text-gray-400 ${
-                        formErrors.phone && touchedFields.phone 
-                          ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100' 
-                          : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
-                      }`}
-                      value={formData.phone}
-                      onChange={e => updateField('phone', e.target.value)}
-                      aria-invalid={!!(formErrors.phone && touchedFields.phone)}
-                      aria-describedby={formErrors.phone && touchedFields.phone ? 'phone-error' : undefined}
-                    />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2.5">Email Address <span className="text-rose-500">*</span></label>
+                      <div className="relative group">
+                        <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.email && touchedFields.email ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                        <input
+                          type="email"
+                          placeholder="you@example.com"
+                          autoComplete="email"
+                          className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-gray-800 placeholder:text-gray-400 ${formErrors.email && touchedFields.email
+                              ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100'
+                              : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
+                            }`}
+                          value={formData.email}
+                          onChange={e => updateField('email', e.target.value)}
+                          aria-invalid={!!(formErrors.email && touchedFields.email)}
+                          aria-describedby={formErrors.email && touchedFields.email ? 'email-error' : undefined}
+                        />
+                      </div>
+                      {formErrors.email && touchedFields.email && (
+                        <p id="email-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
+                          <AlertCircle size={14} /> {formErrors.email}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2.5">Division/Region <span className="text-rose-500">*</span></label>
+                      <div className="relative group">
+                        <MapPin className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-200 ${formErrors.division && touchedFields.division ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                        <select
+                          className={`w-full pl-12 pr-10 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none appearance-none cursor-pointer ${formErrors.division && touchedFields.division
+                              ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100'
+                              : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
+                            } text-gray-800`}
+                          value={formData.division}
+                          onChange={e => updateField('division', e.target.value)}
+                          aria-invalid={!!(formErrors.division && touchedFields.division)}
+                          aria-describedby={formErrors.division && touchedFields.division ? 'division-error' : undefined}
+                        >
+                          <option value="">Select Division</option>
+                          <option value="Dhaka">Dhaka</option>
+                          <option value="Chittagong">Chittagong</option>
+                          <option value="Sylhet">Sylhet</option>
+                          <option value="Khulna">Khulna</option>
+                          <option value="Rajshahi">Rajshahi</option>
+                          <option value="Barisal">Barisal</option>
+                          <option value="Rangpur">Rangpur</option>
+                          <option value="Mymensingh">Mymensingh</option>
+                        </select>
+                      </div>
+                      {formErrors.division && touchedFields.division && (
+                        <p id="division-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
+                          <AlertCircle size={14} /> {formErrors.division}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {formErrors.phone && touchedFields.phone && (
-                    <p id="phone-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
-                      <AlertCircle size={14} /> {formErrors.phone}
-                    </p>
-                  )}
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2.5">Email Address <span className="text-rose-500">*</span></label>
-                  <div className="relative group">
-                    <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${formErrors.email && touchedFields.email ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
-                    <input
-                      type="email"
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                      className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-gray-800 placeholder:text-gray-400 ${
-                        formErrors.email && touchedFields.email 
-                          ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100' 
-                          : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
-                      }`}
-                      value={formData.email}
-                      onChange={e => updateField('email', e.target.value)}
-                      aria-invalid={!!(formErrors.email && touchedFields.email)}
-                      aria-describedby={formErrors.email && touchedFields.email ? 'email-error' : undefined}
-                    />
-                  </div>
-                  {formErrors.email && touchedFields.email && (
-                    <p id="email-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
-                      <AlertCircle size={14} /> {formErrors.email}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2.5">Division/Region <span className="text-rose-500">*</span></label>
-                  <div className="relative group">
-                    <MapPin className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-200 ${formErrors.division && touchedFields.division ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
-                    <select
-                      className={`w-full pl-12 pr-10 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none appearance-none cursor-pointer ${
-                        formErrors.division && touchedFields.division 
-                          ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100' 
-                          : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
-                      } text-gray-800`}
-                      value={formData.division}
-                      onChange={e => updateField('division', e.target.value)}
-                      aria-invalid={!!(formErrors.division && touchedFields.division)}
-                      aria-describedby={formErrors.division && touchedFields.division ? 'division-error' : undefined}
-                  >
-                    <option value="">Select Division</option>
-                    <option value="Dhaka">Dhaka</option>
-                    <option value="Chittagong">Chittagong</option>
-                    <option value="Sylhet">Sylhet</option>
-                    <option value="Khulna">Khulna</option>
-                    <option value="Rajshahi">Rajshahi</option>
-                    <option value="Barisal">Barisal</option>
-                    <option value="Rangpur">Rangpur</option>
-                    <option value="Mymensingh">Mymensingh</option>
-                    </select>
-                  </div>
-                  {formErrors.division && touchedFields.division && (
-                    <p id="division-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
-                      <AlertCircle size={14} /> {formErrors.division}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2.5">Delivery Address <span className="text-rose-500">*</span></label>
-                <div className="relative group">
-                  <MapPin className={`absolute left-4 top-4 pointer-events-none transition-colors duration-200 ${formErrors.address && touchedFields.address ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
-                  <textarea
-                    placeholder="House #, Road #, Area, City - Please provide detailed address for smooth delivery"
-                    autoComplete="street-address"
-                    className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none min-h-[120px] resize-none text-gray-800 placeholder:text-gray-400 ${
-                      formErrors.address && touchedFields.address 
-                        ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100' 
-                        : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
-                    }`}
-                    value={formData.address}
-                    onChange={e => updateField('address', e.target.value)}
-                    aria-invalid={!!(formErrors.address && touchedFields.address)}
-                    aria-describedby={formErrors.address && touchedFields.address ? 'address-error' : undefined}
-                  ></textarea>
-                </div>
-                {formErrors.address && touchedFields.address && (
-                  <p id="address-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
-                    <AlertCircle size={14} /> {formErrors.address}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2.5">Special Instructions <span className="text-gray-400 font-normal">(Optional)</span></label>
-                <textarea
-                  placeholder="Add any special requests, customization details, or instructions for your order..."
-                  className="w-full px-4 py-3.5 border-2 border-gray-200 bg-white rounded-2xl transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 hover:border-gray-300 resize-none min-h-[100px] text-gray-800 placeholder:text-gray-400"
-                  value={formData.productDescription || ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, productDescription: value }));
-                  }}
-                />
-                <p className="text-xs text-gray-500 mt-2 flex items-center gap-1"><Gift size={12} /> Let us know about any specific requirements</p>
-              </div>
-            </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 2</p>
-                    <h2 className="text-lg md:text-xl font-bold text-gray-900">Payment Method</h2>
-                  </div>
-                  <span className="mobile-badge mobile-badge-success flex items-center gap-1.5"><ShieldCheck size={14} /> Secure</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                  <button className="mobile-payment-option selected mobile-touch-feedback flex flex-col gap-2 text-left">
-                    <div className="flex items-center gap-2 text-sm font-bold text-emerald-700">
-                      <CheckCircle2 size={16} /> Cash on Delivery
+                    <label className="block text-sm font-bold text-gray-700 mb-2.5">Delivery Address <span className="text-rose-500">*</span></label>
+                    <div className="relative group">
+                      <MapPin className={`absolute left-4 top-4 pointer-events-none transition-colors duration-200 ${formErrors.address && touchedFields.address ? 'text-rose-400' : 'text-gray-400 group-focus-within:text-emerald-500'}`} size={18} />
+                      <textarea
+                        placeholder="House #, Road #, Area, City - Please provide detailed address for smooth delivery"
+                        autoComplete="street-address"
+                        className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-2xl transition-all duration-200 focus:outline-none min-h-[120px] resize-none text-gray-800 placeholder:text-gray-400 ${formErrors.address && touchedFields.address
+                            ? 'border-rose-300 bg-rose-50/50 focus:border-rose-400 focus:ring-4 focus:ring-rose-100'
+                            : 'border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50'
+                          }`}
+                        value={formData.address}
+                        onChange={e => updateField('address', e.target.value)}
+                        aria-invalid={!!(formErrors.address && touchedFields.address)}
+                        aria-describedby={formErrors.address && touchedFields.address ? 'address-error' : undefined}
+                      ></textarea>
                     </div>
-                    <p className="text-xs text-gray-500">Pay when the order arrives.</p>
-                    <Banknote size={36} className="text-emerald-500 mt-1" />
-                  </button>
-                  <div className="border border-dashed border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
-                  
-                  <div className="grid grid-cols-1 gap-3">
-                   
-                 
-                    <div className="grid grid-cols-2 gap-3">
-                   
-                   
+                    {formErrors.address && touchedFields.address && (
+                      <p id="address-error" className="mt-1.5 text-xs text-rose-600 font-medium flex items-center gap-1">
+                        <AlertCircle size={14} /> {formErrors.address}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2.5">Special Instructions <span className="text-gray-400 font-normal">(Optional)</span></label>
+                    <textarea
+                      placeholder="Add any special requests, customization details, or instructions for your order..."
+                      className="w-full px-4 py-3.5 border-2 border-gray-200 bg-white rounded-2xl transition-all duration-200 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 hover:border-gray-300 resize-none min-h-[100px] text-gray-800 placeholder:text-gray-400"
+                      value={formData.productDescription || ''}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setFormData(prev => ({ ...prev, productDescription: value }));
+                      }}
+                    />
+                    <p className="text-xs text-gray-500 mt-2 flex items-center gap-1"><Gift size={12} /> Let us know about any specific requirements</p>
+                  </div>
+                </div>
+
+                <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl animate-slide-up">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">Step 2</p>
+                        <h2 className="text-lg md:text-xl font-bold text-gray-900">Payment Method</h2>
+                      </div>
+                      <span className="mobile-badge mobile-badge-success flex items-center gap-1.5">
+                        <ShieldCheck size={14} /> Secure
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                      <button
+                        type="button"
+                        className="mobile-payment-option selected mobile-touch-feedback flex flex-col gap-3 text-left relative"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="p-2 bg-emerald-100 rounded-lg">
+                              <Banknote size={20} className="text-emerald-600" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 text-sm font-bold text-emerald-700">
+                                Cash on Delivery
+                              </div>
+                              <p className="text-xs text-gray-500 mt-0.5">Pay when the order arrives</p>
+                            </div>
+                          </div>
+                          <CheckCircle2 size={20} className="text-emerald-600 flex-shrink-0" />
+                        </div>
+                      </button>
+                      <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 bg-gray-50/50">
+                        <CreditCard size={32} className="text-gray-400" />
+                        <p className="text-sm font-medium text-gray-600">Online Payment</p>
+                        <p className="text-xs text-gray-500 text-center">Coming soon</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            </>
+              </>
             )}
           </div>
 
           <div className="w-full lg:w-96">
-            <div className="mobile-order-summary glass-card rounded-2xl md:rounded-3xl top-24 animate-scale-in">
+            <div className="glass-card rounded-2xl md:rounded-3xl p-6 md:p-8 top-24 animate-scale-in w-full">
               <h2 className="text-lg font-bold text-gray-800 mb-6">Order Items ({quantity} Items)</h2>
 
               <div className="flex gap-3 mb-6">
                 <div className="w-16 h-16 bg-gray-50 rounded border border-gray-200 p-1 flex-shrink-0">
-                  <img 
-                    src={normalizeImageUrl(product.galleryImages?.[0] || product.image)} 
-                    alt={product.name} 
-                    className="w-full h-full object-contain mix-blend-multiply" 
+                  <img
+                    src={normalizeImageUrl(product.galleryImages?.[0] || product.image)}
+                    alt={product.name}
+                    className="w-full h-full object-contain mix-blend-multiply"
                     loading="lazy"
                     decoding="async"
                   />
@@ -736,11 +739,10 @@ const StoreCheckout = ({
       {alertState.type && (
         <div className="fixed bottom-6 right-6 z-40">
           <div
-            className={`flex items-start gap-3 rounded-2xl px-4 py-3 shadow-xl border text-sm font-semibold max-w-sm ${
-              alertState.type === 'error'
+            className={`flex items-start gap-3 rounded-2xl px-4 py-3 shadow-xl border text-sm font-semibold max-w-sm ${alertState.type === 'error'
                 ? 'border-rose-200 bg-rose-50 text-rose-700'
                 : 'border-emerald-200 bg-emerald-50 text-emerald-700'
-            }`}
+              }`}
           >
             {alertState.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
             <div className="flex-1">{alertState.message}</div>

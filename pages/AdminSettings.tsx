@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Truck, Lock, CheckCircle, AlertCircle, Facebook, Settings, 
-  Camera, Shield, Clock3, UserCircle, Phone, Mail, MapPin, Loader2, AtSign, ArrowRight, Code, FolderOpen
+  Camera, Shield, Clock3, UserCircle, Phone, Mail, MapPin, Loader2, AtSign, ArrowRight, Code, FolderOpen,
+  DollarSign
 } from 'lucide-react';
-import { CourierConfig, User } from '../types';
+import { CourierConfig, User, Tenant, Role } from '../types';
 import { convertFileToWebP } from '../services/imageUtils';
 import { GalleryPicker } from '../components/GalleryPicker';
+import AdminControl from './AdminControlNew';
+import AdminBilling from './AdminBilling';
 
 interface AdminSettingsProps {
   courierConfig: CourierConfig;
@@ -13,13 +16,25 @@ interface AdminSettingsProps {
   onNavigate: (page: string) => void;
   user?: User | null;
   onUpdateProfile?: (updatedUser: User) => void;
-  activeTenant?: { name?: string; subdomain?: string; logo?: string; plan?: string } | null;
+  activeTenant?: Tenant | null;
   logo?: string | null;
   onUpdateLogo?: (logo: string | null) => void;
+  // Props for Admin Control
+  users?: User[];
+  roles?: Role[];
+  onAddUser?: (user: Omit<User, '_id' | 'id'>) => Promise<void>;
+  onUpdateUser?: (userId: string, updates: Partial<User>) => Promise<void>;
+  onDeleteUser?: (userId: string) => Promise<void>;
+  onAddRole?: (role: Omit<Role, '_id' | 'id'>) => Promise<void>;
+  onUpdateRole?: (roleId: string, updates: Partial<Role>) => Promise<void>;
+  onDeleteRole?: (roleId: string) => Promise<void>;
+  onUpdateUserRole?: (userEmail: string, roleId: string) => Promise<void>;
+  userPermissions?: Record<string, string[]>;
+  // Props for Billing
+  onUpgrade?: () => void;
 }
 
 const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxjaXJjbGUgY3g9IjEyIiBjeT0iOCIgcj0iNCIvPjxwYXRoIGQ9Ik00IDIwYzAtNCA0LTggOC04czggNCA4IDgiLz48L3N2Zz4=';
-
 const formatRole = (role?: User['role']) => 
   ({ super_admin: 'Super Admin', tenant_admin: 'Tenant Admin', admin: 'Admin', staff: 'Staff', customer: 'Customer' }[role || 'admin'] || 'Admin');
 
@@ -45,8 +60,8 @@ const Banner: React.FC<{ type: 'success' | 'error'; message: string }> = ({ type
 );
 
 // Input field component
-const Field: React.FC<{ label: string; icon: React.ReactNode; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string; placeholder?: string; textarea?: boolean }> = 
-  ({ label, icon, value, onChange, readOnly, type = 'text', placeholder, textarea }) => (
+const Field: React.FC<{ label: string; icon: React.ReactNode; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string; placeholder?: string; textarea?: boolean }> =
+({ label, icon, value, onChange, readOnly, type = 'text', placeholder, textarea }) => (
   <div className="space-y-2">
     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</label>
     <div className="relative">
@@ -60,7 +75,22 @@ const Field: React.FC<{ label: string; icon: React.ReactNode; value: string; onC
   </div>
 );
 
-const AdminSettings: React.FC<AdminSettingsProps> = ({ onNavigate, user, onUpdateProfile, activeTenant, logo, onUpdateLogo }) => {
+// Tab types
+type SettingsTab = 'general' | 'admin_control' | 'billing';
+
+const TABS: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
+  { id: 'general', label: 'General Settings', icon: <Settings size={18} /> },
+  { id: 'admin_control', label: 'Admin Control', icon: <Shield size={18} /> },
+  { id: 'billing', label: 'Billing & Subscription', icon: <DollarSign size={18} /> },
+];
+
+const AdminSettings: React.FC<AdminSettingsProps> = ({ 
+  onNavigate, user, onUpdateProfile, activeTenant, logo, onUpdateLogo,
+  users = [], roles = [], onAddUser, onUpdateUser, onDeleteUser,
+  onAddRole, onUpdateRole, onDeleteRole, onUpdateUserRole, userPermissions = {},
+  onUpgrade
+}) => {
+  const [activeTab, setActiveTab] = useState<SettingsTab>('general');
   const fileRef = useRef<HTMLInputElement>(null);
   const shopLogoRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({ name: '', username: '', email: '', phone: '', address: '' });
@@ -158,14 +188,9 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ onNavigate, user, onUpdat
     setTimeout(() => { setPwStatus(null); setPwModal(false); }, 1500);
   };
 
-  return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
-        <p className="text-sm text-gray-500">Manage your profile and system preferences</p>
-      </div>
-
+  // Render General Settings content
+  const renderGeneralSettings = () => (
+    <>
       <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6">
         {/* Profile Card - Left side */}
         <div className="space-y-6">
@@ -270,7 +295,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ onNavigate, user, onUpdat
       </div>
 
       {/* System Settings */}
-      <section>
+      <section className="mt-6">
         <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">System Settings</h3>
           <p className="text-sm text-gray-500">Configure your store settings</p>
@@ -282,6 +307,65 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ onNavigate, user, onUpdat
           <SettingsCard title="Google Tag Manager" icon={<Code size={22} className="text-blue-500" />} color="bg-sky-50 border-sky-100 hover:border-sky-300" onClick={() => onNavigate('settings_gtm')} />
         </div>
       </section>
+    </>
+  );
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
+        <p className="text-sm text-gray-500">Manage your profile, users, and subscription</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <div className="flex gap-1 -mb-px">
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === tab.id
+                  ? 'border-purple-600 text-purple-600 bg-purple-50/50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tab Content */}
+      <div className="min-h-[400px]">
+        {activeTab === 'general' && renderGeneralSettings()}
+        
+        {activeTab === 'admin_control' && (
+          <AdminControl
+            users={users}
+            roles={roles}
+            onAddUser={onAddUser}
+            onUpdateUser={onUpdateUser}
+            onDeleteUser={onDeleteUser}
+            onAddRole={onAddRole || (async () => {})}
+            onUpdateRole={onUpdateRole || (async () => {})}
+            onDeleteRole={onDeleteRole || (async () => {})}
+            onUpdateUserRole={onUpdateUserRole || (async () => {})}
+            currentUser={user}
+            tenantId={activeTenant?._id || activeTenant?.id}
+            userPermissions={userPermissions}
+          />
+        )}
+        
+        {activeTab === 'billing' && (
+          <AdminBilling
+            tenant={activeTenant}
+            onUpgrade={onUpgrade}
+          />
+        )}
+      </div>
 
       {/* Password Modal */}
       {pwModal && (

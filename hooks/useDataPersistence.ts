@@ -322,14 +322,29 @@ export function useDataPersistence(props: UseDataPersistenceProps) {
 
   // === LANDING PAGES PERSISTENCE ===
   useEffect(() => { 
-    if(!isLoading && !isTenantSwitching && activeTenantId && initialDataLoadedRef.current && landingPages.length > 0) {
-      if (JSON.stringify(landingPages) === JSON.stringify(prevLandingPagesRef.current)) return;
+    console.log('[LandingPages Persistence] Check:', { 
+      isLoading, isTenantSwitching, activeTenantId, 
+      initialDataLoaded: initialDataLoadedRef.current,
+      landingPagesCount: landingPages.length,
+      prevCount: prevLandingPagesRef.current.length
+    });
+    
+    // Remove initialDataLoadedRef requirement for landing pages - save immediately when created
+    if(!isLoading && !isTenantSwitching && activeTenantId && landingPages.length > 0) {
+      // Skip if data is identical
+      if (JSON.stringify(landingPages) === JSON.stringify(prevLandingPagesRef.current)) {
+        console.log('[LandingPages Persistence] Skipped - no changes');
+        return;
+      }
+      // Skip if update came from socket
       if (isKeyFromSocket('landing_pages', activeTenantId)) {
         clearSocketFlag('landing_pages', activeTenantId);
         prevLandingPagesRef.current = landingPages;
+        console.log('[LandingPages Persistence] Skipped - from socket');
         return;
       }
       prevLandingPagesRef.current = landingPages;
+      console.log('[LandingPages Persistence] Saving landing pages:', landingPages.length, 'to tenant:', activeTenantId);
       DataService.save('landing_pages', landingPages, activeTenantId);
     }
   }, [landingPages, isLoading, isTenantSwitching, activeTenantId]);

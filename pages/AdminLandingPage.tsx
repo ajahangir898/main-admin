@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Product, LandingPage } from '../types';
 import { LandingPagePanel } from '../components/LandingPageComponents';
-import { MonitorSmartphone } from 'lucide-react';
+import { Sparkles, Globe, Loader2 } from 'lucide-react';
+import { useTenant } from '../hooks/useTenant';
+import { DataService } from '../services/DataService';
 
 interface AdminLandingPageProps {
   products: Product[];
@@ -20,71 +22,122 @@ const AdminLandingPage: React.FC<AdminLandingPageProps> = ({
   onTogglePublish,
   onPreviewLandingPage
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const { tenants, activeTenantId } = useTenant();
+  const [subdomain, setSubdomain] = useState<string>('');
+  const [isLoadingSubdomain, setIsLoadingSubdomain] = useState(true);
+  const [fetchAttempted, setFetchAttempted] = useState(false);
 
+  // Try to get subdomain from tenants array first, otherwise fetch it
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, []);
-  return (
-    <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-tr from-[#12043a] via-[#4f1cb8] to-[#2eb8ff] text-white shadow-2xl">
-        <div className="absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),transparent_55%)]" aria-hidden />
-        <div className="relative p-6 md:p-10 flex flex-col gap-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.6em] text-white/60">
-              <span>Landing Engine</span>
-              <span className="h-px w-10 bg-white/30" />
-              <span>Realtime Preview</span>
-              <span className="h-px w-10 bg-white/30" />
-              <span>SEO Ready</span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black leading-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-              Launch persuasive one-page funnels without touching code
+    // If we already have subdomain, don't do anything
+    if (subdomain) {
+      setIsLoadingSubdomain(false);
+      return;
+    }
+
+    // Try from tenants array first
+    const tenant = tenants.find(t => t.id === activeTenantId);
+    if (tenant?.subdomain) {
+      console.log('[AdminLandingPage] Got subdomain from tenants:', tenant.subdomain);
+      setSubdomain(tenant.subdomain);
+      setIsLoadingSubdomain(false);
+      return;
+    }
+
+    // If no activeTenantId yet, wait
+    if (!activeTenantId) {
+      return;
+    }
+
+    // Only fetch once if tenants don't have the subdomain
+    if (!fetchAttempted && tenants.length === 0) {
+      setFetchAttempted(true);
+      console.log('[AdminLandingPage] Fetching tenants from DataService...');
+      DataService.listTenants().then(tenantList => {
+        const foundTenant = tenantList.find(t => t.id === activeTenantId);
+        if (foundTenant?.subdomain) {
+          console.log('[AdminLandingPage] Got subdomain from fetch:', foundTenant.subdomain);
+          setSubdomain(foundTenant.subdomain);
+        } else {
+          console.log('[AdminLandingPage] No subdomain found for tenant:', activeTenantId);
+        }
+        setIsLoadingSubdomain(false);
+      }).catch((err) => {
+        console.error('[AdminLandingPage] Error fetching tenants:', err);
+        setIsLoadingSubdomain(false);
+      });
+    } else if (tenants.length > 0) {
+      // Tenants loaded but this tenant not found
+      console.log('[AdminLandingPage] Tenant not found in loaded tenants');
+      setIsLoadingSubdomain(false);
+    }
+  }, [activeTenantId, tenants, subdomain, fetchAttempted]);
+
+  // Show loading state while subdomain is loading
+  if (isLoadingSubdomain && !subdomain) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <Sparkles className="text-purple-500" size={28} />
+              ল্যান্ডিং পেজ বিল্ডার
             </h1>
-            <p className="text-lg text-white/85 max-w-3xl">
-              Curate story-driven product drops, optimize for each audience segment, and keep every tenant isolated with their own
-              branded experience. Our dual-mode builder combines opinionated presets with a block-based editor so marketers can
-              iterate in minutes instead of sprint cycles.
-            </p>
+            <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white/15 border border-white/20 rounded-2xl p-4 flex items-center gap-4">
-              <div className="bg-white/20 rounded-2xl p-3">
-                <MonitorSmartphone size={28} />
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-widest">Dual Builder</p>
-                <p className="font-semibold">Ready + Customizable</p>
-              </div>
-            </div>
-            <div className="bg-white/15 border border-white/20 rounded-2xl p-4">
-              <p className="text-xs uppercase tracking-widest text-white/70">Realtime KPIs</p>
-              <p className="text-2xl font-bold">+38%</p>
-              <p className="text-sm text-white/80">Average lift in checkout conversions after personalized drops.</p>
-            </div>
-            <div className="bg-white/15 border border-white/20 rounded-2xl p-4">
-              <p className="text-xs uppercase tracking-widest text-white/70">Isolation Ready</p>
-              <p className="text-sm text-white/85">
-                Every tenant ships to its own datastore, so campaigns and assets never bleed between brands.
-              </p>
-            </div>
+        </div>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-3" />
+            <p className="text-gray-500">লোড হচ্ছে...</p>
           </div>
+        </div>
+      </div>
+    );
+  }
 
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="px-6 py-3 bg-white text-[#1f235b] font-semibold rounded-2xl shadow-lg shadow-black/20 hover:-translate-y-0.5 transition"
-            >
-              Create Landing Page
-            </button>
-            <button
-              type="button"
-              className="px-6 py-3 border border-white/50 text-white font-semibold rounded-2xl hover:bg-white/10 transition"
-            >
-              Preview Templates
-            </button>
+  // If no subdomain after loading, show error
+  if (!subdomain) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <Sparkles className="text-purple-500" size={28} />
+              ল্যান্ডিং পেজ বিল্ডার
+            </h1>
+            <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center text-gray-500">
+            <p>স্টোর সাবডোমেইন লোড করতে সমস্যা হয়েছে।</p>
+            <p className="text-sm mt-2">পেজ রিফ্রেশ করে আবার চেষ্টা করুন।</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Simple Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <Sparkles className="text-purple-500" size={28} />
+            ল্যান্ডিং পেজ বিল্ডার
+          </h1>
+          <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full">
+            <Globe size={14} />
+            <span className="font-medium">{landingPages.length} পেজ</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="font-medium">{landingPages.filter(p => p.status === 'published').length} লাইভ</span>
           </div>
         </div>
       </div>
@@ -96,6 +149,8 @@ const AdminLandingPage: React.FC<AdminLandingPageProps> = ({
         onUpdateLandingPage={onUpdateLandingPage}
         onTogglePublish={onTogglePublish}
         onPreview={onPreviewLandingPage}
+        tenantId={activeTenantId}
+        tenantSubdomain={subdomain}
       />
     </div>
   );

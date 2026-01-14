@@ -29,7 +29,9 @@ const orderSchema = z.object({
   deliveryCharge: z.number().optional(),
   trackingId: z.string().optional(),
   courierProvider: z.string().optional(),
-  notes: z.string().optional()
+  notes: z.string().optional(),
+  source: z.enum(['store', 'landing_page', 'admin']).optional(),
+  landingPageId: z.string().optional()
 });
 
 type Order = z.infer<typeof orderSchema>;

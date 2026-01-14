@@ -130,6 +130,12 @@ interface AppRoutesProps {
   setUser: (user: User | null) => void;
   setIsLoginOpen: (open: boolean) => void;
   
+  // Landing pages
+  landingPages: LandingPage[];
+  onCreateLandingPage: (page: any) => void;
+  onUpsertLandingPage: (page: any) => void;
+  onToggleLandingPublish: (pageId: string, status: string) => void;
+
   // Login modal
   isLoginOpen: boolean;
 }
@@ -218,6 +224,10 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
     setUser,
     setIsLoginOpen,
     isLoginOpen,
+    landingPages,
+    onCreateLandingPage,
+    onUpsertLandingPage,
+    onToggleLandingPublish,
   } = props;
 
   const mobileMenuOpenFnRef = React.useRef<(() => void) | null>(null);
@@ -300,6 +310,10 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
             onRefreshTenants={onRefreshTenants}
             isTenantCreating={isTenantSeeding}
             deletingTenantId={deletingTenantId}
+            landingPages={landingPages}
+            onCreateLandingPage={onCreateLandingPage}
+            onUpsertLandingPage={onUpsertLandingPage}
+            onToggleLandingPublish={onToggleLandingPublish}
           />
         </Suspense>
       ) : (

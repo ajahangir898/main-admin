@@ -55,6 +55,32 @@ async function createServer() {
   // Use aggressive compression for faster responses
   app.use(compression({ level: 6, threshold: 0 }));
 
+  // Parse JSON bodies for API proxy
+  app.use(express.json());
+
+  // Proxy API requests to backend server
+  app.use('/api', async (req, res) => {
+    const backendUrl = `http://localhost:5001/api${req.url}`;  // Already has /api prefix
+    try {
+      const response = await fetch(backendUrl, {
+        method: req.method,
+        headers: {
+          'Content-Type': req.get('Content-Type') || 'application/json',
+          'Authorization': req.get('Authorization') || '',
+          'X-Tenant-ID': req.get('X-Tenant-ID') || '',
+        },
+        body: ['POST', 'PUT', 'PATCH'].includes(req.method) 
+          ? JSON.stringify(req.body) 
+          : undefined
+      });
+      const data = await response.text();
+      res.status(response.status).send(data);
+    } catch (error) {
+      console.error('[proxy] API request failed:', error);
+      res.status(500).json({ error: 'Backend server unavailable' });
+    }
+  });
+
   // Allow static assets to be requested cross-origin (e.g., static.* CDN subdomain)
   // This is required for ES module scripts when Vite `base` points to a different origin.
   app.use((req, res, next) => {

@@ -10,10 +10,10 @@ import { StatCardProps, User, Tenant } from '../types';
 import { useNotifications } from '../hooks/useNotifications';
 import type { Notification as AppNotification } from '../backend/src/services/NotificationService';
 import { normalizeImageUrl } from '../utils/imageUrlHelper';
-import CacheMonitor from './CacheMonitor';
+
 
 // Check if we're on tenant subdomain with /admin path (not admin.* or superadmin.* subdomain)
-const isOnTenantAdminPath = typeof window !== 'undefined' && 
+const isOnTenantAdminPath = typeof window !== 'undefined' &&
 	(window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/')) &&
 	!window.location.hostname.startsWith('admin.') &&
 	!window.location.hostname.startsWith('superadmin.');
@@ -35,46 +35,36 @@ interface AdminSidebarProps {
 const canAccess = (resource: string, userRole?: User['role'], permissions?: PermissionMap): boolean => {
 	// Super admin can access everything
 	if (userRole === 'super_admin') return true;
-	
+
 	// Admin can access everything except tenants
 	if (userRole === 'admin' && resource !== 'tenants') return true;
-	
+
 	// Check custom role permissions
 	if (permissions && permissions[resource]) {
 		return permissions[resource].includes('read');
 	}
-	
+
 	// Default: staff without custom role can only see dashboard
 	if (userRole === 'staff') {
 		return resource === 'dashboard';
 	}
-	
+
 	// Tenant admin can see everything except tenants
 	if (userRole === 'tenant_admin' && resource !== 'tenants') return true;
-	
+
 	return false;
 };
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNavigate, logo, isOpen, onClose, userRole, permissions }) => {
 	const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-	const scrollContainerRef = useRef<HTMLDivElement>(null);
-	const scrollPositionRef = useRef<number>(0);
+	const desktopScrollRef = useRef<HTMLDivElement>(null);
+	const mobileScrollRef = useRef<HTMLDivElement>(null);
 
-	// Save scroll position before navigation
+	// Simple navigation handler
 	const handleNavigate = (page: string) => {
-		if (scrollContainerRef.current) {
-			scrollPositionRef.current = scrollContainerRef.current.scrollTop;
-		}
 		onNavigate && onNavigate(page);
 		onClose && onClose();
 	};
-
-	// Restore scroll position after render
-	useEffect(() => {
-		if (scrollContainerRef.current && scrollPositionRef.current > 0) {
-			scrollContainerRef.current.scrollTop = scrollPositionRef.current;
-		}
-	}, [activePage]);
 
 	// Main Menu items
 	const mainMenuItems = [
@@ -89,7 +79,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 	const configItems = [
 		{ id: 'customization', icon: <Sliders size={18} />, label: 'Customization', resource: 'customization' },
 		{ id: 'landing_pages', icon: <FileText size={18} />, label: 'Landing Page', resource: 'landing_pages' },
-		{ id: 'popups', icon: <Layers size={18} />, label: 'Popups', resource: 'landing_pages' },
 		{ id: 'gallery', icon: <ImageIcon size={18} />, label: 'Gallery', resource: 'gallery' },
 		{ id: 'business_report_expense', icon: <FileText size={18} />, label: 'Business Report', resource: 'business_report' },
 		{ id: 'manage_shop', icon: <Store size={18} />, label: 'Manage Shop', resource: 'settings', isNew: true },
@@ -97,11 +86,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 
 	// System items
 	const systemItems = [
-		{ id: 'settings', icon: <Settings size={18} />, label: 'Settings', resource: 'settings' },
-		{ id: 'admin', icon: <Shield size={18} />, label: 'Admin Control', resource: 'admin_control' },
-		{ id: 'billing', icon: <DollarSign size={18} />, label: 'Billing & Subscription', resource: 'settings' },
 		{ id: 'support', icon: <Headphones size={18} />, label: 'Support', resource: 'settings' },
 		{ id: 'tutorial', icon: <FileText size={18} />, label: 'Tutorial', resource: 'settings' },
+		{ id: 'settings', icon: <Settings size={18} />, label: 'Settings', resource: 'settings' },
 	];
 
 	const catalogItems = [
@@ -110,6 +97,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'catalog_childcategories', label: 'Child Categories' },
 		{ id: 'catalog_brands', label: 'Brand' },
 		{ id: 'catalog_tags', label: 'Tags' },
+		{ id: 'popups', label: 'Popups' },
 	];
 
 	// Filter menu items based on permissions
@@ -124,8 +112,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 	const getMenuItemStyle = (itemId: string, isActive: boolean) => {
 		if (isActive) {
 			return {
-				background: '#CCFBF1',
-				color: '#0D9488',
+				background: 'linear-gradient(90deg, #CCFBF1 0%, #ffffff 100%)',
+				color: '#0D9488', borderLeft: '3px solid #14B8A6',
 			};
 		}
 		return {
@@ -139,33 +127,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		return activePage === itemId;
 	};
 
-	const SidebarContent = () => (
+
+	const SidebarContent = ({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement> }) => (
 		<>
-			{/* Sidebar Header */}
-			<div className="p-5 border-b flex items-center justify-between bg-white" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
-				{logo ? (
-					<img src={normalizeImageUrl(logo)} alt="Admin Logo" className="h-8 md:h-10 object-contain" />
-				) : (
-					<h2 className="text-xl font-bold tracking-tight">
-						<span className="text-gray-900">Your</span>
-						<span className="text-sky-500">Shop</span>
-					</h2>
-				)}
-				<button onClick={onClose} className="lg:hidden p-2 rounded-lg transition hover:bg-gray-100 text-gray-500">
-					<X size={20} />
-				</button>
-			</div>
 
 			{/* Sidebar Menu */}
-			<div ref={scrollContainerRef} className="p-4 space-y-1 flex-1 overflow-y-auto scrollbar-hide bg-white">
+			<div ref={scrollRef} className="p-4 space-y-0 flex-1 overflow-y-auto custom-scrollbar bg-white" style={{ minHeight: 0 }}>
 				{/* Main Menu Section */}
-				<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 text-gray-400">Main Menu</div>
-				
+				<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mb-2">Main Menu</div>
+
 				{filteredMainMenuItems.map((item) => (
 					<div
 						key={item.id}
 						onClick={() => handleNavigate(item.id)}
-						className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+						className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 						style={getMenuItemStyle(item.id, isItemActive(item.id))}
 					>
 						{item.icon}
@@ -178,7 +153,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 					<div>
 						<div
 							onClick={() => setIsCatalogOpen(!isCatalogOpen)}
-							className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+							className={`flex items-center justify-between px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 							style={getMenuItemStyle('catalog', activePage?.startsWith('catalog_') || false)}
 						>
 							<div className="flex items-center gap-3">
@@ -196,7 +171,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 										onClick={() => handleNavigate(item.id)}
 										className={`py-2 px-3 rounded-lg text-sm cursor-pointer transition hover:bg-gray-50`}
 										style={{
-										color: activePage === item.id ? '#0D9488' : '#6B7280',
+											color: activePage === item.id ? '#0D9488' : '#6B7280',
 											fontWeight: activePage === item.id ? 500 : 400,
 										}}
 									>
@@ -211,13 +186,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 				{/* Configuration Section */}
 				{filteredConfigItems.length > 0 && (
 					<>
-						<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 mt-6 text-gray-400">Configuration</div>
-						
+						<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mt-6 mb-2">Configuration</div>
+
 						{filteredConfigItems.map((item) => (
 							<div
 								key={item.id}
 								onClick={() => handleNavigate(item.id)}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
 								{item.icon}
@@ -230,28 +205,29 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 				{/* System Section */}
 				{filteredSystemItems.length > 0 && (
 					<>
-						<div className="text-[11px] font-medium uppercase tracking-wider mb-3 px-3 mt-6 text-gray-400">System</div>
-						
+						<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mt-6 mb-2">System</div>
+
 						{filteredSystemItems.map((item) => (
 							<div
 								key={item.id}
 								onClick={() => handleNavigate(item.id)}
-								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
 								{item.icon}
 								<span>{item.label}</span>
 							</div>
 						))}
+
 					</>
 				)}
 
 				{/* Back to Store */}
-				<div className="mt-6 pt-4 border-t border-gray-100"> 
+				<div className="mt-6 pt-4 border-t border-gray-100">
 					{isOnTenantAdminPath && (
 						<a
 							href="/"
-							className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition text-sm text-teal-600 hover:bg-teal-50 font-medium"
+							className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 hover:from-teal-100 hover:to-emerald-100 border border-teal-100 shadow-sm mx-1"
 						>
 							<Store size={18} />
 							<span>Back to Store</span>
@@ -265,8 +241,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 	return (
 		<>
 			{/* Desktop Sidebar */}
-			<div className="hidden lg:flex w-64 h-screen flex-col sticky top-0 scrollbar-hide bg-white shadow-sm" style={{ borderRight: '1px solid rgba(0,0,0,0.06)' }}>
-				<SidebarContent />
+			<div className="hidden lg:flex w-64 h-screen flex-col sticky top-0 bg-white shadow-sm" style={{ borderRight: '1px solid rgba(0,0,0,0.06)' }}>
+				<SidebarContent scrollRef={desktopScrollRef} />
 			</div>
 
 			{/* Mobile Overlay */}
@@ -278,17 +254,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 			)}
 
 			{/* Mobile Sidebar */}
-			<div className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col p-0 bg-white shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-				<SidebarContent />
+			<div className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col bg-white shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+				<SidebarContent scrollRef={mobileScrollRef} />
 			</div>
 		</>
 	);
 };
 
-export const AdminHeader: React.FC<{ 
-	onSwitchView: () => void, 
-	user?: User | null, 
-	onLogout?: () => void, 
+export const AdminHeader: React.FC<{
+	onSwitchView: () => void,
+	user?: User | null,
+	onLogout?: () => void,
 	logo?: string | null,
 	onMenuClick?: () => void,
 	tenants?: Tenant[],
@@ -321,14 +297,14 @@ export const AdminHeader: React.FC<{
 	}, []);
 
 	// Notification hook - use activeTenantId from props with polling fallback
-	const notificationResult = useNotifications({ 
-		autoFetch: !!activeTenantId, 
+	const notificationResult = useNotifications({
+		autoFetch: !!activeTenantId,
 		autoConnect: !!activeTenantId,
 		limit: 20,
 		tenantId: activeTenantId,
 		pollingInterval: 15000, // Poll every 15 seconds as fallback for WebSocket
 	});
-	
+
 	const notifications = activeTenantId ? notificationResult.notifications : [];
 	const unreadCount = activeTenantId ? notificationResult.unreadCount : 0;
 	const notificationsLoading = activeTenantId ? notificationResult.isLoading : false;
@@ -438,18 +414,18 @@ export const AdminHeader: React.FC<{
 		if (!notification.isRead) {
 			await markAsRead([notification._id]);
 		}
-		
+
 		// Navigate based on notification type
 		if (notification.type === 'order' && notification.data?.orderId) {
 			// Close notification dropdown
 			setIsNotificationOpen(false);
 			// Navigate to orders page with the order ID
 			// Dispatch custom event for navigation
-			window.dispatchEvent(new CustomEvent('navigate-to-order', { 
-				detail: { 
+			window.dispatchEvent(new CustomEvent('navigate-to-order', {
+				detail: {
 					orderId: notification.data.orderId,
 					tenantId: notification.data?.tenantId || activeTenantId
-				} 
+				}
 			}));
 		}
 	};
@@ -532,27 +508,27 @@ export const AdminHeader: React.FC<{
 
 				{/* Desktop Elements */}
 				{selectedTenant?.subdomain ? (
-    <a 
-        href={`${window.location.protocol}//${selectedTenant.subdomain}.${import.meta.env.VITE_PRIMARY_DOMAIN || window.location.hostname.split('.').slice(-2).join('.')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hidden md:flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition flex-shrink-0 text-white hover:opacity-90"
-        style={{ background: 'linear-gradient(135deg, #dc2626 0%, #16a34a 100%)', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)' }}
-    >
-        <Globe size={14} />
-        Go to Website
-        <ExternalLink size={12} />
-    </a>
-) : (
-    <button 
-        onClick={onSwitchView} 
-        className="hidden md:flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition flex-shrink-0 text-white hover:opacity-90"
-        style={{ background: 'linear-gradient(135deg, #dc2626 0%, #16a34a 100%)', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)' }}
-    >
-        <Globe size={14} />
-        Go to Website
-    </button>
-)}
+					<a
+						href={`${window.location.protocol}//${selectedTenant.subdomain}.${import.meta.env.VITE_PRIMARY_DOMAIN || window.location.hostname.split('.').slice(-2).join('.')}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hidden md:flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition flex-shrink-0 text-white hover:opacity-90"
+						style={{ background: 'linear-gradient(135deg, #f43f5e 0%, #ec4899 100%)', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)' }}
+					>
+						<Globe size={14} />
+						Go to Website
+						<ExternalLink size={12} />
+					</a>
+				) : (
+					<button
+						onClick={onSwitchView}
+						className="hidden md:flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition flex-shrink-0 text-white hover:opacity-90"
+						style={{ background: 'linear-gradient(135deg,  #f43f5e 0%, #ec4899  100%)', boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)' }}
+					>
+						<Globe size={14} />
+						Go to Website
+					</button>
+				)}
 
 				{/* Tenant Switcher - Desktop */}
 				{canSwitchTenant && (
@@ -562,7 +538,7 @@ export const AdminHeader: React.FC<{
 							onClick={() => setIsTenantMenuOpen((prev) => !prev)}
 							disabled={isTenantSwitching}
 							className="group flex items-center justify-between gap-4 rounded-xl px-4 py-2 transition w-72 bg-gray-50 border border-gray-200 hover:border-gray-300"
-							style={{ 
+							style={{
 								cursor: isTenantSwitching ? 'wait' : 'pointer'
 							}}
 							aria-haspopup="listbox"
@@ -656,7 +632,7 @@ export const AdminHeader: React.FC<{
 					)}
 					{/* Notification Bell with Dropdown */}
 					<div className="relative flex-shrink-0" ref={notificationRef}>
-						<button 
+						<button
 							onClick={() => setIsNotificationOpen(!isNotificationOpen)}
 							className={`relative p-2 rounded-lg transition ${isNotificationOpen ? 'bg-green-50 text-green-600' : 'text-gray-500 hover:bg-gray-100'}`}
 							aria-label="Notifications"
@@ -745,7 +721,7 @@ export const AdminHeader: React.FC<{
 								{/* Footer */}
 								{notifications.length > 0 && (
 									<div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
-										<button 
+										<button
 											onClick={refreshNotifications}
 											className="w-full text-center text-xs font-medium transition text-green-600 hover:text-green-700"
 										>
@@ -763,15 +739,15 @@ export const AdminHeader: React.FC<{
 							onClick={() => setIsDropdownOpen(!isDropdownOpen)}
 						>
 							<div className="w-7 h-7 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-green-400 flex-shrink-0 shadow-sm">
-									{logo ? (
-					<img src={normalizeImageUrl(logo)} alt="Admin Logo" className="h-8 md:h-10 object-contain" />
-				) : (
-					<h2 className="text-xl font-bold tracking-tight">
-						<span className="text-gray-900">Your</span>
-						<span className="text-red-600">Shop</span>
-					</h2>
-				)}
-							
+								{logo ? (
+									<img src={normalizeImageUrl(logo)} alt="Admin Logo" className="h-8 md:h-10 object-contain" />
+								) : (
+									<h2 className="text-xl font-bold tracking-tight">
+										<span className="text-gray-900">Your</span>
+										<span className="text-red-600">Shop</span>
+									</h2>
+								)}
+
 							</div>
 						</div>
 
@@ -779,7 +755,7 @@ export const AdminHeader: React.FC<{
 							<div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
 								<div className="p-4 border-b border-gray-100">
 									{selectedTenant?.subdomain && (
-										<a 
+										<a
 											href={`${window.location.protocol}//${selectedTenant.subdomain}.${import.meta.env.VITE_PRIMARY_DOMAIN || window.location.hostname.split('.').slice(-2).join('.')}`}
 											target="_blank"
 											rel="noopener noreferrer"
@@ -817,7 +793,7 @@ export const AdminHeader: React.FC<{
 
 export const DashboardStatCard: React.FC<StatCardProps> = ({ title, value, icon, colorClass }) => {
 	const getCardStyle = (color: string) => {
-		switch(color) {
+		switch (color) {
 			case 'pink':
 				return 'bg-gradient-to-r from-pink-200 via-pink-100 to-pink-50';
 			case 'orange':
@@ -844,7 +820,7 @@ export const DashboardStatCard: React.FC<StatCardProps> = ({ title, value, icon,
 	};
 
 	const getIconStyle = (color: string) => {
-		switch(color) {
+		switch (color) {
 			case 'pink':
 				return 'border-pink-500 text-pink-500 bg-white';
 			case 'orange':
@@ -871,7 +847,7 @@ export const DashboardStatCard: React.FC<StatCardProps> = ({ title, value, icon,
 	};
 
 	const getValueColor = (color: string) => {
-		switch(color) {
+		switch (color) {
 			case 'pink':
 			case 'red':
 				return 'text-red-500';
@@ -905,7 +881,7 @@ export const DashboardStatCard: React.FC<StatCardProps> = ({ title, value, icon,
 					{icon}
 				</div>
 			</div>
-			
+
 			{/* Content */}
 			<div className="mt-3">
 				<p className="text-xs text-gray-600 font-medium">{title}</p>
@@ -915,7 +891,7 @@ export const DashboardStatCard: React.FC<StatCardProps> = ({ title, value, icon,
 					</span>
 					{/* Trend line */}
 					<svg width="40" height="16" viewBox="0 0 40 16" className={getValueColor(colorClass)}>
-						<path d="M0 12 L8 8 L16 10 L24 4 L32 6 L40 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+						<path d="M0 12 L8 8 L16 10 L24 4 L32 6 L40 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 					</svg>
 				</div>
 			</div>

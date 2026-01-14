@@ -143,6 +143,8 @@ export interface Order {
   deliveryCharge?: number;
   courierProvider?: 'Steadfast' | 'Pathao';
   courierMeta?: Record<string, any>;
+  source?: 'store' | 'landing_page' | 'admin';
+  landingPageId?: string;
 }
 
 export interface User {
@@ -466,6 +468,7 @@ export interface LandingPage {
   seo: LandingPageSEO;
   blocks: LandingPageBlock[];
   style: LandingPageStyle;
+  customConfig?: Record<string, any>;
   onePageCheckout: boolean;
   createdAt: string;
   updatedAt: string;

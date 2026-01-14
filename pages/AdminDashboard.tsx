@@ -65,13 +65,13 @@ const buildMonthlyRevenueData = (orders: Order[]) => {
   startDate.setHours(0, 0, 0, 0);
 
   const labels = ['Dec 1', 'Dec 8', 'Dec 15', 'Dec 22', 'Dec 29'];
-  
+
   return labels.map((name, index) => {
     const weekStart = new Date(startDate);
     weekStart.setDate(startDate.getDate() + (index * 7));
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
-    
+
     let sales = 0;
     orders.forEach(order => {
       if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
@@ -79,9 +79,9 @@ const buildMonthlyRevenueData = (orders: Order[]) => {
       if (!orderDate || orderDate < weekStart || orderDate > weekEnd) return;
       sales += order.amount;
     });
-    
+
     const costs = Math.round(sales * 0.6);
-    
+
     return { name, sales, costs };
   });
 };
@@ -103,10 +103,10 @@ const buildCategoryBreakdown = (orders: Order[], products: Product[]): CategoryD
   });
 
   const dataset = Object.entries(totals)
-    .map(([name, value], index) => ({ 
-      name, 
+    .map(([name, value], index) => ({
+      name,
       value,
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg 
+      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg
     }))
     .sort((a, b) => b.value - a.value);
 
@@ -155,8 +155,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [language, setLanguage] = useState<'Eng' | 'বাংলা'>('Eng');
 
   // Visitor stats
-  const { stats: visitorStats, isLoading: visitorLoading } = useVisitorStats({ 
-    tenantId, 
+  const { stats: visitorStats, isLoading: visitorLoading } = useVisitorStats({
+    tenantId,
     period: '7d',
     refreshInterval: 30000
   });
@@ -199,7 +199,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Best selling products
   const bestSellingProducts = useMemo(() => {
     const productSales: Record<string, { product: Product; orders: number; revenue: number }> = {};
-    
+
     orders.forEach(order => {
       if (!ALLOWED_REVENUE_STATUSES.includes(order.status)) return;
       const product = products.find(p => p.id === order.productId);
@@ -235,19 +235,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Welcome back, {user?.name || 'Admin'}</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p>
+            <h3 className="text-xl font-semibold text-gray-900">Welcome back, {user?.name || 'Admin'} !</h3>
+            {/* <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p> */}
           </div>
-          
+
           <div className="flex items-center gap-3">
             {/* Tutorials Button */}
             <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
               <Play className="w-4 h-4" />
               Tutorials
             </button>
-            
+
             {/* Avatar */}
-            <div className="flex items-center gap-2 ml-1">
+            {/* <div className="flex items-center gap-2 ml-1">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
@@ -255,20 +255,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   user?.name?.charAt(0) || 'A'
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       <div className="p-4 space-y-4">
         {/* Order Analytics Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-500">
           <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
-          
+
           {/* First Row - 6 columns */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {/* Products on Hands */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-purple-400">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{products.length}</p>
@@ -281,7 +281,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Total Orders */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-emerald-100">
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-purple-400">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
@@ -294,10 +294,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Language Selector */}
-            <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl p-3 border border-slate-200">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl p-3 border border-purple-400">
               <p className="text-[10px] text-gray-500 mb-1.5">Language</p>
               <div className="flex items-center gap-1.5">
-                <button 
+                <button
                   onClick={() => setLanguage('Eng')}
                   className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${language === 'Eng' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
                 >
@@ -308,7 +308,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Date Display */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 border border-orange-100 flex flex-col items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 border border-purple-400 flex flex-col items-center justify-center">
               <p className="text-xs text-gray-600 font-medium">{currentDate}</p>
               <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md shadow-sm">
                 <p className="text-white font-semibold text-xs">{currentDay}</p>
@@ -316,9 +316,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Important Notification */}
-            <div className="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-3 border border-cyan-100 col-span-2">
+            <div className="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-3 border border-purple-400 col-span-2">
               <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
-              <div className="h-10 bg-white/80 rounded-lg border border-cyan-100"></div>
+              <div className="h-10 bg-white/80 rounded-lg border border-purple-400"></div>
               <div className="flex justify-end gap-1 mt-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
@@ -330,7 +330,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* Second Row - 4 columns */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
             {/* Reserved Price */}
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 border border-amber-100">
+            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 border border-purple-400">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">৳{totalRevenue.toLocaleString()}</p>
@@ -343,7 +343,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Low Stock */}
-            <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-3 border border-red-100">
+            <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-3 border border-purple-400">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{lowStockProducts}</p>
@@ -356,7 +356,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-3 border border-purple-100">
+            <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-3 border border-purple-400">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xl font-bold text-gray-900">{toBeReviewed}</p>
@@ -369,7 +369,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Quick Action */}
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-3 border border-teal-100 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-3 border border-purple-400 flex items-center justify-center">
               <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center cursor-pointer hover:bg-teal-600 transition shadow-sm">
                 <LayoutGrid className="w-4 h-4 text-white" />
               </div>
@@ -378,32 +378,32 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Visitor Stats Row - Compact */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-blue-100">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-purple-400">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Online Now */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-500 flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-teal-500 flex items-center justify-center shadow-sm">
                 <Wifi className="w-4 h-4 text-white" />
               </div>
               <div>
                 <p className="text-xs font-semibold text-teal-600">Online Now</p>
                 <p className="text-[10px] text-gray-400">Active visitors on site</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-teal-50 rounded-lg border border-teal-100">
+              <div className="ml-2 px-3 py-1.5 bg-teal-50 rounded-lg border border-purple-400">
                 <p className="text-lg font-bold text-teal-600">{visitorStats?.onlineNow || 0}</p>
               </div>
             </div>
 
             {/* Today Visitors */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-orange-500 flex items-center justify-center shadow-sm">
                 <Users className="w-4 h-4 text-white" />
               </div>
               <div>
                 <p className="text-xs font-semibold text-orange-500">Today visitors</p>
                 <p className="text-[10px] text-gray-400">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-orange-50 rounded-lg border border-orange-100">
+              <div className="ml-2 px-3 py-1.5 bg-orange-50 rounded-lg border border-purple-400">
                 <p className="text-lg font-bold text-gray-800">{visitorStats?.todayVisitors || 0}</p>
               </div>
             </div>
@@ -417,7 +417,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <p className="text-xs font-semibold text-purple-500">Total visitors</p>
                 <p className="text-[10px] text-gray-400">{visitorStats?.totalPageViews || 0} page view</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-purple-50 rounded-lg border border-purple-100">
+              <div className="ml-2 px-3 py-1.5 bg-purple-50 rounded-lg border border-purple-400">
                 <p className="text-lg font-bold text-gray-800">{visitorStats?.totalVisitors || 0}</p>
               </div>
             </div>
@@ -425,12 +425,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Order Status Row - Compact */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-blue-100">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-purple-400">
           <h3 className="text-sm font-semibold text-gray-800 mb-2">Order Status</h3>
-          
+
           <div className="flex flex-wrap items-center gap-4">
             {/* Today */}
-            <div className="flex items-center gap-2 bg-pink-50 rounded-lg px-3 py-2 border border-pink-100">
+            <div className="flex items-center gap-2 bg-pink-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-pink-500 flex items-center justify-center shadow-sm">
                 <ShoppingBag className="w-3.5 h-3.5 text-white" />
               </div>
@@ -439,7 +439,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Courier */}
-            <div className="flex items-center gap-2 bg-orange-50 rounded-lg px-3 py-2 border border-orange-100">
+            <div className="flex items-center gap-2 bg-orange-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
                 <Truck className="w-3.5 h-3.5 text-white" />
               </div>
@@ -448,7 +448,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Confirmed */}
-            <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 border border-green-100">
+            <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center shadow-sm">
                 <CheckCircle className="w-3.5 h-3.5 text-white" />
               </div>
@@ -457,7 +457,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Pending */}
-            <div className="flex items-center gap-2 bg-amber-50 rounded-lg px-3 py-2 border border-amber-100">
+            <div className="flex items-center gap-2 bg-amber-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-sm">
                 <Clock className="w-3.5 h-3.5 text-white" />
               </div>
@@ -466,7 +466,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Canceled */}
-            <div className="flex items-center gap-2 bg-red-50 rounded-lg px-3 py-2 border border-red-100">
+            <div className="flex items-center gap-2 bg-red-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center shadow-sm">
                 <XCircle className="w-3.5 h-3.5 text-white" />
               </div>
@@ -475,7 +475,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Returns */}
-            <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
+            <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 border border-purple-400">
               <div className="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
                 <ArchiveRestore className="w-3.5 h-3.5 text-white" />
               </div>
@@ -488,11 +488,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
             </div>
-            
+
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#3B82F6]"></span>
@@ -513,7 +513,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
                   </linearGradient>
                 </defs>
-                
+
                 {/* Y-axis labels */}
                 <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
                 <text x="0" y="45" className="text-[8px] fill-gray-400">$60K</text>
@@ -561,11 +561,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
             </div>
-            
+
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]"></span>
               <span className="text-xs text-gray-600">Profit</span>
@@ -618,7 +618,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
             </div>
@@ -702,8 +702,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Best Selling & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-blue-100">
+          <div className="lg:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-purple-400 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-blue-400">
               <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
                 <Filter className="w-3.5 h-3.5" />
@@ -712,7 +712,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-blue-100/50 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-blue-100">
+            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-blue-400/50 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-purple-400">
               <div>PRODUCT</div>
               <div className="text-center">TOTAL ORDER</div>
               <div className="text-center">STATUS</div>
@@ -724,7 +724,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
                 <div key={item.product.id} className="grid grid-cols-4 gap-3 px-4 py-3 items-center hover:bg-blue-50/50 transition">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-gray-400 overflow-hidden flex-shrink-0">
                       {item.product.image ? (
                         <img src={normalizeImageUrl(item.product.image)} alt={item.product.name} className="w-full h-full object-cover" />
                       ) : (
@@ -748,7 +748,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Details Button */}
-            <div className="p-3 flex justify-center border-t border-blue-100 bg-blue-50/30">
+            <div className="p-3 flex justify-center border-t border-blue-400 bg-blue-50/30">
               <button className="px-6 py-2 border border-blue-200 bg-white rounded-lg text-xs font-medium text-gray-600 hover:bg-blue-50 transition">
                 Details
               </button>
@@ -756,8 +756,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-blue-100">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-purple-400 overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-purple-400">
               <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
               <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
             </div>
@@ -769,7 +769,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <input
                   type="text"
                   placeholder="Search"
-                  className="w-full pl-9 pr-3 py-2 bg-blue-50/70 border border-blue-100 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="w-full pl-9 pr-3 py-2 bg-blue-50/70 border border-purple-400 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
             </div>

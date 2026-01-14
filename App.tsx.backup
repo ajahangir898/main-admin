@@ -22,7 +22,6 @@ import type { FacebookPixelConfig } from './types';
 // Core services
 import { ThemeProvider } from './context/ThemeContext';
 import { HelmetProvider } from 'react-helmet-async';
-import { DataService } from './services/DataService';
 
 // Extracted hooks
 import { useAppState, DEFAULT_CATEGORIES, DEFAULT_SUB_CATEGORIES, DEFAULT_BRANDS, DEFAULT_TAGS } from './hooks/useAppState';
@@ -56,9 +55,9 @@ import { isAdminRole, isPlatformOperator } from './utils/appHelpers';
 const Toaster = lazy(() => import('react-hot-toast').then(m => ({ default: m.Toaster })));
 
 // Check if we're on the superadmin subdomain
-const isSuperAdminSubdomain = typeof window !== 'undefined' &&
-  (window.location.hostname === 'superadmin.systemnextit.com' ||
-    window.location.hostname.startsWith('superadmin.'));
+const isSuperAdminSubdomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'superadmin.systemnextit.com' || 
+   window.location.hostname.startsWith('superadmin.'));
 
 // Preload functions - ONLY called on user interaction
 export const preloadCheckout = () => import('./pages/StoreCheckout');
@@ -209,38 +208,17 @@ const App = () => {
   });
 
   // === LANDING PAGE HANDLERS ===
-  const handleCreateLandingPage = useCallback(async (page: any) => {
+  const handleCreateLandingPage = useCallback((page: any) => {
     const scopedPage = { ...page, tenantId: page.tenantId || activeTenantId };
     setLandingPages(prev => [scopedPage, ...prev]);
+  }, [activeTenantId, setLandingPages]);
 
-    // Save to database immediately
-    try {
-      await DataService.saveImmediate('landing_pages', [scopedPage, ...refs.landingPagesRef.current], activeTenantId);
-      console.log('[Landing Page] Saved to database:', scopedPage.id);
-      return true;
-    } catch (error) {
-      console.error('[Landing Page] Failed to save:', error);
-      // Rollback on error
-      setLandingPages(prev => prev.filter(p => p.id !== scopedPage.id));
-      throw error;
-    }
-  }, [activeTenantId, setLandingPages, refs]);
-
-  const handleUpsertLandingPage = useCallback(async (page: any) => {
+  const handleUpsertLandingPage = useCallback((page: any) => {
     const scopedPage = { ...page, tenantId: page.tenantId || activeTenantId };
-    let newPages: any[];
     setLandingPages(prev => {
       const exists = prev.some(lp => lp.id === scopedPage.id);
-      newPages = exists ? prev.map(lp => lp.id === scopedPage.id ? scopedPage : lp) : [scopedPage, ...prev];
-      return newPages;
+      return exists ? prev.map(lp => lp.id === scopedPage.id ? scopedPage : lp) : [scopedPage, ...prev];
     });
-
-    try {
-      await DataService.saveImmediate('landing_pages', newPages, activeTenantId);
-      return true;
-    } catch (error) {
-      throw error;
-    }
   }, [activeTenantId, setLandingPages]);
 
   const handleToggleLandingPublish = useCallback((pageId: string, status: string) => {

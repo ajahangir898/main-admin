@@ -10,8 +10,8 @@ interface Review {
   comment: string;
   headline?: string;
   userName: string;
-  isVerifiedPurchase?: boolean;
   status: 'pending' | 'published' | 'rejected';
+  isVerifiedPurchase?: boolean;
   reply?: string;
   repliedBy?: string;
   repliedAt?: string;
@@ -183,6 +183,26 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               })}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Write Review Button */}
+      {!showReviewForm && (
+        <div className="flex justify-center">
+          <button
+            onClick={() => {
+              if (!user) {
+                toast.error('Please login to write a review');
+                onLoginClick();
+                return;
+              }
+              setShowReviewForm(true);
+            }}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-xl active:scale-95"
+          >
+            <MessageCircle size={20} />
+            Write a Review
+          </button>
         </div>
       )}
 

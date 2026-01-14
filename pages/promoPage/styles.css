@@ -129,3 +129,16 @@ h1, h2, h3 { font-weight: 800; }
 .delay-2 { animation-delay: 0.2s; }
 .delay-3 { animation-delay: 0.3s; }
 .delay-4 { animation-delay: 0.4s; }
+
+/* Fix for anchor tags styled as buttons */
+a.btn-primary,
+a.btn-outline {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+a.btn-primary:hover,
+a.btn-outline:hover {
+    text-decoration: none;
+}

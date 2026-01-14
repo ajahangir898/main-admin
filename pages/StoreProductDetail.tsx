@@ -7,6 +7,7 @@ const StoreHeader = lazy(() => import('../components/StoreHeader').then(m => ({ 
 const StoreFooter = lazy(() => import('../components/store/StoreFooter').then(m => ({ default: m.StoreFooter })));
 const AddToCartSuccessModal = lazy(() => import('../components/store/AddToCartSuccessModal').then(m => ({ default: m.AddToCartSuccessModal })));
 const MobileBottomNav = lazy(() => import('../components/store/MobileBottomNav').then(m => ({ default: m.MobileBottomNav })));
+const ProductReviews = lazy(() => import('../components/store/ProductReviews').then(m => ({ default: m.ProductReviews })));
 
 // Lazy load visitor tracking
 const getTrackPageView = () => import('../hooks/useVisitorStats').then(m => m.trackPageView);
@@ -885,33 +886,19 @@ const StoreProductDetail = ({
                     <p className="text-sm italic text-gray-500">Experience premium quality with our latest collection. This product features state-of-the-art technology, ergonomic design for comfort, and durable materials that last. Perfect for daily use or special occasions.</p>
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    {product.reviews && product.reviews > 0 ? (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="flex text-yellow-400">
-                            {[1, 2, 3, 4, 5].map((s) => (
-                              <Star key={s} size={28} fill="currentColor" />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-2xl font-bold text-gray-800">{product.rating || 4.5}/5</p>
-                        <p className="text-gray-600">Based on {product.reviews} customer reviews</p>
-                        <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
-                          Write a Review
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="py-8 space-y-3">
-                        <Star size={48} className="mx-auto text-gray-300" />
-                        <p className="text-gray-500 font-medium">No reviews yet</p>
-                        <p className="text-gray-400 text-sm">Be the first to review this product and help others make informed decisions.</p>
-                        <button className="mt-4 px-6 py-2 btn-theme-primary rounded-lg font-semibold transition">
-                          Write a Review
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center py-12">
+                      <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  }>
+                    <ProductReviews
+                      productId={product.id}
+                      productName={product.name}
+                      tenantId={tenantId || ''}
+                      user={user || null}
+                      onLoginClick={onLoginClick || (() => {})}
+                    />
+                  </Suspense>
                 )}
               </div>
             </div>
@@ -992,38 +979,57 @@ const StoreProductDetail = ({
 
         </div>
       </main>
-
       {/* Mobile Sticky Action Bar */}
-      <div className="mobile-sticky-actions fixed bottom-0 left-0 right-0 md:hidden z-50 flex items-center gap-3 mobile-safe-bottom">
+      <div
+        className="fixed bottom-0 left-0 right-0 md:hidden z-50 flex items-center gap-2 px-4 py-3"
+        style={{
+          background: 'linear-gradient(to top, #ffffff 0%, #fafafa 100%)',
+          borderTop: '1px solid #e5e7eb',
+          boxShadow: '0 -8px 30px rgba(0,0,0,0.12)'
+        }}
+      >
         <button
           onClick={onBack}
-          className="glass-button h-12 w-12 flex items-center justify-center rounded-xl text-gray-600 mobile-touch-feedback"
+          className="h-11 w-11 flex items-center justify-center rounded-full text-gray-600 hover:text-gray-900 active:scale-95 transition-all duration-200"
+          style={{
+            background: '#f3f4f6',
+            border: 'none'
+          }}
           aria-label="Go back"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} strokeWidth={2.5} />
         </button>
-        <div className="flex-1 grid grid-cols-2 gap-3">
+        <div className="flex-1 grid grid-cols-2 gap-2">
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`mobile-action-button-secondary h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+            className={`h-12 flex items-center justify-center gap-2 rounded-full font-semibold text-sm active:scale-[0.98] transition-all duration-200 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
+            style={{
+              background: '#ffffff',
+              border: '2px solid #10b981',
+              color: '#10b981',
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.15)'
+            }}
           >
-            <ShoppingCart size={18} />
+            <ShoppingCart size={18} strokeWidth={2} />
             <span>Add to cart</span>
           </button>
           <button
             onClick={handleBuyNow}
             disabled={isOutOfStock}
-            className={`order-btn h-12 flex items-center justify-center gap-2 mobile-touch-feedback ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+            className={`h-12 flex items-center justify-center gap-2 rounded-full font-semibold text-sm active:scale-[0.98] transition-all duration-200 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'}`}
+            style={{
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              border: 'none',
+              color: '#ffffff',
+              boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+            }}
           >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={18} strokeWidth={2} />
             <span>Buy Now</span>
           </button>
         </div>
       </div>
-
       <div className="hidden md:block">
         <Suspense fallback={null}>
           <StoreFooter websiteConfig={websiteConfig} logo={logo} onOpenChat={onOpenChat} />

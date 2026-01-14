@@ -242,7 +242,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
         <MetricsSkeleton count={4} />
       ) : activeTab === 'customers' ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+         <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Total Customers</span>
               <Users size={18} className="text-indigo-500" />
@@ -250,7 +250,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">{customerStats.totalCustomers}</p>
             <p className="text-xs text-gray-400 mt-1">All time</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Total Revenue</span>
               <TrendingUp size={18} className="text-emerald-500" />
@@ -258,7 +258,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">৳ {formatCurrency(customerStats.totalRevenue)}</p>
             <p className="text-xs text-gray-400 mt-1">From all customers</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Avg Order Value</span>
               <ShoppingBag size={18} className="text-orange-500" />
@@ -266,7 +266,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">৳ {formatCurrency(customerStats.avgOrderValue)}</p>
             <p className="text-xs text-gray-400 mt-1">Per order</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Repeat Customers</span>
               <Users size={18} className="text-purple-500" />
@@ -277,7 +277,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Avg Rating</span>
               <Star size={18} className="text-yellow-500 fill-yellow-500" />
@@ -285,7 +285,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">{reviewStats.avgRating}</p>
             <p className="text-xs text-gray-400 mt-1">Out of 5 stars</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Published</span>
               <CheckCircle size={18} className="text-emerald-500" />
@@ -293,7 +293,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">{reviewStats.published}</p>
             <p className="text-xs text-gray-400 mt-1">Visible to all</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Pending</span>
               <MessageCircle size={18} className="text-amber-500" />
@@ -301,7 +301,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
             <p className="mt-3 text-3xl font-black text-gray-800">{reviewStats.pending}</p>
             <p className="text-xs text-gray-400 mt-1">Awaiting approval</p>
           </div>
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <span>Flagged</span>
               <Flag size={18} className="text-rose-500" />
@@ -421,7 +421,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
           </div>
 
           {/* Customer Detail Panel */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm h-fit">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm h-fit">
             {selectedCustomer ? (
               <div className="space-y-5">
                 <div className="text-center pb-4 border-b border-gray-100">
@@ -547,7 +547,7 @@ const AdminCustomers: React.FC<AdminCustomersProps> = ({ orders, products = [] }
           </div>
 
           {/* Review Detail Panel */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm h-fit">
+          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm h-fit">
             {selectedReview ? (
               <div className="space-y-4">
                 <div className="flex items-center gap-3">

@@ -41,6 +41,11 @@ interface AdminAppWithAuthProps {
   onSwitchToStore: () => void;
   onOpenAdminChat: () => void;
   hasUnreadChat: boolean;
+  // Landing pages
+  landingPages: any[];
+  onCreateLandingPage: (page: any) => void;
+  onUpsertLandingPage: (page: any) => void;
+  onToggleLandingPublish: (pageId: string, status: string) => void;
 }
 
 const AdminAppWithAuth: React.FC<AdminAppWithAuthProps> = (props) => {

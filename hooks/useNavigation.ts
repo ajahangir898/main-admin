@@ -3,7 +3,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Product, User } from '../types';
+import type { Product, User, LandingPage } from '../types';
 import { isAdminRole, SESSION_STORAGE_KEY } from '../utils/appHelpers';
 
 export type ViewState = 'store' | 'detail' | 'checkout' | 'success' | 'profile' | 'admin' | 'landing_preview' | 'admin-login' | 'visual-search' | 'super-admin' | 'register';
@@ -103,6 +103,8 @@ export { isAdminSubdomain, isSuperAdminSubdomain };
 interface UseNavigationOptions {
   products: Product[];
   user: User | null;
+  landingPages: LandingPage[];
+  setSelectedLandingPage: (page: LandingPage | null) => void;
 }
 
 // Get initial admin section from sessionStorage to prevent flashing
@@ -117,7 +119,7 @@ const getInitialAdminSection = (): string => {
   return 'dashboard';
 };
 
-export function useNavigation({ products, user }: UseNavigationOptions) {
+export function useNavigation({ products, user, landingPages, setSelectedLandingPage }: UseNavigationOptions) {
   // Start with correct view based on stored session
   const [currentView, setCurrentView] = useState<ViewState>(getInitialView);
   const [adminSection, setAdminSectionInternal] = useState(getInitialAdminSection);
@@ -139,9 +141,11 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
 
   const currentViewRef = useRef<ViewState>(currentView);
   const userRef = useRef<User | null>(user);
+  const landingPagesRef = useRef<LandingPage[]>(landingPages);
 
   useEffect(() => { currentViewRef.current = currentView; }, [currentView]);
   useEffect(() => { userRef.current = user; }, [user]);
+  useEffect(() => { landingPagesRef.current = landingPages; }, [landingPages]);
 
   const handleStoreSearchChange = useCallback((value: string) => {
     setStoreSearchQuery(value);
@@ -229,7 +233,26 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
       }
     }
 
-    // Handle /products route with optional category filter (legacy)
+    // Handle /p/slug-id landing page route
+    if (trimmedPath.startsWith('p/')) {
+      const urlSlug = trimmedPath.replace('p/', '');
+      console.log('[Navigation] Landing page route detected:', { 
+        urlSlug, 
+        landingPagesCount: landingPagesRef.current.length,
+        landingPages: landingPagesRef.current.map(lp => ({ slug: lp.urlSlug, status: lp.status }))
+      });
+      const matchedPage = landingPagesRef.current.find(lp => lp.urlSlug === urlSlug && lp.status === 'published');
+      if (matchedPage) {
+        console.log('[Navigation] Matched landing page:', matchedPage.id);
+        setSelectedLandingPage(matchedPage);
+        setCurrentView('landing_preview');
+        return;
+      } else {
+        console.log('[Navigation] No matching landing page found for slug:', urlSlug);
+        // Don't navigate away - wait for landing pages to load
+        return;
+      }
+    }
     if (trimmedPath === 'products') {
       const searchParams = new URLSearchParams(window.location.search);
       const categorySlug = searchParams.get('categories');
@@ -333,18 +356,26 @@ export function useNavigation({ products, user }: UseNavigationOptions) {
   // Initial sync
   useEffect(() => {
     syncViewWithLocation(window.location.pathname);
-  }, [products, syncViewWithLocation]);
+  }, [products, landingPages, syncViewWithLocation]);
 
   // Ensure URL matches view
   useEffect(() => {
     const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
     if (path === 'admin/login') return;
+    if (path === 'register') return;
     if (path === 'visual-search' || path === 'search') return;
     
-    if (currentView === 'store' && window.location.pathname !== '/' && !window.location.pathname.includes('checkout') && !window.location.pathname.includes('success-order')) {
+    // Don't reset URL if it's a valid product slug, landing page, or other valid route
+    if (path.startsWith('p/')) return; // Landing page
+    if (path.startsWith('product-details/')) return; // Product detail page
+    if (path === 'all-products') return; // All products page
+    if (path === 'products') return; // Products with filter
+    if (products.find(p => p.slug === path)) return; // Direct product slug
+    
+    if (currentView === 'store' && window.location.pathname !== '/' && !window.location.pathname.includes('checkout') && !window.location.pathname.includes('success-order') && !window.location.pathname.includes('register')) {
       window.history.replaceState({}, '', '/');
     }
-  }, [currentView]);
+  }, [currentView, products]);
 
   // Handle notification navigation
   useEffect(() => {

@@ -1,166 +1,191 @@
 <!DOCTYPE html>
 <html lang="en" style="background:#f9fafb">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SystemNext IT - Professional E-commerce Solutions</title>
-    <meta name="description" content="SystemNext IT - Professional e-commerce platform. Build your online store with multi-tenant support, admin dashboard & 24/7 support.">
-    <meta name="keywords" content="SystemNext IT, e-commerce, online store, Bangladesh, software solutions">
-    <meta name="author" content="SystemNext IT">
-    <meta name="theme-color" content="#6366F1">
-    <link rel="icon" type="image/png" href="/icons/icon-32x32.png">
-    
-    <!-- Preconnect to main domain for faster image loading -->
-    <link rel="preconnect" href="https://systemnextit.com">
-    <link rel="dns-prefetch" href="https://systemnextit.com">
-    <link rel="preconnect" href="https://images.systemnextit.com" crossorigin>
-    <link rel="dns-prefetch" href="https://images.systemnextit.com">
-    <link rel="preconnect" href="https://static.systemnextit.com" crossorigin>
-    <link rel="dns-prefetch" href="https://static.systemnextit.com">
 
-    
-    
-    <!-- Early bootstrap prefetch with parallel secondary data -->
-    <script>
-      (function(){
-        var h = location.hostname, p = h.split('.'), t = p[0];
-        var isMobile = window.innerWidth < 768;
-        // Skip for admin/superadmin subdomains
-        if (!t || t === 'www' || t === 'admin' || t === 'superadmin' || p.length < 3) return;
-        // Check cached tenant ID for faster resolution
-        var cachedId;
-        try { cachedId = localStorage.getItem('tenant_id_' + t); } catch(e) {}
-        var scope = cachedId || t;
-        
-        // Check sessionStorage cache first for instant reload (5 min TTL)
-        var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-        var bootstrapCacheKey = 'bs_' + scope;
-        var secondaryCacheKey = 'sc_' + scope;
-        
-        try {
-          var cachedBootstrap = sessionStorage.getItem(bootstrapCacheKey);
-          if (cachedBootstrap) {
-            var parsed = JSON.parse(cachedBootstrap);
-            if (parsed.ts && (Date.now() - parsed.ts) < CACHE_TTL) {
-              window.__BOOTSTRAP_DATA__ = parsed.data;
-              window.__BOOTSTRAP_READY__ = true;
-              // Skip carousel preload - React loads fast enough now
-              // Background revalidation
-              setTimeout(function() { fetchBootstrap(true); }, 100);
-              // Load secondary from cache
-              var cachedSecondary = sessionStorage.getItem(secondaryCacheKey);
-              if (cachedSecondary) {
-                var parsedSec = JSON.parse(cachedSecondary);
-                if (parsedSec.ts && (Date.now() - parsedSec.ts) < CACHE_TTL) {
-                  window.__SECONDARY_DATA__ = parsedSec.data;
-                }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SystemNext IT - Professional E-commerce Solutions</title>
+  <meta name="description"
+    content="SystemNext IT - Professional e-commerce platform. Build your online store with multi-tenant support, admin dashboard & 24/7 support.">
+  <meta name="keywords" content="SystemNext IT, e-commerce, online store, Bangladesh, software solutions">
+  <meta name="author" content="SystemNext IT">
+  <meta name="theme-color" content="#6366F1">
+  <link rel="icon" type="image/png" href="/icons/icon-32x32.png">
+
+  <!-- Preconnect to main domain for faster image loading -->
+  <link rel="preconnect" href="https://systemnextit.com">
+  <link rel="dns-prefetch" href="https://systemnextit.com">
+  <link rel="preconnect" href="https://images.systemnextit.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.systemnextit.com">
+  <link rel="preconnect" href="https://static.systemnextit.com" crossorigin>
+  <link rel="dns-prefetch" href="https://static.systemnextit.com">
+
+
+
+  <!-- Early bootstrap prefetch with parallel secondary data -->
+  <script>
+    (function () {
+      var h = location.hostname, p = h.split('.'), t = p[0];
+      var isMobile = window.innerWidth < 768;
+      // Skip for admin/superadmin subdomains
+      if (!t || t === 'www' || t === 'admin' || t === 'superadmin' || p.length < 3) return;
+      // Check cached tenant ID for faster resolution
+      var cachedId;
+      try { cachedId = localStorage.getItem('tenant_id_' + t); } catch (e) { }
+      var scope = cachedId || t;
+
+      // Check sessionStorage cache first for instant reload (5 min TTL)
+      var CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+      var bootstrapCacheKey = 'bs_' + scope;
+      var secondaryCacheKey = 'sc_' + scope;
+
+      try {
+        var cachedBootstrap = sessionStorage.getItem(bootstrapCacheKey);
+        if (cachedBootstrap) {
+          var parsed = JSON.parse(cachedBootstrap);
+          if (parsed.ts && (Date.now() - parsed.ts) < CACHE_TTL) {
+            window.__BOOTSTRAP_DATA__ = parsed.data;
+            window.__BOOTSTRAP_READY__ = true;
+            // Skip carousel preload - React loads fast enough now
+            // Background revalidation
+            setTimeout(function () { fetchBootstrap(true); }, 100);
+            // Load secondary from cache
+            var cachedSecondary = sessionStorage.getItem(secondaryCacheKey);
+            if (cachedSecondary) {
+              var parsedSec = JSON.parse(cachedSecondary);
+              if (parsedSec.ts && (Date.now() - parsedSec.ts) < CACHE_TTL) {
+                window.__SECONDARY_DATA__ = parsedSec.data;
               }
-              return;
             }
+            return;
           }
-        } catch(e) {}
-        
-        function fetchBootstrap(isBackground) {
-          var x1 = new XMLHttpRequest();
-          x1.open('GET', '/api/tenant-data/' + scope + '/bootstrap', true);
-          x1.onload = function() {
-            if (x1.status === 200) {
-              try {
-                var data = JSON.parse(x1.responseText);
-                if (!isBackground) {
-                  window.__BOOTSTRAP_DATA__ = data;
-                  window.__BOOTSTRAP_READY__ = true;
-                }
-                // Cache in sessionStorage
-                try {
-                  sessionStorage.setItem(bootstrapCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
-                } catch(e) {}
-              } catch(e) {}
-            }
-          };
-          x1.send();
         }
-        
-        // Start bootstrap fetch immediately
-        fetchBootstrap(false);
-        
-        // Start secondary data fetch in parallel (categories, brands, etc)
-        var x2 = new XMLHttpRequest();
-        x2.open('GET', '/api/tenant-data/' + scope + '/secondary', true);
-        x2.onload = function() {
-          if (x2.status === 200) {
+      } catch (e) { }
+
+      function fetchBootstrap(isBackground) {
+        var x1 = new XMLHttpRequest();
+        x1.open('GET', '/api/tenant-data/' + scope + '/bootstrap', true);
+        x1.onload = function () {
+          if (x1.status === 200) {
             try {
-              var data = JSON.parse(x2.responseText);
-              window.__SECONDARY_DATA__ = data;
+              var data = JSON.parse(x1.responseText);
+              if (!isBackground) {
+                window.__BOOTSTRAP_DATA__ = data;
+                window.__BOOTSTRAP_READY__ = true;
+              }
               // Cache in sessionStorage
               try {
-                sessionStorage.setItem(secondaryCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
-              } catch(e) {}
-            } catch(e) {}
+                sessionStorage.setItem(bootstrapCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
+              } catch (e) { }
+            } catch (e) { }
           }
         };
-        x2.send();
-      })();
-    </script>
-    <style>
-      #preload-skeleton {
-        opacity: 1;
-        transition: opacity 0.3s ease;
+        x1.send();
       }
-      #preload-skeleton.done {
-        opacity: 0;
-      }
-      .skeleton-bone {
-        background: rgba(229, 231, 235, 0.8);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border-radius: 0.25rem;
-        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-      .skeleton-search-bar {
-        display: none;
-      }
-      @media (min-width: 768px) {
-        .skeleton-search-bar {
-          display: block;
+
+      // Start bootstrap fetch immediately
+      fetchBootstrap(false);
+
+      // Start secondary data fetch in parallel (categories, brands, etc)
+      var x2 = new XMLHttpRequest();
+      x2.open('GET', '/api/tenant-data/' + scope + '/secondary', true);
+      x2.onload = function () {
+        if (x2.status === 200) {
+          try {
+            var data = JSON.parse(x2.responseText);
+            window.__SECONDARY_DATA__ = data;
+            // Cache in sessionStorage
+            try {
+              sessionStorage.setItem(secondaryCacheKey, JSON.stringify({ data: data, ts: Date.now() }));
+            } catch (e) { }
+          } catch (e) { }
         }
+      };
+      x2.send();
+    })();
+  </script>
+  <style>
+    #preload-skeleton {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    #preload-skeleton.done {
+      opacity: 0;
+    }
+
+    .skeleton-bone {
+      background: rgba(229, 231, 235, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 0.25rem;
+      animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .skeleton-search-bar {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .skeleton-search-bar {
+        display: block;
       }
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: .5; }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
       }
-    </style>
-  </head>
-  <body style="background: linear-gradient(to bottom, #f0f4f8, #e8ecf1);">
-    <div id="root">
-      <div id="preload-skeleton">
-        <div style="min-height: 100vh;">
-          <div class="bg-white/85 backdrop-blur-xl border-b border-white/30 shadow-lg" style="position: sticky; top: 0; z-index: 50; padding: 0.75rem 1rem;">
-            <div style="max-width: 80rem; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
-              <div class="skeleton-bone" style="height: 2.5rem; width: 8rem;"></div>
-              <div class="skeleton-bone skeleton-search-bar" style="height: 2.5rem; flex: 1; max-width: 42rem; border-radius: 9999px;"></div>
-              <div style="display: flex; gap: 0.75rem;">
-                <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
-                <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
-              </div>
+
+      50% {
+        opacity: .5;
+      }
+    }
+  </style>
+</head>
+
+<body style="background: linear-gradient(to bottom, #ffcaff, #cbfff6);">
+  <div id="root">
+    <div id="preload-skeleton">
+      <div style="min-height: 100vh;">
+        <div class="bg-white/85 backdrop-blur-xl border-b border-white/30 shadow-lg"
+          style="position: sticky; top: 0; z-index: 50; padding: 0.75rem 1rem;">
+          <div
+            style="max-width: 80rem; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+            <div class="skeleton-bone" style="height: 2.5rem; width: 8rem;"></div>
+            <div class="skeleton-bone skeleton-search-bar"
+              style="height: 2.5rem; flex: 1; max-width: 42rem; border-radius: 9999px;"></div>
+            <div style="display: flex; gap: 0.75rem;">
+              <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
+              <div class="skeleton-bone" style="height: 2.5rem; width: 2.5rem; border-radius: 9999px;"></div>
             </div>
           </div>
-          <div style="max-width: 80rem; margin: auto; padding: 1rem;">
-            <div class="skeleton-bone" style="width: 100%; padding-top: 40%; border-radius: 1rem;"></div>
-          </div>
-          <div style="max-width: 80rem; margin: auto; padding: 1rem; padding-top: 0;">
-            <div style="display: flex; gap: 0.75rem; overflow: hidden; padding: 0.5rem 0;">
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
-              <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;"></div>
+        </div>
+        <div style="max-width: 80rem; margin: auto; padding: 1rem;">
+          <div class="skeleton-bone" style="width: 100%; padding-top: 40%; border-radius: 1rem;"></div>
+        </div>
+        <div style="max-width: 80rem; margin: auto; padding: 1rem; padding-top: 0;">
+          <div style="display: flex; gap: 0.75rem; overflow: hidden; padding: 0.5rem 0;">
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
+            </div>
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
+            </div>
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
+            </div>
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
+            </div>
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
+            </div>
+            <div class="skeleton-bone" style="height: 2.5rem; width: 7rem; border-radius: 9999px; flex-shrink: 0;">
             </div>
           </div>
         </div>
       </div>
     </div>
-    <script type="module" src="/entry-client.tsx"></script>
-  </body>
+  </div>
+  <script type="module" src="/entry-client.tsx"></script>
+</body>
+
 </html>

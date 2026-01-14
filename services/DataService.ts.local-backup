@@ -125,10 +125,10 @@ const initSocket = async (): Promise<Socket | null> => {
     socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
-      reconnectionAttempts: 0,
+      reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       timeout: 10000,
-      autoConnect: false,
+      autoConnect: true,
       withCredentials: true
     });
     
@@ -1378,7 +1378,7 @@ class DataServiceImpl {
 
   // Review methods
   async getProductReviews(productId: number, tenantId: string) {
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}/product/${productId}`, {
+    const response = await this.requestTenantApi<{ reviews?: unknown[] }>(`/api/reviews/product/${productId}`, {
       headers: {
         'x-tenant-id': tenantId
       }
@@ -1391,28 +1391,31 @@ class DataServiceImpl {
     rating: number;
     comment: string;
     headline?: string;
-    images?: string[];
   }, tenantId: string) {
     const token = this.getToken();
     if (!token) {
-      throw new Error('লগইন করুন রিভিউ দিতে');
+      throw new Error('Authentication required. Please login to submit a review.');
     }
 
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}`, {
+    const response = await this.requestTenantApi<{ review?: unknown }>('/api/reviews', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'x-tenant-id': tenantId
       },
-      body: JSON.stringify({
-        productId: data.productId,
-        rating: data.rating,
-        reviewText: data.comment,
-        images: data.images || []
-      })
+      body: JSON.stringify({ ...data, tenantId })
     });
     
     return response.review;
+  }
+  private getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    try {
+      return localStorage.getItem('authToken') || sessionStorage.getItem('authToken') || null;
+    } catch {
+      return null;
+    }
   }
 
   async getMyReviews(tenantId?: string) {
@@ -1425,7 +1428,7 @@ class DataServiceImpl {
       ? `/api/reviews/user/my-reviews?tenantId=${tenantId}`
       : '/api/reviews/user/my-reviews';
 
-    const response = await this.requestTenantApi(url, {
+    const response = await this.requestTenantApi<{ reviews?: unknown[] }>(url, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -1444,7 +1447,7 @@ class DataServiceImpl {
       throw new Error('Authentication required');
     }
 
-    const response = await this.requestTenantApi(`/api/reviews/${reviewId}`, {
+    const response = await this.requestTenantApi<{ review?: unknown }>(`/api/reviews/${reviewId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -1474,43 +1477,7 @@ class DataServiceImpl {
     await this.requestTenantApi(`/api/reviews/${reviewId}/helpful`, {
       method: 'PATCH'
     });
-
-
-  }
-
-  async getAllReviews(tenantId: string) {
-    const token = this.getToken();
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}/all`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    
-    return response;
-  }
-
-  async updateReviewStatus(reviewId: string, status: 'approved' | 'rejected', tenantId: string) {
-    const token = this.getToken();
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    const response = await this.requestTenantApi(`/api/reviews/${tenantId}/${reviewId}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ status })
-    });
-    
-    return response;
   }
 }
 
 export const DataService = new DataServiceImpl();
-

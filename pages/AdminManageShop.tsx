@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Store, Globe, FileText, Truck, CreditCard, Search, MessageSquare,
   Users, Link2, Settings, ArrowRight, ExternalLink, CheckCircle, AlertCircle,
-  Palette, Shield, Bell, Smartphone, BarChart3, Mail
+  Palette, Shield, Bell, Smartphone, BarChart3, Mail, Loader2
 } from 'lucide-react';
+import { DataService } from '../services/DataService';
+import { getAuthHeader } from '../services/authService';
+import { Order, ChatMessage } from '../types';
 
 interface ManageShopProps {
   onNavigate: (section: string) => void;
   tenantId: string;
   websiteConfig: any;
+  tenantSubdomain?: string;
+}
+
+interface QuickStat {
+  label: string;
+  value: string;
+  change: string;
+  icon: React.ReactNode;
 }
 
 interface ShopCard {
@@ -25,7 +36,167 @@ interface ShopCard {
   status?: 'active' | 'pending' | 'inactive';
 }
 
-const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, websiteConfig }) => {
+const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, websiteConfig, tenantSubdomain }) => {
+  const [quickStats, setQuickStats] = useState<QuickStat[]>([
+    { label: 'Store Visits', value: '0', change: '0%', icon: <BarChart3 size={18} /> },
+    { label: 'Total Orders', value: '0', change: '0%', icon: <Store size={18} /> },
+    { label: 'Customers', value: '0', change: '0%', icon: <Users size={18} /> },
+    { label: 'Messages', value: '0', change: '0%', icon: <Mail size={18} /> }
+  ]);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  // Fetch real statistics
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!tenantId) return;
+      
+      setIsLoadingStats(true);
+      try {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+        const now = new Date();
+        const currentPeriodStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 days
+        const previousPeriodStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000); // 7-14 days ago
+        const previousPeriodEnd = currentPeriodStart;
+
+        // Fetch all data in parallel
+        const [visitorStatsResponse, orders, chatMessages] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/visitors/${tenantId}/stats?period=30d`, {
+            headers: {
+              ...getAuthHeader(),
+              'Content-Type': 'application/json',
+            },
+          }).then(res => res.ok ? res.json() : { totalPageViews: 0, dailyStats: [] }),
+          DataService.getOrders(tenantId),
+          DataService.getChatMessages(tenantId),
+        ]);
+
+        // Calculate page views for current period (last 7 days) and previous period (7-14 days ago)
+        const dailyStats = visitorStatsResponse.dailyStats || [];
+        const currentPageViews = visitorStatsResponse.totalPageViews || 0;
+        
+        // Calculate previous period page views from daily stats
+        const previousPeriodStartDate = new Date(previousPeriodStart);
+        previousPeriodStartDate.setHours(0, 0, 0, 0);
+        const previousPeriodEndDate = new Date(previousPeriodEnd);
+        previousPeriodEndDate.setHours(0, 0, 0, 0);
+        
+        let previousPageViews = 0;
+        dailyStats.forEach((day: { date: string; views: number }) => {
+          const dayDate = new Date(day.date);
+          if (dayDate >= previousPeriodStartDate && dayDate < previousPeriodEndDate) {
+            previousPageViews += day.views || 0;
+          }
+        });
+        
+        const pageViewsChange = previousPageViews > 0 
+          ? ((currentPageViews - previousPageViews) / previousPageViews * 100).toFixed(0)
+          : currentPageViews > 0 ? '100' : '0';
+
+        // Helper function to safely parse order dates
+        const parseOrderDate = (dateStr: string): Date | null => {
+          if (!dateStr) return null;
+          const parsed = new Date(dateStr);
+          return isNaN(parsed.getTime()) ? null : parsed;
+        };
+
+        // Orders stats
+        const currentOrders = orders.filter(order => {
+          const orderDate = parseOrderDate(order.date);
+          return orderDate && orderDate >= currentPeriodStart;
+        });
+        const previousOrders = orders.filter(order => {
+          const orderDate = parseOrderDate(order.date);
+          return orderDate && orderDate >= previousPeriodStart && orderDate < previousPeriodEnd;
+        });
+        const totalOrders = orders.length;
+        const ordersChange = previousOrders.length > 0
+          ? (((currentOrders.length - previousOrders.length) / previousOrders.length) * 100).toFixed(0)
+          : currentOrders.length > 0 ? '100' : '0';
+
+        // Customers stats (unique customers from orders)
+        const uniqueCustomers = new Set<string>();
+        orders.forEach(order => {
+          if (order.email) uniqueCustomers.add(order.email);
+          else if (order.phone) uniqueCustomers.add(order.phone);
+          else if (order.customer) uniqueCustomers.add(order.customer);
+        });
+        
+        const currentCustomers = new Set<string>();
+        currentOrders.forEach(order => {
+          if (order.email) currentCustomers.add(order.email);
+          else if (order.phone) currentCustomers.add(order.phone);
+          else if (order.customer) currentCustomers.add(order.customer);
+        });
+        
+        const previousCustomers = new Set<string>();
+        previousOrders.forEach(order => {
+          if (order.email) previousCustomers.add(order.email);
+          else if (order.phone) previousCustomers.add(order.phone);
+          else if (order.customer) previousCustomers.add(order.customer);
+        });
+        
+        const totalCustomers = uniqueCustomers.size;
+        const customersChange = previousCustomers.size > 0
+          ? (((currentCustomers.size - previousCustomers.size) / previousCustomers.size) * 100).toFixed(0)
+          : currentCustomers.size > 0 ? '100' : '0';
+
+        // Messages stats
+        const currentMessages = chatMessages.filter(msg => {
+          const msgDate = new Date(msg.timestamp || 0);
+          return msgDate >= currentPeriodStart;
+        });
+        const previousMessages = chatMessages.filter(msg => {
+          const msgDate = new Date(msg.timestamp || 0);
+          return msgDate >= previousPeriodStart && msgDate < previousPeriodEnd;
+        });
+        const totalMessages = chatMessages.length;
+        const messagesChange = previousMessages.length > 0
+          ? (((currentMessages.length - previousMessages.length) / previousMessages.length) * 100).toFixed(0)
+          : currentMessages.length > 0 ? '100' : '0';
+
+        // Format numbers with commas
+        const formatNumber = (num: number) => {
+          return num.toLocaleString('en-US');
+        };
+
+        // Update stats
+        setQuickStats([
+          {
+            label: 'Store Visits',
+            value: formatNumber(currentPageViews),
+            change: `${parseFloat(pageViewsChange) >= 0 ? '+' : ''}${pageViewsChange}%`,
+            icon: <BarChart3 size={18} />
+          },
+          {
+            label: 'Total Orders',
+            value: formatNumber(totalOrders),
+            change: `${parseFloat(ordersChange) >= 0 ? '+' : ''}${ordersChange}%`,
+            icon: <Store size={18} />
+          },
+          {
+            label: 'Customers',
+            value: formatNumber(totalCustomers),
+            change: `${parseFloat(customersChange) >= 0 ? '+' : ''}${customersChange}%`,
+            icon: <Users size={18} />
+          },
+          {
+            label: 'Messages',
+            value: formatNumber(totalMessages),
+            change: `${parseFloat(messagesChange) >= 0 ? '+' : ''}${messagesChange}%`,
+            icon: <Mail size={18} />
+          }
+        ]);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        // Keep default values on error
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, [tenantId]);
+
   const shopCards: ShopCard[] = [
     {
       id: 'shop-settings',
@@ -137,12 +308,6 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
     }
   ];
 
-  const quickStats = [
-    { label: 'Store Visits', value: '1,234', change: '+12%', icon: <BarChart3 size={18} /> },
-    { label: 'Total Orders', value: '89', change: '+5%', icon: <Store size={18} /> },
-    { label: 'Customers', value: '156', change: '+8%', icon: <Users size={18} /> },
-    { label: 'Messages', value: '23', change: '+3%', icon: <Mail size={18} /> }
-  ];
 
   const getStatusBadge = (status?: 'active' | 'pending' | 'inactive') => {
     switch (status) {
@@ -183,7 +348,7 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
           <p className="text-gray-500 mt-1">শপ ম্যানেজ করুন - Configure and manage all aspects of your online store</p>
         </div>
         <button
-          onClick={() => window.open(`https://${websiteConfig?.domain || tenantId + '.systemnextit.com'}`, '_blank')}
+          onClick={() => window.open(`https://${tenantSubdomain || websiteConfig?.domain || 'store'}.systemnextit.com`, '_blank')}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition text-gray-700 font-medium shadow-sm"
         >
           <ExternalLink size={18} />
@@ -197,10 +362,31 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
           <div key={idx} className="bg-white rounded-xl p-4 border border-blue-400 shadow-sm hover:shadow-md transition">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-500">{stat.icon}</span>
-              <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{stat.change}</span>
+              {isLoadingStats ? (
+                <Loader2 size={14} className="animate-spin text-gray-400" />
+              ) : (
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  stat.change.startsWith('+') || parseFloat(stat.change) > 0
+                    ? 'text-green-600 bg-green-50'
+                    : parseFloat(stat.change) < 0
+                    ? 'text-red-600 bg-red-50'
+                    : 'text-gray-600 bg-gray-50'
+                }`}>
+                  {stat.change}
+                </span>
+              )}
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-            <p className="text-sm text-gray-500">{stat.label}</p>
+            {isLoadingStats ? (
+              <div className="flex items-center gap-2">
+                <Loader2 size={20} className="animate-spin text-gray-400" />
+                <p className="text-sm text-gray-400">Loading...</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-sm text-gray-500">{stat.label}</p>
+              </>
+            )}
           </div>
         ))}
       </div>
