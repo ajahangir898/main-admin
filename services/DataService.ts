@@ -1525,6 +1525,7 @@ export const DataService = new DataServiceImpl();
 // ==================== OFFER PAGE METHODS ====================
 
 export interface OfferPageData {
+  tenantId?: string;
   productId?: number;
   productTitle: string;
   searchQuery?: string;
@@ -1573,6 +1574,7 @@ export interface OfferPagesListResponse {
 
 // Get all offer pages for tenant
 export const getOfferPages = async (
+  tenantId: string,
   status?: 'draft' | 'published',
   page = 1,
   limit = 20
@@ -1585,24 +1587,29 @@ export const getOfferPages = async (
   const response = await fetch(`${API_BASE_URL}/api/landing-page?${params}`, {
     headers: {
       ...getAuthHeader(),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-tenant-id': tenantId
     }
   });
   
   if (!response.ok) {
-    throw new Error(`Failed to fetch offer pages: ${response.statusText}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Failed to fetch offer pages: ${response.statusText}`);
   }
   
   return response.json();
 };
 
 // Get single offer page by ID
-export const getOfferPageById = async (id: string): Promise<OfferPageResponse> => {
+export const getOfferPageById = async (id: string, tenantId?: string): Promise<OfferPageResponse> => {
+  const headers: Record<string, string> = {
+    ...getAuthHeader() as Record<string, string>,
+    'Content-Type': 'application/json'
+  };
+  if (tenantId) headers['x-tenant-id'] = tenantId;
+
   const response = await fetch(`${API_BASE_URL}/api/landing-page/${id}`, {
-    headers: {
-      ...getAuthHeader(),
-      'Content-Type': 'application/json'
-    }
+    headers
   });
   
   if (!response.ok) {
@@ -1636,12 +1643,13 @@ export const getOfferPageBySlug = async (
 };
 
 // Create new offer page
-export const createOfferPage = async (data: OfferPageData): Promise<OfferPageResponse> => {
+export const createOfferPage = async (tenantId: string, data: OfferPageData): Promise<OfferPageResponse> => {
   const response = await fetch(`${API_BASE_URL}/api/landing-page`, {
     method: 'POST',
     headers: {
       ...getAuthHeader(),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-tenant-id': tenantId
     },
     body: JSON.stringify(data)
   });
@@ -1656,6 +1664,7 @@ export const createOfferPage = async (data: OfferPageData): Promise<OfferPageRes
 
 // Update existing offer page
 export const updateOfferPage = async (
+  tenantId: string,
   id: string, 
   data: Partial<OfferPageData>
 ): Promise<OfferPageResponse> => {
@@ -1663,7 +1672,8 @@ export const updateOfferPage = async (
     method: 'PUT',
     headers: {
       ...getAuthHeader(),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-tenant-id': tenantId
     },
     body: JSON.stringify(data)
   });
@@ -1677,12 +1687,13 @@ export const updateOfferPage = async (
 };
 
 // Delete offer page
-export const deleteOfferPage = async (id: string): Promise<void> => {
+export const deleteOfferPage = async (tenantId: string, id: string): Promise<void> => {
   const response = await fetch(`${API_BASE_URL}/api/landing-page/${id}`, {
     method: 'DELETE',
     headers: {
       ...getAuthHeader(),
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-tenant-id': tenantId
     }
   });
   

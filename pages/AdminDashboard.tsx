@@ -27,7 +27,10 @@ import {
   Star,
   Package,
   MessageCircle,
-  Search
+  Search,
+  Bell,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { Order, Product } from '../types';
 import { useVisitorStats } from '../hooks/useVisitorStats';
@@ -153,6 +156,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onSearch
 }) => {
   const [language, setLanguage] = useState<'Eng' | 'বাংলা'>('Eng');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Visitor stats
   const { stats: visitorStats, isLoading: visitorLoading } = useVisitorStats({
@@ -232,255 +236,298 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Top Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-white border-b border-gray-100 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900">Welcome back, {user?.name || 'Admin'} !</h3>
-            {/* <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p> */}
+            <h3 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Welcome back, {user?.name || 'Yuvraj'}
+            </h3>
+            <p className="text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p>
           </div>
 
           <div className="flex items-center gap-3">
+            {/* View Website */}
+            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
+              <Globe className="w-4 h-4" />
+              View Website
+            </button>
+
             {/* Tutorials Button */}
-            <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
+            <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
               <Play className="w-4 h-4" />
               Tutorials
             </button>
 
-            {/* Avatar */}
-            {/* <div className="flex items-center gap-2 ml-1">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64 pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            {/* Icons */}
+            <div className="flex items-center gap-2">
+              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
+                <Moon className="w-5 h-5 text-gray-500" />
+              </button>
+              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
+                <MessageCircle className="w-5 h-5 text-gray-500" />
+              </button>
+              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
+                <Bell className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            {/* User */}
+            <div className="flex items-center gap-2 ml-2">
+              <div className="text-right">
+                <p className="text-xs text-gray-400">Admin</p>
+                <p className="text-sm font-medium text-gray-700">{user?.name || 'Yuvraj'}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  user?.name?.charAt(0) || 'A'
+                    user?.name?.charAt(0) || 'Y'
                 )}
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-6 space-y-6">
         {/* Order Analytics Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-500">
-          <h2 className="text-sm font-semibold text-gray-800 mb-3">Order Analytics</h2>
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</h2>
 
-          {/* First Row - 6 columns */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Products on Hands */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-purple-400">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">{products.length}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Products on Hands</p>
+                  <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{products.length}</p>
+                  <p className="text-xs text-gray-600 mt-1">Products on Hands</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
-                  <Package className="w-4 h-4 text-white" />
+                <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                  <Package className="w-6 h-6 text-blue-500" />
                 </div>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-3 border border-purple-400">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Total Orders</p>
+                  <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalOrders}</p>
+                  <p className="text-xs text-gray-600 mt-1">Total Orders</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
-                  <ShoppingBag className="w-4 h-4 text-white" />
+                <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                  <ShoppingBag className="w-6 h-6 text-emerald-500" />
                 </div>
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl p-3 border border-purple-400">
-              <p className="text-[10px] text-gray-500 mb-1.5">Language</p>
-              <div className="flex items-center gap-1.5">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
+              <p className="text-xs text-gray-600 mb-2">Language</p>
+              <div className="flex items-center gap-1 bg-white/0 border border-white rounded-full p-1">
                 <button
                   onClick={() => setLanguage('Eng')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${language === 'Eng' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 border border-gray-200'}`}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition ${language === 'Eng' ? 'bg-white text-gray-900' : 'text-gray-600'}`}
                 >
                   Eng
                 </button>
-                <span className="text-xs text-gray-400">বাংলা</span>
+                <button
+                  onClick={() => setLanguage('বাংলা')}
+                  className={`px-3 py-1 rounded-full text-xs transition ${language === 'বাংলা' ? 'bg-white text-gray-900' : 'text-gray-600'}`}
+                >
+                  বাংলা
+                </button>
               </div>
             </div>
 
             {/* Date Display */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 border border-purple-400 flex flex-col items-center justify-center">
-              <p className="text-xs text-gray-600 font-medium">{currentDate}</p>
-              <div className="mt-1.5 px-4 py-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-md shadow-sm">
-                <p className="text-white font-semibold text-xs">{currentDay}</p>
+            <div className="bg-[#f2f2f2] rounded-lg p-4 flex flex-col">
+              <p className="text-base font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</p>
+              <div className="mt-auto">
+                <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg text-center">
+                  <p className="text-white font-medium text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</p>
+                </div>
               </div>
             </div>
 
             {/* Important Notification */}
-            <div className="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-3 border border-purple-400 col-span-2">
-              <p className="text-[10px] text-gray-500 mb-1.5">Important Notification</p>
-              <div className="h-10 bg-white/80 rounded-lg border border-purple-400"></div>
-              <div className="flex justify-end gap-1 mt-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+            <div className="bg-[#f2f2f2] rounded-lg p-4 col-span-2">
+              <p className="text-xs text-gray-600 mb-2">Important Notification</p>
+              <div className="h-20 bg-white rounded-lg"></div>
+              <div className="flex justify-center gap-1.5 mt-3">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span className="w-4 h-2 rounded-full bg-blue-500"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
               </div>
             </div>
           </div>
 
-          {/* Second Row - 4 columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+          {/* Second Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
             {/* Reserved Price */}
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 border border-purple-400">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">৳{totalRevenue.toLocaleString()}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Reserved Price</p>
+                  <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalRevenue.toLocaleString()}</p>
+                  <p className="text-xs text-gray-600 mt-1">Reserved Price</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shadow-sm">
-                  <Wallet className="w-4 h-4 text-white" />
+                <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                  <Wallet className="w-6 h-6 text-amber-500" />
                 </div>
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-3 border border-purple-400">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">{lowStockProducts}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Low Stock</p>
+                  <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{lowStockProducts}</p>
+                  <p className="text-xs text-gray-600 mt-1">Low Stock</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center shadow-sm">
-                  <AlertCircle className="w-4 h-4 text-white" />
+                <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                  <AlertCircle className="w-6 h-6 text-red-500" />
                 </div>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-3 border border-purple-400">
+            <div className="bg-[#f2f2f2] rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xl font-bold text-gray-900">{toBeReviewed}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">To be Reviewed</p>
+                  <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{toBeReviewed}</p>
+                  <p className="text-xs text-gray-600 mt-1">To be Reviewed</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center shadow-sm">
-                  <Star className="w-4 h-4 text-white" />
+                <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                  <Eye className="w-6 h-6 text-purple-500" />
                 </div>
               </div>
             </div>
 
-            {/* Quick Action */}
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-3 border border-purple-400 flex items-center justify-center">
-              <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center cursor-pointer hover:bg-teal-600 transition shadow-sm">
-                <LayoutGrid className="w-4 h-4 text-white" />
-              </div>
+            {/* Quick Action Placeholder */}
+            <div className="bg-[#f2f2f2] rounded-lg p-4 opacity-0">
+              {/* Empty placeholder for alignment */}
             </div>
           </div>
         </div>
 
-        {/* Visitor Stats Row - Compact */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-purple-400">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            {/* Online Now */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-teal-500 flex items-center justify-center shadow-sm">
-                <Wifi className="w-4 h-4 text-white" />
+        {/* Visitor Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Online Now */}
+          <div className="rounded-lg p-4 overflow-hidden relative shadow-sm" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.95) 100%), linear-gradient(90deg, #88c9ff 0%, #88c9ff 100%)' }}>
+            <div className="absolute right-0 top-[-40px] w-48 h-48 rounded-full bg-blue-400/20"></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <Wifi className="w-8 h-8 text-blue-500" />
               </div>
-              <div>
-                <p className="text-xs font-semibold text-teal-600">Online Now</p>
-                <p className="text-[10px] text-gray-400">Active visitors on site</p>
+              <div className="flex-1">
+                <p className="text-base font-medium text-blue-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Online Now</p>
+                <p className="text-xs text-gray-600">Active visitors on site</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-teal-50 rounded-lg border border-purple-400">
-                <p className="text-lg font-bold text-teal-600">{visitorStats?.onlineNow || 0}</p>
-              </div>
+              <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.onlineNow || 35}</p>
             </div>
+          </div>
 
-            {/* Today Visitors */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-orange-500 flex items-center justify-center shadow-sm">
-                <Users className="w-4 h-4 text-white" />
+          {/* Today Visitors */}
+          <div className="rounded-lg p-4 overflow-hidden relative shadow-sm" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.95) 100%), linear-gradient(90deg, #ffc388 0%, #ffc388 100%)' }}>
+            <div className="absolute right-0 top-[-40px] w-48 h-48 rounded-full bg-orange-400/20"></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <Users className="w-8 h-8 text-orange-500" />
               </div>
-              <div>
-                <p className="text-xs font-semibold text-orange-500">Today visitors</p>
-                <p className="text-[10px] text-gray-400">Last 7 days: {visitorStats?.periodVisitors || 0}</p>
+              <div className="flex-1">
+                <p className="text-base font-medium text-orange-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Today visitors</p>
+                <p className="text-xs text-gray-600">Last 7 days: {visitorStats?.periodVisitors || 4}</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-orange-50 rounded-lg border border-purple-400">
-                <p className="text-lg font-bold text-gray-800">{visitorStats?.todayVisitors || 0}</p>
-              </div>
+              <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.todayVisitors || 35}</p>
             </div>
+          </div>
 
-            {/* Total Visitors */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 flex items-center justify-center shadow-sm">
-                <Globe className="w-4 h-4 text-white" />
+          {/* Total Visitors */}
+          <div className="rounded-lg p-4 overflow-hidden relative shadow-sm" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.95) 100%), linear-gradient(90deg, #a288ff 0%, #a288ff 100%)' }}>
+            <div className="absolute right-0 top-[-40px] w-48 h-48 rounded-full bg-purple-400/20"></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <Globe className="w-8 h-8 text-purple-600" />
               </div>
-              <div>
-                <p className="text-xs font-semibold text-purple-500">Total visitors</p>
-                <p className="text-[10px] text-gray-400">{visitorStats?.totalPageViews || 0} page view</p>
+              <div className="flex-1">
+                <p className="text-base font-medium text-purple-600" style={{ fontFamily: 'Poppins, sans-serif' }}>Total visitors</p>
+                <p className="text-xs text-gray-600">{visitorStats?.totalPageViews || 15} page view</p>
               </div>
-              <div className="ml-2 px-3 py-1.5 bg-purple-50 rounded-lg border border-purple-400">
-                <p className="text-lg font-bold text-gray-800">{visitorStats?.totalVisitors || 0}</p>
-              </div>
+              <p className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalVisitors || 35}</p>
             </div>
           </div>
         </div>
 
-        {/* Order Status Row - Compact */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 shadow-sm border border-purple-400">
-          <h3 className="text-sm font-semibold text-gray-800 mb-2">Order Status</h3>
-
-          <div className="flex flex-wrap items-center gap-4">
+        {/* Order Status Row */}
+        <div>
+          <h3 className="text-base font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Order</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Today */}
-            <div className="flex items-center gap-2 bg-pink-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-pink-500 flex items-center justify-center shadow-sm">
-                <ShoppingBag className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#ffd9f4] flex items-center justify-center">
+                <ShoppingBag className="w-5 h-5 text-pink-500" />
               </div>
-              <span className="text-xs text-gray-600">Today</span>
-              <span className="text-base font-bold text-gray-900">{todayOrders}</span>
+              <span className="text-xs text-gray-600 flex-1">Today</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{todayOrders}</span>
             </div>
 
             {/* Courier */}
-            <div className="flex items-center gap-2 bg-orange-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
-                <Truck className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#ffedd5] flex items-center justify-center">
+                <Truck className="w-5 h-5 text-orange-500" />
               </div>
-              <span className="text-xs text-gray-600">Courier</span>
-              <span className="text-base font-bold text-gray-900">{courierOrders}</span>
+              <span className="text-xs text-gray-600 flex-1">Courier</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{courierOrders}</span>
             </div>
 
             {/* Confirmed */}
-            <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center shadow-sm">
-                <CheckCircle className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#dcfce7] flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-green-500" />
               </div>
-              <span className="text-xs text-gray-600">Confirmed</span>
-              <span className="text-base font-bold text-gray-900">{confirmedOrders}</span>
+              <span className="text-xs text-gray-600 flex-1">Confirmed</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{confirmedOrders}</span>
             </div>
 
             {/* Pending */}
-            <div className="flex items-center gap-2 bg-amber-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-sm">
-                <Clock className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#fef3c6] flex items-center justify-center">
+                <Clock className="w-5 h-5 text-amber-500" />
               </div>
-              <span className="text-xs text-gray-600">Pending</span>
-              <span className="text-base font-bold text-gray-900">{pendingOrders}</span>
+              <span className="text-xs text-gray-600 flex-1">Pending</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{pendingOrders}</span>
             </div>
 
             {/* Canceled */}
-            <div className="flex items-center gap-2 bg-red-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center shadow-sm">
-                <XCircle className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#fee2e1] flex items-center justify-center">
+                <XCircle className="w-5 h-5 text-red-500" />
               </div>
-              <span className="text-xs text-gray-600">Canceled</span>
-              <span className="text-base font-bold text-gray-900">{cancelledOrders}</span>
+              <span className="text-xs text-gray-600 flex-1">Canceled</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{cancelledOrders}</span>
             </div>
 
             {/* Returns */}
-            <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 border border-purple-400">
-              <div className="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
-                <ArchiveRestore className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#dbeaff] flex items-center justify-center">
+                <ArchiveRestore className="w-5 h-5 text-blue-500" />
               </div>
-              <span className="text-xs text-gray-600">Returns</span>
-              <span className="text-base font-bold text-gray-900">{returnsCount}</span>
+              <span className="text-xs text-gray-600 flex-1">Returns</span>
+              <span className="text-2xl font-medium text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{returnsCount}</span>
             </div>
           </div>
         </div>
@@ -488,69 +535,67 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-900">Revenue & Costs</h3>
-            </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Revenue & Costs</h3>
 
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-6 mb-4">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#3B82F6]"></span>
-                <span className="text-sm text-gray-600">Net Sales</span>
+                <span className="w-3 h-0.5 bg-blue-500"></span>
+                <span className="text-xs text-gray-600">Net Sales</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#F87171]"></span>
-                <span className="text-sm text-gray-600">Costs</span>
+                <span className="w-3 h-0.5 bg-red-400"></span>
+                <span className="text-xs text-gray-600">Costs</span>
               </div>
             </div>
 
             {/* Area Chart */}
-            <div className="h-52 relative mt-4">
-              <svg className="w-full h-full" viewBox="0 0 300 160" preserveAspectRatio="none">
+            <div className="h-40 relative">
+              <svg className="w-full h-full" viewBox="0 0 300 140" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="salesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.02" />
                   </linearGradient>
                 </defs>
 
                 {/* Y-axis labels */}
-                <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
-                <text x="0" y="45" className="text-[8px] fill-gray-400">$60K</text>
-                <text x="0" y="75" className="text-[8px] fill-gray-400">$40K</text>
-                <text x="0" y="105" className="text-[8px] fill-gray-400">$20K</text>
-                <text x="0" y="135" className="text-[8px] fill-gray-400">$0</text>
+                <text x="0" y="12" className="text-[8px] fill-gray-400">$80K</text>
+                <text x="0" y="40" className="text-[8px] fill-gray-400">$60K</text>
+                <text x="0" y="68" className="text-[8px] fill-gray-400">$40K</text>
+                <text x="0" y="96" className="text-[8px] fill-gray-400">$20K</text>
+                <text x="0" y="124" className="text-[8px] fill-gray-400">$0</text>
 
                 {/* Grid lines */}
                 {[0, 1, 2, 3, 4].map(i => (
-                  <line key={i} x1="28" y1={12 + i * 30} x2="295" y2={12 + i * 30} stroke="#E5E7EB" strokeWidth="0.5" />
+                  <line key={i} x1="28" y1={10 + i * 28} x2="295" y2={10 + i * 28} stroke="#E5E7EB" strokeWidth="0.5" />
                 ))}
 
                 {/* Sales Area */}
                 <path
-                  d="M28,105 Q80,65 150,85 T270,45 L270,132 L28,132 Z"
+                  d="M28,95 Q80,55 150,75 T270,35 L270,122 L28,122 Z"
                   fill="url(#salesGradient)"
                 />
                 <path
-                  d="M28,105 Q80,65 150,85 T270,45"
+                  d="M28,95 Q80,55 150,75 T270,35"
                   fill="none"
                   stroke="#3B82F6"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                 />
 
                 {/* Costs Line */}
                 <path
-                  d="M28,115 Q80,95 150,100 T270,75"
+                  d="M28,105 Q80,85 150,90 T270,65"
                   fill="none"
                   stroke="#F87171"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   strokeDasharray="4,4"
                 />
               </svg>
 
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400 pr-1">
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400">
                 <span>Dec 1</span>
                 <span>Dec 8</span>
                 <span>Dec 15</span>
@@ -561,53 +606,52 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Total Profit */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-900">Total Profit</h3>
-            </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Total Profit</h3>
 
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]"></span>
+              <span className="w-3 h-0.5 bg-green-500"></span>
               <span className="text-xs text-gray-600">Profit</span>
             </div>
 
-            {/* Bar Chart */}
-            <div className="h-52 relative mt-3">
-              <svg className="w-full h-full" viewBox="0 0 300 160" preserveAspectRatio="none">
+            {/* Area Chart with gradient */}
+            <div className="h-40 relative">
+              <svg className="w-full h-full" viewBox="0 0 300 140" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="profitGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#22C55E" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#22C55E" stopOpacity="0.02" />
+                  </linearGradient>
+                </defs>
+
                 {/* Y-axis labels */}
-                <text x="0" y="15" className="text-[8px] fill-gray-400">$80K</text>
-                <text x="0" y="45" className="text-[8px] fill-gray-400">$60K</text>
-                <text x="0" y="75" className="text-[8px] fill-gray-400">$40K</text>
-                <text x="0" y="105" className="text-[8px] fill-gray-400">$20K</text>
-                <text x="0" y="135" className="text-[8px] fill-gray-400">$0</text>
+                <text x="0" y="12" className="text-[8px] fill-gray-400">$80K</text>
+                <text x="0" y="40" className="text-[8px] fill-gray-400">$60K</text>
+                <text x="0" y="68" className="text-[8px] fill-gray-400">$40K</text>
+                <text x="0" y="96" className="text-[8px] fill-gray-400">$20K</text>
+                <text x="0" y="124" className="text-[8px] fill-gray-400">$0</text>
 
                 {/* Grid lines */}
                 {[0, 1, 2, 3, 4].map(i => (
-                  <line key={i} x1="28" y1={12 + i * 30} x2="295" y2={12 + i * 30} stroke="#E5E7EB" strokeWidth="0.5" />
+                  <line key={i} x1="28" y1={10 + i * 28} x2="295" y2={10 + i * 28} stroke="#E5E7EB" strokeWidth="0.5" />
                 ))}
 
-                {/* Bars */}
-                {revenueData.map((item, index) => {
-                  const maxValue = Math.max(...revenueData.map(d => d.sales - d.costs), 1) || 80000;
-                  const profit = (item.sales - item.costs) || (Math.random() * 60000 + 20000);
-                  const barHeight = Math.max((profit / maxValue) * 100, 15);
-                  const x = 38 + index * 54;
-                  return (
-                    <rect
-                      key={index}
-                      x={x}
-                      y={132 - barHeight}
-                      width="32"
-                      height={barHeight}
-                      fill="#22C55E"
-                      rx="4"
-                    />
-                  );
-                })}
+                {/* Profit Area */}
+                <path
+                  d="M28,100 Q80,70 150,50 T270,30 L270,122 L28,122 Z"
+                  fill="url(#profitGradient)"
+                />
+                <path
+                  d="M28,100 Q80,70 150,50 T270,30"
+                  fill="none"
+                  stroke="#22C55E"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
 
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400 pr-1">
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400">
                 <span>Dec 1</span>
                 <span>Dec 8</span>
                 <span>Dec 15</span>
@@ -618,83 +662,75 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-400">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-900">Sale by Category</h3>
-            </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Sale by Category</h3>
 
             {/* Legend */}
             <div className="flex flex-wrap gap-3 mb-4">
               {CATEGORY_COLORS.map((cat, index) => (
                 <div key={index} className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.bg }}></span>
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.bg }}></span>
                   <span className="text-xs text-gray-500">{cat.label}</span>
                 </div>
               ))}
             </div>
 
-            {/* Donut Chart */}
+            {/* Semi-Donut Chart */}
             <div className="flex justify-center">
-              <div className="relative w-44 h-44">
-                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                  {categoryData.length > 0 ? (
-                    (() => {
-                      const total = categoryData.reduce((sum, d) => sum + d.value, 0);
-                      let cumulativePercent = 0;
-                      return categoryData.slice(0, 6).map((item, index) => {
-                        const percent = (item.value / total) * 100;
-                        const dashArray = `${percent} ${100 - percent}`;
-                        const dashOffset = -cumulativePercent;
-                        cumulativePercent += percent;
-                        return (
-                          <circle
-                            key={item.name}
-                            cx="50"
-                            cy="50"
-                            r="38"
-                            fill="none"
-                            stroke={CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg}
-                            strokeWidth="14"
-                            strokeDasharray={dashArray}
-                            strokeDashoffset={dashOffset}
-                            pathLength="100"
-                          />
-                        );
-                      });
-                    })()
-                  ) : (
-                    // Default donut when no data
-                    <>
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#3B82F6" strokeWidth="14" strokeDasharray="27 73" strokeDashoffset="0" pathLength="100" />
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#10B981" strokeWidth="14" strokeDasharray="15 85" strokeDashoffset="-27" pathLength="100" />
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#F97316" strokeWidth="14" strokeDasharray="8 92" strokeDashoffset="-42" pathLength="100" />
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#06B6D4" strokeWidth="14" strokeDasharray="25 75" strokeDashoffset="-50" pathLength="100" />
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#8B5CF6" strokeWidth="14" strokeDasharray="15 85" strokeDashoffset="-75" pathLength="100" />
-                      <circle cx="50" cy="50" r="38" fill="none" stroke="#EC4899" strokeWidth="14" strokeDasharray="10 90" strokeDashoffset="-90" pathLength="100" />
-                    </>
-                  )}
-                </svg>
-              </div>
-            </div>
+              <div className="relative w-52 h-28 overflow-hidden">
+                <svg viewBox="0 0 200 100" className="w-full h-full">
+                  {/* Semi-circles (donut arcs) */}
+                  {(() => {
+                    const data = categoryData.length > 0 ? categoryData.slice(0, 6) : [
+                      { value: 25 }, { value: 15 }, { value: 15 }, { value: 20 }, { value: 12 }, { value: 13 }
+                    ];
+                    const total = data.reduce((sum, d) => sum + d.value, 0);
+                    let cumulativeAngle = 180;
 
-            {/* Percentage labels */}
-            <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-              {(categoryData.length > 0 ? categoryData.slice(0, 6) : [
-                { name: 'ABC', value: 27 },
-                { name: 'NBC', value: 15 },
-                { name: 'CBS', value: 8 },
-                { name: 'CNN', value: 25 },
-                { name: 'AOL', value: 15 },
-                { name: 'MSN', value: 10 },
-              ]).map((item, index) => {
-                const total = categoryData.length > 0 ? categoryData.reduce((s, d) => s + d.value, 0) : 100;
-                const percent = categoryData.length > 0 ? Math.round((item.value / total) * 100) : item.value;
-                return (
-                  <div key={index} className="text-xs text-gray-600 font-medium">
-                    {percent}%
+                    return data.map((item, index) => {
+                      const angle = (item.value / total) * 180;
+                      const startAngle = cumulativeAngle;
+                      const endAngle = startAngle - angle;
+                      cumulativeAngle = endAngle;
+
+                      const radius = 80 - index * 12;
+                      const startRad = (startAngle * Math.PI) / 180;
+                      const endRad = (endAngle * Math.PI) / 180;
+
+                      const x1 = 100 + radius * Math.cos(startRad);
+                      const y1 = 95 - radius * Math.sin(startRad);
+                      const x2 = 100 + radius * Math.cos(endRad);
+                      const y2 = 95 - radius * Math.sin(endRad);
+
+                      const largeArc = angle > 180 ? 1 : 0;
+
+                      return (
+                        <path
+                          key={index}
+                          d={`M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 0 ${x2} ${y2}`}
+                          fill="none"
+                          stroke={CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg}
+                          strokeWidth="10"
+                          strokeLinecap="round"
+                        />
+                      );
+                    });
+                  })()}
+                </svg>
+
+                {/* Percentage labels */}
+                <div className="absolute inset-0 flex items-end justify-center pb-2">
+                  <div className="grid grid-cols-6 gap-2 text-[10px] text-gray-600 font-medium">
+                    {(categoryData.length > 0 ? categoryData.slice(0, 6) : [
+                      { value: 25 }, { value: 15 }, { value: 15 }, { value: 20 }, { value: 12 }, { value: 13 }
+                    ]).map((item, index) => {
+                      const total = categoryData.length > 0 ? categoryData.reduce((s, d) => s + d.value, 0) : 100;
+                      const percent = Math.round((item.value / total) * 100);
+                      return <span key={index}>{percent}%</span>;
+                    })}
                   </div>
-                );
-              })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -702,105 +738,105 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Best Selling & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Best Selling Product Table */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-purple-400 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-blue-400">
-              <h3 className="text-sm font-semibold text-gray-900">Best selling product</h3>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2DD4BF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
-                <Filter className="w-3.5 h-3.5" />
+          <div className="lg:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>Best selling product</h3>
+              <button className="flex items-center gap-1.5 px-3 py-1.5 text-gray-600 border border-gray-200 rounded-lg text-xs font-medium hover:bg-gray-50 transition">
                 Filter
+                <Filter className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-3 px-4 py-2.5 bg-blue-400/50 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-b border-purple-400">
-              <div>PRODUCT</div>
-              <div className="text-center">TOTAL ORDER</div>
-              <div className="text-center">STATUS</div>
-              <div className="text-right">PRICE</div>
+            <div className="grid grid-cols-4 gap-4 px-4 py-3 bg-gray-50 text-xs font-medium text-gray-500 border-b border-gray-100">
+              <div>Product</div>
+              <div>Total Order</div>
+              <div>Status</div>
+              <div>Price</div>
             </div>
 
             {/* Table Body */}
             <div className="divide-y divide-gray-50">
               {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
-                <div key={item.product.id} className="grid grid-cols-4 gap-3 px-4 py-3 items-center hover:bg-blue-50/50 transition">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gray-400 overflow-hidden flex-shrink-0">
+                <div key={item.product.id} className="grid grid-cols-4 gap-4 px-4 py-3 items-center hover:bg-gray-50 transition">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                       {item.product.image ? (
                         <img src={normalizeImageUrl(item.product.image)} alt={item.product.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                          <Package className="w-4 h-4 text-gray-400" />
+                            <Package className="w-5 h-5 text-gray-400" />
                         </div>
                       )}
                     </div>
-                    <span className="text-xs font-medium text-gray-900 truncate">{item.product.name}</span>
+                    <span className="text-sm font-medium text-gray-900 truncate">{item.product.name}</span>
                   </div>
-                  <div className="text-center text-xs text-gray-600">{item.orders}</div>
-                  <div className="text-center">
-                    <span className={`inline-flex items-center gap-1 text-xs ${(item.product.stock || 0) > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <div className="text-sm text-gray-600">{item.orders}</div>
+                  <div>
+                    <span className={`inline-flex items-center gap-1.5 text-sm ${(item.product.stock || 0) > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      <span className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
                       {(item.product.stock || 0) > 0 ? 'Stock' : 'Stock out'}
                     </span>
                   </div>
-                  <div className="text-right text-xs font-semibold text-gray-900">${(item.product.price || 999).toFixed(2)}</div>
+                  <div className="text-sm font-medium text-gray-900">${(item.product.price || 999).toFixed(2)}</div>
                 </div>
               ))}
             </div>
 
             {/* Details Button */}
-            <div className="p-3 flex justify-center border-t border-blue-400 bg-blue-50/30">
-              <button className="px-6 py-2 border border-blue-200 bg-white rounded-lg text-xs font-medium text-gray-600 hover:bg-blue-50 transition">
+            <div className="p-4 flex justify-end border-t border-gray-100">
+              <button className="px-6 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-xs font-medium hover:bg-[#14B8A6] transition">
                 Details
               </button>
             </div>
           </div>
 
           {/* Top Products Sidebar */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-purple-400 overflow-hidden">
-            <div className="p-4 flex items-center justify-between border-b border-purple-400">
-              <h3 className="text-sm font-semibold text-gray-900">Top Products</h3>
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="p-4 flex items-center justify-between border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>Top Products</h3>
               <button className="text-xs text-blue-500 hover:text-blue-600 font-medium">All product</button>
             </div>
 
             {/* Search */}
-            <div className="px-4 py-2.5">
+            <div className="px-4 py-3 border-b border-gray-100">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="w-full pl-9 pr-3 py-2 bg-blue-50/70 border border-purple-400 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
                 />
               </div>
             </div>
 
             {/* Product List */}
-            <div className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto">
+            <div className="divide-y divide-gray-50 max-h-[360px] overflow-y-auto">
               {topProducts.map((product, index) => (
-                <div key={product.id} className="px-4 py-3 flex items-center gap-2.5 hover:bg-blue-50/50 transition">
-                  <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                <div key={product.id} className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition">
+                  <div className="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                     {product.image ? (
                       <img src={normalizeImageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <Package className="w-4 h-4 text-gray-400" />
+                          <Package className="w-5 h-5 text-gray-400" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-gray-900 truncate">{product.name}</p>
-                    <p className="text-[10px] text-gray-400">Item: #FXZ-{4567 + index}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Item: #FXZ-{4567 + index}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-bold text-gray-900">${(product.price || 99).toFixed(2)}</p>
+                    <p className="text-sm font-semibold text-gray-900">${(product.price || 99).toFixed(2)}</p>
                   </div>
                 </div>
               ))}
 
               {topProducts.length === 0 && (
-                <div className="px-4 py-6 text-center">
-                  <Package className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                  <p className="text-xs text-gray-500">No products yet</p>
+                <div className="px-4 py-8 text-center">
+                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-sm text-gray-500">No products yet</p>
                 </div>
               )}
             </div>

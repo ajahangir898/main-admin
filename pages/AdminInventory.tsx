@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { Boxes, AlertTriangle, Package, TrendingUp, Search, ShieldCheck, Settings, X, Loader2 } from 'lucide-react';
+import { Boxes, AlertTriangle, ClipboardList, TrendingUp, Search, Settings, X, Loader2, BarChart3 } from 'lucide-react';
 import { Product } from '../types';
 import { formatCurrency } from '../utils/format';
-import { MetricsSkeleton, TableSkeleton } from '../components/SkeletonLoaders';
+import { MetricsSkeleton } from '../components/SkeletonLoaders';
 import { DataService } from '../services/DataService';
 
 const dataService = DataService;
@@ -70,10 +70,8 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
     const outStockCount = products.filter((product) => (product.stock ?? 0) <= 0).length;
     const totalValue = products.reduce((sum, product) => sum + (product.stock ?? 0) * (product.costPrice ?? 0), 0);
     const totalSaleValue = products.reduce((sum, product) => sum + (product.stock ?? 0) * (product.price ?? 0), 0);
-    const penalty = lowStockCount * 3 + outStockCount * 6;
-    const healthScore = Math.max(0, Math.min(100, Math.round(100 - penalty / Math.max(1, totalSkus))));
 
-    return { totalSkus, totalUnits, lowStockCount, outStockCount, totalValue, totalSaleValue, healthScore };
+    return { totalSkus, totalUnits, lowStockCount, outStockCount, totalValue, totalSaleValue };
   }, [products, lowStockThreshold]);
 
   const alerts = useMemo(() => (
@@ -101,69 +99,80 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
 
   const getStatusBadge = (stock?: number) => {
     if (!stock || stock <= 0) {
-      return 'bg-rose-50 text-rose-600 border border-rose-100';
+      return 'bg-rose-50 text-rose-600';
     }
     if (stock <= lowStockThreshold) {
-      return 'bg-amber-50 text-amber-600 border border-amber-100';
+      return 'bg-amber-50 text-amber-600';
     }
-    return 'bg-emerald-50 text-emerald-600 border border-emerald-100';
+    return 'bg-[#E6F7F5] text-[#2DD4BF]';
   };
 
   const getStatusLabel = (stock?: number) => {
     if (!stock || stock <= 0) return 'Out of stock';
     if (stock <= lowStockThreshold) return 'Low stock';
-    return 'In stock';
+    return 'Publish';
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">Inventory Management</h2>
-          <p className="text-sm text-gray-500">Monitor stock health, forecast shortages, and stay ahead of fulfilment.</p>
-        </div>
-        <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2 shadow-sm ml-auto">
-          <ShieldCheck size={16} className="text-emerald-500" />
-          <span className="text-xs font-semibold text-gray-600">Coverage score {stats.healthScore}%</span>
-        </div>
+    <div className="space-y-6 animate-fade-in">
+      {/* Page Title */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800">Inventory</h2>
       </div>
 
       {isLoading ? (
         <MetricsSkeleton count={5} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Products</span>
-              <Boxes size={18} className="text-indigo-500" />
+          {/* Products Card */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Products</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalSkus}</p>
+                <p className="text-xs text-gray-400 mt-1">Stock Report</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                <Boxes size={20} className="text-gray-400" strokeWidth={1.5} />
+              </div>
             </div>
-            <p className="mt-3 text-3xl font-black text-gray-800">{stats.totalSkus}</p>
-            <p className="text-xs text-gray-400 mt-1">Stock Report</p>
           </div>
-          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Total units on hand</span>
-              <Package size={18} className="text-emerald-500" />
+
+          {/* Total Unit on Hand */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Total unit on hand</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalUnits.toLocaleString()}</p>
+                <p className="text-xs text-gray-400 mt-1">Access entire shop</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                <ClipboardList size={20} className="text-gray-400" strokeWidth={1.5} />
+              </div>
             </div>
-            <p className="mt-3 text-3xl font-black text-gray-800">{stats.totalUnits.toLocaleString()}</p>
-            <p className="text-xs text-gray-400 mt-1">Across entire shop</p>
           </div>
-          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm relative">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Low Stock Warning</span>
+
+          {/* Low Stock Card */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5 relative">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Low stock</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.lowStockCount + stats.outStockCount}</p>
+                <p className="text-xs text-gray-400 mt-1">{stats.outStockCount} out / {stats.lowStockCount} low ({'<'}{lowStockThreshold})</p>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setTempThreshold(lowStockThreshold); setShowSettings(true); }}
-                  className="p-1 hover:bg-gray-100 rounded-full transition"
+                  className="p-1.5 hover:bg-gray-100 rounded-lg transition"
                   title="Configure threshold"
                 >
                   <Settings size={14} className="text-gray-400 hover:text-gray-600" />
                 </button>
-                <AlertTriangle size={18} className="text-amber-500" />
+                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                  <AlertTriangle size={20} className="text-gray-400" strokeWidth={1.5} />
+                </div>
               </div>
             </div>
-            <p className="mt-3 text-3xl font-black text-gray-800">{stats.lowStockCount + stats.outStockCount}</p>
-            <p className="text-xs text-gray-400 mt-1">{stats.outStockCount} out / {stats.lowStockCount} low (≤{lowStockThreshold})</p>
 
             {/* Settings Modal */}
             {showSettings && (
@@ -203,7 +212,7 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
                       <button
                         onClick={handleSaveThreshold}
                         disabled={isSaving}
-                        className="flex-1 px-4 py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-medium disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {isSaving ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : 'Save'}
                       </button>
@@ -213,74 +222,92 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
               </div>
             )}
           </div>
-          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Inventory value</span>
-              <TrendingUp size={18} className="text-orange-500" />
+
+          {/* Inventory Value */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Inventory value</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalValue.toLocaleString()}</p>
+                <p className="text-xs text-gray-400 mt-1">Reserve Price</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                <BarChart3 size={20} className="text-gray-400" strokeWidth={1.5} />
+              </div>
             </div>
-            <p className="mt-3 text-3xl font-black text-gray-800">৳ {stats.totalValue.toLocaleString()}</p>
-            <p className="text-xs text-gray-400 mt-1">Reserve Price</p>
           </div>
-          <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Inventory Sale Value</span>
-              <TrendingUp size={18} className="text-emerald-500" />
+
+          {/* Inventory Sale Value */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-600 font-medium">Inventory sale value</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalSaleValue.toLocaleString()}</p>
+                <p className="text-xs text-gray-400 mt-1">Selling Price</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+                <TrendingUp size={20} className="text-gray-400" strokeWidth={1.5} />
+              </div>
             </div>
-            <p className="mt-3 text-3xl font-black text-gray-800">৳ {stats.totalSaleValue.toLocaleString()}</p>
-            <p className="text-xs text-gray-400 mt-1">Selling Price</p>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm xl:col-span-2">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="relative w-full md:w-2/3">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 text-sm"
-                placeholder="Search products, categories, or tags"
-              />
+        {/* Products Table Section */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 xl:col-span-2">
+          {/* Search and Sort Controls */}
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-5">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="relative flex-1 max-w-sm">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF] text-sm"
+                  placeholder="Search Category"
+                />
+              </div>
+              <button className="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                Search
+              </button>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-500">Sort by</span>
               <select
                 value={sortBy}
                 onChange={(event) => setSortBy(event.target.value as 'stock' | 'name')}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-sm font-semibold text-gray-600 focus:outline-none focus:ring"
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
               >
-                <option value="stock">Stock level</option>
+                <option value="stock">Stock low to high</option>
                 <option value="name">Alphabetical</option>
               </select>
             </div>
           </div>
 
-          <div className="mt-5 overflow-x-auto">
+          <div className="overflow-hidden rounded-lg border border-gray-200">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-gray-400 uppercase tracking-wide">
-                  <th className="py-3">Product</th>
-                  <th className="py-3">Category</th>
-                  <th className="py-3">Price</th>
-                  <th className="py-3">Stock</th>
-                  <th className="py-3">Status</th>
+                <tr className="bg-[#2DD4BF] text-white text-left">
+                  <th className="py-3 px-4 font-medium">Product</th>
+                  <th className="py-3 px-4 font-medium">Category</th>
+                  <th className="py-3 px-4 font-medium">Price</th>
+                  <th className="py-3 px-4 font-medium">Stock</th>
+                  <th className="py-3 px-4 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="py-3">
-                      <div className="font-semibold text-gray-800 line-clamp-1">{product.name}</div>
-                      <div className="text-xs text-gray-400">#{product.id}</div>
+                    <td className="py-3 px-4">
+                      <div className="font-medium text-gray-800">{product.name}</div>
                     </td>
-                    <td className="py-3 text-gray-500">{product.category || 'Unassigned'}</td>
-                    <td className="py-3 text-gray-700 font-semibold">৳ {formatCurrency(product.price)}</td>
-                    <td className="py-3 font-bold text-gray-900">{product.stock ?? 0}</td>
-                    <td className="py-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusBadge(product.stock)}`}>
+                    <td className="py-3 px-4 text-gray-500">{product.category || 'Unassigned'}</td>
+                    <td className="py-3 px-4 text-gray-700">{formatCurrency(product.price)}</td>
+                    <td className="py-3 px-4 text-gray-700">{product.stock ?? 0}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-3 py-1 rounded text-xs font-medium ${getStatusBadge(product.stock)}`}>
                         {getStatusLabel(product.stock)}
                       </span>
                     </td>
@@ -288,7 +315,7 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
                 ))}
                 {filteredProducts.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-sm text-gray-500">No products match the current filters.</td>
+                    <td colSpan={5} className="py-8 text-center text-sm text-gray-500">No products match the current filters.</td>
                   </tr>
                 )}
               </tbody>
@@ -296,26 +323,27 @@ const AdminInventory: React.FC<AdminInventoryProps> = ({ products, lowStockThres
           </div>
         </div>
 
-        <div className="bg-white border border-purple-400 rounded-2xl p-5 shadow-sm space-y-4">
+        {/* Inventory Alerts Sidebar */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
           <div>
             <h3 className="text-lg font-bold text-gray-800">Inventory alerts</h3>
-            <p className="text-sm text-gray-500">Review the most critical SKUs and plan replenishment.</p>
+            <p className="text-sm text-gray-500 mt-1">Review the most critical SKUs and plan replenishment</p>
           </div>
           <div className="space-y-3">
             {alerts.map((product) => (
-              <div key={product.id} className="p-3 border border-gray-100 rounded-xl flex items-center justify-between">
+              <div key={product.id} className="p-3 border border-gray-100 rounded-lg flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-gray-800 line-clamp-1">{product.name}</p>
+                  <p className="font-medium text-gray-800 line-clamp-1">{product.name}</p>
                   <p className="text-xs text-gray-400">Stock {product.stock ?? 0}</p>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusBadge(product.stock)}`}>
+                <span className={`px-2.5 py-1 rounded text-xs font-medium ${getStatusBadge(product.stock)}`}>
                   {getStatusLabel(product.stock)}
                 </span>
               </div>
             ))}
             {alerts.length === 0 && (
-              <div className="p-4 border border-emerald-100 rounded-xl bg-emerald-50 text-emerald-600 text-sm font-semibold">
-                Inventory looks healthy. No low-stock items.
+              <div className="p-4 rounded-lg bg-[#E6F7F5] text-[#2DD4BF] text-sm font-medium">
+                Inventory looks healthy: No low-stock items.
               </div>
             )}
           </div>

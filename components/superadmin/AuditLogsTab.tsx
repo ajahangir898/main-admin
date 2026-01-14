@@ -158,7 +158,7 @@ const AuditLogsTab: React.FC = () => {
         </div>
         <button
           onClick={() => { loadAuditLogs(); loadStats(); }}
-          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors flex items-center gap-2"
         >
           <RefreshCw size={16} />
           Refresh
@@ -203,7 +203,7 @@ const AuditLogsTab: React.FC = () => {
               </div>
               <button
                 onClick={handleSearch}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+                className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors"
               >
                 Search
               </button>

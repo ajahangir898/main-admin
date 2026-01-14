@@ -1460,7 +1460,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
               ? 'bg-emerald-500 text-white'
               : isSaving
               ? 'bg-green-500 text-white cursor-wait'
-              : 'bg-green-600 text-white hover:bg-green-700'
+              : 'bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8]'
           }`}
         >
           {isSaved ? (
@@ -1534,7 +1534,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 </div>
                 <ActionButton
                   onClick={() => openCarouselModal()}
-                  variant="bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
+                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
                 >
                   <Plus size={16} />
                   Add Carousel
@@ -1680,7 +1680,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 </div>
                 <ActionButton
                   onClick={() => openCampaignModal()}
-                  variant="bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
+                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
                 >
                   <Plus size={18} />
                   Add Campaign
@@ -1763,7 +1763,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label><input type="datetime-local" value={campaignFormData.startDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, startDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label><input type="datetime-local" value={campaignFormData.endDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, endDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">Link URL</label><input type="text" value={campaignFormData.url || ''} onChange={e => setCampaignFormData(p => ({ ...p, url: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" placeholder="https://..."/></div>
                 <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Order</label><input type="number" value={campaignFormData.serial || 1} onChange={e => setCampaignFormData(p => ({ ...p, serial: parseInt(e.target.value) }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" min={1}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select value={campaignFormData.status || 'Publish'} onChange={e => setCampaignFormData(p => ({ ...p, status: e.target.value as 'Publish' | 'Draft' }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500"><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div></div>
-                <div className="flex gap-3 pt-4"><button type="button" onClick={() => setIsCampaignModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button><button type="submit" className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">{editingCampaign ? 'Update' : 'Create'} Campaign</button></div>
+                <div className="flex gap-3 pt-4"><button type="button" onClick={() => setIsCampaignModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button><button type="submit" className="flex-1 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-medium">{editingCampaign ? 'Update' : 'Create'} Campaign</button></div>
               </form>
             </div>
           </div>
@@ -1774,7 +1774,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
               <div className="flex bg-gray-100 rounded-lg p-1">{['All', 'Publish', 'Draft'].map(s => <button key={s} onClick={() => setPopupFilterStatus(s as any)} className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${popupFilterStatus === s ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>{s === 'All' ? 'All Data' : s}{s === 'All' && <span className="ml-1 text-xs bg-gray-200 px-1.5 rounded-full">{(websiteConfiguration.popups || []).length}</span>}</button>)}</div>
               <div className="flex gap-3 w-full md:w-auto">
                 <div className="relative flex-1 md:w-64"><input type="text" placeholder="Search" className="w-full pl-10 pr-4 py-2 bg-white border rounded-lg text-sm focus:ring-1 focus:ring-green-500" value={popupSearchQuery} onChange={e => setPopupSearchQuery(e.target.value)}/><Search className="absolute left-3 top-2.5 text-gray-400" size={16}/></div>
-                <ActionButton onClick={() => openPopupModal()} variant="bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"><Plus size={16}/>Add Popup</ActionButton>
+                <ActionButton onClick={() => openPopupModal()} variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"><Plus size={16}/>Add Popup</ActionButton>
               </div>
             </div>
             <div className="overflow-x-auto border rounded-lg shadow-sm">
@@ -1839,7 +1839,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                         <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={!websiteConfiguration[s.key as keyof WebsiteConfig]} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: '' }))}/>
                         <span className="font-semibold text-gray-700">None</span>
                       </div>
-                      <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:bg-green-700 transition-themeColors">
+                      <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-themeColors">
                         <Eye size={14}/>View Site
                       </button>
                     </div>
@@ -1853,7 +1853,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                           <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={cur === v} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: v }))}/>
                           <span className="font-semibold text-gray-700">{s.title.split(' ')[0]} {i + 1}</span>
                         </div>
-                        <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:bg-green-700 transition-themeColors">
+                        <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-themeColors">
                           <Eye size={14}/>View demo
                         </button>
                       </div>
@@ -2013,7 +2013,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
               <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Name</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.name} onChange={e => setCarouselFormData({ ...carouselFormData, name: e.target.value })} required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Serial</label><input type="number" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.serial} onChange={e => setCarouselFormData({ ...carouselFormData, serial: Number(e.target.value) })} required/></div></div>
               <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Url</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.url} onChange={e => setCarouselFormData({ ...carouselFormData, url: e.target.value })}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Url Type</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.urlType} onChange={e => setCarouselFormData({ ...carouselFormData, urlType: e.target.value as any })}><option value="Internal">Internal</option><option value="External">External</option></select></div></div>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.status} onChange={e => setCarouselFormData({ ...carouselFormData, status: e.target.value as any })}><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div>
-              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsCarouselModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" disabled={isCarouselSaving} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-60 flex items-center gap-2">{isCarouselSaving ? <><Loader2 size={16} className="animate-spin"/>Saving...</> : 'Save Carousel'}</button></div>
+              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsCarouselModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" disabled={isCarouselSaving} className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-60 flex items-center gap-2">{isCarouselSaving ? <><Loader2 size={16} className="animate-spin"/>Saving...</> : 'Save Carousel'}</button></div>
             </form>
           </div>
         </div>
@@ -2039,7 +2039,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
               <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Name*</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.name} onChange={e => setPopupFormData({ ...popupFormData, name: e.target.value })} required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Priority</label><input type="number" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.priority} onChange={e => setPopupFormData({ ...popupFormData, priority: Number(e.target.value) })}/></div></div>
               <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">URL</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.url} onChange={e => setPopupFormData({ ...popupFormData, url: e.target.value })}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">URL Type</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.urlType} onChange={e => setPopupFormData({ ...popupFormData, urlType: e.target.value as any })}><option value="Internal">Internal</option><option value="External">External</option></select></div></div>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.status} onChange={e => setPopupFormData({ ...popupFormData, status: e.target.value as any })}><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div>
-              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsPopupModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700">Save Popup</button></div>
+              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsPopupModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save Popup</button></div>
             </form>
           </div>
         </div>

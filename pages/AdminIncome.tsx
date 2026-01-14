@@ -156,7 +156,7 @@ const AdminIncome: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setNewItem({ status: 'Draft', date: new Date().toISOString().split('T')[0] }); setEditingIncomeId(null); setIsAddOpen(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
           >
             <Plus className="w-4 h-4" />
             Add Income
@@ -459,7 +459,7 @@ const AdminIncome: React.FC = () => {
               <button
                 onClick={handleAdd}
                 disabled={!newItem.name || !newItem.category || !newItem.amount || !newItem.date}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {editingIncomeId ? 'Update' : 'Add'} Income
               </button>

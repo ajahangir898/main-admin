@@ -287,7 +287,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
 
           <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
             <button type="button" onClick={() => { if (user) { setForm({ name: user.name || '', username: user.username || '', email: user.email || '', phone: user.phone || '', address: user.address || '' }); setAvatar(user.image || DEFAULT_AVATAR); } }} className="px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-50">Reset</button>
-            <button type="submit" disabled={saving} className="px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 shadow-lg shadow-purple-200 flex items-center gap-2">
+            <button type="submit" disabled={saving} className="px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8] shadow-lg shadow-purple-200 flex items-center gap-2">
               {saving ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : 'Save Changes'}
             </button>
           </div>
@@ -387,7 +387,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setPwModal(false)} className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="px-5 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700">Save</button>
+                <button type="submit" className="px-5 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save</button>
               </div>
             </form>
           </div>

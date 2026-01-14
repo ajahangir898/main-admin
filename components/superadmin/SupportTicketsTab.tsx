@@ -397,7 +397,7 @@ const SupportTicketsTab: React.FC<SupportTicketsTabProps> = ({
                   <button
                     onClick={handleReply}
                     disabled={isSubmitting || !replyMessage.trim()}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                     Send

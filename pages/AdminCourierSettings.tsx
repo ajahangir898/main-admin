@@ -262,7 +262,7 @@ const AdminCourierSettings: React.FC<AdminCourierSettingsProps> = ({ config, onS
                      ? 'bg-emerald-500 text-white shadow-emerald-200' 
                      : isSaving 
                        ? 'bg-purple-500 text-white shadow-purple-200 cursor-wait' 
-                       : 'bg-purple-600 text-white shadow-purple-200 hover:bg-purple-700'
+                       : 'bg-purple-600 text-white shadow-purple-200 hover:from-[#2BAEE8] hover:to-[#1A7FE8]'
                  }`}
                >
                  {saveSuccess ? (

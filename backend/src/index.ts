@@ -43,7 +43,7 @@ app.options('*', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, x-tenant-id, X-Tenant-Id, X-Requested-With, Accept, Origin');
   res.setHeader('Access-Control-Max-Age', '86400');
   res.setHeader('Cache-Control', 'no-store'); // Prevent Cloudflare caching
   res.status(204).end();
@@ -126,7 +126,7 @@ const corsOptions: cors.CorsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-subdomain', 'X-Tenant-Subdomain', 'X-Requested-With', 'Accept', 'Origin'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-subdomain', 'X-Tenant-Subdomain', 'x-tenant-id', 'X-Tenant-Id', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Length', 'X-Request-Id'],
   maxAge: 86400, // 24 hours - cache preflight
 };
@@ -143,7 +143,7 @@ app.use((req, res, next) => {
   }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-tenant-subdomain, X-Tenant-Subdomain, x-tenant-id, X-Tenant-Id, X-Requested-With, Accept, Origin');
   res.setHeader('Cache-Control', 'no-store'); // Prevent Cloudflare caching CORS headers
   
   if (req.method === 'OPTIONS') {

@@ -148,7 +148,7 @@ const BulkAnnouncementsTab: React.FC<BulkAnnouncementsTabProps> = ({
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors"
         >
           <Plus className="w-4 h-4" />
           New Announcement
@@ -265,7 +265,7 @@ const BulkAnnouncementsTab: React.FC<BulkAnnouncementsTabProps> = ({
             <p className="text-slate-500 mb-4">Create your first announcement to communicate with merchants</p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+              className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors"
             >
               Create Announcement
             </button>
@@ -505,7 +505,7 @@ const BulkAnnouncementsTab: React.FC<BulkAnnouncementsTabProps> = ({
               <button
                 onClick={() => handleCreateAnnouncement(true)}
                 disabled={isSubmitting || !formData.title || !formData.message}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
                 {formData.scheduledAt ? 'Schedule' : 'Send Now'}

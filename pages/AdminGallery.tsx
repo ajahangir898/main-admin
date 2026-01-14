@@ -582,7 +582,7 @@ const AdminGallery: React.FC = () => {
                         />
                         <button
                           onClick={handleCreateFolder}
-                          className="px-3 py-2 bg-purple-600 text-white rounded-lg text-sm"
+                          className="px-3 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm"
                         >
                           <Check size={16} />
                         </button>

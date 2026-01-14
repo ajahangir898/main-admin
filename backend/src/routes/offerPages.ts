@@ -1,9 +1,25 @@
+import crypto from "crypto";
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { OfferPage, IOfferPage } from '../models/OfferPage';
 import { authenticateToken } from '../middleware/auth';
 
 export const offerPagesRouter = Router();
+
+// Helper to get tenantId from request (JWT token OR header for super_admin)
+const getTenantId = (req: Request): string | undefined => {
+  // First try from JWT token (normal users)
+  if ((req as any).user?.tenantId) {
+    return (req as any).user.tenantId;
+  }
+  // Fallback to x-tenant-id header (for super_admin viewing other tenants)
+  const headerTenantId = req.headers['x-tenant-id'] as string;
+  if (headerTenantId) {
+    return headerTenantId;
+  }
+  // Fallback to query param
+  return req.query.tenantId as string | undefined;
+};
 
 // Validation schema for creating/updating offer pages
 const offerPageSchema = z.object({
@@ -16,7 +32,7 @@ const offerPageSchema = z.object({
   productOfferInfo: z.string().optional().default(''),
   paymentSectionTitle: z.string().optional().default(''),
   benefits: z.array(z.object({
-    id: z.string(),
+    id: z.string().default(() => crypto.randomUUID()),
     text: z.string()
   })).optional().default([]),
   whyBuySection: z.string().optional().default(''),
@@ -54,7 +70,7 @@ const generateUniqueSlug = async (baseSlug: string, tenantId: string, excludeId?
 // GET /api/landing-page - Get all offer pages for tenant
 offerPagesRouter.get('/', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).user?.tenantId;
+    const tenantId = getTenantId(req);
     
     if (!tenantId) {
       return res.status(400).json({ error: 'Tenant ID required' });
@@ -160,7 +176,7 @@ offerPagesRouter.get('/slug/:slug', async (req: Request, res: Response) => {
 // POST /api/landing-page - Create new offer page
 offerPagesRouter.post('/', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).user?.tenantId;
+    const tenantId = getTenantId(req);
     
     if (!tenantId) {
       return res.status(400).json({ error: 'Tenant ID required' });
@@ -204,7 +220,7 @@ offerPagesRouter.post('/', authenticateToken, async (req: Request, res: Response
 offerPagesRouter.put('/:id', authenticateToken, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const tenantId = (req as any).user?.tenantId;
+    const tenantId = getTenantId(req);
     
     if (!tenantId) {
       return res.status(400).json({ error: 'Tenant ID required' });
@@ -257,7 +273,7 @@ offerPagesRouter.put('/:id', authenticateToken, async (req: Request, res: Respon
 offerPagesRouter.delete('/:id', authenticateToken, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const tenantId = (req as any).user?.tenantId;
+    const tenantId = getTenantId(req);
     
     if (!tenantId) {
       return res.status(400).json({ error: 'Tenant ID required' });

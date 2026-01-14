@@ -555,7 +555,7 @@ const MerchantSuccessTab: React.FC<MerchantSuccessTabProps> = ({
                     }
                   }}
                   disabled={!followUpDate}
-                  className="px-3 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-50 text-sm"
+                  className="px-3 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-50 text-sm"
                 >
                   <Calendar className="w-4 h-4" />
                 </button>

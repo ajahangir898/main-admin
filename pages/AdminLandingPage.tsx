@@ -1,158 +1,115 @@
 import React, { useState, useEffect } from 'react';
-import { Product, LandingPage } from '../types';
-import { LandingPagePanel } from '../components/LandingPageComponents';
-import { Sparkles, Globe, Loader2 } from 'lucide-react';
 import { useTenant } from '../hooks/useTenant';
-import { DataService } from '../services/DataService';
+import { OfferPageManager } from '../components/OfferPageManager';
+import { OfferPageBuilder } from '../components/OfferPageBuilder';
+import { OfferLandingPage } from '../components/OfferLandingPage';
+import { DataService, OfferPageResponse } from '../services/DataService';
+import { Product } from '../types';
+import { ArrowLeft, X } from 'lucide-react';
 
-interface AdminLandingPageProps {
-  products: Product[];
-  landingPages: LandingPage[];
-  onCreateLandingPage: (page: LandingPage) => void;
-  onUpdateLandingPage: (page: LandingPage) => void;
-  onTogglePublish: (pageId: string, status: LandingPage['status']) => void;
-  onPreviewLandingPage: (page: LandingPage) => void;
-}
+type ViewMode = 'list' | 'create' | 'edit' | 'preview';
 
-const AdminLandingPage: React.FC<AdminLandingPageProps> = ({
-  products,
-  landingPages,
-  onCreateLandingPage,
-  onUpdateLandingPage,
-  onTogglePublish,
-  onPreviewLandingPage
-}) => {
-  const { tenants, activeTenantId } = useTenant();
-  const [subdomain, setSubdomain] = useState<string>('');
-  const [isLoadingSubdomain, setIsLoadingSubdomain] = useState(true);
-  const [fetchAttempted, setFetchAttempted] = useState(false);
+const AdminLandingPage: React.FC = () => {
+  const { activeTenantId } = useTenant();
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [editingPage, setEditingPage] = useState<OfferPageResponse | null>(null);
+  const [previewPage, setPreviewPage] = useState<OfferPageResponse | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Try to get subdomain from tenants array first, otherwise fetch it
   useEffect(() => {
-    // If we already have subdomain, don't do anything
-    if (subdomain) {
-      setIsLoadingSubdomain(false);
-      return;
-    }
+    const fetchProducts = async () => {
+      if (!activeTenantId) return;
+      try {
+        const data = await DataService.getProducts(activeTenantId);
+        setProducts(data || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setProducts([]);
+      }
+    };
+    fetchProducts();
+  }, [activeTenantId]);
 
-    // Try from tenants array first
-    const tenant = tenants.find(t => t.id === activeTenantId);
-    if (tenant?.subdomain) {
-      console.log('[AdminLandingPage] Got subdomain from tenants:', tenant.subdomain);
-      setSubdomain(tenant.subdomain);
-      setIsLoadingSubdomain(false);
-      return;
-    }
+  const handleCreateNew = () => {
+    setEditingPage(null);
+    setViewMode('create');
+  };
 
-    // If no activeTenantId yet, wait
-    if (!activeTenantId) {
-      return;
-    }
+  const handleEdit = (page: OfferPageResponse) => {
+    setEditingPage(page);
+    setViewMode('edit');
+  };
 
-    // Only fetch once if tenants don't have the subdomain
-    if (!fetchAttempted && tenants.length === 0) {
-      setFetchAttempted(true);
-      console.log('[AdminLandingPage] Fetching tenants from DataService...');
-      DataService.listTenants().then(tenantList => {
-        const foundTenant = tenantList.find(t => t.id === activeTenantId);
-        if (foundTenant?.subdomain) {
-          console.log('[AdminLandingPage] Got subdomain from fetch:', foundTenant.subdomain);
-          setSubdomain(foundTenant.subdomain);
-        } else {
-          console.log('[AdminLandingPage] No subdomain found for tenant:', activeTenantId);
-        }
-        setIsLoadingSubdomain(false);
-      }).catch((err) => {
-        console.error('[AdminLandingPage] Error fetching tenants:', err);
-        setIsLoadingSubdomain(false);
-      });
-    } else if (tenants.length > 0) {
-      // Tenants loaded but this tenant not found
-      console.log('[AdminLandingPage] Tenant not found in loaded tenants');
-      setIsLoadingSubdomain(false);
-    }
-  }, [activeTenantId, tenants, subdomain, fetchAttempted]);
+  const handlePreview = (page: OfferPageResponse) => {
+    setPreviewPage(page);
+    setViewMode('preview');
+  };
 
-  // Show loading state while subdomain is loading
-  if (isLoadingSubdomain && !subdomain) {
+  const handleSave = () => {
+    setViewMode('list');
+    setEditingPage(null);
+    setRefreshKey(prev => prev + 1);
+  };
+
+  const handleCancel = () => {
+    setViewMode('list');
+    setEditingPage(null);
+    setPreviewPage(null);
+  };
+
+  if (!activeTenantId) {
     return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Sparkles className="text-purple-500" size={28} />
-              ল্যান্ডিং পেজ বিল্ডার
-            </h1>
-            <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-3" />
-            <p className="text-gray-500">লোড হচ্ছে...</p>
-          </div>
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <p className="text-gray-400">Please select a tenant</p>
       </div>
     );
   }
 
-  // If no subdomain after loading, show error
-  if (!subdomain) {
+  // Preview mode - full screen
+  if (viewMode === 'preview' && previewPage) {
     return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Sparkles className="text-purple-500" size={28} />
-              ল্যান্ডিং পেজ বিল্ডার
-            </h1>
-            <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
-          </div>
+      <div className="fixed inset-0 bg-white z-50 overflow-auto">
+        <div className="sticky top-0 z-10 bg-gray-900 text-white p-3 flex items-center justify-between">
+          <button
+            onClick={handleCancel}
+            className="flex items-center gap-2 text-gray-300 hover:text-white"
+          >
+            <ArrowLeft size={20} />
+            Back to List
+          </button>
+          <span className="text-sm text-gray-400">Preview Mode</span>
+          <button onClick={handleCancel} className="p-2 hover:bg-gray-800 rounded">
+            <X size={20} />
+          </button>
         </div>
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center text-gray-500">
-            <p>স্টোর সাবডোমেইন লোড করতে সমস্যা হয়েছে।</p>
-            <p className="text-sm mt-2">পেজ রিফ্রেশ করে আবার চেষ্টা করুন।</p>
-          </div>
-        </div>
+        <OfferLandingPage offerPage={previewPage as any} />
       </div>
     );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Simple Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Sparkles className="text-purple-500" size={28} />
-            ল্যান্ডিং পেজ বিল্ডার
-          </h1>
-          <p className="text-gray-500 mt-1">প্রোডাক্ট সিলেক্ট করে সুন্দর সেলস পেজ তৈরি করুন</p>
-        </div>
-        <div className="flex items-center gap-3 text-sm">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full">
-            <Globe size={14} />
-            <span className="font-medium">{landingPages.length} পেজ</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="font-medium">{landingPages.filter(p => p.status === 'published').length} লাইভ</span>
-          </div>
-        </div>
-      </div>
-
-      <LandingPagePanel
-        products={products}
-        landingPages={landingPages}
-        onCreateLandingPage={onCreateLandingPage}
-        onUpdateLandingPage={onUpdateLandingPage}
-        onTogglePublish={onTogglePublish}
-        onPreview={onPreviewLandingPage}
+  // Create/Edit mode
+  if (viewMode === 'create' || viewMode === 'edit') {
+    return (
+      <OfferPageBuilder
         tenantId={activeTenantId}
-        tenantSubdomain={subdomain}
+        products={products}
+        editingPage={editingPage}
+        onSave={handleSave}
+        onCancel={handleCancel}
       />
-    </div>
+    );
+  }
+
+  // List mode (default)
+  return (
+    <OfferPageManager
+      key={refreshKey}
+      tenantId={activeTenantId}
+      onCreateNew={handleCreateNew}
+      onEdit={handleEdit}
+      onPreview={handlePreview}
+    />
   );
 };
 

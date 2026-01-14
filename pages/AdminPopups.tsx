@@ -155,7 +155,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
             </div>
             <button
               onClick={handleAddNew}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
             >
               <Plus size={20} />
               Add Popup
@@ -484,7 +484,7 @@ const AdminPopups: React.FC<AdminPopupsProps> = ({ onBack }) => {
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
               >
                 <Save size={18} />
                 Save Popup

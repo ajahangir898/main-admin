@@ -437,7 +437,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
         {((tab === 'users' && canModifyUsers) || (tab === 'roles' && canModifyRoles)) && (
           <button 
             onClick={() => tab === 'users' ? openUserModal() : openRoleModal()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition"
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg-xl font-medium transition"
           >
             <Plus size={18} /> {tab === 'users' ? 'Add User' : 'Create Role'}
           </button>

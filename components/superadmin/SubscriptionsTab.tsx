@@ -213,7 +213,7 @@ const SubscriptionsTab: React.FC<SubscriptionsTabProps> = ({
                     setEditingPlan(null);
                     setShowPlanModal(true);
                   }}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   Create Plan
@@ -706,7 +706,7 @@ const PlanModal: React.FC<{
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors"
             >
               {plan ? 'Update Plan' : 'Create Plan'}
             </button>
@@ -876,7 +876,7 @@ const TrialManagement: React.FC<{
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+          className="w-full px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors"
         >
           Save Settings
         </button>

@@ -100,7 +100,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium flex items-center gap-2 transition-colors"
+          className="px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
           New Notification
@@ -227,7 +227,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({
               <button
                 onClick={handleSend}
                 disabled={isSending || !newNotification.title || !newNotification.message}
-                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
+                className="px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white rounded-lg font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
               >
                 {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                 Send Notification

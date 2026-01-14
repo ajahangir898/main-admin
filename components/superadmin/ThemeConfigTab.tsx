@@ -113,7 +113,7 @@ const ThemeConfigTab: React.FC<ThemeConfigTabProps> = ({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
+            className="px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white rounded-lg font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
           >
             {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
             Save Default Theme
@@ -236,7 +236,7 @@ const ThemeConfigTab: React.FC<ThemeConfigTabProps> = ({
               <button
                 onClick={handleApplyToAll}
                 disabled={isApplying}
-                className="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
+                className="w-full px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
               >
                 {isApplying ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                 Apply to All Tenants

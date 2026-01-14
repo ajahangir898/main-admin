@@ -142,7 +142,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [bulkAction, setBulkAction] = useState<'category' | 'discount' | 'status' | null>(null);
   const [bulkValue, setBulkValue] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('details');
+  const [viewMode, setViewMode] = useState<ViewMode>('largeIcons');
   const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
   const [openActionDropdown, setOpenActionDropdown] = useState<number | string | null>(null);
 
@@ -951,10 +951,11 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
           </button>
           <button
             onClick={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border ${isDeepSearchOpen 
-                ? 'bg-[#2DD4BF] text-white border-[#2DD4BF]'
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border ${
+              isDeepSearchOpen 
+                ? 'bg-[#2DD4BF] text-white border-[#2DD4BF]' 
                 : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-              }`}
+            }`}
           >
             <Filter size={16} />
             Deep Search
@@ -970,7 +971,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
       {/* Toolbar & Filters */}
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4 sticky top-0 z-20">
-
+        
         {/* Top Row: Search & Select All */}
         {/* Import/Export Row */}
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -988,9 +989,9 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <option>100 Products</option>
             </select>
           </div>
-          {/* <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <span className="flex items-center gap-2 text-sm text-gray-500"><Filter size={16} /> Filter:</span>
-            <select
+            <select 
               className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
@@ -998,7 +999,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <option value="">All Category</option>
               {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
-            <select
+            <select 
               className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
               value={filterBrand}
               onChange={(e) => setFilterBrand(e.target.value)}
@@ -1006,7 +1007,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <option value="">All Brands</option>
               {brands.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}
             </select>
-            <select
+            <select 
               className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
@@ -1015,9 +1016,116 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <option value="Active">Active</option>
               <option value="Draft">Draft</option>
             </select>
-          </div> */}
+          </div>
         </div>
 
+        <div className="flex justify-end items-center">
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between sm:justify-end">
+            <div className="relative w-full sm:w-auto" ref={viewMenuRef}>
+              <button 
+                type="button"
+                onClick={() => setIsViewMenuOpen(!isViewMenuOpen)}
+                className={`w-full sm:w-auto rounded-xl px-4 py-2.5 text-left transition focus:outline-none focus:ring-2 focus:ring-teal-500/40 shadow-sm bg-white border ${isViewMenuOpen ? 'border-teal-500' : 'border-gray-200 hover:border-teal-400'}`}
+              >
+                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400">View</span>
+                <div className="flex items-center justify-between gap-3 mt-1">
+                  <div className="flex items-center gap-2">
+                    <ActiveViewIcon size={16} className="text-teal-600" />
+                    <span className="text-sm font-semibold text-gray-800">{activeViewOption?.label}</span>
+                  </div>
+                  <ChevronDown size={14} className={`text-gray-400 transition ${isViewMenuOpen ? 'transform rotate-180' : ''}`} />
+                </div>
+              </button>
+
+              {isViewMenuOpen && (
+                <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-40 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                    <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">View options</p>
+                    <p className="text-[11px] text-gray-500">Switch between layouts</p>
+                  </div>
+                  <div className="py-1">
+                    {VIEW_OPTIONS.map(option => {
+                      const Icon = option.icon;
+                      const isActive = option.value === viewMode;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => {
+                            setViewMode(option.value);
+                            setIsViewMenuOpen(false);
+                          }}
+                          className={`w-full flex items-start gap-3 px-4 py-2.5 transition text-left ${isActive ? 'bg-teal-50 border-l-4 border-teal-500' : 'hover:bg-gray-50'}`}
+                        >
+                          <Icon size={18} className={`mt-0.5 ${isActive ? 'text-teal-600' : 'text-gray-400'}`} />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-sm font-semibold ${isActive ? 'text-teal-700' : 'text-gray-700'}`}>{option.label}</span>
+                              {isActive && <CheckCircle size={16} className="text-teal-500" />}
+                            </div>
+                            <p className="text-xs text-gray-500">{option.description}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500 border-t border-gray-100 flex items-center gap-2">
+                    <AlertCircle size={14} className="text-gray-400" />
+                    Personalize how the catalog grid looks and feels.
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="text-sm text-gray-500 whitespace-nowrap text-right">
+               Showing <span className="font-bold text-gray-800">{filteredProducts.length}</span> products
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Row: Filters */}
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100">
+           <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Filter size={16} />
+              <span className="font-medium">Filters:</span>
+           </div>
+           
+           <select 
+             className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] bg-white text-gray-700"
+             value={filterCategory}
+             onChange={(e) => setFilterCategory(e.target.value)}
+           >
+             <option value="">All Category</option>
+             {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+           </select>
+
+           <select 
+             className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] bg-white text-gray-700"
+             value={filterBrand}
+             onChange={(e) => setFilterBrand(e.target.value)}
+           >
+             <option value="">All Brands</option>
+             {brands.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}
+           </select>
+
+           <select 
+             className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] bg-white text-gray-700"
+             value={filterStatus}
+             onChange={(e) => setFilterStatus(e.target.value)}
+           >
+             <option value="">All Status</option>
+             <option value="Active">Active</option>
+             <option value="Draft">Draft</option>
+           </select>
+
+           {(searchTerm || filterCategory || filterBrand || filterStatus) && (
+             <button 
+               onClick={resetFilters}
+               className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 font-medium ml-auto"
+             >
+               <RefreshCw size={14} /> Reset
+             </button>
+           )}
+        </div>
       </div>
 
       {/* Deep Search Panel */}
@@ -1369,7 +1477,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                      </div>
                      <div className="flex-1 min-w-0 space-y-1 cursor-pointer" onClick={() => toggleSelection(product.id)}>
                         <div className="flex flex-wrap gap-1">
-                         <span className="text-[11px] font-medium text-[#2DD4BF] bg-[#E6F7F5] px-2 py-0.5 rounded-full">
+                          <span className="text-[11px] font-medium text-[#2DD4BF] bg-[#E6F7F5] px-2 py-0.5 rounded-full">
                             {product.category || 'Uncategorized'}
                           </span>
                           {product.brand && (
@@ -1441,7 +1549,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   type="checkbox" 
                   checked={isSelected}
                   onChange={() => toggleSelection(product.id)}
-                   className="w-5 h-5 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] shadow-sm cursor-pointer"
+                  className="w-5 h-5 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] shadow-sm cursor-pointer"
                 />
               </div>
               
@@ -1466,7 +1574,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3 backdrop-blur-[1px]">
                     <button 
                       onClick={() => handleOpenModal(product as any)}
-                     className="bg-white text-gray-800 p-2 rounded-full hover:bg-[#E6F7F5] hover:text-[#2DD4BF] transition shadow-lg"
+                      className="bg-white text-gray-800 p-2 rounded-full hover:bg-[#E6F7F5] hover:text-[#2DD4BF] transition shadow-lg"
                       title="Edit"
                     >
                       <Edit size={18} />
@@ -1490,7 +1598,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               </div>
               <div className={`${viewMode === 'smallIcons' ? 'p-3' : viewMode === 'extraLargeIcons' ? 'p-5' : 'p-4'} cursor-pointer`} onClick={() => toggleSelection(product.id)}>
                  <div className="mb-2 flex flex-wrap gap-1">
-                   <span className={`${viewMode === 'smallIcons' ? 'text-[10px]' : 'text-xs'} font-medium text-[#2DD4BF] bg-[#E6F7F5] px-2 py-0.5 rounded-full`}>
+                    <span className={`${viewMode === 'smallIcons' ? 'text-[10px]' : 'text-xs'} font-medium text-[#2DD4BF] bg-[#E6F7F5] px-2 py-0.5 rounded-full`}>
                       {product.category || 'Uncategorized'}
                     </span>
                     {product.brand && (
@@ -1581,7 +1689,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               <input 
                                 type="text" 
                                 required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
                                 value={formData.name}
                                 onChange={e => handleNameChange(e.target.value)}
                               />
@@ -1591,7 +1699,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               <label className="text-sm font-medium text-gray-700">Product URL Slug</label>
                               <input 
                                 type="text" 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
                                 value={formData.slug || ''}
                                 onChange={e => {
                                   setIsSlugTouched(true);
@@ -1606,7 +1714,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Brand</label>
                               <select 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
                                 value={formData.brand}
                                 onChange={e => setFormData({...formData, brand: e.target.value})}
                               >
@@ -1620,7 +1728,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Category*</label>
                               <select 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
                                 value={formData.category}
                                 onChange={e => setFormData({
                                     ...formData, 
@@ -1639,7 +1747,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Sub Category</label>
                               <select 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
                                 value={formData.subCategory}
                                 onChange={e => setFormData({
                                     ...formData, 
@@ -1658,7 +1766,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Child Category</label>
                               <select 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
                                 value={formData.childCategory}
                                 onChange={e => setFormData({...formData, childCategory: e.target.value})}
                                 disabled={!formData.subCategory}
@@ -1673,7 +1781,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                             <div className="space-y-2">
                               <label className="text-sm font-medium text-gray-700">Status</label>
                               <select 
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none bg-white"
                                 value={formData.status || 'Active'}
                                 onChange={e => setFormData({...formData, status: e.target.value as any})}
                               >
@@ -1740,9 +1848,9 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                           <div className="space-y-3">
                             <div 
                               onClick={() => fileInputRef.current?.click()}
-                            className="border-2 border-dashed border-gray-300 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer hover:border-purple-500 hover:bg-[#E6F7F5] transition group"
+                              className="border-2 border-dashed border-gray-300 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer hover:border-purple-500 hover:bg-[#E6F7F5] transition group"
                             >
-                            <div className="bg-purple-100 p-2 rounded-full text-[#2DD4BF] mb-2 group-hover:scale-110 transition">
+                               <div className="bg-purple-100 p-2 rounded-full text-[#2DD4BF] mb-2 group-hover:scale-110 transition">
                                  <Upload size={20} />
                                </div>
                                <p className="text-sm text-gray-500 font-medium">Upload New Images</p>
@@ -1803,7 +1911,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                   <button 
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
-                                  className="flex-1 py-2 sm:py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:border-purple-500 hover:text-[#2DD4BF] transition flex items-center justify-center gap-2"
+                                    className="flex-1 py-2 sm:py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:border-purple-500 hover:text-[#2DD4BF] transition flex items-center justify-center gap-2"
                                   >
                                     <Upload size={16} /> Upload ({formData.galleryImages.length}/10)
                                   </button>
@@ -1844,7 +1952,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                 <input 
                                   type="text" 
                                   placeholder="Color (Name or Hex)"
-                              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
+                                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
                                   value={colorInput}
                                   onChange={e => setColorInput(e.target.value)}
                                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addColor())}
@@ -1868,7 +1976,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                                 <input 
                                   type="text" 
                                   placeholder="Size (e.g. XL, 42)"
-                              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
+                                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
                                   value={sizeInput}
                                   onChange={e => setSizeInput(e.target.value)}
                                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSize())}
@@ -2011,14 +2119,14 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               }}
                               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border-2 font-medium transition-all text-sm sm:text-base ${
                                 formData.tags?.some(t => t.toLowerCase() === 'popular')
-                                ? 'bg-[#E6F7F5] border-purple-400 text-purple-700'
+                                  ? 'bg-[#E6F7F5] border-purple-400 text-purple-700'
                                   : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-purple-300'
                               }`}
                             >
                               <span className="text-base sm:text-lg">⭐</span>
                               <span>Popular</span>
                               {formData.tags?.some(t => t.toLowerCase() === 'popular') && (
-                          <span className="bg-[#E6F7F5]0 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
+                                <span className="bg-[#E6F7F5]0 text-white text-xs px-1.5 py-0.5 rounded">ON</span>
                               )}
                             </button>
 
@@ -2028,7 +2136,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               <input 
                                 type="text" 
                                 placeholder="Add tag..."
-                            className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm sm:text-base"
+                                className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm sm:text-base"
                                 value={tagInput}
                                 onChange={e => setTagInput(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
@@ -2063,7 +2171,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                           {/* Deep Search Tags */}
                           <div className="space-y-2 pt-4 border-t border-gray-200">
                             <div className="flex items-center gap-2 mb-2">
-                          <Search size={16} className="text-[#2DD4BF]" />
+                              <Search size={16} className="text-[#2DD4BF]" />
                               <label className="text-sm font-medium text-gray-700">Deep Search Tags</label>
                               <span className="text-xs text-gray-500">(Hidden tags for better search results)</span>
                             </div>
@@ -2071,12 +2179,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                               <input 
                                 type="text" 
                                 placeholder="Add search keyword (e.g., 'smartphone', 'wireless', 'gaming')..."
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none text-sm"
                                 value={searchTagInput}
                                 onChange={e => setSearchTagInput(e.target.value)}
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSearchTag())}
                               />
-                          <button type="button" onClick={addSearchTag} className="bg-purple-100 px-4 rounded-lg hover:bg-purple-200 text-[#2DD4BF] font-bold">+</button>
+                              <button type="button" onClick={addSearchTag} className="bg-purple-100 px-4 rounded-lg hover:bg-purple-200 text-[#2DD4BF] font-bold">+</button>
                             </div>
                             
                             <div className="flex flex-wrap gap-2 mt-2">
@@ -2102,9 +2210,9 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
               {/* Saving Progress Bar */}
               {isSaving && (
-              <div className="px-4 sm:px-6 py-3 bg-[#E6F7F5] border-t border-purple-100">
+                <div className="px-4 sm:px-6 py-3 bg-[#E6F7F5] border-t border-purple-100">
                   <div className="flex items-center gap-3">
-                  <Loader2 size={18} className="text-[#2DD4BF] animate-spin" />
+                    <Loader2 size={18} className="text-[#2DD4BF] animate-spin" />
                     <span className="text-sm font-medium text-purple-700">
                       {savingProgress < 100 ? 'Saving product...' : 'Saved!'}
                     </span>
@@ -2131,7 +2239,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                    type="submit" 
                    form="productForm"
                    disabled={isSaving}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg transition text-sm font-medium shadow-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-70 disabled:cursor-not-allowed"
+                   className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg transition text-sm font-medium shadow-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-70 disabled:cursor-not-allowed"
                  >
                    {isSaving ? (
                      <>
@@ -2163,7 +2271,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                  
                  {bulkAction === 'category' ? (
                    <select 
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
                      value={bulkValue}
                      onChange={(e) => setBulkValue(e.target.value)}
                    >
@@ -2172,7 +2280,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                    </select>
                  ) : bulkAction === 'status' ? (
                    <select 
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
                      value={bulkValue}
                      onChange={(e) => setBulkValue(e.target.value)}
                    >
@@ -2184,7 +2292,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                    <input 
                      type="text" 
                      placeholder="Discount (e.g. 50% OFF)"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DD4BF] focus:outline-none"
                      value={bulkValue}
                      onChange={(e) => setBulkValue(e.target.value)}
                    />
@@ -2192,7 +2300,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
                  <div className="mt-6 flex gap-3">
                     <button onClick={() => setBulkAction(null)} className="flex-1 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 font-medium text-gray-600">Cancel</button>
-                <button onClick={executeBulkAction} className="flex-1 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-bold shadow-md">Apply</button>
+                    <button onClick={executeBulkAction} className="flex-1 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-bold shadow-md">Apply</button>
                  </div>
               </div>
            </div>

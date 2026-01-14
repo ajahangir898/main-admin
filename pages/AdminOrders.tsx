@@ -460,6 +460,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
     completed: orders.filter(o => o.status === 'Delivered').length,
     pending: orders.filter(o => o.status === 'Pending').length,
     cancelled: orders.filter(o => o.status === 'Cancelled').length,
+    returned: orders.filter(o => o.status === 'Return' || o.status === 'Returned Receive').length,
   }), [orders]);
 
   return (
@@ -468,10 +469,16 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Order List</h1>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium text-sm">
+
+
+          <button class="flex w-[142px] pt-[6px] pr-[16px] pb-[6px] pl-[12px] justify-center items-center gap-[4px] shrink-0 self-stretch rounded-lg bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-medium text-sm transition-all hover:opacity-90 active:scale-95 shadow-md">
+            {/* "rounded-[18px] bg-gradient-to-r from-[#38BDF8] to-[#1E90FF]" */}
             <Plus size={18} />
-            Add Order
+
+            <span> Add Order </span>
           </button>
+
+
           <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm">
             <MoreHorizontal size={18} />
             More Action
@@ -496,7 +503,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {/* Total Orders */}
-          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
+            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Total Orders</p>
@@ -516,7 +523,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </div>
 
           {/* GMV */}
-          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
+            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">GMV</p>
@@ -536,7 +543,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </div>
 
           {/* Pending */}
-          <div className="bg-white rounded-xl border border-purple-400 p-5 shadow-sm">
+            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Pending</p>
@@ -617,6 +624,15 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           >
             Cancelled ({tabCounts.cancelled})
           </button>
+          <button
+            onClick={() => setStatusFilter('Return')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Return'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+              }`}
+          >
+            Returned ({tabCounts.returned})
+          </button>
         </div>
 
         <div className="flex items-center gap-3">
@@ -661,6 +677,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Payment</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 bg-white">
@@ -773,12 +790,22 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                             {order.status}
                           </span>
                         </td>
+
+                        {/* Action */}
+                        <td className="px-4 py-4">
+                          <button
+                            className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
+                            onClick={() => openOrderModal(order)}
+                          >
+                            <MoreVertical size={18} />
+                          </button>
+                        </td>
                       </tr>
                     );
                   })
                 ) : (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-center text-gray-500">
+                        <td colSpan={11} className="px-4 py-12 text-center text-gray-500">
                       <Package2 size={48} className="mx-auto mb-4 text-gray-300" />
                       <p className="font-medium">No orders found</p>
                       <p className="text-sm text-gray-400">Try adjusting your search or filters</p>
@@ -819,7 +846,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
                       className={`w-8 h-8 text-sm font-medium rounded-lg transition ${currentPage === pageNum
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-teal-500 text-white'
                         : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
                         }`}
                     >
@@ -881,7 +908,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
 
           <button
             onClick={() => setShowStatusModal(true)}
-            className="flex items-center gap-1.5 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
+            className="flex items-center gap-1.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white px-3 py-1.5 rounded-lg text-sm font-medium transition"
           >
             Change Status
           </button>

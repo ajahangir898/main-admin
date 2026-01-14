@@ -3,7 +3,7 @@ import { Product, LandingPage, LandingPageBlock, LandingPageTemplate, LandingPag
 
 // Empty landing page templates - users create their own
 const LANDING_PAGE_TEMPLATES: LandingPageTemplate[] = [];
-import { Sparkles, Eye, Copy, CheckCircle, Edit3, Trash2, Layout, Plus, PenSquare, Layers, Palette, Globe, Zap, Quote, HelpCircle, Image as ImageIcon, Phone, ShoppingBag, Loader2 } from 'lucide-react';
+import { Sparkles, Eye, Copy, CheckCircle, Edit3, Trash2, Layout, Plus, PenSquare, Layers, Palette, Globe, Zap, Quote, HelpCircle, Image as ImageIcon, Phone, ShoppingBag, Loader2, ExternalLink, X } from 'lucide-react';
 import { formatCurrency } from '../utils/format';
 
 const randomId = () => (crypto?.randomUUID ? crypto.randomUUID() : `lp-${Date.now().toString(36)}-${Math.random().toString(16).slice(2)}`);
@@ -108,59 +108,92 @@ const TemplatePreviewCard: React.FC<{ product?: Product; template?: LandingPageT
   );
 };
 
-// Step indicator component for wizard
-const StepIndicator: React.FC<{ step: number; currentStep: number; title: string; description: string; isCompleted: boolean }> = ({ step, currentStep, title, description, isCompleted }) => (
-  <div className={`flex items-start gap-4 p-4 rounded-xl transition-all ${
-    currentStep === step ? 'bg-purple-50 border-2 border-purple-400' : 
-    isCompleted ? 'bg-green-50 border border-green-200' : 
-    'bg-gray-50 border border-gray-200 opacity-60'
-  }`}>
-    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all ${
-      isCompleted ? 'bg-green-500 text-white' : 
-      currentStep === step ? 'bg-purple-600 text-white ring-4 ring-purple-200' : 
-      'bg-gray-300 text-gray-600'
-    }`}>
-      {isCompleted ? <CheckCircle size={18} /> : step}
+// Success Modal Component for Landing Page Creation
+const LandingPageSuccessModal: React.FC<{
+  pageUrl: string;
+  pageName: string;
+  onClose: () => void;
+  onViewPage: () => void;
+  onCreateNew: () => void;
+}> = ({ pageUrl, pageName, onClose, onViewPage, onCreateNew }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(pageUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center relative">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <X size={20} />
+        </button>
+        
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle size={32} className="text-green-500" />
+        </div>
+        
+        <h2 className="text-xl font-bold text-gray-900 mb-2">🎉 Landing Page Created Successfully!</h2>
+        <p className="text-gray-500 mb-2">"{pageName}" is now live</p>
+        <p className="text-sm text-gray-400 mb-6">Customers can now visit this link to buy your product</p>
+        
+        <div className="mb-6">
+          <p className="text-sm text-gray-500 mb-2">Page Link</p>
+          <div className="flex items-center gap-2 bg-gray-100 rounded-xl p-2">
+            <input 
+              type="text" 
+              value={pageUrl}
+              readOnly
+              className="flex-1 bg-transparent text-sm text-gray-700 outline-none px-2 truncate"
+            />
+            <button
+              onClick={handleCopy}
+              className={`px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-all ${
+                copied ? 'bg-green-500 text-white' : 'bg-purple-600 text-white hover:bg-purple-700'
+              }`}
+            >
+              <Copy size={14} />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex gap-3">
+          <button
+            onClick={onViewPage}
+            className="flex-1 py-3 bg-green-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-green-600"
+          >
+            <ExternalLink size={18} />
+            View Page
+          </button>
+          <button
+            onClick={onCreateNew}
+            className="flex-1 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50"
+          >
+            Create Another
+          </button>
+        </div>
+      </div>
     </div>
-    <div className="flex-1">
-      <h4 className={`text-sm font-bold ${currentStep === step ? 'text-purple-700' : isCompleted ? 'text-green-700' : 'text-gray-500'}`}>
-        {title}
-      </h4>
-      <p className={`text-xs mt-0.5 ${currentStep === step ? 'text-purple-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
-        {description}
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 export const ReadyLandingForm: React.FC<ReadyLandingFormProps> = ({ products, templates, onCreate }) => {
   const [productId, setProductId] = useState<number | ''>('');
   const [templateId, setTemplateId] = useState<string>('focus-split');
   const [autoPublish, setAutoPublish] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-
-  // Step completion checks
-  const isStep1Complete = !!productId;
-  const isStep2Complete = !!templateId && templates.length > 0;
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [createdPageUrl, setCreatedPageUrl] = useState<string>('');
+  const [createdPageName, setCreatedPageName] = useState<string>('');
 
   const selectedProduct = useMemo(() => products.find(p => p.id === productId), [products, productId]);
   const selectedTemplate = useMemo(() => templates.find(t => t.id === templateId), [templates, templateId]);
-
-  // Auto advance steps when previous step is completed
-  React.useEffect(() => {
-    if (isStep1Complete && currentStep === 1) {
-      const timer = setTimeout(() => setCurrentStep(2), 400);
-      return () => clearTimeout(timer);
-    }
-  }, [isStep1Complete, currentStep]);
-
-  React.useEffect(() => {
-    if (isStep2Complete && isStep1Complete && currentStep === 2) {
-      const timer = setTimeout(() => setCurrentStep(3), 400);
-      return () => clearTimeout(timer);
-    }
-  }, [isStep2Complete, isStep1Complete, currentStep]);
 
   const handleGenerate = async () => {
     if (!selectedProduct || !selectedTemplate) return;
@@ -226,152 +259,88 @@ export const ReadyLandingForm: React.FC<ReadyLandingFormProps> = ({ products, te
     };
 
     await Promise.resolve(onCreate(readyPage));
+    const pageUrl = readyPage.seo.canonicalUrl;
+    setCreatedPageUrl(pageUrl);
+    setCreatedPageName(readyPage.name);
     setIsSaving(false);
-    // Reset form after successful creation
-    setProductId('');
-    setCurrentStep(1);
+    if (autoPublish) {
+      setShowSuccess(true);
+    }
   };
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
-      <div className="space-y-4">
-        {/* Step Progress Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-4 text-white">
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles size={20} />
-            <h3 className="font-bold">ল্যান্ডিং পেজ তৈরি করুন</h3>
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+          <div>
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Product</label>
+            <select
+              value={productId}
+              onChange={(e) => setProductId(e.target.value ? Number(e.target.value) : '')}
+              className="w-full mt-2 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-200"
+            >
+              <option value="">Select product</option>
+              {products.map(product => (
+                <option key={product.id} value={product.id}>{product.name}</option>
+              ))}
+            </select>
           </div>
-          <p className="text-sm text-purple-100">৩টি সহজ ধাপে আপনার সেলস পেজ তৈরি করুন</p>
-          <div className="flex gap-2 mt-3">
-            {[1, 2, 3].map((s) => (
-              <div 
-                key={s} 
-                className={`h-1.5 flex-1 rounded-full transition-all ${
-                  s < currentStep ? 'bg-green-400' : 
-                  s === currentStep ? 'bg-white' : 
-                  'bg-white/30'
-                }`} 
-              />
-            ))}
-          </div>
-        </div>
 
-        {/* Step 1: Select Product */}
-        <div className="space-y-3">
-          <StepIndicator 
-            step={1} 
-            currentStep={currentStep} 
-            title="ধাপ ১: প্রোডাক্ট সিলেক্ট করুন" 
-            description="যে প্রোডাক্টের জন্য ল্যান্ডিং পেজ চান সেটি বাছাই করুন"
-            isCompleted={isStep1Complete}
-          />
-          {currentStep >= 1 && (
-            <div className={`ml-14 transition-all duration-300 ${currentStep === 1 ? 'opacity-100' : 'opacity-70'}`}>
-              <select
-                value={productId}
-                onChange={(e) => setProductId(e.target.value ? Number(e.target.value) : '')}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 bg-white"
-              >
-                <option value="">🔍 প্রোডাক্ট সিলেক্ট করুন...</option>
-                {products.map(product => (
-                  <option key={product.id} value={product.id}>
-                    {product.name} - ৳{formatCurrency(product.price)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-
-        {/* Step 2: Select Template */}
-        <div className="space-y-3">
-          <StepIndicator 
-            step={2} 
-            currentStep={currentStep} 
-            title="ধাপ ২: টেমপ্লেট বাছাই করুন" 
-            description="আপনার পেজের ডিজাইন স্টাইল নির্বাচন করুন"
-            isCompleted={isStep2Complete && isStep1Complete}
-          />
-          {currentStep >= 2 && isStep1Complete && (
-            <div className={`ml-14 transition-all duration-300 ${currentStep === 2 ? 'opacity-100' : 'opacity-70'}`}>
-              {templates.length > 0 ? (
-                <div className="grid gap-2">
-                  {templates.map(template => (
-                    <TemplateBadge
-                      key={template.id}
-                      template={template}
-                      isActive={template.id === templateId}
-                      onSelect={() => setTemplateId(template.id)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-700">
-                  <p className="font-medium">⚠️ কোনো টেমপ্লেট নেই</p>
-                  <p className="text-xs mt-1">ডিফল্ট টেমপ্লেট ব্যবহার করা হবে</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Step 3: Final Settings & Generate */}
-        <div className="space-y-3">
-          <StepIndicator 
-            step={3} 
-            currentStep={currentStep} 
-            title="ধাপ ৩: সেটিংস ও জেনারেট" 
-            description="পাবলিশ অপশন সিলেক্ট করে পেজ তৈরি করুন"
-            isCompleted={false}
-          />
-          {currentStep >= 3 && isStep1Complete && (
-            <div className="ml-14 space-y-3 transition-all duration-300">
-              <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
-                <input
-                  type="checkbox"
-                  checked={autoPublish}
-                  onChange={(e) => setAutoPublish(e.target.checked)}
-                  className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+          <div className="space-y-2">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Template</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {templates.map(template => (
+                <TemplateBadge
+                  key={template.id}
+                  template={template}
+                  isActive={template.id === templateId}
+                  onSelect={() => setTemplateId(template.id)}
                 />
-                <div>
-                  <span className="text-sm font-medium text-gray-700">তৈরি হলেই পাবলিশ করুন</span>
-                  <p className="text-xs text-gray-500">এটি সক্রিয় থাকলে পেজটি সাথে সাথে লাইভ হয়ে যাবে</p>
-                </div>
-              </label>
-
-              <button
-                onClick={handleGenerate}
-                disabled={!selectedProduct || isSaving}
-                className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-3 transition-all transform ${
-                  selectedProduct 
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-200' 
-                    : 'bg-gray-300 cursor-not-allowed'
-                }`}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 size={20} className="animate-spin" />
-                    তৈরি হচ্ছে...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={20} />
-                    ✨ ল্যান্ডিং পেজ তৈরি করুন
-                  </>
-                )}
-              </button>
+              ))}
             </div>
-          )}
+          </div>
+
+          <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+            <input
+              type="checkbox"
+              checked={autoPublish}
+              onChange={(e) => setAutoPublish(e.target.checked)}
+              className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+            />
+            Publish immediately after creation
+          </label>
+
+          <button
+            onClick={handleGenerate}
+            disabled={!selectedProduct || isSaving}
+            className={`w-full py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 ${selectedProduct ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-300 cursor-not-allowed'}`}
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
+            Generate Landing Page
+          </button>
         </div>
       </div>
 
-      {/* Preview Card */}
-      <div className="lg:sticky lg:top-4">
-        <TemplatePreviewCard product={selectedProduct} template={selectedTemplate} />
-      </div>
+      <TemplatePreviewCard product={selectedProduct} template={selectedTemplate} />
+      
+      {showSuccess && (
+        <LandingPageSuccessModal
+          pageUrl={createdPageUrl}
+          pageName={createdPageName}
+          onClose={() => setShowSuccess(false)}
+          onViewPage={() => window.open(createdPageUrl, '_blank')}
+          onCreateNew={() => {
+            setShowSuccess(false);
+            setProductId('');
+            setCreatedPageUrl('');
+            setCreatedPageName('');
+          }}
+        />
+      )}
     </div>
   );
 };
+
 
 const defaultBlocks: LandingPageBlock[] = [
   {
@@ -402,6 +371,10 @@ export const CustomLandingEditor: React.FC<CustomLandingEditorProps> = ({ onSave
   const [style, setStyle] = useState<LandingPageStyle>({ primaryColor: '#7c3aed', accentColor: '#f97316', background: '#f5f3ff', buttonShape: 'pill', fontFamily: 'Space Grotesk, sans-serif' });
   const [seo, setSeo] = useState<LandingPageSEO>({ metaTitle: 'Campaign Landing', metaDescription: 'Custom landing page crafted in the editor.', canonicalUrl: 'https://admin.systemnextit.com/campaign-landing' });
   const [includeCheckout, setIncludeCheckout] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [createdPageUrl, setCreatedPageUrl] = useState<string>('');
+  const [createdPageName, setCreatedPageName] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
   const selectedBlock = blocks.find(block => block.id === selectedBlockId) || blocks[0];
 
   const updateBlock = (updated: LandingPageBlock) => {
@@ -430,7 +403,8 @@ export const CustomLandingEditor: React.FC<CustomLandingEditorProps> = ({ onSave
     });
   };
 
-  const handleSave = (publish: boolean) => {
+  const handleSave = async (publish: boolean) => {
+    setIsSaving(true);
     const now = new Date().toISOString();
     const landing: LandingPage = {
       id: randomId(),
@@ -446,7 +420,14 @@ export const CustomLandingEditor: React.FC<CustomLandingEditorProps> = ({ onSave
       updatedAt: now,
       publishedAt: publish ? now : undefined
     };
-    onSave(landing);
+    await Promise.resolve(onSave(landing));
+    setIsSaving(false);
+    if (publish) {
+      const pageUrl = seo.canonicalUrl || `https://admin.systemnextit.com/${toSlug(pageName)}`;
+      setCreatedPageUrl(pageUrl);
+      setCreatedPageName(pageName);
+      setShowSuccess(true);
+    }
   };
 
   return (
@@ -541,14 +522,31 @@ export const CustomLandingEditor: React.FC<CustomLandingEditorProps> = ({ onSave
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button onClick={() => handleSave(false)} className="flex-1 min-w-[180px] py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold flex items-center justify-center gap-2">
+          <button onClick={() => handleSave(false)} disabled={isSaving} className="flex-1 min-w-[180px] py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold flex items-center justify-center gap-2 disabled:opacity-50">
             <Edit3 size={16} /> Save Draft
           </button>
-          <button onClick={() => handleSave(true)} className="flex-1 min-w-[180px] py-3 rounded-xl bg-green-500 text-white font-semibold flex items-center justify-center gap-2">
-            <Sparkles size={16} /> Publish
+          <button onClick={() => handleSave(true)} disabled={isSaving} className="flex-1 min-w-[180px] py-3 rounded-xl bg-green-500 text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-50">
+            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+            {isSaving ? 'Publishing...' : 'Publish'}
           </button>
         </div>
       </div>
+      
+      {showSuccess && (
+        <LandingPageSuccessModal
+          pageUrl={createdPageUrl}
+          pageName={createdPageName}
+          onClose={() => setShowSuccess(false)}
+          onViewPage={() => window.open(createdPageUrl, '_blank')}
+          onCreateNew={() => {
+            setShowSuccess(false);
+            setPageName('Campaign Landing');
+            setBlocks(defaultBlocks);
+            setCreatedPageUrl('');
+            setCreatedPageName('');
+          }}
+        />
+      )}
     </div>
   );
 };

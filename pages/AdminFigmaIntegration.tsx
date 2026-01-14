@@ -264,7 +264,7 @@ const AdminFigmaIntegration: React.FC<AdminFigmaIntegrationProps> = ({
             className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
               isConnected
                 ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                : 'bg-purple-600 text-white hover:bg-purple-700'
+                : 'bg-purple-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8]'
             }`}
           >
             {isConnecting ? (
@@ -314,7 +314,7 @@ const AdminFigmaIntegration: React.FC<AdminFigmaIntegrationProps> = ({
           <button
             onClick={handleFetchDesign}
             disabled={isLoading || !figmaUrl.trim()}
-            className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
@@ -383,7 +383,7 @@ const AdminFigmaIntegration: React.FC<AdminFigmaIntegrationProps> = ({
                 <button
                   onClick={handleImportToGallery}
                   disabled={isImporting}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isImporting ? (
                     <>

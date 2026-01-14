@@ -209,7 +209,7 @@ const BulkOperationsTab: React.FC<BulkOperationsTabProps> = ({
               </button>
               <button
                 onClick={handleExportData}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 text-sm"
+                className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors flex items-center gap-2 text-sm"
               >
                 <Download size={16} />
                 Export
@@ -231,7 +231,7 @@ const BulkOperationsTab: React.FC<BulkOperationsTabProps> = ({
               <button
                 onClick={() => handleBulkStatusChange('active')}
                 disabled={isProcessing}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-sm disabled:opacity-50"
+                className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors text-sm disabled:opacity-50"
               >
                 Activate
               </button>
@@ -387,7 +387,7 @@ const BulkOperationsTab: React.FC<BulkOperationsTabProps> = ({
               <button
                 onClick={handleSendBulkEmail}
                 disabled={isProcessing}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors flex items-center gap-2 disabled:opacity-50"
               >
                 <Mail size={16} />
                 {isProcessing ? 'Sending...' : 'Send Email'}

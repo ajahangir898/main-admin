@@ -244,7 +244,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({
         <button
           onClick={onSave}
           disabled={isSavingSettings}
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
+          className="px-6 py-3 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-white rounded-lg font-medium flex items-center gap-2 disabled:opacity-50 transition-colors"
         >
           {isSavingSettings ? (
             <Loader2 className="w-5 h-5 animate-spin" />
