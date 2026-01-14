@@ -1509,7 +1509,7 @@ class DataServiceImpl {
     const response = await this.requestTenantApi(`/api/reviews/${tenantId}/${reviewId}/status`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json',git 
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ status })
