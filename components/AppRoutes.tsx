@@ -17,6 +17,7 @@ const StoreCheckout = lazy(() => import('../pages/StoreCheckout'));
 const StoreOrderSuccess = lazy(() => import('../pages/StoreOrderSuccess'));
 const StoreProfile = lazy(() => import('../pages/StoreProfile'));
 const LandingPagePreview = lazy(() => import('../pages/LandingPagePreview'));
+const PublicOfferPage = lazy(() => import('../pages/PublicOfferPage'));
 const SuperAdminDashboard = lazy(() => import('../pages/SuperAdminDashboard'));
 const AdminLogin = lazy(() => import('../pages/AdminLogin'));
 const AdminAppWithAuth = lazy(() => import('../pages/AdminAppWithAuth'));
@@ -495,6 +496,11 @@ export const AppRoutes: React.FC<AppRoutesProps> = (props) => {
             </Suspense>
           )}
 
+          {currentView === 'offer_preview' && (
+            <Suspense fallback={null}>
+              <PublicOfferPage websiteConfig={websiteConfig} />
+            </Suspense>
+          )}
           <StoreChatModal
             isOpen={isChatOpen}
             onClose={onCloseChat}

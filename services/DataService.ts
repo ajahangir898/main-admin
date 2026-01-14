@@ -1509,7 +1509,7 @@ class DataServiceImpl {
     const response = await this.requestTenantApi(`/api/reviews/${tenantId}/${reviewId}/status`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',git 
+        'Content-Type': 'application/json', 
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ status })
@@ -1521,3 +1521,182 @@ class DataServiceImpl {
 
 export const DataService = new DataServiceImpl();
 
+
+// ==================== OFFER PAGE METHODS ====================
+
+export interface OfferPageData {
+  productId?: number;
+  productTitle: string;
+  searchQuery?: string;
+  imageUrl: string;
+  offerEndDate: string;
+  description: string;
+  productOfferInfo: string;
+  paymentSectionTitle: string;
+  benefits: { id: string; text: string }[];
+  whyBuySection: string;
+  urlSlug: string;
+  status: 'draft' | 'published';
+}
+
+export interface OfferPageResponse {
+  _id: string;
+  tenantId: string;
+  productId?: number;
+  productTitle: string;
+  searchQuery?: string;
+  imageUrl: string;
+  offerEndDate: string;
+  description: string;
+  productOfferInfo: string;
+  paymentSectionTitle: string;
+  benefits: { id: string; text: string }[];
+  whyBuySection: string;
+  urlSlug: string;
+  status: 'draft' | 'published';
+  views: number;
+  orders: number;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+}
+
+export interface OfferPagesListResponse {
+  data: OfferPageResponse[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
+// Get all offer pages for tenant
+export const getOfferPages = async (
+  status?: 'draft' | 'published',
+  page = 1,
+  limit = 20
+): Promise<OfferPagesListResponse> => {
+  const params = new URLSearchParams();
+  if (status) params.append('status', status);
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  
+  const response = await fetch(`${API_BASE_URL}/api/landing-page?${params}`, {
+    headers: {
+      ...getAuthHeader(),
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch offer pages: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Get single offer page by ID
+export const getOfferPageById = async (id: string): Promise<OfferPageResponse> => {
+  const response = await fetch(`${API_BASE_URL}/api/landing-page/${id}`, {
+    headers: {
+      ...getAuthHeader(),
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch offer page: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Get offer page by slug (for public route)
+export const getOfferPageBySlug = async (
+  slug: string, 
+  tenantId: string,
+  incrementViews = true
+): Promise<OfferPageResponse> => {
+  const params = new URLSearchParams();
+  params.append('tenantId', tenantId);
+  if (incrementViews) params.append('incrementViews', 'true');
+  
+  const response = await fetch(`${API_BASE_URL}/api/landing-page/slug/${slug}?${params}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch offer page: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Create new offer page
+export const createOfferPage = async (data: OfferPageData): Promise<OfferPageResponse> => {
+  const response = await fetch(`${API_BASE_URL}/api/landing-page`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeader(),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Failed to create offer page: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Update existing offer page
+export const updateOfferPage = async (
+  id: string, 
+  data: Partial<OfferPageData>
+): Promise<OfferPageResponse> => {
+  const response = await fetch(`${API_BASE_URL}/api/landing-page/${id}`, {
+    method: 'PUT',
+    headers: {
+      ...getAuthHeader(),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Failed to update offer page: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Delete offer page
+export const deleteOfferPage = async (id: string): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/api/landing-page/${id}`, {
+    method: 'DELETE',
+    headers: {
+      ...getAuthHeader(),
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Failed to delete offer page: ${response.statusText}`);
+  }
+};
+
+// Increment order count for offer page
+export const incrementOfferPageOrders = async (id: string): Promise<void> => {
+  await fetch(`${API_BASE_URL}/api/landing-page/${id}/increment-orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};

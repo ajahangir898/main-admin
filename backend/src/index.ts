@@ -30,6 +30,7 @@ import imageOptimizeRouter from './routes/imageOptimize';
 import { subscriptionsRouter } from './routes/subscriptions';
 import auditLogsRouter from './routes/auditLogs';
 import cloudflareUploadRouter from './routes/cloudflareUpload';
+import offerPagesRouter from './routes/offerPages';
 
 
 const app = express();
@@ -185,6 +186,7 @@ app.use('/api/support', supportRouter);
 app.use('/api/subscriptions', subscriptionsRouter);
 app.use('/api/audit-logs', auditLogsRouter);
 app.use('/api/cloudflare', cloudflareUploadRouter);
+app.use('/api/landing-page', offerPagesRouter);
 app.use('/api', dueListRoutes);
 
 // Visitors tracking (import at top of file)

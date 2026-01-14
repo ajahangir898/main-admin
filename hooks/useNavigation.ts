@@ -6,7 +6,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Product, User, LandingPage } from '../types';
 import { isAdminRole, SESSION_STORAGE_KEY } from '../utils/appHelpers';
 
-export type ViewState = 'store' | 'detail' | 'checkout' | 'success' | 'profile' | 'admin' | 'landing_preview' | 'admin-login' | 'visual-search' | 'super-admin' | 'register';
+export type ViewState = 'store' | 'detail' | 'checkout' | 'success' | 'profile' | 'admin' | 'landing_preview' | 'offer_preview' | 'admin-login' | 'visual-search' | 'super-admin' | 'register';
 
 // Parse order ID from URL for success page
 export function getOrderIdFromUrl(): string | null {
@@ -138,6 +138,7 @@ export function useNavigation({ products, user, landingPages, setSelectedLanding
   const [urlCategoryFilter, setUrlCategoryFilter] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [storeSearchQuery, setStoreSearchQuery] = useState('');
+  const [selectedOfferSlug, setSelectedOfferSlug] = useState<string | null>(null);
 
   const currentViewRef = useRef<ViewState>(currentView);
   const userRef = useRef<User | null>(user);
@@ -252,6 +253,15 @@ export function useNavigation({ products, user, landingPages, setSelectedLanding
         // Don't navigate away - wait for landing pages to load
         return;
       }
+    }
+    // Handle /offer/slug offer page route
+    if (trimmedPath.startsWith('offer/')) {
+      const urlSlug = trimmedPath.replace('offer/', '');
+      console.log('[Navigation] Offer page route detected:', { urlSlug });
+      // Set URL params for offer page - will be handled by PublicOfferPage
+      setSelectedOfferSlug(urlSlug);
+      setCurrentView('offer_preview');
+      return;
     }
     if (trimmedPath === 'products') {
       const searchParams = new URLSearchParams(window.location.search);
@@ -439,6 +449,8 @@ export function useNavigation({ products, user, landingPages, setSelectedLanding
     setSelectedProduct,
     storeSearchQuery,
     setStoreSearchQuery,
+    selectedOfferSlug,
+    setSelectedOfferSlug,
     // Handlers
     handleStoreSearchChange,
     syncViewWithLocation,

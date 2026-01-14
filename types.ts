@@ -520,3 +520,32 @@ export interface CreateEntityPayload {
   phone: string;
   type: EntityType;
 }
+
+// Offer Page Types
+export interface OfferPageBenefit {
+  id: string;
+  text: string;
+}
+
+export interface OfferPage {
+  _id?: string;
+  id?: string;
+  tenantId?: string;
+  productId?: number;
+  productTitle: string;
+  searchQuery?: string;
+  imageUrl: string;
+  offerEndDate: string;
+  description: string;
+  productOfferInfo: string;
+  paymentSectionTitle: string;
+  benefits: OfferPageBenefit[];
+  whyBuySection: string;
+  urlSlug: string;
+  status: 'draft' | 'published';
+  views?: number;
+  orders?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+}
