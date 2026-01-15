@@ -413,7 +413,7 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
       {/* Notification */}
       {notification && (
         <div 
-          className={`fixed top-4 right-4 z-50 max-w-md p-4 rounded-xl shadow-lg border flex items-start gap-3 animate-in slide-in-from-right ${
+          className={`fixed top-4 left-4 right-4 sm:left-auto sm:right-4 z-50 sm:max-w-md p-4 rounded-xl shadow-lg border flex items-start gap-3 animate-in slide-in-from-right ${
             notification.type === 'success' 
               ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
               : 'bg-red-50 border-red-200 text-red-800'
@@ -432,42 +432,46 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 rounded-2xl p-6 text-white">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/10 rounded-xl">
-              <Building2 className="w-8 h-8" />
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-2 sm:p-3 bg-white/10 rounded-xl">
+              <Building2 className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Store Lists</h1>
-              <p className="text-white/70 text-sm">Create and manage multi-tenant storefronts</p>
+              <h1 className="text-xl sm:text-2xl font-bold">Store Lists</h1>
+              <p className="text-white/70 text-xs sm:text-sm">Create and manage multi-tenant storefronts</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <div className="flex gap-4 text-sm">
+          {/* Metrics - scrollable on mobile */}
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex gap-3 sm:gap-4 text-sm min-w-max">
               <div className="text-center">
-                <p className="text-2xl font-bold">{metrics.total}</p>
+                <p className="text-xl sm:text-2xl font-bold">{metrics.total}</p>
                 <p className="text-white/60 text-xs">Total</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-emerald-400">{metrics.active}</p>
+                <p className="text-xl sm:text-2xl font-bold text-emerald-400">{metrics.active}</p>
                 <p className="text-white/60 text-xs">Active</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-amber-400">{metrics.trialing}</p>
+                <p className="text-xl sm:text-2xl font-bold text-amber-400">{metrics.trialing}</p>
                 <p className="text-white/60 text-xs">Trial</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-400">{metrics.pending}</p>
+                <p className="text-xl sm:text-2xl font-bold text-blue-400">{metrics.pending}</p>
                 <p className="text-white/60 text-xs">Pending</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-red-400">{metrics.suspended}</p>
+                <p className="text-xl sm:text-2xl font-bold text-red-400">{metrics.suspended}</p>
                 <p className="text-white/60 text-xs">Suspended</p>
               </div>
             </div>
-            
+          </div>
+          
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {onRefreshTenants && (
               <button
                 onClick={handleRefresh}
@@ -480,81 +484,85 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
             
             <button
               onClick={() => setShowForm(!showForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg font-medium transition"
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg font-medium transition text-sm sm:text-base"
             >
               {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              {showForm ? 'Cancel' : 'Add Shop'}
+              <span className="hidden xs:inline">{showForm ? 'Cancel' : 'Add Shop'}</span>
+              <span className="xs:hidden">{showForm ? '' : 'Add'}</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl border shadow-sm p-4">
-        <div className="flex flex-wrap gap-3 items-center">
-          <div className="flex-1 min-w-[200px]">
+      <div className="bg-white rounded-xl border shadow-sm p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <div className="flex-1 min-w-0">
             <input
               type="text"
               placeholder="Search by name, subdomain, or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-base"
             />
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setStatusFilter('all')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                statusFilter === 'all' 
-                  ? 'bg-emerald-500 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setStatusFilter('pending')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                statusFilter === 'pending' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setStatusFilter('active')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                statusFilter === 'active' 
-                  ? 'bg-emerald-500 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Active
-            </button>
-            <button
-              onClick={() => setStatusFilter('suspended')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                statusFilter === 'suspended' 
-                  ? 'bg-red-500 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Suspended
-            </button>
+          {/* Filter buttons - scrollable on mobile */}
+          <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+            <div className="flex gap-2 min-w-max">
+              <button
+                onClick={() => setStatusFilter('all')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
+                  statusFilter === 'all' 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setStatusFilter('pending')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
+                  statusFilter === 'pending' 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Pending
+              </button>
+              <button
+                onClick={() => setStatusFilter('active')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
+                  statusFilter === 'active' 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => setStatusFilter('suspended')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
+                  statusFilter === 'suspended' 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                Suspended
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Create Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border shadow-sm p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b">
             <Sparkles className="w-5 h-5 text-emerald-500" />
-            <h2 className="text-lg font-semibold">Create New Storefront</h2>
+            <h2 className="text-base sm:text-lg font-semibold">Create New Storefront</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
             {/* Store Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -750,18 +758,18 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={() => { resetForm(); setShowForm(false); }}
-              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+              className="px-4 py-2.5 sm:py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isCreating}
-              className="flex items-center gap-2 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isCreating ? (
                 <>
@@ -803,17 +811,17 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
               return (
                 <div 
                   key={tenant.id || tenant._id} 
-                  className="p-4 hover:bg-gray-50 transition"
+                  className="p-3 sm:p-4 hover:bg-gray-50 transition"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
-                      <div className="p-2.5 bg-slate-100 rounded-lg flex-shrink-0">
-                        <Store className="w-5 h-5 text-slate-600" />
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                      <div className="p-2 sm:p-2.5 bg-slate-100 rounded-lg flex-shrink-0">
+                        <Store className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-semibold text-gray-900 truncate">{tenant.name}</h3>
+                          <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{tenant.name}</h3>
                           <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`}></span>
                             {tenant.status || 'inactive'}
@@ -823,23 +831,23 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
                           </span>
                         </div>
                         
-                        <div className="mt-1 flex items-center gap-4 text-sm text-gray-500">
+                        <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-500">
                           {url && (
                             <a 
                               href={url} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 hover:underline"
+                              className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 hover:underline truncate"
                             >
-                              <Globe className="w-3.5 h-3.5" />
-                              {tenant.subdomain}.{primaryDomain}
-                              <ExternalLink className="w-3 h-3" />
+                              <Globe className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="truncate">{tenant.subdomain}.{primaryDomain}</span>
+                              <ExternalLink className="w-3 h-3 flex-shrink-0" />
                             </a>
                           )}
                           {tenant.adminEmail && (
-                            <span className="flex items-center gap-1">
-                              <Mail className="w-3.5 h-3.5" />
-                              {tenant.adminEmail}
+                            <span className="flex items-center gap-1 truncate">
+                              <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="truncate">{tenant.adminEmail}</span>
                             </span>
                           )}
                         </div>
@@ -852,116 +860,119 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      {/* Login as Merchant */}
-                      {onLoginAsMerchant && tenant.status === 'active' && (
-                        <button
-                          onClick={() => handleLoginAsMerchant(tenant)}
-                          disabled={actioningTenantId === tenant.id}
-                          className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition disabled:opacity-50"
-                          title="Login as merchant"
-                        >
-                          {actioningTenantId === tenant.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <LogIn className="w-4 h-4" />
-                          )}
-                        </button>
-                      )}
+                    {/* Action buttons - scrollable on mobile */}
+                    <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 -mb-1 pb-1 sm:mb-0 sm:pb-0">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 min-w-max">
+                        {/* Login as Merchant */}
+                        {onLoginAsMerchant && tenant.status === 'active' && (
+                          <button
+                            onClick={() => handleLoginAsMerchant(tenant)}
+                            disabled={actioningTenantId === tenant.id}
+                            className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition disabled:opacity-50"
+                            title="Login as merchant"
+                          >
+                            {actioningTenantId === tenant.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <LogIn className="w-4 h-4" />
+                            )}
+                          </button>
+                        )}
 
-                      {/* Domain Management */}
-                      {onUpdateDomain && (
-                        <button
-                          onClick={() => setDomainModal(tenant)}
-                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                          title="Manage domains"
-                        >
-                          <Settings className="w-4 h-4" />
-                        </button>
-                      )}
+                        {/* Domain Management */}
+                        {onUpdateDomain && (
+                          <button
+                            onClick={() => setDomainModal(tenant)}
+                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                            title="Manage domains"
+                          >
+                            <Settings className="w-4 h-4" />
+                          </button>
+                        )}
 
-                      {/* Status Actions */}
-                      {onUpdateTenantStatus && (
-                        <>
-                          {tenant.status === 'pending' && (
-                            <>
+                        {/* Status Actions */}
+                        {onUpdateTenantStatus && (
+                          <>
+                            {tenant.status === 'pending' && (
+                              <>
+                                <button
+                                  onClick={() => setStatusModal({ tenant, action: 'approve' })}
+                                  className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                                  title="Approve tenant"
+                                >
+                                  <UserCheck className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => setStatusModal({ tenant, action: 'reject' })}
+                                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                                  title="Reject tenant"
+                                >
+                                  <UserX className="w-4 h-4" />
+                                </button>
+                              </>
+                            )}
+                            {tenant.status === 'active' && (
                               <button
-                                onClick={() => setStatusModal({ tenant, action: 'approve' })}
+                                onClick={() => setStatusModal({ tenant, action: 'suspend' })}
+                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition"
+                                title="Suspend tenant"
+                              >
+                                <Ban className="w-4 h-4" />
+                              </button>
+                            )}
+                            {tenant.status === 'suspended' && (
+                              <button
+                                onClick={() => setStatusModal({ tenant, action: 'activate' })}
                                 className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
-                                title="Approve tenant"
+                                title="Activate tenant"
                               >
-                                <UserCheck className="w-4 h-4" />
+                                <PlayCircle className="w-4 h-4" />
                               </button>
-                              <button
-                                onClick={() => setStatusModal({ tenant, action: 'reject' })}
-                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                                title="Reject tenant"
-                              >
-                                <UserX className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
-                          {tenant.status === 'active' && (
-                            <button
-                              onClick={() => setStatusModal({ tenant, action: 'suspend' })}
-                              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition"
-                              title="Suspend tenant"
-                            >
-                              <Ban className="w-4 h-4" />
-                            </button>
-                          )}
-                          {tenant.status === 'suspended' && (
-                            <button
-                              onClick={() => setStatusModal({ tenant, action: 'activate' })}
-                              className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
-                              title="Activate tenant"
-                            >
-                              <PlayCircle className="w-4 h-4" />
-                            </button>
-                          )}
-                        </>
-                      )}
+                            )}
+                          </>
+                        )}
 
-                      {url && (
-                        <button
-                          onClick={() => copyToClipboard(url, tenant.id)}
-                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition"
-                          title="Copy URL"
-                        >
-                          {copiedId === tenant.id ? (
-                            <Check className="w-4 h-4 text-emerald-500" />
-                          ) : (
-                            <Copy className="w-4 h-4" />
-                          )}
-                        </button>
-                      )}
-                      
-                      {url && (
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
-                          title="Open store"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
-                      
-                      {onDeleteTenant && (
-                        <button
-                          onClick={() => setDeleteModal(tenant)}
-                          disabled={deletingTenantId === tenant.id}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-                          title="Delete tenant"
-                        >
-                          {deletingTenantId === tenant.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="w-4 h-4" />
-                          )}
-                        </button>
-                      )}
+                        {url && (
+                          <button
+                            onClick={() => copyToClipboard(url, tenant.id)}
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                            title="Copy URL"
+                          >
+                            {copiedId === tenant.id ? (
+                              <Check className="w-4 h-4 text-emerald-500" />
+                            ) : (
+                              <Copy className="w-4 h-4" />
+                            )}
+                          </button>
+                        )}
+                        
+                        {url && (
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                            title="Open store"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                        
+                        {onDeleteTenant && (
+                          <button
+                            onClick={() => setDeleteModal(tenant)}
+                            disabled={deletingTenantId === tenant.id}
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                            title="Delete tenant"
+                          >
+                            {deletingTenantId === tenant.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -973,8 +984,8 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
 
       {/* Delete Modal */}
       {deleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-w-md w-full p-4 sm:p-6 animate-in zoom-in-95 safe-bottom">
             <div className="flex items-center gap-3 text-red-600 mb-4">
               <div className="p-2 bg-red-100 rounded-lg">
                 <Trash2 className="w-5 h-5" />
@@ -989,18 +1000,18 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
               This will permanently remove the tenant, all its data, and the admin user account. This action cannot be undone.
             </p>
             
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
               <button
                 onClick={() => setDeleteModal(null)}
                 disabled={!!deletingTenantId}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+                className="px-4 py-2.5 sm:py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition text-center"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={!!deletingTenantId}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
               >
                 {deletingTenantId ? (
                   <>
