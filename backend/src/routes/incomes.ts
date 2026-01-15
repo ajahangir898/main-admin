@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getDatabase } from '../db/mongo';
 import { ObjectId } from 'mongodb';
+import { createAuditLog } from './auditLogs';
 
 export const incomesRouter = Router();
 
@@ -71,6 +72,25 @@ incomesRouter.post('/', async (req, res, next) => {
     const result = await col.insertOne({
       ...payload,
       createdAt: new Date().toISOString(),
+    });
+    
+    // Create audit log for income creation
+    const user = (req as any).user;
+    await createAuditLog({
+      tenantId: payload.tenantId,
+      userId: user?._id || user?.id || 'system',
+      userName: user?.name || 'System',
+      userRole: user?.role || 'system',
+      action: 'Income Created',
+      actionType: 'create',
+      resourceType: 'income',
+      resourceId: result.insertedId.toString(),
+      resourceName: payload.name || 'Income',
+      details: `Income "${payload.name || 'Income'}" created - ৳${payload.amount}`,
+      metadata: { amount: payload.amount, source: payload.source },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
     });
     res.status(201).json({ ...payload, id: result.insertedId.toString() });
   } catch (e) {

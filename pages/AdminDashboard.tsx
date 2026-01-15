@@ -43,6 +43,15 @@ type CategoryDataPoint = { name: string; value: number; color: string };
 const ALLOWED_REVENUE_STATUSES: Array<Order['status']> = ['Pending', 'Confirmed', 'On Hold', 'Processing', 'Shipped', 'Sent to Courier', 'Delivered'];
 
 const CATEGORY_COLORS = [
+  { bg: '#2196F3', label: 'ABC' },
+  { bg: '#42A5F5', label: 'NBC' },
+  { bg: '#64B5F6', label: 'CBS' },
+  { bg: '#90CAF9', label: 'CNN' },
+  { bg: '#BBDEFB', label: 'AOL' },
+  { bg: '#E3F2FD', label: 'MSN' },
+];
+
+const OLD_CATEGORY_COLORS = [
   { bg: '#3B82F6', label: 'ABC' },
   { bg: '#10B981', label: 'NBC' },
   { bg: '#F97316', label: 'CBS' },
@@ -235,72 +244,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Top Header */}
-      <div className="bg-white border-b border-gray-100 px-4 sm:px-6 py-3 sm:py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-          <div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Welcome back, {user?.name || 'Yuvraj'}
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Monitor your business analytics and statistics.</p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            {/* View Website - hidden on mobile, visible on larger screens */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
-              <Globe className="w-4 h-4" />
-              View Website
-            </button>
-
-            {/* Tutorials Button - hidden on mobile */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg border border-gray-200 transition">
-              <Play className="w-4 h-4" />
-              Tutorials
-            </button>
-
-            {/* Search Bar - full width on mobile */}
-            <div className="relative flex-1 sm:flex-none order-last sm:order-none w-full sm:w-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-48 lg:w-64 pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-
-            {/* Icons */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
-                <Moon className="w-5 h-5 text-gray-500" />
-              </button>
-              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
-                <MessageCircle className="w-5 h-5 text-gray-500" />
-              </button>
-              <button className="p-2 hover:bg-gray-50 rounded-lg transition">
-                <Bell className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-
-            {/* User */}
-            <div className="flex items-center gap-2 ml-1 sm:ml-2">
-              <div className="hidden sm:block text-right">
-                <p className="text-xs text-gray-400">Admin</p>
-                <p className="text-sm font-medium text-gray-700">{user?.name || 'Yuvraj'}</p>
-              </div>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-medium text-sm overflow-hidden">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="" className="w-full h-full object-cover" />
-                ) : (
-                    user?.name?.charAt(0) || 'Y'
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Order Analytics Section */}
         <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
@@ -678,61 +621,85 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               ))}
             </div>
 
-            {/* Semi-Donut Chart */}
+            {/* Semi-Donut Chart - Figma Design */}
             <div className="flex justify-center">
-              <div className="relative w-52 h-28 overflow-hidden">
-                <svg viewBox="0 0 200 100" className="w-full h-full">
-                  {/* Semi-circles (donut arcs) */}
+              <div className="relative w-80 h-44">
+                <svg viewBox="0 0 400 220" className="w-full h-full">
+                  <defs>
+                    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.1"/>
+                    </filter>
+                  </defs>
                   {(() => {
-                    const data = categoryData.length > 0 ? categoryData.slice(0, 6) : [
-                      { value: 25 }, { value: 15 }, { value: 15 }, { value: 20 }, { value: 12 }, { value: 13 }
+                    const data = [
+                      { value: 15, label: 'ABC', color: '#2196F3' },
+                      { value: 15, label: 'NBC', color: '#42A5F5' },
+                      { value: 20, label: 'CBS', color: '#64B5F6' },
+                      { value: 12, label: 'CNN', color: '#90CAF9' },
+                      { value: 13, label: 'AOL', color: '#BBDEFB' },
+                      { value: 25, label: 'MSN', color: '#E3F2FD' },
                     ];
                     const total = data.reduce((sum, d) => sum + d.value, 0);
-                    let cumulativeAngle = 180;
-
+                    const centerX = 200;
+                    const centerY = 180;
+                    const outerRadius = 160;
+                    const innerRadius = 80;
+                    
+                    let cumulativeAngle = 180; // Start from left
+                    
                     return data.map((item, index) => {
                       const angle = (item.value / total) * 180;
                       const startAngle = cumulativeAngle;
                       const endAngle = startAngle - angle;
                       cumulativeAngle = endAngle;
-
-                      const radius = 80 - index * 12;
+                      
                       const startRad = (startAngle * Math.PI) / 180;
                       const endRad = (endAngle * Math.PI) / 180;
-
-                      const x1 = 100 + radius * Math.cos(startRad);
-                      const y1 = 95 - radius * Math.sin(startRad);
-                      const x2 = 100 + radius * Math.cos(endRad);
-                      const y2 = 95 - radius * Math.sin(endRad);
-
-                      const largeArc = angle > 180 ? 1 : 0;
-
+                      
+                      // Outer arc points
+                      const x1 = centerX + outerRadius * Math.cos(startRad);
+                      const y1 = centerY - outerRadius * Math.sin(startRad);
+                      const x2 = centerX + outerRadius * Math.cos(endRad);
+                      const y2 = centerY - outerRadius * Math.sin(endRad);
+                      
+                      // Inner arc points
+                      const x3 = centerX + innerRadius * Math.cos(endRad);
+                      const y3 = centerY - innerRadius * Math.sin(endRad);
+                      const x4 = centerX + innerRadius * Math.cos(startRad);
+                      const y4 = centerY - innerRadius * Math.sin(startRad);
+                      
+                      const largeArc = angle > 90 ? 1 : 0;
+                      
+                      // Calculate label position (middle of the arc)
+                      const midAngle = (startAngle + endAngle) / 2;
+                      const midRad = (midAngle * Math.PI) / 180;
+                      const labelRadius = (outerRadius + innerRadius) / 2;
+                      const labelX = centerX + labelRadius * Math.cos(midRad);
+                      const labelY = centerY - labelRadius * Math.sin(midRad);
+                      
                       return (
-                        <path
-                          key={index}
-                          d={`M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 0 ${x2} ${y2}`}
-                          fill="none"
-                          stroke={CATEGORY_COLORS[index % CATEGORY_COLORS.length].bg}
-                          strokeWidth="10"
-                          strokeLinecap="round"
-                        />
+                        <g key={index}>
+                          <path
+                            d={`M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`}
+                            fill={item.color}
+                            filter="url(#dropShadow)"
+                            className="transition-all duration-300 hover:opacity-80"
+                          />
+                          <text
+                            x={labelX}
+                            y={labelY}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            className="text-sm font-medium fill-white"
+                            style={{ fontSize: '14px' }}
+                          >
+                            {item.value}%
+                          </text>
+                        </g>
                       );
                     });
                   })()}
                 </svg>
-
-                {/* Percentage labels */}
-                <div className="absolute inset-0 flex items-end justify-center pb-2">
-                  <div className="grid grid-cols-6 gap-2 text-[10px] text-gray-600 font-medium">
-                    {(categoryData.length > 0 ? categoryData.slice(0, 6) : [
-                      { value: 25 }, { value: 15 }, { value: 15 }, { value: 20 }, { value: 12 }, { value: 13 }
-                    ]).map((item, index) => {
-                      const total = categoryData.length > 0 ? categoryData.reduce((s, d) => s + d.value, 0) : 100;
-                      const percent = Math.round((item.value / total) * 100);
-                      return <span key={index}>{percent}%</span>;
-                    })}
-                  </div>
-                </div>
               </div>
             </div>
           </div>

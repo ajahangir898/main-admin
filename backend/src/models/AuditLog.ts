@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IAuditLog extends Document {
+  tenantId?: string;
   userId: string;
   userName: string;
   userRole: string;
   action: string;
-  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'settings' | 'notification' | 'support_ticket' | 'other';
+  actionType: 'create' | 'update' | 'delete' | 'bulk_create' | 'bulk_update' | 'bulk_delete' | 'login' | 'logout' | 'export' | 'import' | 'other';
+  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'category' | 'settings' | 'notification' | 'support_ticket' | 'gallery' | 'carousel' | 'popup' | 'campaign' | 'expense' | 'income' | 'due' | 'review' | 'other';
   resourceId?: string;
   resourceName?: string;
   details: string;
@@ -17,6 +19,10 @@ export interface IAuditLog extends Document {
 }
 
 const AuditLogSchema: Schema = new Schema({
+  tenantId: {
+    type: String,
+    index: true,
+  },
   userId: {
     type: String,
     required: true,
@@ -36,10 +42,17 @@ const AuditLogSchema: Schema = new Schema({
     required: true,
     index: true,
   },
+  actionType: {
+    type: String,
+    required: true,
+    enum: ['create', 'update', 'delete', 'bulk_create', 'bulk_update', 'bulk_delete', 'login', 'logout', 'export', 'import', 'other'],
+    default: 'other',
+    index: true,
+  },
   resourceType: {
     type: String,
     required: true,
-    enum: ['tenant', 'user', 'subscription', 'order', 'product', 'settings', 'notification', 'support_ticket', 'other'],
+    enum: ['tenant', 'user', 'subscription', 'order', 'product', 'category', 'settings', 'notification', 'support_ticket', 'gallery', 'carousel', 'popup', 'campaign', 'expense', 'income', 'due', 'review', 'other'],
     index: true,
   },
   resourceId: {
@@ -70,7 +83,9 @@ const AuditLogSchema: Schema = new Schema({
 
 // Indexes for efficient querying
 AuditLogSchema.index({ createdAt: -1 });
+AuditLogSchema.index({ tenantId: 1, createdAt: -1 });
 AuditLogSchema.index({ userId: 1, createdAt: -1 });
 AuditLogSchema.index({ resourceType: 1, resourceId: 1 });
+AuditLogSchema.index({ tenantId: 1, actionType: 1, createdAt: -1 });
 
 export default mongoose.model<IAuditLog>('AuditLog', AuditLogSchema);

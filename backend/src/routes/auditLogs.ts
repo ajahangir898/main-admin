@@ -6,11 +6,13 @@ const router = Router();
 
 // Helper function to create audit log
 export async function createAuditLog(data: {
+  tenantId?: string;
   userId: string;
   userName: string;
   userRole: string;
   action: string;
-  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'settings' | 'notification' | 'support_ticket' | 'other';
+  actionType?: 'create' | 'update' | 'delete' | 'bulk_create' | 'bulk_update' | 'bulk_delete' | 'login' | 'logout' | 'export' | 'import' | 'other';
+  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'category' | 'settings' | 'notification' | 'support_ticket' | 'gallery' | 'carousel' | 'popup' | 'campaign' | 'expense' | 'income' | 'due' | 'review' | 'other';
   resourceId?: string;
   resourceName?: string;
   details: string;
@@ -22,6 +24,7 @@ export async function createAuditLog(data: {
   try {
     const log = new AuditLog({
       ...data,
+      actionType: data.actionType || 'other',
       status: data.status || 'success',
     });
     await log.save();
@@ -31,14 +34,16 @@ export async function createAuditLog(data: {
   }
 }
 
-// GET /api/audit-logs - List audit logs (super_admin only)
-router.get('/', authenticate, authorizeRoles(['super_admin']), async (req: Request, res: Response) => {
+// GET /api/audit-logs - List audit logs (admin or super_admin)
+router.get('/', authenticate, authorizeRoles(['super_admin', 'admin', 'tenant_admin']), async (req: Request, res: Response) => {
   try {
     const {
       page = '1',
-      limit = '50',
+      limit = '10',
+      tenantId,
       userId,
       resourceType,
+      actionType,
       action,
       status,
       startDate,
@@ -51,14 +56,33 @@ router.get('/', authenticate, authorizeRoles(['super_admin']), async (req: Reque
 
     // Build filter
     const filter: any = {};
+    
+    // Tenant admins can only see their own tenant's logs
+    const user = (req as any).user;
+    if (user.role === 'tenant_admin' || user.role === 'admin') {
+      // Get tenantId from user or query
+      const userTenantId = user.tenantId || tenantId;
+      if (userTenantId) {
+        filter.tenantId = userTenantId;
+      }
+    } else if (tenantId) {
+      // Super admin can filter by tenant
+      filter.tenantId = tenantId;
+    }
+    
     if (userId) filter.userId = userId;
-    if (resourceType) filter.resourceType = resourceType;
+    if (resourceType && resourceType !== 'all') filter.resourceType = resourceType;
+    if (actionType && actionType !== 'all') filter.actionType = actionType;
     if (action) filter.action = { $regex: action, $options: 'i' };
     if (status) filter.status = status;
     if (startDate || endDate) {
       filter.createdAt = {};
       if (startDate) filter.createdAt.$gte = new Date(startDate as string);
-      if (endDate) filter.createdAt.$lte = new Date(endDate as string);
+      if (endDate) {
+        const endDateObj = new Date(endDate as string);
+        endDateObj.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDateObj;
+      }
     }
 
     // Get logs with pagination
@@ -91,21 +115,37 @@ router.get('/', authenticate, authorizeRoles(['super_admin']), async (req: Reque
   }
 });
 
-// GET /api/audit-logs/stats - Get audit log statistics (super_admin only)
-router.get('/stats', authenticate, authorizeRoles(['super_admin']), async (req: Request, res: Response) => {
+// GET /api/audit-logs/stats - Get audit log statistics
+router.get('/stats', authenticate, authorizeRoles(['super_admin', 'admin', 'tenant_admin']), async (req: Request, res: Response) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, tenantId } = req.query;
 
     const filter: any = {};
+    
+    // Tenant admins can only see their own tenant's stats
+    const user = (req as any).user;
+    if (user.role === 'tenant_admin' || user.role === 'admin') {
+      const userTenantId = user.tenantId || tenantId;
+      if (userTenantId) {
+        filter.tenantId = userTenantId;
+      }
+    } else if (tenantId) {
+      filter.tenantId = tenantId;
+    }
+    
     if (startDate || endDate) {
       filter.createdAt = {};
       if (startDate) filter.createdAt.$gte = new Date(startDate as string);
-      if (endDate) filter.createdAt.$lte = new Date(endDate as string);
+      if (endDate) {
+        const endDateObj = new Date(endDate as string);
+        endDateObj.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = endDateObj;
+      }
     }
 
     const [
       totalLogs,
-      actionBreakdown,
+      actionTypeBreakdown,
       resourceBreakdown,
       statusBreakdown,
       topUsers,
@@ -113,7 +153,7 @@ router.get('/stats', authenticate, authorizeRoles(['super_admin']), async (req: 
       AuditLog.countDocuments(filter),
       AuditLog.aggregate([
         { $match: filter },
-        { $group: { _id: '$action', count: { $sum: 1 } } },
+        { $group: { _id: '$actionType', count: { $sum: 1 } } },
         { $sort: { count: -1 } },
         { $limit: 10 },
       ]),
@@ -138,7 +178,7 @@ router.get('/stats', authenticate, authorizeRoles(['super_admin']), async (req: 
       success: true,
       data: {
         totalLogs,
-        actionBreakdown: actionBreakdown.map(item => ({ action: item._id, count: item.count })),
+        actionTypeBreakdown: actionTypeBreakdown.map(item => ({ actionType: item._id, count: item.count })),
         resourceBreakdown: resourceBreakdown.map(item => ({ resourceType: item._id, count: item.count })),
         statusBreakdown: statusBreakdown.map(item => ({ status: item._id, count: item.count })),
         topUsers: topUsers.map(item => ({ 
@@ -158,8 +198,54 @@ router.get('/stats', authenticate, authorizeRoles(['super_admin']), async (req: 
   }
 });
 
-// GET /api/audit-logs/:id - Get specific audit log (super_admin only)
-router.get('/:id', authenticate, authorizeRoles(['super_admin']), async (req: Request, res: Response) => {
+// POST /api/audit-logs - Create a new audit log entry
+router.post('/', authenticate, async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+    const {
+      action,
+      actionType,
+      resourceType,
+      resourceId,
+      resourceName,
+      details,
+      metadata,
+      status,
+    } = req.body;
+
+    const log = await createAuditLog({
+      tenantId: user.tenantId || req.body.tenantId,
+      userId: user._id || user.id,
+      userName: user.name,
+      userRole: user.role,
+      action,
+      actionType: actionType || 'other',
+      resourceType,
+      resourceId,
+      resourceName,
+      details,
+      metadata,
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: status || 'success',
+    });
+
+    res.status(201).json({
+      success: true,
+      data: log,
+    });
+  } catch (error: any) {
+    console.error('Error creating audit log:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create audit log',
+      error: error.message,
+    });
+  }
+});
+
+// GET /api/audit-logs/:id - Get specific audit log
+router.get('/:id', authenticate, authorizeRoles(['super_admin', 'admin', 'tenant_admin']), async (req: Request, res: Response) => {
   try {
     const log = await AuditLog.findById(req.params.id);
     
@@ -167,6 +253,15 @@ router.get('/:id', authenticate, authorizeRoles(['super_admin']), async (req: Re
       return res.status(404).json({
         success: false,
         message: 'Audit log not found',
+      });
+    }
+
+    // Check tenant access
+    const user = (req as any).user;
+    if ((user.role === 'tenant_admin' || user.role === 'admin') && log.tenantId !== user.tenantId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied',
       });
     }
 

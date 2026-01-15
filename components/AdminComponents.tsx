@@ -4,7 +4,7 @@ import {
 	LayoutDashboard, ShoppingBag, Box, Settings, Sliders,
 	FileText, Star, Users, Image as ImageIcon, DollarSign,
 	Shield, LogOut, Bell, Menu, X, Globe, LogOut as LogOutIcon, ChevronDown, ChevronRight,
-	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store, Figma
+	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store, Figma, ClipboardList
 } from 'lucide-react';
 import { StatCardProps, User, Tenant } from '../types';
 import { useNotifications } from '../hooks/useNotifications';
@@ -86,6 +86,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 
 	// System items
 	const systemItems = [
+		{ id: 'activity_log', icon: <ClipboardList size={18} />, label: 'Activity Log', resource: 'settings' },
 		{ id: 'support', icon: <Headphones size={18} />, label: 'Support', resource: 'settings' },
 		{ id: 'tutorial', icon: <FileText size={18} />, label: 'Tutorial', resource: 'settings' },
 		{ id: 'settings', icon: <Settings size={18} />, label: 'Settings', resource: 'settings' },

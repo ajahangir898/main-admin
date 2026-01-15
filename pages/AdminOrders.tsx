@@ -471,7 +471,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
         <div className="flex items-center gap-3">
 
 
-          <button class="flex w-[142px] pt-[6px] pr-[16px] pb-[6px] pl-[12px] justify-center items-center gap-[4px] shrink-0 self-stretch rounded-lg bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-medium text-sm transition-all hover:opacity-90 active:scale-95 shadow-md">
+          <button className="flex w-[142px] pt-[6px] pr-[16px] pb-[6px] pl-[12px] justify-center items-center gap-[4px] shrink-0 self-stretch rounded-lg bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-medium text-sm transition-all hover:opacity-90 active:scale-95 shadow-md">
             {/* "rounded-[18px] bg-gradient-to-r from-[#38BDF8] to-[#1E90FF]" */}
             <Plus size={18} />
 

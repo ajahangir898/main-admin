@@ -19,7 +19,8 @@ import {
   CheckCircle2,
   MessageCircle,
   CalendarDays,
-  FolderOpen
+  FolderOpen,
+  MoreVertical
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -29,7 +30,8 @@ import {
   CarouselItem,
   FooterLink,
   Popup,
-  Campaign
+  Campaign,
+  Product
 } from '../types';
 import {
   convertFileToWebP,
@@ -62,6 +64,7 @@ interface AdminCustomizationProps {
   websiteConfig?: WebsiteConfig;
   onUpdateWebsiteConfig?: (config: WebsiteConfig) => Promise<void>;
   initialTab?: string;
+  products?: Product[];
 }
 
 type ColorKey =
@@ -265,7 +268,8 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   onUpdateTheme,
   websiteConfig,
   onUpdateWebsiteConfig,
-  initialTab = 'website_info'
+  initialTab = 'website_info',
+  products = []
 }) => {
   // ---------------------------------------------------------------------------
   // Tab State
@@ -340,8 +344,12 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
     endDate: '',
     url: '',
     status: 'Publish',
-    serial: 1
+    serial: 1,
+    productId: ""
   });
+  const [campaignCurrentPage, setCampaignCurrentPage] = useState(1);
+  const [campaignItemsPerPage, setCampaignItemsPerPage] = useState(10);
+  const [campaignActionMenu, setCampaignActionMenu] = useState<string | null>(null);
 
   // ---------------------------------------------------------------------------
   // File Input Refs
@@ -1111,6 +1119,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         endDate: '',
         url: '',
         serial: (websiteConfiguration.campaigns?.length || 0) + 1,
+        productId: '',
         status: 'Publish'
       });
     }
@@ -1132,7 +1141,8 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         endDate: campaignFormData.endDate || new Date().toISOString(),
         url: campaignFormData.url || '#',
         serial: Number(campaignFormData.serial),
-        status: campaignFormData.status as 'Publish' | 'Draft'
+        status: campaignFormData.status as 'Publish' | 'Draft',
+        productId: campaignFormData.productId || ''
       };
 
       const updatedConfig = {
@@ -1237,6 +1247,13 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
     (campaign) =>
       (campaignFilterStatus === 'All' || campaign.status === campaignFilterStatus) &&
       campaign.name.toLowerCase().includes(campaignSearchQuery.toLowerCase())
+  );
+
+  // Campaign pagination calculations
+  const campaignTotalPages = Math.ceil(filteredCampaigns.length / campaignItemsPerPage);
+  const paginatedCampaigns = filteredCampaigns.slice(
+    (campaignCurrentPage - 1) * campaignItemsPerPage,
+    campaignCurrentPage * campaignItemsPerPage
   );
 
   // ---------------------------------------------------------------------------
@@ -1651,19 +1668,14 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 {(['All', 'Publish', 'Draft'] as CampaignFilterStatus[]).map((status) => (
                   <button
                     key={status}
-                    onClick={() => setCampaignFilterStatus(status)}
+                    onClick={() => { setCampaignFilterStatus(status); setCampaignCurrentPage(1); }}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${
                       campaignFilterStatus === status
                         ? 'bg-white text-green-600 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
-                    {status === 'All' ? 'All Campaigns' : status}
-                    {status === 'All' && (
-                      <span className="ml-1 text-xs bg-gray-200 px-1.5 rounded-full">
-                        {(websiteConfiguration.campaigns || []).length}
-                      </span>
-                    )}
+                    {status === 'All' ? 'All Status' : status}
                   </button>
                 ))}
               </div>
@@ -1673,14 +1685,24 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                   <input
                     type="text"
                     value={campaignSearchQuery}
-                    onChange={(e) => setCampaignSearchQuery(e.target.value)}
-                    placeholder="Search campaigns..."
+                    onChange={(e) => { setCampaignSearchQuery(e.target.value); setCampaignCurrentPage(1); }}
+                    placeholder="Search Category"
                     className="pl-10 pr-4 py-2 border rounded-lg w-64 focus:ring-2 focus:ring-green-500"
                   />
                 </div>
+                <select
+                  value={campaignItemsPerPage}
+                  onChange={(e) => { setCampaignItemsPerPage(Number(e.target.value)); setCampaignCurrentPage(1); }}
+                  className="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500"
+                >
+                  <option value={10}>10 Campaign</option>
+                  <option value={25}>25 Campaign</option>
+                  <option value={50}>50 Campaign</option>
+                  <option value={100}>100 Campaign</option>
+                </select>
                 <ActionButton
                   onClick={() => openCampaignModal()}
-                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
+                  variant="bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
                 >
                   <Plus size={18} />
                   Add Campaign
@@ -1688,77 +1710,183 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
               </div>
             </div>
 
-            {/* Campaign Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredCampaigns.map((campaign) => (
-                <div
-                  key={campaign.id}
-                  className="bg-white border rounded-xl overflow-hidden hover:shadow-lg group"
-                >
-                  <div className="p-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      {campaign.logo ? (
-                        <img
-                          src={normalizeImageUrl(campaign.logo)}
-                          alt={campaign.name}
-                          className="w-16 h-10 object-contain rounded"
-                        />
-                      ) : (
-                        <div className="w-16 h-10 bg-gray-100 rounded flex items-center justify-center">
-                          <CalendarDays className="text-gray-400" size={20} />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-800 truncate">{campaign.name}</h4>
-                        <span
-                          className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                            campaign.status === 'Publish'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-yellow-100 text-yellow-700'
-                          }`}
-                        >
-                          {campaign.status}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>Starts: {new Date(campaign.startDate).toLocaleDateString()}</p>
-                      <p>Ends: {new Date(campaign.endDate).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                  <div className="flex border-t divide-x">
-                    <button
-                      onClick={() => openCampaignModal(campaign)}
-                      className="flex-1 px-4 py-2 text-blue-600 hover:bg-blue-50 font-medium flex items-center justify-center gap-1"
-                    >
-                      <Edit size={16} />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCampaign(campaign.id)}
-                      className="flex-1 px-4 py-2 text-red-600 hover:bg-red-50 font-medium flex items-center justify-center gap-1"
-                    >
-                      <Trash2 size={16} />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-              {filteredCampaigns.length === 0 && (
-                <div className="col-span-full text-center py-12 text-gray-500">
-                  <CalendarDays size={48} className="mx-auto mb-3 opacity-30" />
-                  <p>No campaigns found.</p>
-                </div>
-              )}
+            {/* Campaign Table */}
+            <div className="overflow-x-auto border rounded-lg shadow-sm">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-[#E0F7FA] text-gray-700 font-semibold text-xs uppercase border-b">
+                  <tr>
+                    <th className="px-4 py-3 w-10">
+                      <input type="checkbox" className="rounded" />
+                    </th>
+                    <th className="px-4 py-3">SL</th>
+                    <th className="px-4 py-3">Product</th>
+                    <th className="px-4 py-3">Campaign Name</th>
+                    <th className="px-4 py-3">Start</th>
+                    <th className="px-4 py-3">End</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {paginatedCampaigns.map((campaign, index) => {
+                    const product = products.find(p => p.id === campaign.productId);
+                    const rowNumber = (campaignCurrentPage - 1) * campaignItemsPerPage + index + 1;
+                    return (
+                      <tr key={campaign.id} className="hover:bg-gray-50 group">
+                        <td className="px-4 py-3">
+                          <input type="checkbox" className="rounded" />
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-800">{campaign.serial || rowNumber}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-100 rounded border overflow-hidden flex-shrink-0">
+                              {product?.images?.[0] ? (
+                                <img
+                                  src={normalizeImageUrl(product.images[0])}
+                                  alt={product.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : campaign.logo ? (
+                                <img
+                                  src={normalizeImageUrl(campaign.logo)}
+                                  alt={campaign.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                  <ImageIcon size={16} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-medium text-gray-800 truncate max-w-[180px]">{product?.name || 'No Product'}</p>
+                              {product?.sku && <p className="text-xs text-gray-500">[{product.sku}]</p>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-gray-700">{campaign.name}</td>
+                        <td className="px-4 py-3 text-gray-500">{new Date(campaign.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
+                        <td className="px-4 py-3 text-gray-500">{new Date(campaign.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                            {campaign.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right relative">
+                          <button
+                            onClick={() => setCampaignActionMenu(campaignActionMenu === campaign.id ? null : campaign.id)}
+                            className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
+                          >
+                            <MoreVertical size={18} />
+                          </button>
+                          {campaignActionMenu === campaign.id && (
+                            <div className="absolute right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-20 min-w-[120px]">
+                              <button
+                                onClick={() => { openCampaignModal(campaign); setCampaignActionMenu(null); }}
+                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-blue-600"
+                              >
+                                <Edit size={14} /> Edit
+                              </button>
+                              <button
+                                onClick={() => { handleDeleteCampaign(campaign.id); setCampaignActionMenu(null); }}
+                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600"
+                              >
+                                <Trash2 size={14} /> Delete
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {paginatedCampaigns.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="text-center py-12 text-gray-400">
+                        <CalendarDays size={32} className="mx-auto mb-2 opacity-50" />
+                        No campaigns found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
+
+            {/* Pagination */}
+            {filteredCampaigns.length > 0 && (
+              <div className="flex items-center justify-between px-4 py-3 border rounded-lg bg-gray-50">
+                <p className="text-sm text-gray-600">
+                  Showing {((campaignCurrentPage - 1) * campaignItemsPerPage) + 1} to {Math.min(campaignCurrentPage * campaignItemsPerPage, filteredCampaigns.length)} of {filteredCampaigns.length} campaigns
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setCampaignCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={campaignCurrentPage === 1}
+                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                  >
+                    <ChevronLeft size={16} /> Previous
+                  </button>
+                  {Array.from({ length: Math.min(5, campaignTotalPages) }, (_, i) => {
+                    let pageNum;
+                    if (campaignTotalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (campaignCurrentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (campaignCurrentPage >= campaignTotalPages - 2) {
+                      pageNum = campaignTotalPages - 4 + i;
+                    } else {
+                      pageNum = campaignCurrentPage - 2 + i;
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCampaignCurrentPage(pageNum)}
+                        className={`w-8 h-8 text-sm font-medium rounded-lg transition ${campaignCurrentPage === pageNum
+                          ? 'bg-teal-500 text-white'
+                          : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  {campaignTotalPages > 5 && campaignCurrentPage < campaignTotalPages - 2 && (
+                    <>
+                      <span className="px-2 text-gray-400">...</span>
+                      <button
+                        onClick={() => setCampaignCurrentPage(campaignTotalPages)}
+                        className="w-8 h-8 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        {campaignTotalPages}
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => setCampaignCurrentPage(prev => Math.min(campaignTotalPages, prev + 1))}
+                    disabled={campaignCurrentPage === campaignTotalPages}
+                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                  >
+                    Next <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
+
         {isCampaignModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setIsCampaignModalOpen(false)}>
             <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b sticky top-0 bg-white z-10"><h3 className="text-xl font-bold">{editingCampaign ? 'Edit Campaign' : 'Add New Campaign'}</h3></div>
               <form onSubmit={handleSaveCampaign} className="p-6 space-y-4">
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label><input type="text" value={campaignFormData.name || ''} onChange={e => setCampaignFormData(p => ({ ...p, name: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
+                  <select value={campaignFormData.productId || ''} onChange={e => setCampaignFormData(p => ({ ...p, productId: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500">
+                    <option value="">-- Select a Product --</option>
+                    {products.map(product => (
+                      <option key={product.id} value={product.id}>{product.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">Campaign Logo</label><div className="flex items-center gap-4">{campaignFormData.logo ? <img src={normalizeImageUrl(campaignFormData.logo)} alt="Logo" className="w-20 h-12 object-contain border rounded"/> : <div className="w-20 h-12 bg-gray-100 rounded flex items-center justify-center"><ImageIcon className="text-gray-400" size={24}/></div>}<input type="file" ref={campaignLogoInputRef} accept="image/*" onChange={handleCampaignLogoUpload} className="hidden"/><button type="button" onClick={() => campaignLogoInputRef.current?.click()} className="px-4 py-2 border rounded-lg hover:bg-gray-50">Upload Logo</button>{campaignFormData.logo && <button type="button" onClick={() => setCampaignFormData(p => ({ ...p, logo: '' }))} className="text-red-500 hover:text-red-700"><X size={20}/></button>}</div></div>
                 <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label><input type="datetime-local" value={campaignFormData.startDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, startDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label><input type="datetime-local" value={campaignFormData.endDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, endDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">Link URL</label><input type="text" value={campaignFormData.url || ''} onChange={e => setCampaignFormData(p => ({ ...p, url: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" placeholder="https://..."/></div>
@@ -1768,6 +1896,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
             </div>
           </div>
         )}
+
         {activeTab === 'popup' && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">

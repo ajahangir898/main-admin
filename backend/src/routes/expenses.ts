@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getDatabase } from '../db/mongo';
 import { ObjectId } from 'mongodb';
+import { createAuditLog } from './auditLogs';
 
 export const expensesRouter = Router();
 
@@ -89,6 +90,25 @@ expensesRouter.post('/', async (req, res, next) => {
     };
 
     const result = await col.insertOne(doc as any);
+    
+    // Create audit log for expense creation
+    const user = (req as any).user;
+    await createAuditLog({
+      tenantId: user?.tenantId || 'unknown',
+      userId: user?._id || user?.id || 'system',
+      userName: user?.name || 'System',
+      userRole: user?.role || 'system',
+      action: 'Expense Created',
+      actionType: 'create',
+      resourceType: 'expense',
+      resourceId: String(result.insertedId),
+      resourceName: doc.name,
+      details: `Expense "${doc.name}" created - ৳${doc.amount} (${doc.category})`,
+      metadata: { amount: doc.amount, category: doc.category },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
     res.status(201).json({ id: String(result.insertedId), ...doc });
   } catch (e) {
     next(e);
@@ -155,6 +175,7 @@ expensesRouter.post('/categories/create', async (req, res, next) => {
     const doc = { name: String(name).trim(), createdAt: new Date().toISOString() };
     const result = await col.insertOne(doc as any);
     res.status(201).json({ id: String(result.insertedId), ...doc });
+    
   } catch (e) {
     next(e);
   }

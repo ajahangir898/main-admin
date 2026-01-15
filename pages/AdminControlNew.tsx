@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { 
   Shield, Users, Edit, Trash2, Plus, Check, X, Search, 
   Eye, EyeOff, UserPlus, Mail, Phone, Lock, Save, Loader2, Key,
-  MessageCircle, Star, UserCheck, Filter, Flag, CheckCircle, Send, Edit3
+  MessageCircle, Star, UserCheck, Filter, Flag, CheckCircle, Send, Edit3,
+  MoreVertical, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 // ==================== TYPES ====================
@@ -41,6 +42,9 @@ export interface User {
   roleDetails?: Role;
   tenantId?: string;
   isActive?: boolean;
+  avatar?: string;
+  lastLogin?: string;
+  createdAt?: string;
 }
 
 // ==================== CONSTANTS ====================
@@ -102,6 +106,12 @@ const AdminControl: React.FC<AdminControlProps> = ({
   const [tab, setTab] = useState<'users' | 'roles' | 'reviews' | 'customers'>('users');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Pagination and filter state for Users
+  const [userCurrentPage, setUserCurrentPage] = useState(1);
+  const [userItemsPerPage, setUserItemsPerPage] = useState(10);
+  const [userStatusFilter, setUserStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [userActionMenu, setUserActionMenu] = useState<string | null>(null);
   
   // Permission check helpers
   const hasAdminControlPermission = (action: ActionType): boolean => {
@@ -232,8 +242,15 @@ const AdminControl: React.FC<AdminControlProps> = ({
   // Filtered users (exclude customers)
   const filteredUsers = useMemo(() => 
     users.filter(u => u.role !== 'customer' && 
-      (u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase()))
-    ), [users, search]);
+      (u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase())) &&
+      (userStatusFilter === 'all' || (userStatusFilter === 'active' ? u.isActive !== false : u.isActive === false))
+    ), [users, search, userStatusFilter]);
+
+  // User pagination calculations
+  const userTotalPages = Math.ceil(filteredUsers.length / userItemsPerPage);
+  const paginatedUsers = useMemo(() => 
+    filteredUsers.slice((userCurrentPage - 1) * userItemsPerPage, userCurrentPage * userItemsPerPage)
+  , [filteredUsers, userCurrentPage, userItemsPerPage]);
 
   // Filtered customers (only customers)
   const filteredCustomers = useMemo(() => 
@@ -433,13 +450,13 @@ const AdminControl: React.FC<AdminControlProps> = ({
           <p className="text-slate-400 text-sm">Manage users, roles & permissions</p>
         </div>
         
-        {/* Show Add User/Create Role button only if user has write permission */}
-        {((tab === 'users' && canModifyUsers) || (tab === 'roles' && canModifyRoles)) && (
+        {/* Show Create Role button only for roles tab (users tab has its own Add button) */}
+        {tab === 'roles' && canModifyRoles && (
           <button 
-            onClick={() => tab === 'users' ? openUserModal() : openRoleModal()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg-xl font-medium transition"
+            onClick={() => openRoleModal()}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-xl font-medium transition hover:from-[#2BAEE8] hover:to-[#1A7FE8]"
           >
-            <Plus size={18} /> {tab === 'users' ? 'Add User' : 'Create Role'}
+            <Plus size={18} /> Create Role
           </button>
         )}
       </div>
@@ -462,96 +479,203 @@ const AdminControl: React.FC<AdminControlProps> = ({
 
       {/* Users Tab */}
       {tab === 'users' && (
-        <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
-          {/* Search */}
-          <div className="p-4 border-b border-white/10">
-            <div className="relative max-w-sm">
-              <Search size={16} className="absolute left-3 top-3 text-slate-500" />
-              <input 
-                type="text" 
-                placeholder="Search users..." 
-                value={search} 
-                onChange={e => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-              />
+        <div className="space-y-4">
+          {/* Header with Search, Filters, and Add Button */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="relative flex-1 md:w-64">
+                <Search size={16} className="absolute left-3 top-3 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search Category" 
+                  value={search} 
+                  onChange={e => { setSearch(e.target.value); setUserCurrentPage(1); }}
+                  className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-gray-800 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <button className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
+                Search
+              </button>
+            </div>
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <select
+                value={userStatusFilter}
+                onChange={(e) => { setUserStatusFilter(e.target.value as any); setUserCurrentPage(1); }}
+                className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 bg-white text-gray-700"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <select
+                value={userItemsPerPage}
+                onChange={(e) => { setUserItemsPerPage(Number(e.target.value)); setUserCurrentPage(1); }}
+                className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 bg-white text-gray-700"
+              >
+                <option value={10}>10 Admin</option>
+                <option value={25}>25 Admin</option>
+                <option value={50}>50 Admin</option>
+                <option value={100}>100 Admin</option>
+              </select>
+              {canModifyUsers && (
+                <button 
+                  onClick={() => openUserModal()}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg font-medium transition hover:from-[#2BAEE8] hover:to-[#1A7FE8]"
+                >
+                  <Plus size={18} /> Add Admin
+                </button>
+              )}
             </div>
           </div>
-          
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-white/5 text-slate-400 text-xs uppercase">
-                <tr>
-                  <th className="px-4 py-3 text-left">User</th>
-                  <th className="px-4 py-3 text-left">Role</th>
-                  <th className="px-4 py-3 text-left">Custom Role</th>
-                  <th className="px-4 py-3 text-left">Status</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filteredUsers.map(user => (
-                  <tr key={user._id || user.id || user.email} className="hover:bg-white/5">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                          {user.name?.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="font-medium text-white">{user.name}</div>
-                          <div className="text-slate-500 text-xs">{user.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${getRoleColor(user.role)}`}>
-                        {getRoleLabel(user.role)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {canChangeUserRole(user) ? (
-                        <select 
-                          value={user.roleId || ''} 
-                          onChange={e => onUpdateUserRole(user.email, e.target.value)}
-                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                        >
-                          <option value="" className="bg-slate-900">None</option>
-                          {roles.filter(r => r._id || r.id).map(r => (
-                            <option key={r._id || r.id} value={r._id || r.id} className="bg-slate-900">{r.name}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <span className="text-slate-500 text-xs px-2 py-1.5">
-                          {user.roleId ? roles.find(r => (r._id || r.id) === user.roleId)?.name || 'Custom Role' : 'None'}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs ${user.isActive !== false ? 'text-emerald-300 bg-emerald-500/20' : 'text-red-300 bg-red-500/20'}`}>
-                        {user.isActive !== false ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {onUpdateUser && canChangeUserRole(user) && (
-                          <button onClick={() => openUserModal(user)} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-emerald-400">
-                            <Edit size={14} />
-                          </button>
-                        )}
-                        {onDeleteUser && canDeleteSpecificUser(user) && (
-                          <button onClick={() => deleteUser(user)} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-red-400">
-                            <Trash2 size={14} />
-                          </button>
-                        )}
-                      </div>
-                    </td>
+
+          {/* Users Table */}
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-[#E0F7FA] text-gray-700 font-semibold text-xs uppercase border-b">
+                  <tr>
+                    <th className="px-4 py-3 w-10">
+                      <input type="checkbox" className="rounded" />
+                    </th>
+                    <th className="px-4 py-3">SL</th>
+                    <th className="px-4 py-3">Picture</th>
+                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Username</th>
+                    <th className="px-4 py-3">Role</th>
+                    <th className="px-4 py-3">Last Login</th>
+                    <th className="px-4 py-3">Registration At</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Action</th>
                   </tr>
-                ))}
-                {filteredUsers.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">No users found</td></tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {paginatedUsers.map((user, index) => {
+                    const rowNumber = (userCurrentPage - 1) * userItemsPerPage + index + 1;
+                    const userId = user._id || user.id || user.email;
+                    return (
+                      <tr key={userId} className="hover:bg-gray-50 group">
+                        <td className="px-4 py-3">
+                          <input type="checkbox" className="rounded" />
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-800">{rowNumber}</td>
+                        <td className="px-4 py-3">
+                          <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex items-center justify-center">
+                            {user.avatar ? (
+                              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-gray-500 font-bold text-sm">{user.name?.charAt(0).toUpperCase()}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-800">{user.name}</td>
+                        <td className="px-4 py-3 text-gray-600">{user.email?.split('@')[0] || '-'}</td>
+                        <td className="px-4 py-3 text-gray-600">{getRoleLabel(user.role)}</td>
+                        <td className="px-4 py-3 text-gray-500">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-GB') : '-'}</td>
+                        <td className="px-4 py-3 text-gray-500">{user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB') : '-'}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${user.isActive !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {user.isActive !== false ? 'Publish' : 'Inactive'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right relative">
+                          <button
+                            onClick={() => setUserActionMenu(userActionMenu === userId ? null : userId)}
+                            className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
+                          >
+                            <MoreVertical size={18} />
+                          </button>
+                          {userActionMenu === userId && (
+                            <div className="absolute right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-20 min-w-[120px]">
+                              {onUpdateUser && canChangeUserRole(user) && (
+                                <button
+                                  onClick={() => { openUserModal(user); setUserActionMenu(null); }}
+                                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-blue-600"
+                                >
+                                  <Edit size={14} /> Edit
+                                </button>
+                              )}
+                              {onDeleteUser && canDeleteSpecificUser(user) && (
+                                <button
+                                  onClick={() => { deleteUser(user); setUserActionMenu(null); }}
+                                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600"
+                                >
+                                  <Trash2 size={14} /> Delete
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {paginatedUsers.length === 0 && (
+                    <tr>
+                      <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
+                        <Users size={32} className="mx-auto mb-2 opacity-50" />
+                        No users found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {filteredUsers.length > 0 && (
+              <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50">
+                <button
+                  onClick={() => setUserCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={userCurrentPage === 1}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                >
+                  <ChevronLeft size={16} /> Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, userTotalPages) }, (_, i) => {
+                    let pageNum;
+                    if (userTotalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (userCurrentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (userCurrentPage >= userTotalPages - 2) {
+                      pageNum = userTotalPages - 4 + i;
+                    } else {
+                      pageNum = userCurrentPage - 2 + i;
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setUserCurrentPage(pageNum)}
+                        className={`w-8 h-8 text-sm font-medium rounded-lg transition ${userCurrentPage === pageNum
+                          ? 'bg-teal-500 text-white'
+                          : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                  {userTotalPages > 5 && userCurrentPage < userTotalPages - 2 && (
+                    <>
+                      <span className="px-2 text-gray-400">.....</span>
+                      <button
+                        onClick={() => setUserCurrentPage(userTotalPages)}
+                        className="w-8 h-8 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                      >
+                        {userTotalPages}
+                      </button>
+                    </>
+                  )}
+                </div>
+                <button
+                  onClick={() => setUserCurrentPage(prev => Math.min(userTotalPages, prev + 1))}
+                  disabled={userCurrentPage === userTotalPages || userTotalPages === 0}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                >
+                  Next <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

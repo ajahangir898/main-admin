@@ -2,6 +2,7 @@ import { Router, Request } from 'express';
 import { z } from 'zod';
 import { getTenantData, setTenantData, getTenantDataBatch } from '../services/tenantDataService';
 import { getTenantBySubdomain } from '../services/tenantsService';
+import { createAuditLog } from './auditLogs';
 import { Server as SocketIOServer } from 'socket.io';
 
 const paramsSchema = z.object({
@@ -182,6 +183,28 @@ tenantDataRouter.put('/:tenantId/:key', async (req, res, next) => {
     emitDataUpdate(req, tenantId, key, payload.data);
     
     console.log(`[TenantData] Saved ${key} for tenant ${tenantId}`);
+    
+    // Create audit log for important data changes
+    if (['products', 'categories', 'subcategories', 'childcategories', 'brands', 'tags'].includes(key)) {
+      const user = (req as any).user;
+      const dataArray = Array.isArray(payload.data) ? payload.data : [];
+      await createAuditLog({
+        tenantId,
+        userId: user?._id || user?.id || 'system',
+        userName: user?.name || 'System',
+        userRole: user?.role || 'system',
+        action: `${key.charAt(0).toUpperCase() + key.slice(1)} Updated`,
+        actionType: 'update',
+        resourceType: key === 'products' ? 'product' : key === 'categories' ? 'category' : 'other',
+        resourceId: tenantId,
+        resourceName: key,
+        details: `${key} data updated (${dataArray.length} items)`,
+        metadata: { key, itemCount: dataArray.length },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+        status: 'success'
+      });
+    }
     res.json({ data: { tenantId, key, success: true } });
   } catch (error) {
     console.error(`[TenantData] Error saving ${req.params.key} for ${req.params.tenantId}:`, error);

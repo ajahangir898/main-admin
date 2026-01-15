@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { getTenantData, setTenantData } from '../services/tenantDataService';
 import { Server as SocketIOServer } from 'socket.io';
 import { Notification } from '../models/Notification';
+import { createAuditLog } from './auditLogs';
 
 export const ordersRouter = Router();
 
@@ -96,6 +97,25 @@ ordersRouter.post('/:tenantId', async (req, res, next) => {
     // Emit real-time update
     emitOrderUpdate(req, tenantId, 'new-order', orderData);
     
+    // Create audit log
+    const user = (req as any).user;
+    await createAuditLog({
+      tenantId,
+      userId: user?._id || user?.id || 'system',
+      userName: user?.name || orderData.customer || 'Customer',
+      userRole: user?.role || 'customer',
+      action: 'Order Created',
+      actionType: 'create',
+      resourceType: 'order',
+      resourceId: orderData.id,
+      resourceName: `Order ${orderData.id}`,
+      details: `New order ${orderData.id} created by ${orderData.customer} for ৳${orderData.amount}`,
+      metadata: { amount: orderData.amount, productName: orderData.productName, source: orderData.source },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
+    
     // Create notification for admin
     try {
       const notification = await Notification.create({
@@ -150,7 +170,8 @@ ordersRouter.put('/:tenantId/:orderId', async (req, res, next) => {
       return res.status(404).json({ error: 'Order not found' });
     }
     
-    const updatedOrder = { ...existingOrders[orderIndex], ...req.body };
+    const oldOrder = existingOrders[orderIndex];
+    const updatedOrder = { ...oldOrder, ...req.body };
     existingOrders[orderIndex] = updatedOrder;
     
     // Save orders
@@ -158,6 +179,28 @@ ordersRouter.put('/:tenantId/:orderId', async (req, res, next) => {
     
     // Emit real-time update
     emitOrderUpdate(req, tenantId, 'order-updated', updatedOrder);
+    
+    // Create audit log
+    const user = (req as any).user;
+    const statusChanged = oldOrder.status !== updatedOrder.status;
+    await createAuditLog({
+      tenantId,
+      userId: user?._id || user?.id || 'system',
+      userName: user?.name || 'System',
+      userRole: user?.role || 'system',
+      action: statusChanged ? `Order Status: ${oldOrder.status} → ${updatedOrder.status}` : 'Order Updated',
+      actionType: 'update',
+      resourceType: 'order',
+      resourceId: orderId,
+      resourceName: `Order ${orderId}`,
+      details: statusChanged 
+        ? `Order ${orderId} status changed from ${oldOrder.status} to ${updatedOrder.status}`
+        : `Order ${orderId} updated`,
+      metadata: { oldStatus: oldOrder.status, newStatus: updatedOrder.status, changes: req.body },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
     
     console.log(`[Orders] Order ${orderId} updated for tenant ${tenantId}`);
     res.json({ data: updatedOrder, success: true });
@@ -178,6 +221,9 @@ ordersRouter.delete('/:tenantId/:orderId', async (req, res, next) => {
     // Get existing orders
     const existingOrders = await getTenantData<Order[]>(tenantId, 'orders') || [];
     
+    // Find the order before deleting
+    const orderToDelete = existingOrders.find(o => o.id === orderId);
+    
     // Filter out the order to delete
     const updatedOrders = existingOrders.filter(o => o.id !== orderId);
     
@@ -190,6 +236,25 @@ ordersRouter.delete('/:tenantId/:orderId', async (req, res, next) => {
     
     // Emit real-time update
     emitOrderUpdate(req, tenantId, 'order-deleted', { orderId });
+    
+    // Create audit log
+    const user = (req as any).user;
+    await createAuditLog({
+      tenantId,
+      userId: user?._id || user?.id || 'system',
+      userName: user?.name || 'System',
+      userRole: user?.role || 'system',
+      action: 'Order Deleted',
+      actionType: 'delete',
+      resourceType: 'order',
+      resourceId: orderId,
+      resourceName: `Order ${orderId}`,
+      details: `Order ${orderId} (${orderToDelete?.customer || 'Unknown'}) deleted`,
+      metadata: { deletedOrder: orderToDelete },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
     
     console.log(`[Orders] Order ${orderId} deleted for tenant ${tenantId}`);
     res.json({ success: true });

@@ -16,7 +16,7 @@ const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard" 
 const AdminOrders = lazy(() => import(/* webpackChunkName: "admin-orders" */ './AdminOrders'));
 const AdminProducts = lazy(() => import(/* webpackChunkName: "admin-products" */ './AdminProducts'));
 const AdminCustomization = lazy(() => import(/* webpackChunkName: "admin-customization" */ './AdminCustomization'));
-const AdminSettings = lazy(() => import(/* webpackChunkName: "admin-settings" */ './AdminSettings'));
+const AdminSettings = lazy(() => import(/* webpackChunkName: "admin-settings" */ './AdminSettingsNew'));
 const AdminManageShop = lazy(() => import(/* webpackChunkName: "admin-manage-shop" */ './AdminManageShop'));
 const AdminControlNew = lazy(() => import(/* webpackChunkName: "admin-control-new" */ './AdminControlNew'));
 const AdminCatalog = lazy(() => import(/* webpackChunkName: "admin-catalog" */ './AdminCatalog'));
@@ -25,7 +25,7 @@ const AdminDeliverySettings = lazy(() => import(/* webpackChunkName: "admin-deli
 const AdminCourierSettings = lazy(() => import(/* webpackChunkName: "admin-courier" */ './AdminCourierSettings'));
 const AdminInventory = lazy(() => import(/* webpackChunkName: "admin-inventory" */ './AdminInventory'));
 const AdminReviews = lazy(() => import(/* webpackChunkName: "admin-reviews" */ './AdminReviews'));
-const AdminCustomers = lazy(() => import(/* webpackChunkName: "admin-customers" */ './AdminCustomers'));
+const AdminCustomers = lazy(() => import(/* webpackChunkName: "admin-customers" */ './AdminCustomersReview'));
 const AdminDailyTarget = lazy(() => import(/* webpackChunkName: "admin-target" */ './AdminDailyTarget'));
 const AdminGallery = lazy(() => import(/* webpackChunkName: "admin-gallery" */ './AdminGallery'));
 const AdminExpenses = lazy(() => import(/* webpackChunkName: "admin-expenses" */ './AdminExpenses'));
@@ -42,6 +42,7 @@ const AdminSupport = lazy(() => import(/* webpackChunkName: "admin-support" */ '
 const AdminFigmaIntegration = lazy(() => import(/* webpackChunkName: "admin-figma" */ './AdminFigmaIntegration'));
 const AdminBilling = lazy(() => import(/* webpackChunkName: "admin-billing" */ './AdminBilling'));
 const AdminTutorial = lazy(() => import(/* webpackChunkName: "admin-tutorial" */ './AdminTutorial'));
+const AdminActivityLog = lazy(() => import(/* webpackChunkName: "admin-activity-log" */ './AdminActivityLog'));
 // Admin Components - directly imported for instant layout render
 import { AdminSidebar, AdminHeader } from '../components/AdminComponents';
 
@@ -536,6 +537,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
          adminSection === 'figma' ? <AdminFigmaIntegration onBack={() => setAdminSection('gallery')} tenantId={activeTenantId} /> :
          adminSection === 'billing' ? <AdminBilling tenant={selectedTenantRecord} onUpgrade={() => setAdminSection('settings')} /> :
          adminSection === 'tutorial' ? <AdminTutorial /> :
+         adminSection === 'activity_log' ? <AdminActivityLog tenantId={activeTenantId} /> :
          adminSection === 'manage_shop' ? <AdminManageShop onNavigate={setAdminSection} tenantId={activeTenantId} websiteConfig={websiteConfig} tenantSubdomain={selectedTenantRecord?.subdomain} /> :
          adminSection === 'settings' ? <AdminSettings courierConfig={courierConfig} onUpdateCourierConfig={onUpdateCourierConfig} onNavigate={setAdminSection} user={user} onUpdateProfile={onUpdateProfile} activeTenant={selectedTenantRecord} logo={logo} onUpdateLogo={onUpdateLogo} /> :
          adminSection === 'support' ? <AdminSupport user={user} activeTenant={selectedTenantRecord} /> :
@@ -546,7 +548,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
          adminSection === 'admin' ? <AdminControlNew users={users} roles={roles} onAddUser={handleAddUser} onUpdateUser={handleUpdateUser} onDeleteUser={handleDeleteUser} onAddRole={handleAddRole} onUpdateRole={handleUpdateRole} onDeleteRole={handleDeleteRole} onUpdateUserRole={handleUpdateUserRole} currentUser={user} tenantId={activeTenantId} userPermissions={userPermissions} /> :
          adminSection.startsWith('catalog_') ? <AdminCatalog view={adminSection} onNavigate={setAdminSection} categories={categories} subCategories={subCategories} childCategories={childCategories} brands={brands} tags={tags} onAddCategory={catHandlers.add} onUpdateCategory={catHandlers.update} onDeleteCategory={catHandlers.delete} onAddSubCategory={subCatHandlers.add} onUpdateSubCategory={subCatHandlers.update} onDeleteSubCategory={subCatHandlers.delete} onAddChildCategory={childCatHandlers.add} onUpdateChildCategory={childCatHandlers.update} onDeleteChildCategory={childCatHandlers.delete} onAddBrand={brandHandlers.add} onUpdateBrand={brandHandlers.update} onDeleteBrand={brandHandlers.delete} onAddTag={tagHandlers.add} onUpdateTag={tagHandlers.update} onDeleteTag={tagHandlers.delete} /> :
          adminSection.startsWith('business_report_') ? <AdminBusinessReport initialTab={adminSection} orders={orders} products={products} user={user} onLogout={onLogout} tenantId={activeTenantId} /> :
-         <AdminCustomization tenantId={activeTenantId} logo={logo} onUpdateLogo={onUpdateLogo} themeConfig={themeConfig} onUpdateTheme={onUpdateTheme} websiteConfig={websiteConfig} onUpdateWebsiteConfig={onUpdateWebsiteConfig} initialTab={adminSection === 'customization' ? 'website_info' : adminSection} />
+         <AdminCustomization tenantId={activeTenantId} logo={logo} onUpdateLogo={onUpdateLogo} themeConfig={themeConfig} onUpdateTheme={onUpdateTheme} websiteConfig={websiteConfig} onUpdateWebsiteConfig={onUpdateWebsiteConfig} products={products} initialTab={adminSection === 'customization' ? 'website_info' : adminSection} />
         }
       </Suspense>
     </AdminLayout>

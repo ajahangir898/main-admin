@@ -261,6 +261,7 @@ export interface CarouselItem {
 }
 
 export interface Campaign {
+  productId?: string;
   id: string;
   name: string;
   logo?: string;

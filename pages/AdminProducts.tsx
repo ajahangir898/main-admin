@@ -137,7 +137,11 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   // Filter State
   const [filterCategory, setFilterCategory] = useState('');
   const [filterBrand, setFilterBrand] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
+  const [filterStatus, setFilterStatus] = useState('')
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Selection State
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -386,6 +390,18 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
 
     return matchesSearch && matchesDeepSearch && matchesPriceRange && matchesStockRange && matchesCategory && matchesBrand && matchesStatus;
   });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Reset to first page when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCategory, filterBrand, filterStatus, deepSearchTerm, itemsPerPage]);
 
   const resetFilters = () => {
     setSearchTerm('');
@@ -933,11 +949,13 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   const imageHeightClass = VIEW_IMAGE_HEIGHT[viewMode];
   const isListLikeView = viewMode === 'list';  // details mode now uses table view
 
-  return (
-    <div className="space-y-6 animate-fade-in relative">
+    return (
+    <div className="space-y-4 animate-fade-in relative">
+      {/* Header Section - Figma Design */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-800">Products</h2>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Search Input */}
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -945,81 +963,96 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               placeholder="Search products/SKU"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
+              className="w-52 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
             />
           </div>
           <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
             Search
           </button>
-          <button
-            onClick={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border ${isDeepSearchOpen 
-                ? 'bg-[#2DD4BF] text-white border-[#2DD4BF]'
-                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-              }`}
-          >
-            <Filter size={16} />
-            Deep Search
-          </button>
+          {/* Deep Search Checkbox */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isDeepSearchOpen}
+              onChange={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
+              className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF]"
+            />
+            <span className="text-sm text-gray-600">Deep Search</span>
+          </label>
+          {/* Add Product Button */}
           <button 
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
+            className="flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] text-white rounded-lg text-sm font-medium hover:bg-[#26B8A5] transition"
           >
             <Plus size={16} /> Add Product
           </button>
         </div>
       </div>
 
-      {/* Toolbar & Filters */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4 sticky top-0 z-20">
-
-        {/* Top Row: Search & Select All */}
-        {/* Import/Export Row */}
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
-              <Upload size={16} /> Import
-            </button>
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
-              <Download size={16} /> Export
-            </button>
-            <select className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20">
-              <option>10 Products</option>
-              <option>25 Products</option>
-              <option>50 Products</option>
-              <option>100 Products</option>
+      {/* Toolbar Row - Figma Design */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        {/* Left Side - Import/Export/Items Per Page */}
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
+            <Upload size={16} /> Import
+          </button>
+          <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
+            <Download size={16} /> Export
+          </button>
+          <div className="relative">
+            <select 
+              value={itemsPerPage}
+              onChange={(e) => setItemsPerPage(Number(e.target.value))}
+              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
+            >
+              <option value={10}>10 Products</option>
+              <option value={25}>25 Products</option>
+              <option value={50}>50 Products</option>
+              <option value={100}>100 Products</option>
             </select>
+            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           </div>
-          {/* <div className="flex items-center gap-3">
-            <span className="flex items-center gap-2 text-sm text-gray-500"><Filter size={16} /> Filter:</span>
+        </div>
+        {/* Right Side - Filters */}
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-2 text-sm text-gray-500">
+            <Filter size={16} /> Filter:
+          </span>
+          <div className="relative">
             <select
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
+              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
               <option value="">All Category</option>
               {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
+            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </div>
+          <div className="relative">
             <select
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
+              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterBrand}
               onChange={(e) => setFilterBrand(e.target.value)}
             >
               <option value="">All Brands</option>
               {brands.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}
             </select>
+            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </div>
+          <div className="relative">
             <select
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20"
+              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
               <option value="">All Status</option>
-              <option value="Active">Active</option>
+              <option value="Active">Publish</option>
               <option value="Draft">Draft</option>
             </select>
-          </div> */}
+            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </div>
         </div>
-
       </div>
 
       {/* Deep Search Panel */}
@@ -1187,30 +1220,31 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   <th className="px-4 py-3 text-left text-sm font-medium text-white w-12">
                     <input
                       type="checkbox"
-                      checked={selectedIds.length === filteredProducts.length && filteredProducts.length > 0}
+                      checked={selectedIds.length === paginatedProducts.length && paginatedProducts.length > 0}
                       onChange={() => {
-                        if (selectedIds.length === filteredProducts.length) {
+                        if (selectedIds.length === paginatedProducts.length) {
                           setSelectedIds([]);
                         } else {
-                          setSelectedIds(filteredProducts.map(p => p.id));
+                          setSelectedIds(paginatedProducts.map(p => p.id));
                         }
                       }}
                       className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] cursor-pointer"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-12">SL</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-16">SL</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white w-20">Image</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-white">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white min-w-[200px]">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white">Category</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white">Sub Category</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white w-20">Priority</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white">SKU</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white">Tags</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-white w-24">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-20">Action</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium text-white w-20">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredProducts.map((product, index) => {
+                {paginatedProducts.map((product, index) => {
                   const isSelected = selectedIds.includes(product.id);
                   const isDraftProduct = (product as any)._isDraft;
                   const draftId = (product as any)._draftId;
@@ -1234,7 +1268,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                           className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] cursor-pointer"
                         />
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td className="px-4 py-3">
                         <div className="relative w-12 h-12 rounded-lg bg-gray-100 overflow-hidden">
                           <img 
@@ -1266,48 +1300,57 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <span className="text-sm text-gray-600">{(product as any).priority || '—'}</span>
+                        <span className="text-sm text-gray-600">{(product as any).priority || '100'}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-1 max-w-[150px]">
-                          {product.tags?.slice(0, 2).map((tag, i) => (
-                            <span key={i} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
-                              {tag}
-                            </span>
-                          ))}
-                          {product.tags && product.tags.length > 2 && (
-                            <span className="text-[10px] text-gray-400">+{product.tags.length - 2}</span>
-                          )}
-                          {(!product.tags || product.tags.length === 0) && <span className="text-xs text-gray-400">—</span>}
-                        </div>
+                        <span className="text-sm text-gray-600">{product.sku || 'prl23456'}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${statusClass}`}>
-                          {isDraftProduct ? 'Draft' : product.status || 'Active'}
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                          {product.tags?.[0] || 'New Arrival'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                        <span className={`px-3 py-1 rounded text-xs font-medium ${isDraftProduct ? 'bg-yellow-100 text-yellow-700' : 'bg-[#E6F7F5] text-[#2DD4BF]'}`}>
+                          {isDraftProduct ? 'Draft' : 'Publish'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <div className="relative" data-action-dropdown>
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleOpenModal(product as any);
+                              setOpenActionDropdown(openActionDropdown === productKey ? null : productKey);
                             }}
-                            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                            className="p-2 hover:bg-gray-100 rounded-lg transition"
                           >
-                            Edit
+                            <MoreVertical size={16} className="text-gray-500" />
                           </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(product.id, isDraftProduct, draftId);
-                            }}
-                            className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition"
-                          >
-                            Delete
-                          </button>
+                          {openActionDropdown === productKey && (
+                            <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenModal(product as any);
+                                  setOpenActionDropdown(null);
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                              >
+                                <Edit size={14} /> Edit
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(product.id, isDraftProduct, draftId);
+                                  setOpenActionDropdown(null);
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                              >
+                                <Trash2 size={14} /> Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -1324,11 +1367,76 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <button onClick={resetFilters} className="text-[#2DD4BF] font-bold hover:underline">Clear Filters</button>
             </div>
           )}
+          {/* Pagination - Figma Design */}
+          {filteredProducts.length > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-4 border-t border-gray-200">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition ${
+                  currentPage === 1
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                ← Previous
+              </button>
+              <div className="flex items-center gap-1">
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`min-w-[36px] h-9 px-3 text-sm font-medium rounded-lg transition ${
+                        currentPage === pageNum
+                          ? 'bg-[#2DD4BF] text-white'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                {totalPages > 5 && currentPage < totalPages - 2 && (
+                  <>
+                    <span className="px-2 text-gray-400">.....</span>
+                    <button
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="min-w-[36px] h-9 px-3 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+              </div>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition ${
+                  currentPage === totalPages
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         /* Grid/List View */
         <div className={`grid ${gridTemplateClass} pb-20`}>
-         {filteredProducts.map(product => {
+         {paginatedProducts.map(product => {
            const formattedPrice = formatCurrency(product.price);
            const formattedOriginalPrice = formatCurrency(product.originalPrice, null);
            const isSelected = selectedIds.includes(product.id);

@@ -14,6 +14,7 @@ import {
   JWTPayload 
 } from '../middleware/auth';
 import { getTenantById, getTenantBySubdomain } from '../services/tenantsService';
+import { createAuditLog } from './auditLogs';
 
 export const authRouter = Router();
 
@@ -198,6 +199,23 @@ authRouter.post('/login', async (req: Request, res: Response, next: NextFunction
 
     // Get tenant details if assigned
     const tenantDetails = await getTenantDetails(user.tenantId);
+    // Log successful login
+    await createAuditLog({
+      tenantId: user.tenantId,
+      userId: user._id.toString(),
+      userName: user.name,
+      userRole: user.role,
+      action: 'User Login',
+      actionType: 'login',
+      resourceType: 'user',
+      resourceId: user._id.toString(),
+      resourceName: user.name,
+      details: `${user.name} (${user.email}) logged in successfully`,
+      metadata: { email: user.email, role: user.role },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
 
     res.json({
       message: 'Login successful',
@@ -267,6 +285,23 @@ authRouter.post('/register', async (req: Request, res: Response, next: NextFunct
 
     // Get tenant details if assigned
     const tenantDetails = await getTenantDetails(user.tenantId);
+    // Log successful login
+    await createAuditLog({
+      tenantId: user.tenantId,
+      userId: user._id.toString(),
+      userName: user.name,
+      userRole: user.role,
+      action: 'User Login',
+      actionType: 'login',
+      resourceType: 'user',
+      resourceId: user._id.toString(),
+      resourceName: user.name,
+      details: `${user.name} (${user.email}) logged in successfully`,
+      metadata: { email: user.email, role: user.role },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
 
     res.status(201).json({
       message: 'Registration successful',
@@ -305,6 +340,23 @@ authRouter.get('/me', authenticateToken, async (req: Request, res: Response, nex
 
     // Get tenant details if assigned
     const tenantDetails = await getTenantDetails(user.tenantId);
+    // Log successful login
+    await createAuditLog({
+      tenantId: user.tenantId,
+      userId: user._id.toString(),
+      userName: user.name,
+      userRole: user.role,
+      action: 'User Login',
+      actionType: 'login',
+      resourceType: 'user',
+      resourceId: user._id.toString(),
+      resourceName: user.name,
+      details: `${user.name} (${user.email}) logged in successfully`,
+      metadata: { email: user.email, role: user.role },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      status: 'success'
+    });
 
     res.json({
       user: {
