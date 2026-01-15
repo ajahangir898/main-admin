@@ -1,5 +1,9 @@
 // Utility function to log inventory changes to the database
-import { API_BASE_URL } from './apiConfig';
+
+// Get API base URL from environment
+const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL
+  ? String(import.meta.env.VITE_API_BASE_URL)
+  : '';
 
 interface InventoryChange {
   productId: string | number;
