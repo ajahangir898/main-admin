@@ -487,8 +487,8 @@ const AdminTenantManagement: React.FC<AdminTenantManagementProps> = ({
               className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg font-medium transition text-sm sm:text-base"
             >
               {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              <span className="hidden xs:inline">{showForm ? 'Cancel' : 'Add Shop'}</span>
-              <span className="xs:hidden">{showForm ? '' : 'Add'}</span>
+              <span className="hidden sm:inline">{showForm ? 'Cancel' : 'Add Shop'}</span>
+              <span className="sm:hidden">{showForm ? '' : 'Add'}</span>
             </button>
           </div>
         </div>
