@@ -25,6 +25,10 @@ import {
   Database,
   LogIn,
   LogOut,
+  Boxes,
+  ArrowRight,
+  TrendingUp,
+  TrendingDown,
 } from 'lucide-react';
 const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL
   ? String(import.meta.env.VITE_API_BASE_URL)
@@ -76,7 +80,8 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10, total: 0, pages: 0 });
-
+  const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+  
   // Get token on client side only
   useEffect(() => {
     const storedToken = getStoredToken();
@@ -98,6 +103,7 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
   const resourceTypes = [
     { value: 'all', label: 'All Type' },
     { value: 'product', label: 'Product' },
+    { value: 'inventory', label: 'Inventory' },
     { value: 'order', label: 'Order' },
     { value: 'category', label: 'Category' },
     { value: 'user', label: 'User' },
@@ -183,6 +189,11 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
   const getActionIcon = (actionType: string, resourceType: string) => {
     const iconClass = "w-4 h-4";
     
+    // Special icon for inventory
+    if (resourceType === 'inventory') {
+      return <Boxes className={`${iconClass} text-emerald-500`} />;
+    }
+    
     switch (actionType) {
       case 'create':
       case 'bulk_create':
@@ -212,6 +223,8 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
     switch (resourceType) {
       case 'product':
         return <Package className={iconClass} />;
+      case 'inventory':
+        return <Boxes className="w-4 h-4 text-emerald-500" />;
       case 'order':
         return <ShoppingCart className={iconClass} />;
       case 'user':
@@ -247,7 +260,12 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
     });
   };
 
-  const getActionBadgeColor = (actionType: string) => {
+  const getActionBadgeColor = (actionType: string, resourceType?: string) => {
+    // Special badge for inventory
+    if (resourceType === 'inventory') {
+      return 'bg-emerald-100 text-emerald-700';
+    }
+    
     switch (actionType) {
       case 'create':
         return 'bg-green-100 text-green-700';
@@ -276,6 +294,61 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
 
   const isBulkAction = (actionType: string) => {
     return actionType.startsWith('bulk_');
+  };
+
+  // Render inventory change details
+  const renderInventoryDetails = (log: AuditLog) => {
+    const metadata = log.metadata || {};
+    const previousStock = metadata.previousStock;
+    const newStock = metadata.newStock;
+    const productName = metadata.productName || log.resourceName;
+    const stockChange = (newStock !== undefined && previousStock !== undefined) 
+      ? newStock - previousStock 
+      : null;
+
+    if (log.resourceType !== 'inventory' || previousStock === undefined) {
+      return <p className="text-sm text-gray-600 truncate">{log.details}</p>;
+    }
+
+    return (
+      <div className="space-y-1">
+        <p className="text-sm text-gray-700 font-medium">{productName}</p>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-mono">
+            {previousStock}
+          </span>
+          <ArrowRight className="w-4 h-4 text-gray-400" />
+          <span className={`px-2 py-0.5 rounded font-mono ${
+            stockChange && stockChange > 0 
+              ? 'bg-green-100 text-green-700' 
+              : stockChange && stockChange < 0 
+                ? 'bg-red-100 text-red-700' 
+                : 'bg-gray-100 text-gray-600'
+          }`}>
+            {newStock}
+          </span>
+          {stockChange !== null && (
+            <span className={`flex items-center gap-1 text-xs font-medium ${
+              stockChange > 0 ? 'text-green-600' : stockChange < 0 ? 'text-red-600' : 'text-gray-500'
+            }`}>
+              {stockChange > 0 ? (
+                <>
+                  <TrendingUp className="w-3 h-3" />
+                  +{stockChange}
+                </>
+              ) : stockChange < 0 ? (
+                <>
+                  <TrendingDown className="w-3 h-3" />
+                  {stockChange}
+                </>
+              ) : (
+                'No change'
+              )}
+            </span>
+          )}
+        </div>
+      </div>
+    );
   };
 
   // Close dropdowns when clicking outside
@@ -355,8 +428,9 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                         setShowTypeDropdown(false);
                         setPagination(prev => ({ ...prev, page: 1 }));
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${resourceTypeFilter === type.value ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700'}`}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${resourceTypeFilter === type.value ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700'}`}
                     >
+                      {type.value === 'inventory' && <Boxes className="w-4 h-4 text-emerald-500" />}
                       {type.label}
                     </button>
                   ))}
@@ -407,7 +481,7 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                 }}
                 className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
               >
-                <span>{itemsPerPage} Admin</span>
+                <span>{itemsPerPage} Items</span>
                 <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showItemsDropdown ? 'rotate-180' : ''}`} />
               </button>
               {showItemsDropdown && (
@@ -486,11 +560,16 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     {/* Action */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          log.resourceType === 'inventory' ? 'bg-emerald-100' : 'bg-gray-100'
+                        }`}>
                           {getActionIcon(log.actionType, log.resourceType)}
                         </div>
                         <span className="text-sm font-medium text-gray-700">
-                          {log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)}_{log.actionType}
+                          {log.resourceType === 'inventory' 
+                            ? 'Inventory_update' 
+                            : `${log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)}_${log.actionType}`
+                          }
                         </span>
                       </div>
                     </td>
@@ -510,8 +589,8 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     
                     {/* Description */}
                     <td className="py-4 px-6">
-                      <div className="flex items-center gap-2 max-w-xs">
-                        <p className="text-sm text-gray-600 truncate">{log.details}</p>
+                      <div className="flex items-center gap-2 max-w-sm">
+                        {renderInventoryDetails(log)}
                         {isBulkAction(log.actionType) && (
                           <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
                             Bulk

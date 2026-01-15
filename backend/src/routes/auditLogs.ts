@@ -12,7 +12,7 @@ export async function createAuditLog(data: {
   userRole: string;
   action: string;
   actionType?: 'create' | 'update' | 'delete' | 'bulk_create' | 'bulk_update' | 'bulk_delete' | 'login' | 'logout' | 'export' | 'import' | 'other';
-  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'category' | 'settings' | 'notification' | 'support_ticket' | 'gallery' | 'carousel' | 'popup' | 'campaign' | 'expense' | 'income' | 'due' | 'review' | 'other';
+  resourceType: 'tenant' | 'user' | 'subscription' | 'order' | 'product' | 'category' | 'settings' | 'notification' | 'support_ticket' | 'gallery' | 'carousel' | 'popup' | 'campaign' | 'expense' | 'income' | 'due' | 'review' | 'inventory' | 'other';
   resourceId?: string;
   resourceName?: string;
   details: string;

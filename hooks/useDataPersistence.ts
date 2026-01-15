@@ -9,6 +9,7 @@ import type {
 } from '../types';
 import { DataService, isKeyFromSocket, clearSocketFlag } from '../services/DataService';
 import type { AppStateRefs } from './useAppState';
+import { logInventoryChanges } from '../utils/inventoryLogger';
 
 interface UseDataPersistenceProps {
   activeTenantId: string;
@@ -155,6 +156,9 @@ export function useDataPersistence(props: UseDataPersistenceProps) {
     }
     
     if (JSON.stringify(products) === JSON.stringify(prevProductsRef.current)) return;
+    
+    // Log inventory changes before saving
+    logInventoryChanges(prevProductsRef.current, products, activeTenantId);
     
     prevProductsRef.current = products;
     DataService.saveImmediate('products', products, activeTenantId); 
