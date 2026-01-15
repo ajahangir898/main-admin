@@ -406,8 +406,15 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 <div className="space-y-4">
                   {formData.variantRows.map((variant) => (
                     <div key={variant.id} className="flex flex-col md:flex-row items-start gap-3">
-                      <div onClick={() => handleVariantImageUpload(variant.id)} className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
-                        {variant.image ? <img src={variant.image} alt="" className="w-full h-full object-cover rounded-lg" /> : <><Upload size={16} className="text-gray-400 mb-1" /><span className="text-[10px] text-gray-400">Upload</span></>}
+                      <div 
+                        onClick={() => handleVariantImageUpload(variant.id)} 
+                        onKeyDown={(e) => e.key === 'Enter' && handleVariantImageUpload(variant.id)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Upload image for variant ${variant.name || variant.id}`}
+                        className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      >
+                        {variant.image ? <img src={variant.image} alt={`Variant ${variant.name || variant.id} image`} className="w-full h-full object-cover rounded-lg" /> : <><Upload size={16} className="text-gray-400 mb-1" /><span className="text-[10px] text-gray-400">Upload</span></>}
                       </div>
                       <div className="flex-1 w-full grid grid-cols-2 md:grid-cols-6 gap-2">
                         <input type="text" value={variant.name} onChange={(e) => updateVariantRow(variant.id, 'name', e.target.value)} placeholder="Name" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
