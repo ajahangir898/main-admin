@@ -401,7 +401,7 @@ export const useAdminDataLoad = ({
     try {
       if (tenants.length === 0) {
         const tenantList = await DataService.listTenants(true);
-        applyTenantList(tenantList);
+        applyTenantListRef.current(tenantList);
       }
       
       const [usersData, rolesData, courierData, facebookPixelData, categoriesData, subCategoriesData, childCategoriesData, brandsData, tagsData] = await Promise.all([
@@ -439,7 +439,12 @@ export const useAdminDataLoad = ({
     } catch (error) {
       console.warn('Failed to load admin data', error);
     }
-  }, [activeTenantId, tenants.length, applyTenantList, refs]);
+  // Use refs for stable callback - only activeTenantId should trigger reload
+  }, [activeTenantId, refs]);
+
+  // Reference to apply tenant list to avoid recreating callback
+  const applyTenantListRef = useRef(applyTenantList);
+  useEffect(() => { applyTenantListRef.current = applyTenantList; }, [applyTenantList]);
 
   useEffect(() => {
     if (currentView === 'admin' && !refs.adminDataLoadedRef.current) {

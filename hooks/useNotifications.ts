@@ -87,20 +87,31 @@ export const useNotifications = (
   const [isConnected, setIsConnected] = useState(false);
 
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const tenantIdRef = useRef(tenantId);
+  const unreadOnlyRef = useRef(unreadOnly);
+  const limitRef = useRef(limit);
+
+  // Keep refs in sync
+  useEffect(() => {
+    tenantIdRef.current = tenantId;
+    unreadOnlyRef.current = unreadOnly;
+    limitRef.current = limit;
+  }, [tenantId, unreadOnly, limit]);
   const mountedRef = useRef(true);
 
   // Fetch notifications from API
   const refresh = useCallback(async () => {
-    if (!tenantId) return;
+    const currentTenantId = tenantIdRef.current;
+    if (!currentTenantId) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
       const response: NotificationResponse =
-        await notificationService.getNotifications(tenantId, {
-          unreadOnly,
-          limit,
+        await notificationService.getNotifications(currentTenantId, {
+          unreadOnly: unreadOnlyRef.current,
+          limit: limitRef.current,
         });
 
       if (mountedRef.current) {
@@ -116,15 +127,16 @@ export const useNotifications = (
         setIsLoading(false);
       }
     }
-  }, [tenantId, unreadOnly, limit]);
+  }, []);
 
   // Mark notifications as read
   const markAsRead = useCallback(
     async (notificationIds?: string[]) => {
-      if (!tenantId) return;
+      const currentTenantId = tenantIdRef.current;
+      if (!currentTenantId) return;
 
       try {
-        await notificationService.markAsRead(tenantId, notificationIds);
+        await notificationService.markAsRead(currentTenantId, notificationIds);
 
         if (mountedRef.current) {
           // Update local state
@@ -149,13 +161,13 @@ export const useNotifications = (
         }
       }
     },
-    [tenantId]
+    []
   );
 
   // Mark all notifications as read
   const markAllAsRead = useCallback(async () => {
     await markAsRead();
-  }, [markAsRead]);
+  }, []);
 
   // Create a new notification
   const createNotification = useCallback(
@@ -165,11 +177,12 @@ export const useNotifications = (
       message: string;
       data?: Record<string, any>;
     }): Promise<Notification | null> => {
-      if (!tenantId) return null;
+      const currentTenantId = tenantIdRef.current;
+      if (!currentTenantId) return null;
 
       try {
         const newNotification = await notificationService.createNotification(
-          tenantId,
+          currentTenantId,
           notification
         );
         return newNotification;
@@ -180,7 +193,7 @@ export const useNotifications = (
         return null;
       }
     },
-    [tenantId]
+    []
   );
 
   // Cleanup old notifications
@@ -198,13 +211,14 @@ export const useNotifications = (
       }
       return 0;
     }
-  }, [tenantId, refresh]);
+  }, []);
 
   // Connect to WebSocket
   const connect = useCallback(() => {
-    if (!tenantId) return;
-    notificationService.connect(tenantId);
-  }, [tenantId]);
+    const currentTenantId = tenantIdRef.current;
+    if (!currentTenantId) return;
+    notificationService.connect(currentTenantId);
+  }, []);
 
   // Disconnect from WebSocket
   const disconnect = useCallback(() => {
@@ -278,14 +292,14 @@ export const useNotifications = (
         clearInterval(checkConnection);
       };
     }
-  }, [autoConnect, shouldBeActive, tenantId, connect]);
+  }, [autoConnect, shouldBeActive, tenantId]);
 
   // Auto-fetch notifications
   useEffect(() => {
     if (autoFetch && shouldBeActive && tenantId) {
       refresh();
     }
-  }, [autoFetch, shouldBeActive, tenantId, refresh]);
+  }, [autoFetch, shouldBeActive, tenantId]);
 
   // Setup polling if enabled
   useEffect(() => {
@@ -299,7 +313,7 @@ export const useNotifications = (
         }
       };
     }
-  }, [pollingInterval, isAuthenticated, tenantId, refresh]);
+  }, [pollingInterval, shouldBeActive, tenantId]);
 
   // Cleanup on unmount
   useEffect(() => {

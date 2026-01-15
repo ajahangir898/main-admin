@@ -10,13 +10,14 @@ interface CacheItem<T> {
   created: number;
 }
 
-// Cache configuration
+// Cache configuration - optimized for fast loading
 const TTL = {
-  MEMORY_MS: 2 * 60 * 1000,      // 2 minutes in-memory cache
-  STORAGE_MS: 15 * 60 * 1000,    // 15 minutes localStorage cache
-  API_DATA_MS: 10 * 60 * 1000,   // 10 minutes for API responses
-  USER_DATA_MS: 30 * 60 * 1000,  // 30 minutes for user data
-  TENANT_DATA_MS: 5 * 60 * 1000, // 5 minutes for tenant data
+  MEMORY_MS: 5 * 60 * 1000,      // 5 minutes in-memory cache (increased for better repeat loads)
+  STORAGE_MS: 30 * 60 * 1000,    // 30 minutes localStorage cache (increased for better persistence)
+  API_DATA_MS: 15 * 60 * 1000,   // 15 minutes for API responses
+  USER_DATA_MS: 60 * 60 * 1000,  // 1 hour for user data (stable data)
+  TENANT_DATA_MS: 10 * 60 * 1000, // 10 minutes for tenant data (increased for better store performance)
+  BOOTSTRAP_MS: 30 * 60 * 1000,  // 30 minutes for bootstrap data
 };
 
 // L1: In-memory cache (fastest)

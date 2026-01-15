@@ -5,43 +5,64 @@ let redis: IORedis | null = null;
 let redisReady = false;
 
 const getRedis = (): IORedis | null => {
-  if (redis) return redis;
+  if (redis && redisReady) return redis;
   
   // Check for Upstash (cloud) first, then local Redis
-  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
   const localUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
   
   // Skip if explicitly disabled
   if (process.env.REDIS_DISABLED === 'true') return null;
   
-  try {
-    redis = new IORedis(localUrl, {
-      maxRetriesPerRequest: 1,
-      retryStrategy: (times) => {
-        if (times > 3) return null; // Stop retrying
-        return Math.min(times * 100, 1000);
-      },
-      lazyConnect: true,
-    });
-    
-    redis.on('ready', () => {
-      redisReady = true;
-      console.log('[Redis] Connected to local Redis');
-    });
-    
-    redis.on('error', (err) => {
-      console.warn('[Redis] Connection error:', err.message);
-      redisReady = false;
-    });
-    
-    // Connect asynchronously
-    redis.connect().catch(() => {});
-    
-    return redis;
-  } catch (err) {
-    console.warn('[Redis] Failed to initialize:', err);
-    return null;
+  if (!redis) {
+    try {
+      redis = new IORedis(localUrl, {
+        maxRetriesPerRequest: 3,
+        connectTimeout: 5000,
+        retryStrategy: (times) => {
+          if (times > 5) {
+            console.warn('[Redis] Max retries reached, giving up');
+            return null;
+          }
+          const delay = Math.min(times * 200, 2000);
+          console.log(`[Redis] Retrying connection in ${delay}ms (attempt ${times})`);
+          return delay;
+        },
+        enableReadyCheck: true,
+        lazyConnect: false,
+      });
+      
+      redis.on('ready', () => {
+        redisReady = true;
+        console.log('[Redis] ✓ Connected to local Redis');
+      });
+      
+      redis.on('connect', () => {
+        console.log('[Redis] Socket connected');
+      });
+      
+      redis.on('error', (err) => {
+        if (redisReady) {
+          console.warn('[Redis] Connection error:', err.message);
+        }
+        redisReady = false;
+      });
+      
+      redis.on('close', () => {
+        console.log('[Redis] Connection closed');
+        redisReady = false;
+      });
+      
+      redis.on('reconnecting', () => {
+        console.log('[Redis] Reconnecting...');
+      });
+      
+    } catch (err) {
+      console.warn('[Redis] Failed to initialize:', err);
+      return null;
+    }
   }
+  
+  return redis;
 };
 
 // Check if Redis is actually connected
@@ -306,3 +327,12 @@ export function getCacheStats(): {
 
 // Legacy export for compatibility
 export const invalidateCache = invalidateTenantCache;
+
+// Initialize Redis connection on module load
+(async () => {
+  const client = getRedis();
+  if (client) {
+    console.log('[Redis] Initializing connection...');
+  }
+})();
+

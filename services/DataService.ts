@@ -998,7 +998,25 @@ class DataServiceImpl {
   }
 
   async getUsers(tenantId?: string): Promise<User[]> {
-    return this.getCollection<User>('users', [], tenantId);
+    // Use Redis cache for users to prevent repeated API calls
+    const cacheKey = CacheKeys.tenantUsers(tenantId || 'default');
+    
+    // Check Redis cache first
+    const cachedUsers = await getCached<User[]>(cacheKey);
+    if (cachedUsers && cachedUsers.length > 0) {
+      console.log(`[Redis] Users cache hit for tenant: ${tenantId}`);
+      return cachedUsers;
+    }
+    
+    // Fetch from API and cache
+    const users = await this.getCollection<User>('users', [], tenantId);
+    
+    // Cache the result with longer TTL for user data
+    if (users.length > 0) {
+      await setCachedByType(cacheKey, users, 'user');
+    }
+    
+    return users;
   }
 
   async getRoles(tenantId?: string): Promise<Role[]> {

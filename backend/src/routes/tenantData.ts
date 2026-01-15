@@ -1,6 +1,7 @@
 import { Router, Request } from 'express';
 import { z } from 'zod';
 import { getTenantData, setTenantData, getTenantDataBatch } from '../services/tenantDataService';
+import { getCached, setCachedWithTTL, CacheKeys } from '../services/redisCache';
 import { getTenantBySubdomain } from '../services/tenantsService';
 import { createAuditLog } from './auditLogs';
 import { Server as SocketIOServer } from 'socket.io';
@@ -155,7 +156,22 @@ tenantDataRouter.get('/:tenantId/secondary', async (req, res, next) => {
 tenantDataRouter.get('/:tenantId/:key', async (req, res, next) => {
   try {
     const { tenantId, key } = paramsSchema.parse(req.params);
+    
+    // Use Redis cache for frequently accessed data like 'users'
+    const cacheKey = `tenant:${tenantId}:${key}`;
+    const cached = await getCached<unknown>(cacheKey);
+    if (cached !== null) {
+      console.log(`[Redis] Cache hit for ${tenantId}/${key}`);
+      res.set({ 'Cache-Control': 'no-cache, no-store, must-revalidate' });
+      return res.json({ data: cached });
+    }
+    
     const data = await getTenantData(tenantId, key);
+    
+    // Cache the result for 5 minutes
+    if (data !== null) {
+      await setCachedWithTTL(cacheKey, data, 'short');
+    }
     
     // Prevent browser/CDN caching for dynamic tenant data
     res.set({

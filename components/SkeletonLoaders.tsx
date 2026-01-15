@@ -135,3 +135,196 @@ export const RegistrationPageSkeleton = () => (
     </div>
   </div>
 );
+
+// Data fetching skeleton for admin pages
+export const AdminDataSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex justify-between items-center">
+      <Bone className="h-8 w-48" />
+      <Bone className="h-10 w-32 rounded-lg" />
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {arr(4).map((_, i) => (
+        <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5">
+          <Bone className="h-3 w-20 mb-3" />
+          <Bone className="h-8 w-24 mb-2" />
+          <Bone className="h-3 w-16" />
+        </div>
+      ))}
+    </div>
+    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <TableSkeleton rows={8} cols={6} />
+    </div>
+  </div>
+);
+
+// Activity log skeleton
+export const ActivityLogSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <Bone className="h-8 w-48 mb-2" />
+          <Bone className="h-4 w-64" />
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Bone className="h-10 w-32 rounded-lg" />
+          <Bone className="h-10 w-32 rounded-lg" />
+          <Bone className="h-10 w-24 rounded-lg" />
+          <Bone className="h-10 w-24 rounded-lg" />
+        </div>
+      </div>
+    </div>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <TableSkeleton rows={10} cols={6} />
+    </div>
+  </div>
+);
+
+// Inventory skeleton
+export const InventorySkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex justify-between items-center">
+      <Bone className="h-8 w-48" />
+      <div className="flex gap-3">
+        <Bone className="h-10 w-48 rounded-lg" />
+        <Bone className="h-10 w-32 rounded-lg" />
+      </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {arr(3).map((_, i) => (
+        <div key={i} className="bg-white rounded-xl border border-gray-100 p-4">
+          <Bone className="h-4 w-32 mb-2" />
+          <Bone className="h-10 w-20" />
+        </div>
+      ))}
+    </div>
+    <div className="bg-white rounded-xl border border-gray-100">
+      <TableSkeleton rows={10} cols={7} />
+    </div>
+  </div>
+);
+
+// Orders skeleton
+export const OrdersSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <Bone className="h-8 w-32" />
+      <div className="flex gap-3">
+        <Bone className="h-10 w-48 rounded-lg" />
+        <Bone className="h-10 w-32 rounded-lg" />
+        <Bone className="h-10 w-32 rounded-lg" />
+      </div>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {arr(4).map((_, i) => (
+        <div key={i} className="bg-white rounded-xl border border-gray-100 p-4">
+          <Bone className="h-3 w-20 mb-2" />
+          <Bone className="h-8 w-16" />
+        </div>
+      ))}
+    </div>
+    <div className="bg-white rounded-xl border border-gray-100">
+      <TableSkeleton rows={10} cols={8} />
+    </div>
+  </div>
+);
+
+// Products skeleton
+export const ProductsSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <Bone className="h-8 w-32" />
+      <div className="flex gap-3">
+        <Bone className="h-10 w-48 rounded-lg" />
+        <Bone className="h-10 w-32 rounded-lg" />
+      </div>
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      {arr(10).map((_, i) => <ProductCardSkeleton key={i} />)}
+    </div>
+  </div>
+);
+
+// Customers skeleton
+export const CustomersSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex justify-between items-center">
+      <Bone className="h-8 w-48" />
+      <Bone className="h-10 w-48 rounded-lg" />
+    </div>
+    <div className="bg-white rounded-xl border border-gray-100">
+      <TableSkeleton rows={10} cols={5} />
+    </div>
+  </div>
+);
+
+// Dashboard skeleton
+export const DashboardSkeleton = () => (
+  <div className="p-6 space-y-6 animate-pulse">
+    <div className="flex justify-between items-center">
+      <Bone className="h-8 w-32" />
+      <Bone className="h-10 w-32 rounded-lg" />
+    </div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {arr(4).map((_, i) => (
+        <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5">
+          <Bone className="h-3 w-20 mb-3" />
+          <Bone className="h-8 w-24 mb-2" />
+          <Bone className="h-3 w-16" />
+        </div>
+      ))}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <Bone className="h-6 w-32 mb-4" />
+        <Bone className="h-64 w-full rounded-lg" />
+      </div>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <Bone className="h-6 w-32 mb-4" />
+        <Bone className="h-64 w-full rounded-lg" />
+      </div>
+    </div>
+  </div>
+);
+
+// Carousel skeleton (for quick loading)
+export const CarouselSkeleton = () => (
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+    <Bone className="w-full aspect-[2.5/1] md:aspect-[3.5/1] rounded-2xl" />
+  </div>
+);
+
+// Generic loading spinner inline
+export const InlineSpinner = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) => {
+  const sizeClass = size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-8 h-8' : 'w-6 h-6';
+  return (
+    <div className={`${sizeClass} border-2 border-gray-200 border-t-indigo-500 rounded-full animate-spin`} />
+  );
+};
+
+// Data loading overlay
+export const DataLoadingOverlay = ({ message = 'Loading...' }: { message?: string }) => (
+  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
+    <div className="flex flex-col items-center gap-3">
+      <InlineSpinner size="lg" />
+      <span className="text-sm text-gray-600">{message}</span>
+    </div>
+  </div>
+);
+
+// Compact card skeleton for quick lists
+export const CompactCardSkeleton = ({ count = 5 }: { count?: number }) => (
+  <div className="space-y-3">
+    {arr(count).map((_, i) => (
+      <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100">
+        <Bone className="w-10 h-10 rounded-full" />
+        <div className="flex-1 space-y-2">
+          <Bone className="h-4 w-3/4" />
+          <Bone className="h-3 w-1/2" />
+        </div>
+        <Bone className="w-16 h-6 rounded" />
+      </div>
+    ))}
+  </div>
+);

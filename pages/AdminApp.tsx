@@ -10,6 +10,15 @@ import { DataService } from '../services/DataService';
 import * as authService from '../services/authService';
 import { toast } from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import {
+  DashboardSkeleton,
+  OrdersSkeleton,
+  ProductsSkeleton,
+  InventorySkeleton,
+  CustomersSkeleton,
+  ActivityLogSkeleton,
+  PageSkeleton,
+} from '../components/SkeletonLoaders';
 
 // Lazy loaded admin pages with webpackChunkName for better caching
 const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard" */ './AdminDashboard'));
@@ -54,12 +63,25 @@ export const preloadAdminChunks = () => {
   // Preloading disabled to avoid long-pending chunk requests on initial load.
 };
 
-// Simple loading fallback for lazy-loaded sections
-const PageLoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-[200px]">
-    <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-  </div>
-);
+// Section-aware loading fallback for lazy-loaded sections
+const PageLoadingFallback = ({ section }: { section?: string }) => {
+  switch (section) {
+    case 'dashboard':
+      return <DashboardSkeleton />;
+    case 'orders':
+      return <OrdersSkeleton />;
+    case 'products':
+      return <ProductsSkeleton />;
+    case 'inventory':
+      return <InventorySkeleton />;
+    case 'customers_reviews':
+      return <CustomersSkeleton />;
+    case 'activity_log':
+      return <ActivityLogSkeleton />;
+    default:
+      return <PageSkeleton />;
+  }
+};
 
 // Permission map type
 type PermissionMap = Record<string, string[]>;
@@ -522,7 +544,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
       hasUnreadChat={hasUnreadChat}
       userPermissions={userPermissions}
     >
-      <Suspense fallback={<PageLoadingFallback />}>
+      <Suspense fallback={<PageLoadingFallback section={adminSection} />}>
         {adminSection === 'dashboard' ? <AdminDashboard orders={orders} products={products} tenantId={activeTenantId} user={user} /> :
          adminSection === 'orders' ? <AdminOrders orders={orders} courierConfig={courierConfig} onUpdateOrder={onUpdateOrder} /> :
          adminSection === 'products' ? <AdminProducts products={products} categories={categories} subCategories={subCategories} childCategories={childCategories} brands={brands} tags={tags} onAddProduct={onAddProduct} onUpdateProduct={onUpdateProduct} onDeleteProduct={onDeleteProduct} onBulkDelete={onBulkDeleteProducts} onBulkUpdate={onBulkUpdateProducts} tenantId={activeTenantId} /> :
