@@ -10,14 +10,19 @@ interface CacheItem<T> {
   created: number;
 }
 
-// Cache configuration - optimized for fast loading
+// Cache configuration - optimized for ULTRA FAST loading (30 days cache)
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+
 const TTL = {
-  MEMORY_MS: 5 * 60 * 1000,      // 5 minutes in-memory cache (increased for better repeat loads)
-  STORAGE_MS: 30 * 60 * 1000,    // 30 minutes localStorage cache (increased for better persistence)
-  API_DATA_MS: 15 * 60 * 1000,   // 15 minutes for API responses
-  USER_DATA_MS: 60 * 60 * 1000,  // 1 hour for user data (stable data)
-  TENANT_DATA_MS: 10 * 60 * 1000, // 10 minutes for tenant data (increased for better store performance)
-  BOOTSTRAP_MS: 30 * 60 * 1000,  // 30 minutes for bootstrap data
+  MEMORY_MS: 24 * 60 * 60 * 1000,           // 24 hours in-memory cache (session-level)
+  STORAGE_MS: THIRTY_DAYS_MS,               // 30 days localStorage cache (persistent)
+  API_DATA_MS: THIRTY_DAYS_MS,              // 30 days for API responses
+  USER_DATA_MS: THIRTY_DAYS_MS,             // 30 days for user data
+  TENANT_DATA_MS: THIRTY_DAYS_MS,           // 30 days for tenant data (instant reload)
+  BOOTSTRAP_MS: THIRTY_DAYS_MS,             // 30 days for bootstrap data
+  PRODUCTS_MS: THIRTY_DAYS_MS,              // 30 days for products
+  CATEGORIES_MS: THIRTY_DAYS_MS,            // 30 days for categories
+  WEBSITE_CONFIG_MS: THIRTY_DAYS_MS,        // 30 days for website config
 };
 
 // L1: In-memory cache (fastest)
@@ -55,7 +60,7 @@ const cleanup = () => {
 };
 
 // Run cleanup every 2 minutes
-setInterval(cleanup, 2 * 60 * 1000);
+setInterval(cleanup, 60 * 60 * 1000); // Run cleanup every hour (since cache is 30 days)
 
 /**
  * Get cached data with fallback chain: memory → localStorage → null

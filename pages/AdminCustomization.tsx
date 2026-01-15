@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { MetricsSkeleton, TableSkeleton } from '../components/SkeletonLoaders';
 import {
   Upload,
   Save,
@@ -20,6 +21,10 @@ import {
   MessageCircle,
   CalendarDays,
   FolderOpen,
+  TrendingUp,
+  Settings,
+  Sliders,
+  Filter,
   MoreVertical
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -93,6 +98,15 @@ type ImageUploadType =
 type CarouselFilterStatus = 'All' | 'Publish' | 'Draft' | 'Trash';
 type PopupFilterStatus = 'All' | 'Publish' | 'Draft';
 type CampaignFilterStatus = 'All' | 'Publish' | 'Draft';
+
+// Status colors for badges - matching AdminOrders pattern
+const STATUS_COLORS = {
+  Publish: 'text-emerald-600 bg-emerald-50 border border-emerald-200',
+  Draft: 'text-amber-600 bg-amber-50 border border-amber-200',
+  Trash: 'text-red-600 bg-red-50 border border-red-200',
+  Active: 'text-blue-600 bg-blue-50 border border-blue-200',
+  Inactive: 'text-gray-600 bg-gray-50 border border-gray-200',
+};
 
 // ============================================================================
 // Constants & Default Values
@@ -295,6 +309,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   // ---------------------------------------------------------------------------
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // ---------------------------------------------------------------------------
   // Popup Management State
@@ -412,6 +427,12 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   // ---------------------------------------------------------------------------
   // Effects
   // ---------------------------------------------------------------------------
+
+  // Simulate initial loading state for better UX
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Sync active activeTab with initialTab prop
   useEffect(() => {
@@ -1436,15 +1457,26 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   }> = ({ id, label, icon }) => (
     <button
       onClick={() => setActiveTab(id)}
-      className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+      className={`px-4 py-2 rounded-md text-sm font-medium transition whitespace-nowrap flex items-center gap-2 ${
         activeTab === id
-          ? 'border-green-600 text-green-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-600 hover:text-gray-900'
       }`}
     >
       {icon} {label}
     </button>
   );
+
+
+
+
+
+
+
+
+
+
+
 
   const ActionButton: React.FC<
     React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: string }
@@ -1462,12 +1494,15 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="space-y-6 animate-fade-in pb-20">
-      {/* Page Header */}
-      <div className="flex justify-between items-center bg-gray-50 z-30 pt-4 pb-2">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 space-y-6">
+      {/* Header - Modern design matching AdminOrders */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Customization</h2>
-          <p className="text-sm text-gray-500">Manage appearance and content</p>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Settings className="w-6 h-6 text-indigo-500" />
+            Customization
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">Manage website appearance, carousel, campaigns and popups</p>
         </div>
         <button
           onClick={handleSaveChanges}
@@ -1498,19 +1533,205 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           )}
         </button>
       </div>
+
+      {/* Quick Stats Cards */}
+      {isLoading ? (
+        <MetricsSkeleton count={4} />
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {/* Carousel Items */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Carousel Items</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                <ImageIcon size={24} className="text-blue-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('carousel')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Active Campaigns */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Active Campaigns</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">
+                  {websiteConfiguration.campaigns?.filter(c => c.status === 'Publish').length || 0}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
+                <CalendarDays size={24} className="text-emerald-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('campaigns')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Active Popups */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Active Popups</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">
+                  {websiteConfiguration.popups?.filter(p => p.status === 'Publish').length || 0}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
+                <Layers size={24} className="text-purple-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('popup')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Theme Sections */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Theme Sections</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">8</p>
+                <p className="mt-1 text-xs text-gray-400">Customizable areas</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
+                <Palette size={24} className="text-orange-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('theme_view')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
+            >
+              <Eye size={14} />
+              Customize
+            </button>
+          </div>
+        </div>
+      )}
+
+
+      {/* Quick Stats Cards */}
+      {isLoading ? (
+        <MetricsSkeleton count={4} />
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {/* Carousel Items */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Carousel Items</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                <ImageIcon size={24} className="text-blue-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('carousel')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Active Campaigns */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Active Campaigns</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">
+                  {websiteConfiguration.campaigns?.filter(c => c.status === 'Publish').length || 0}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
+                <CalendarDays size={24} className="text-emerald-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('campaigns')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Active Popups */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Active Popups</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">
+                  {websiteConfiguration.popups?.filter(p => p.status === 'Publish').length || 0}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
+                <Layers size={24} className="text-purple-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('popup')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
+            >
+              <Eye size={14} />
+              Manage
+            </button>
+          </div>
+
+          {/* Theme Sections */}
+          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Theme Sections</p>
+                <p className="mt-1 text-3xl font-bold text-gray-900">8</p>
+                <p className="mt-1 text-xs text-gray-400">Customizable areas</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
+                <Palette size={24} className="text-orange-500" />
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('theme_view')}
+              className="mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
+            >
+              <Eye size={14} />
+              Customize
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Tab Navigation */}
-      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide bg-white rounded-t-xl">
-        <TabButton id="carousel" label="Carousel" icon={<ImageIcon size={18} />} />
-        <TabButton id="campaigns" label="Campaigns" icon={<CalendarDays size={18} />} />
-        <TabButton id="popup" label="Popup" icon={<Layers size={18} />} />
-        <TabButton id="website_info" label="Website Information" icon={<Globe size={18} />} />
-        <TabButton id="chat_settings" label="Chat Settings" icon={<MessageCircle size={18} />} />
-        <TabButton id="theme_view" label="Theme View" icon={<Layout size={18} />} />
-        <TabButton id="theme_colors" label="Theme Colors" icon={<Palette size={18} />} />
+      <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto">
+        <TabButton id="carousel" label="Carousel" icon={<ImageIcon size={16} />} />
+        <TabButton id="campaigns" label="Campaigns" icon={<CalendarDays size={16} />} />
+        <TabButton id="popup" label="Popups" icon={<Layers size={16} />} />
+        <TabButton id="website_info" label="Website" icon={<Globe size={16} />} />
+        <TabButton id="chat_settings" label="Chat" icon={<MessageCircle size={16} />} />
+        <TabButton id="theme_view" label="Theme" icon={<Layout size={16} />} />
+        <TabButton id="theme_colors" label="Colors" icon={<Palette size={16} />} />
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white rounded-b-xl border border-t-0 border-gray-200 shadow-sm p-6 min-h-[500px]">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 min-h-[500px]">
         {/* ================================================================== */}
         {/* Carousel Tab */}
         {/* ================================================================== */}
@@ -1562,7 +1783,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
             {/* Carousel Table */}
             <div className="overflow-x-auto border rounded-lg shadow-sm">
               <table className="w-full text-sm text-left">
-                <thead className="bg-green-50 text-gray-700 font-semibold text-xs uppercase border-b">
+                <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
                   <tr>
                     <th className="px-4 py-3 w-10">
                       <input type="checkbox" className="rounded" />
@@ -1606,7 +1827,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                           className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                             item.status === 'Publish'
                               ? 'bg-green-100 text-green-700'
-                              : 'bg-orange-100 text-orange-700'
+                              : STATUS_COLORS.Draft
                           }`}
                         >
                           {item.status}
@@ -1713,7 +1934,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
             {/* Campaign Table */}
             <div className="overflow-x-auto border rounded-lg shadow-sm">
               <table className="w-full text-sm text-left">
-                <thead className="bg-[#E0F7FA] text-gray-700 font-semibold text-xs uppercase border-b">
+                <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
                   <tr>
                     <th className="px-4 py-3 w-10">
                       <input type="checkbox" className="rounded" />
@@ -1768,7 +1989,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                         <td className="px-4 py-3 text-gray-500">{new Date(campaign.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
                         <td className="px-4 py-3 text-gray-500">{new Date(campaign.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
                         <td className="px-4 py-3">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : STATUS_COLORS.Draft}`}>
                             {campaign.status}
                           </span>
                         </td>

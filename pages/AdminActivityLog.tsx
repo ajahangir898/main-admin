@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ActivityLogSkeleton } from '../components/SkeletonLoaders';
-import { ActivityLogSkeleton } from '../components/SkeletonLoaders';
 import {
   Activity,
   Calendar,
