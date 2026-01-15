@@ -936,37 +936,49 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   return (
     <div className="space-y-6 animate-fade-in relative">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Products</h2>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center justify-between w-full md:w-auto">
+          <h2 className="text-2xl font-bold text-gray-800">Products</h2>
+          {/* Mobile Add Product Button - visible only on small screens */}
+          <button 
+            onClick={() => handleOpenModal()}
+            className="md:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
+          >
+            <Plus size={16} /> Add
+          </button>
+        </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3 w-full md:w-auto">
+          <div className="relative min-w-0 flex-1 sm:flex-initial">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search products/SKU"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
+              className="w-full sm:w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
             />
           </div>
-          <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
-            Search
-          </button>
-          <button
-            onClick={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border ${isDeepSearchOpen 
+          <div className="flex items-center gap-2">
+            <button className="px-3 md:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+              Search
+            </button>
+            <button
+              onClick={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border ${isDeepSearchOpen 
                 ? 'bg-[#2DD4BF] text-white border-[#2DD4BF]'
                 : 'border-gray-300 text-gray-600 hover:bg-gray-50'
               }`}
-          >
-            <Filter size={16} />
-            Deep Search
-          </button>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
-          >
-            <Plus size={16} /> Add Product
-          </button>
+            >
+              <Filter size={16} />
+              <span className="hidden sm:inline">Deep Search</span>
+            </button>
+            {/* Desktop Add Product Button - hidden on small screens */}
+            <button 
+              onClick={() => handleOpenModal()}
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-medium hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition"
+            >
+              <Plus size={16} /> Add Product
+            </button>
+          </div>
         </div>
       </div>
 

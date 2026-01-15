@@ -340,7 +340,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
             {/* Left Column */}
             <div className="lg:col-span-2 space-y-6">
               {/* Basic Details */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Basic Details</h2>
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-1.5">
@@ -359,9 +359,9 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </div>
 
               {/* Price & Stock */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Price & Stock</h2>
-                <div className="grid grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">Regular Price</label>
                     <input type="text" value={formData.regularPrice || ''} onChange={(e) => setFormData(prev => ({ ...prev, regularPrice: parseFloat(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
@@ -379,7 +379,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                     <input type="text" value={formData.sku} onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))} placeholder="#SK0001" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-3 items-end">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">Bar code</label>
                     <div className="relative">
@@ -402,18 +402,25 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </div>
 
               {/* Variant Rows */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <div className="space-y-4">
                   {formData.variantRows.map((variant) => (
-                    <div key={variant.id} className="flex items-start gap-3">
-                      <div onClick={() => handleVariantImageUpload(variant.id)} className="w-20 h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
-                        {variant.image ? <img src={variant.image} alt="" className="w-full h-full object-cover rounded-lg" /> : <><Upload size={20} className="text-gray-400 mb-1" /><span className="text-xs text-gray-400">Upload Image</span></>}
+                    <div key={variant.id} className="flex flex-col md:flex-row items-start gap-3">
+                      <div 
+                        onClick={() => handleVariantImageUpload(variant.id)} 
+                        onKeyDown={(e) => e.key === 'Enter' && handleVariantImageUpload(variant.id)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Upload image for variant ${variant.name || variant.id}`}
+                        className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      >
+                        {variant.image ? <img src={variant.image} alt={`Variant ${variant.name || variant.id} image`} className="w-full h-full object-cover rounded-lg" /> : <><Upload size={16} className="text-gray-400 mb-1" /><span className="text-[10px] text-gray-400">Upload</span></>}
                       </div>
-                      <div className="flex-1 grid grid-cols-6 gap-2">
+                      <div className="flex-1 w-full grid grid-cols-2 md:grid-cols-6 gap-2">
                         <input type="text" value={variant.name} onChange={(e) => updateVariantRow(variant.id, 'name', e.target.value)} placeholder="Name" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
                         <input type="text" value={variant.regularPrice || ''} onChange={(e) => updateVariantRow(variant.id, 'regularPrice', parseFloat(e.target.value) || 0)} placeholder="Regular Price" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
                         <input type="text" value={variant.salePrice || ''} onChange={(e) => updateVariantRow(variant.id, 'salePrice', parseFloat(e.target.value) || 0)} placeholder="Sale Price" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <div className="col-span-3 flex items-center justify-end">
+                        <div className="col-span-2 md:col-span-3 flex items-center justify-end">
                           <label className="flex items-center gap-2 text-xs text-gray-500">
                             <input type="checkbox" checked={variant.isDefault} onChange={(e) => updateVariantRow(variant.id, 'isDefault', e.target.checked)} className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500" />
                             Default
@@ -429,9 +436,9 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </div>
 
               {/* Inventory */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Inventory</h2>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">Stock Quantity</label>
                     <input type="text" value={formData.stockQuantity} onChange={(e) => setFormData(prev => ({ ...prev, stockQuantity: e.target.value }))} placeholder="Unlimited" disabled={formData.unlimited} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm disabled:opacity-50" />
@@ -461,7 +468,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
             {/* Right Column */}
             <div className="space-y-6">
               {/* Upload Product Image */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-1">Upload Product Image</h2>
                 <p className="text-xs text-gray-400 mb-4">Up to 10 Images</p>
                 <div className="relative mb-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-50">
@@ -491,7 +498,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </div>
 
               {/* Categories */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Categories</h2>
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-1.5">
@@ -516,7 +523,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </div>
 
               {/* Variation */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Variation</h2>
                 <div className="space-y-3">
                   {formData.variations.map((variation) => (
@@ -548,9 +555,9 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
           </div>
 
           {/* Footer Buttons */}
-          <div className="flex items-center justify-center gap-3 mt-8 pt-6 border-t border-gray-200">
-            <button type="button" onClick={handleSaveDraft} className="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"><Save size={16} />Save to draft</button>
-            <button type="submit" disabled={isLoading} className="px-8 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-semibold rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8 pt-6 border-t border-gray-200">
+            <button type="button" onClick={handleSaveDraft} className="w-full sm:w-auto px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"><Save size={16} />Save to draft</button>
+            <button type="submit" disabled={isLoading} className="w-full sm:w-auto px-8 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-semibold rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {isLoading ? 'Publishing...' : 'Publish Product'}
             </button>
           </div>
