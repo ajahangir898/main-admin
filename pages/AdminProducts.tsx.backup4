@@ -10,7 +10,6 @@ import { normalizeImageUrl } from '../utils/imageUrlHelper';
 import { RichTextEditor } from '../components/RichTextEditor';
 import ProductPricingAndStock, { ProductPricingData } from '../components/ProductPricingAndStock';
 import { GalleryPicker } from '../components/GalleryPicker';
-import ProductFormModal from '../components/ProductFormModal';
 import toast from 'react-hot-toast';
 import { getDrafts, saveDraft, deleteDraft, generateDraftId, DraftProduct } from '../utils/draftManager';
 
@@ -184,7 +183,6 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [savingProgress, setSavingProgress] = useState(0);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [useNewModal, setUseNewModal] = useState(true); // Toggle for new Figma design modal
   
   // File Upload Ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1538,42 +1536,8 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
         </div>
       )}
 
-      {/* Add/Edit Modal - New Figma Design */}
-      {isModalOpen && useNewModal && (
-        <ProductFormModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditingProduct(null);
-            setEditingDraft(null);
-            setHasUnsavedChanges(false);
-          }}
-          onSubmit={(product) => {
-            if (editingProduct) {
-              onUpdateProduct(product);
-            } else {
-              onAddProduct(product);
-            }
-            setIsModalOpen(false);
-            setEditingProduct(null);
-            toast.success(editingProduct ? 'Product updated!' : 'Product added!');
-          }}
-          onSaveDraft={(draft) => {
-            handleAutoSaveDraft();
-            toast.success('Draft saved!');
-          }}
-          editingProduct={editingProduct}
-          categories={categories}
-          subCategories={subCategories}
-          childCategories={childCategories}
-          brands={brands}
-          tags={tags}
-          isLoading={isSaving}
-        />
-      )}
-
-      {/* Add/Edit Modal - Legacy (for fallback) */}
-      {isModalOpen && !useNewModal && (
+      {/* Add/Edit Modal */}
+      {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4 animate-in fade-in duration-200">
            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col">
               <div className="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">

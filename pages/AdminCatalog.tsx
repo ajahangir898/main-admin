@@ -1,45 +1,39 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Category, SubCategory, ChildCategory, Brand, Tag } from '../types';
-import { Plus, Search, Edit, Trash2, X, Save, Image as ImageIcon, Upload, CheckCircle, Tag as TagIcon, Layers, Folder, FolderTree, Bookmark, Hash } from 'lucide-react';
+import { 
+  Plus, Search, Edit, Trash2, X, Image as ImageIcon, Upload, 
+  Folder, Layers, Bookmark, Hash, MoreVertical, ChevronLeft, ChevronRight,
+  ChevronDown, LayoutGrid, ArrowLeft, ArrowRight
+} from 'lucide-react';
 import { convertFileToWebP } from '../services/imageUtils';
 
 interface AdminCatalogProps {
-  view: string; // 'catalog_categories', 'catalog_subcategories', etc.
-  onNavigate?: (view: string) => void; // Add navigation callback
-  
-  // Data props
+  view: string;
+  onNavigate?: (view: string) => void;
   categories: Category[];
   subCategories: SubCategory[];
   childCategories: ChildCategory[];
   brands: Brand[];
   tags: Tag[];
-
-  // Handler props
   onAddCategory: (item: Category) => void;
   onUpdateCategory: (item: Category) => void;
   onDeleteCategory: (id: string) => void;
-
   onAddSubCategory: (item: SubCategory) => void;
   onUpdateSubCategory: (item: SubCategory) => void;
   onDeleteSubCategory: (id: string) => void;
-
   onAddChildCategory: (item: ChildCategory) => void;
   onUpdateChildCategory: (item: ChildCategory) => void;
   onDeleteChildCategory: (id: string) => void;
-
   onAddBrand: (item: Brand) => void;
   onUpdateBrand: (item: Brand) => void;
   onDeleteBrand: (id: string) => void;
-
   onAddTag: (item: Tag) => void;
   onUpdateTag: (item: Tag) => void;
   onDeleteTag: (id: string) => void;
 }
 
 const AdminCatalog: React.FC<AdminCatalogProps> = ({
-  view,
-  onNavigate,
+  view, onNavigate,
   categories, subCategories, childCategories, brands, tags,
   onAddCategory, onUpdateCategory, onDeleteCategory,
   onAddSubCategory, onUpdateSubCategory, onDeleteSubCategory,
@@ -50,57 +44,64 @@ const AdminCatalog: React.FC<AdminCatalogProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
-  
-  // Tab navigation items
-  const catalogTabs = [
-    { id: 'catalog_categories', label: 'Categories', icon: <Folder size={18} /> },
-    { id: 'catalog_subcategories', label: 'Sub Categories', icon: <FolderTree size={18} /> },
-    { id: 'catalog_childcategories', label: 'Child Categories', icon: <Layers size={18} /> },
-    { id: 'catalog_brands', label: 'Brands', icon: <Bookmark size={18} /> },
-    { id: 'catalog_tags', label: 'Tags', icon: <Hash size={18} /> },
-  ];
-
-  const TabButton: React.FC<{ id: string; label: string; icon?: React.ReactNode }> = ({ id, label, icon }) => (
-    <button
-      onClick={() => onNavigate?.(id)}
-      className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
-        view === id
-          ? 'border-emerald-500 text-emerald-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'
-      }`}
-    >
-      {icon} {label}
-    </button>
-  );
-  
-  // Generic Form Data
   const [formData, setFormData] = useState<any>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('All Status');
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [openActionMenu, setOpenActionMenu] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, []);
+  // Tab navigation
+  const catalogTabs = [
+    { id: 'catalog_categories', label: 'Category', icon: <Folder size={16} /> },
+    { id: 'catalog_subcategories', label: 'Sub Category', icon: <LayoutGrid size={16} /> },
+    { id: 'catalog_childcategories', label: 'Child Category', icon: <Layers size={16} /> },
+    { id: 'catalog_brands', label: 'Brand', icon: <Bookmark size={16} /> },
+    { id: 'catalog_tags', label: 'Tags', icon: <Hash size={16} /> },
+  ];
 
   const getTitle = () => {
     switch(view) {
-      case 'catalog_categories': return 'Categories';
-      case 'catalog_subcategories': return 'Sub Categories';
-      case 'catalog_childcategories': return 'Child Categories';
-      case 'catalog_brands': return 'Brands';
-      case 'catalog_tags': return 'Tags';
-      default: return 'Catalog';
+      case 'catalog_categories': return 'Category';
+      case 'catalog_subcategories': return 'Sub Category';
+      case 'catalog_childcategories': return 'Child Category';
+      case 'catalog_brands': return 'Brand';
+      case 'catalog_tags': return 'Tag';
+      default: return 'Item';
     }
   };
+
+  // Get data based on view
+  let displayData: any[] = [];
+  switch(view) {
+    case 'catalog_categories': displayData = categories; break;
+    case 'catalog_subcategories': displayData = subCategories; break;
+    case 'catalog_childcategories': displayData = childCategories; break;
+    case 'catalog_brands': displayData = brands; break;
+    case 'catalog_tags': displayData = tags; break;
+  }
+  
+  // Filter by search and status
+  displayData = displayData.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'All Status' || item.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  // Pagination
+  const totalItems = displayData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const paginatedData = displayData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleOpenModal = (item?: any) => {
     setEditItem(item || null);
     if (item) {
       setFormData({ ...item });
     } else {
-      // Default empty state based on view
-      const defaults: any = { name: '', status: 'Active' };
+      const defaults: any = { name: '', status: 'Active', priority: 100 };
       if (view === 'catalog_categories') defaults.icon = '';
       if (view === 'catalog_subcategories') defaults.categoryId = categories[0]?.id || '';
       if (view === 'catalog_childcategories') defaults.subCategoryId = subCategories[0]?.id || '';
@@ -116,28 +117,17 @@ const AdminCatalog: React.FC<AdminCatalogProps> = ({
     const newItem = { ...formData, id };
 
     switch(view) {
-      case 'catalog_categories':
-        editItem ? onUpdateCategory(newItem) : onAddCategory(newItem);
-        break;
-      case 'catalog_subcategories':
-        editItem ? onUpdateSubCategory(newItem) : onAddSubCategory(newItem);
-        break;
-      case 'catalog_childcategories':
-        editItem ? onUpdateChildCategory(newItem) : onAddChildCategory(newItem);
-        break;
-      case 'catalog_brands':
-        editItem ? onUpdateBrand(newItem) : onAddBrand(newItem);
-        break;
-      case 'catalog_tags':
-        editItem ? onUpdateTag(newItem) : onAddTag(newItem);
-        break;
+      case 'catalog_categories': editItem ? onUpdateCategory(newItem) : onAddCategory(newItem); break;
+      case 'catalog_subcategories': editItem ? onUpdateSubCategory(newItem) : onAddSubCategory(newItem); break;
+      case 'catalog_childcategories': editItem ? onUpdateChildCategory(newItem) : onAddChildCategory(newItem); break;
+      case 'catalog_brands': editItem ? onUpdateBrand(newItem) : onAddBrand(newItem); break;
+      case 'catalog_tags': editItem ? onUpdateTag(newItem) : onAddTag(newItem); break;
     }
     setIsModalOpen(false);
   };
 
   const handleDelete = (id: string) => {
     if(!window.confirm('Are you sure you want to delete this item?')) return;
-    
     switch(view) {
       case 'catalog_categories': onDeleteCategory(id); break;
       case 'catalog_subcategories': onDeleteSubCategory(id); break;
@@ -145,241 +135,420 @@ const AdminCatalog: React.FC<AdminCatalogProps> = ({
       case 'catalog_brands': onDeleteBrand(id); break;
       case 'catalog_tags': onDeleteTag(id); break;
     }
+    setOpenActionMenu(null);
   };
 
-   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const input = e.target as HTMLInputElement;
-      const file = input.files?.[0];
-      if (!file) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const converted = await convertFileToWebP(file, { quality: 0.8, maxDimension: 600 });
+      const fieldName = view === 'catalog_brands' ? 'logo' : 'icon';
+      setFormData({ ...formData, [fieldName]: converted });
+    } catch (error) {
+      console.error('Failed to process image', error);
+      alert('Unable to process this image.');
+    }
+    e.target.value = '';
+  };
 
-      try {
-         const converted = await convertFileToWebP(file, { quality: 0.8, maxDimension: 600 });
-         const fieldName = view === 'catalog_brands' ? 'logo' : 'icon';
-         setFormData({ ...formData, [fieldName]: converted });
-      } catch (error) {
-         console.error('Failed to process catalog image', error);
-         alert('Unable to process this image. Please try another file.');
-      } finally {
-         if (input) input.value = '';
-      }
-   };
+  // Close action menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setOpenActionMenu(null);
+    if (openActionMenu) document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openActionMenu]);
 
-  // Filter Data
-  let displayData: any[] = [];
-  switch(view) {
-    case 'catalog_categories': displayData = categories; break;
-    case 'catalog_subcategories': displayData = subCategories; break;
-    case 'catalog_childcategories': displayData = childCategories; break;
-    case 'catalog_brands': displayData = brands; break;
-    case 'catalog_tags': displayData = tags; break;
-  }
-  
-  displayData = displayData.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Generate pagination numbers
+  const getPaginationNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      for (let i = 1; i <= maxVisible; i++) pages.push(i);
+      pages.push('...');
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
+  // Check if view needs image column
+  const showImageColumn = view === 'catalog_categories' || view === 'catalog_brands';
 
   return (
-    <div className="space-y-0 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gray-50 pt-4 pb-4 px-6">
-        <div>
-           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Layers className="w-7 h-7 text-emerald-600" />
-              Catalog
-           </h2>
-           <p className="text-sm text-gray-500">Manage your product catalog structure</p>
+    <div className="min-h-screen bg-gray-50/50">
+      {/* Page Header */}
+      <div className="bg-white px-6 py-5">
+        <h1 className="text-2xl font-bold text-gray-900">Catalog</h1>
+      </div>
+
+      {/* Toolbar Row */}
+      <div className="bg-white border-b border-gray-100 px-6 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          {/* Search */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search Category"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4 py-2 w-56 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent placeholder:text-gray-400"
+              />
+            </div>
+            <button className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-200 transition">
+              Search
+            </button>
+          </div>
+
+          {/* Filters & Add Button */}
+          <div className="flex items-center gap-3">
+            {/* Status Filter */}
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="appearance-none pl-3 pr-8 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer min-w-[110px]"
+              >
+                <option>All Status</option>
+                <option value="Active">Publish</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+            </div>
+
+            {/* Items Per Page */}
+            <div className="relative">
+              <select
+                value={itemsPerPage}
+                onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                className="appearance-none pl-3 pr-8 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer min-w-[140px]"
+              >
+                <option value={10}>10 {getTitle()}</option>
+                <option value={20}>20 {getTitle()}</option>
+                <option value={50}>50 {getTitle()}</option>
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+            </div>
+
+            {/* Add Button */}
+            <button
+              onClick={() => handleOpenModal()}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-lg text-sm font-semibold hover:from-cyan-500 hover:to-cyan-600 transition shadow-sm"
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              Add {getTitle()}
+            </button>
+          </div>
         </div>
-        <button 
-          onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition text-sm font-medium bg-emerald-600 hover:bg-emerald-700 hover:shadow-md"
-        >
-          <Plus size={16} /> Add {getTitle().slice(0, -1)}
-        </button>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide bg-white px-2">
-        {catalogTabs.map((tab) => (
-          <TabButton key={tab.id} id={tab.id} label={tab.label} icon={tab.icon} />
-        ))}
+      {/* Tab Navigation */}
+      <div className="bg-white border-b border-gray-200 px-6">
+        <div className="flex gap-0 overflow-x-auto">
+          {catalogTabs.map((tab) => {
+            const isActive = view === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => { onNavigate?.(tab.id); setCurrentPage(1); }}
+                className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'border-cyan-500 text-cyan-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <span className={isActive ? 'text-cyan-500' : 'text-gray-400'}>{tab.icon}</span>
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Main Content Card */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-         {/* Toolbar */}
-         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-            <div className="relative w-full max-w-sm">
-                <input 
-                  type="text" 
-                  placeholder="Search..." 
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
-            </div>
-            <div className="text-sm text-gray-500">
-               Total: <span className="font-bold text-gray-800">{displayData.length}</span>
-            </div>
-         </div>
-
-         {/* Data Table */}
-         <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-               <thead className="bg-gray-50 text-gray-500 font-semibold uppercase tracking-wider text-xs border-b border-gray-200">
-                  <tr>
-                     <th className="px-6 py-4">Serial</th>
-                     {(view === 'catalog_categories' || view === 'catalog_brands') && <th className="px-6 py-4">Image/Icon</th>}
-                     <th className="px-6 py-4">Name</th>
-                     {view === 'catalog_subcategories' && <th className="px-6 py-4">Parent Category</th>}
-                     {view === 'catalog_childcategories' && <th className="px-6 py-4">Parent SubCategory</th>}
-                     <th className="px-6 py-4">Status</th>
-                     <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
-               </thead>
-               <tbody className="divide-y divide-gray-100">
-                  {displayData.map((item, idx) => (
-                     <tr key={item.id} className="hover:bg-gray-50 transition group">
-                        <td className="px-6 py-4 text-gray-500">#{idx + 1}</td>
-                        {(view === 'catalog_categories' || view === 'catalog_brands') && (
-                           <td className="px-6 py-4">
-                              <div className="w-10 h-10 bg-gray-100 rounded border flex items-center justify-center overflow-hidden">
-                                 {(item.icon || item.logo) ? (
-                                    <img src={item.icon || item.logo} className="w-full h-full object-contain" alt={item.name}/>
-                                 ) : (
-                                    <ImageIcon size={16} className="text-gray-400"/>
-                                 )}
-                              </div>
-                           </td>
-                        )}
-                        <td className="px-6 py-4 font-bold text-gray-800">{item.name}</td>
-                        
-                        {view === 'catalog_subcategories' && (
-                           <td className="px-6 py-4 text-gray-600">
-                              {categories.find(c => c.id === item.categoryId)?.name || <span className="text-red-400 text-xs">Unknown</span>}
-                           </td>
-                        )}
-                        
-                        {view === 'catalog_childcategories' && (
-                           <td className="px-6 py-4 text-gray-600">
-                              {subCategories.find(s => s.id === item.subCategoryId)?.name || <span className="text-red-400 text-xs">Unknown</span>}
-                           </td>
-                        )}
-
-                        <td className="px-6 py-4">
-                           <span className={`px-2 py-1 rounded-full text-xs font-bold ${item.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                              {item.status}
-                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                           <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
-                              <button onClick={() => handleOpenModal(item)} className="p-1.5 hover:bg-purple-50 text-gray-500 hover:text-purple-600 rounded">
-                                 <Edit size={16} />
-                              </button>
-                              <button onClick={() => handleDelete(item.id)} className="p-1.5 hover:bg-red-50 text-gray-500 hover:text-red-600 rounded">
-                                 <Trash2 size={16} />
-                              </button>
-                           </div>
-                        </td>
-                     </tr>
-                  ))}
-                  {displayData.length === 0 && (
-                     <tr><td colSpan={7} className="text-center py-12 text-gray-400">No data found</td></tr>
+      {/* Data Table */}
+      <div className="p-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-cyan-50/60">
+                  <th className="w-12 px-4 py-4">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-cyan-500 focus:ring-cyan-400" />
+                  </th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">SL</th>
+                  {showImageColumn && (
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Image/Icon</th>
                   )}
-               </tbody>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
+                  {view === 'catalog_subcategories' && (
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Parent Category</th>
+                  )}
+                  {view === 'catalog_childcategories' && (
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Parent SubCategory</th>
+                  )}
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Products</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Priority</th>
+                  <th className="px-4 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {paginatedData.map((item, idx) => {
+                  const serialNumber = (currentPage - 1) * itemsPerPage + idx + 1;
+                  return (
+                    <tr key={item.id} className="hover:bg-gray-50/50 transition">
+                      <td className="px-4 py-4">
+                        <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-cyan-500 focus:ring-cyan-400" />
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500">{serialNumber}</td>
+                      {showImageColumn && (
+                        <td className="px-4 py-4">
+                          <div className="w-10 h-10 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden">
+                            {(item.icon || item.logo) ? (
+                              <img src={item.icon || item.logo} className="w-full h-full object-cover" alt={item.name} />
+                            ) : (
+                              <ImageIcon size={16} className="text-gray-400" />
+                            )}
+                          </div>
+                        </td>
+                      )}
+                      <td className="px-4 py-4 text-sm text-gray-700">{item.name}</td>
+                      {view === 'catalog_subcategories' && (
+                        <td className="px-4 py-4 text-sm text-gray-500">
+                          {categories.find(c => c.id === item.categoryId)?.name || 'Unknown'}
+                        </td>
+                      )}
+                      {view === 'catalog_childcategories' && (
+                        <td className="px-4 py-4 text-sm text-gray-500">
+                          {subCategories.find(s => s.id === item.subCategoryId)?.name || 'Unknown'}
+                        </td>
+                      )}
+                      <td className="px-4 py-4 text-sm text-gray-500">{item.productCount || 5}</td>
+                      <td className="px-4 py-4 text-sm text-gray-500">{item.priority || 100}</td>
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${
+                          item.status === 'Active' 
+                            ? 'bg-emerald-50 text-emerald-600' 
+                            : 'bg-red-50 text-red-600'
+                        }`}>
+                          {item.status === 'Active' ? 'Publish' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex justify-center relative">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setOpenActionMenu(openActionMenu === item.id ? null : item.id); }}
+                            className="p-1.5 hover:bg-gray-100 rounded transition"
+                          >
+                            <MoreVertical size={16} className="text-gray-400" />
+                          </button>
+                          {openActionMenu === item.id && (
+                            <div className="absolute right-0 top-full mt-1 w-28 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1">
+                              <button
+                                onClick={() => { handleOpenModal(item); setOpenActionMenu(null); }}
+                                className="w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                              >
+                                <Edit size={13} /> Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(item.id)}
+                                className="w-full px-3 py-1.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                              >
+                                <Trash2 size={13} /> Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {paginatedData.length === 0 && (
+                  <tr>
+                    <td colSpan={10} className="px-4 py-16 text-center text-gray-400">
+                      <div className="flex flex-col items-center gap-2">
+                        <Folder size={40} className="text-gray-300" />
+                        <p className="text-sm">No {getTitle().toLowerCase()}s found</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
-         </div>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 0 && (
+            <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft size={14} /> Previous
+              </button>
+
+              <div className="flex items-center gap-1">
+                {getPaginationNumbers().map((page, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                    disabled={page === '...'}
+                    className={`min-w-[32px] h-8 px-2.5 text-sm font-medium rounded-md transition ${
+                      currentPage === page
+                        ? 'bg-cyan-100 text-cyan-700'
+                        : page === '...'
+                        ? 'text-gray-400 cursor-default'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next <ArrowRight size={14} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-               <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-                  <h3 className="font-bold text-gray-800">{editItem ? 'Edit Item' : 'Add New Item'}</h3>
-                  <button onClick={() => setIsModalOpen(false)}><X size={20} className="text-gray-500"/></button>
-               </div>
-               <form onSubmit={handleSave} className="p-6 space-y-4">
-                  
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                     <input 
-                        type="text" 
-                        required 
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-purple-500 focus:outline-none"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                     />
-                  </div>
-
-                  {view === 'catalog_subcategories' && (
-                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
-                        <select 
-                           className="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-purple-500 focus:outline-none"
-                           value={formData.categoryId}
-                           onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
-                           required
-                        >
-                           <option value="">Select Category</option>
-                           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                        </select>
-                     </div>
-                  )}
-
-                  {view === 'catalog_childcategories' && (
-                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Parent Sub Category</label>
-                        <select 
-                           className="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-purple-500 focus:outline-none"
-                           value={formData.subCategoryId}
-                           onChange={(e) => setFormData({...formData, subCategoryId: e.target.value})}
-                           required
-                        >
-                           <option value="">Select Sub Category</option>
-                           {subCategories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                        </select>
-                     </div>
-                  )}
-
-                  {(view === 'catalog_categories' || view === 'catalog_brands') && (
-                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                           {view === 'catalog_brands' ? 'Logo' : 'Icon'}
-                        </label>
-                        <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                        <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50">
-                           {(formData.icon || formData.logo) ? (
-                              <img src={formData.icon || formData.logo} className="h-16 mx-auto object-contain" alt="preview" />
-                           ) : (
-                              <div className="text-gray-400 flex flex-col items-center">
-                                 <Upload size={24} className="mb-1"/>
-                                 <span className="text-xs">Click to upload</span>
-                              </div>
-                           )}
-                        </div>
-                     </div>
-                  )}
-
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                     <select 
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-purple-500 focus:outline-none"
-                        value={formData.status}
-                        onChange={(e) => setFormData({...formData, status: e.target.value})}
-                     >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                     </select>
-                  </div>
-
-                  <div className="pt-4 flex justify-end gap-3">
-                     <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button>
-                     <button type="submit" className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save</button>
-                  </div>
-               </form>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-gray-900">
+                {editItem ? `Edit ${getTitle()}` : `Add New ${getTitle()}`}
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition">
+                <X size={18} className="text-gray-500" />
+              </button>
             </div>
-         </div>
+
+            <form onSubmit={handleSave} className="p-5 space-y-4">
+              {/* Name Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder={`Enter ${getTitle().toLowerCase()} name`}
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-sm"
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+
+              {/* Priority Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Priority</label>
+                <input
+                  type="number"
+                  placeholder="100"
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-sm"
+                  value={formData.priority || ''}
+                  onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) || 0 })}
+                />
+              </div>
+
+              {/* Parent Category (for SubCategory) */}
+              {view === 'catalog_subcategories' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Parent Category</label>
+                  <select
+                    required
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-sm"
+                    value={formData.categoryId || ''}
+                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Parent SubCategory (for ChildCategory) */}
+              {view === 'catalog_childcategories' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Parent Sub Category</label>
+                  <select
+                    required
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-sm"
+                    value={formData.subCategoryId || ''}
+                    onChange={(e) => setFormData({ ...formData, subCategoryId: e.target.value })}
+                  >
+                    <option value="">Select Sub Category</option>
+                    {subCategories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Image Upload (for Categories & Brands) */}
+              {showImageColumn && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    {view === 'catalog_brands' ? 'Logo' : 'Icon/Image'}
+                  </label>
+                  <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-cyan-400 hover:bg-cyan-50/30 transition"
+                  >
+                    {(formData.icon || formData.logo) ? (
+                      <img src={formData.icon || formData.logo} className="h-16 mx-auto object-contain rounded-lg" alt="preview" />
+                    ) : (
+                      <div className="text-gray-400 flex flex-col items-center gap-1">
+                        <Upload size={28} className="text-gray-300" />
+                        <span className="text-sm">Click to upload</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Status Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+                <select
+                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-sm"
+                  value={formData.status || 'Active'}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="Active">Publish</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-3 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-lg text-sm font-semibold hover:from-cyan-500 hover:to-cyan-600 transition"
+                >
+                  {editItem ? 'Update' : 'Add'} {getTitle()}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
