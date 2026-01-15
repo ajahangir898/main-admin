@@ -113,8 +113,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 	const getMenuItemStyle = (itemId: string, isActive: boolean) => {
 		if (isActive) {
 			return {
-				background: 'linear-gradient(90deg, #CCFBF1 0%, #ffffff 100%)',
-				color: '#0D9488', borderLeft: '3px solid #14B8A6',
+				background: 'linear-gradient(90deg, #E0F2FE 0%, #BAE6FD 100%)',
+				color: '#0284C7',
+				borderRadius: '8px',
 			};
 		}
 		return {
@@ -135,13 +136,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 			{/* Sidebar Menu */}
 			<div ref={scrollRef} className="p-4 space-y-0 flex-1 overflow-y-auto custom-scrollbar bg-white" style={{ minHeight: 0 }}>
 				{/* Main Menu Section */}
-				<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mb-2">Main Menu</div>
+				<div className="text-[11px] font-medium text-gray-400 mb-3 px-3">Main Menu</div>
 
 				{filteredMainMenuItems.map((item) => (
 					<div
 						key={item.id}
 						onClick={() => handleNavigate(item.id)}
-						className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+						className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 text-sm font-medium hover:bg-gray-100`}
 						style={getMenuItemStyle(item.id, isItemActive(item.id))}
 					>
 						{item.icon}
@@ -154,7 +155,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 					<div>
 						<div
 							onClick={() => setIsCatalogOpen(!isCatalogOpen)}
-							className={`flex items-center justify-between px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+							className={`flex items-center justify-between px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 text-sm font-medium hover:bg-gray-100`}
 							style={getMenuItemStyle('catalog', activePage?.startsWith('catalog_') || false)}
 						>
 							<div className="flex items-center gap-3">
@@ -187,13 +188,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 				{/* Configuration Section */}
 				{filteredConfigItems.length > 0 && (
 					<>
-						<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mt-6 mb-2">Configuration</div>
+						<div className="text-[11px] font-medium text-gray-400 mt-5 mb-3 px-3">Configuration</div>
 
 						{filteredConfigItems.map((item) => (
 							<div
 								key={item.id}
 								onClick={() => handleNavigate(item.id)}
-								className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 text-sm font-medium hover:bg-gray-100`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
 								{item.icon}
@@ -206,13 +207,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 				{/* System Section */}
 				{filteredSystemItems.length > 0 && (
 					<>
-						<div className="text-[10px] font-semibold uppercase tracking-widest text-teal-600/80 mt-6 mb-2">System</div>
+						<div className="text-[11px] font-medium text-gray-400 mt-5 mb-3 px-3">System</div>
 
 						{filteredSystemItems.map((item) => (
 							<div
 								key={item.id}
 								onClick={() => handleNavigate(item.id)}
-								className={`flex items-center gap-3 px-3 py-3 cursor-pointer border-b border-teal-200 transition-all duration-200 text-sm font-medium hover:bg-gray-50`}
+								className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-lg transition-all duration-200 text-sm font-medium hover:bg-gray-100`}
 								style={getMenuItemStyle(item.id, isItemActive(item.id))}
 							>
 								{item.icon}
