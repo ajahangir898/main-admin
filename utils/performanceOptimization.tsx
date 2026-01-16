@@ -384,7 +384,8 @@ export const LazyImage: React.FC<{
           height={height || (width ? Math.round(width * 0.75) : Math.round(IMAGE_SIZES[size].width * 0.75))}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
-          fetchPriority={priority ? 'high' : 'auto'}
+          // @ts-expect-error React doesn't recognize fetchpriority yet
+          fetchpriority={priority ? 'high' : 'auto'}
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
           className={`${imgClassName || 'w-full h-full object-cover'} transition-opacity duration-200 ${

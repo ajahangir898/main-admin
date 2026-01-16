@@ -4,11 +4,23 @@ import { getCached, setCached, deleteCached, CacheKeys, setCachedByType, clearTe
 import type { Socket } from 'socket.io-client';
 
 // Debug flag - set to false in production to reduce console noise
-const DEBUG_LOGGING = import.meta.env.DEV || false;
+const DEBUG_LOGGING = false; // Disabled to reduce console spam
 
 // Throttle map to prevent excessive API calls
 const revalidationThrottleMap = new Map<string, number>();
 const REVALIDATION_THROTTLE_MS = 30000; // Only revalidate once per 30 seconds
+
+// Log throttling to reduce console spam
+const logThrottleMap = new Map<string, number>();
+const LOG_THROTTLE_MS = 10000; // Only log same message once per 10 seconds
+const throttledLog = (key: string, message: string, ...args: unknown[]) => {
+  const now = Date.now();
+  const lastLog = logThrottleMap.get(key) || 0;
+  if (now - lastLog > LOG_THROTTLE_MS) {
+    logThrottleMap.set(key, now);
+    console.log(message, ...args);
+  }
+};
 
 // Reserved subdomains that cannot be used for tenants
 const RESERVED_TENANT_SLUGS = [
@@ -976,7 +988,7 @@ class DataServiceImpl {
     }
 
     // Only return defaults if we have no cached data at all
-    if (DEBUG_LOGGING) console.info(`[DataService] No data for ${key}, using defaults`);
+    if (DEBUG_LOGGING) throttledLog(`nodata-${key}`, `[DataService] No data for ${key}, using defaults`);
     return defaultValue;
   }
 
@@ -1106,7 +1118,7 @@ class DataServiceImpl {
     // Check cache first to avoid unnecessary API calls
     const cached = getCachedData<any[]>(type, tenantId);
     if (cached && cached.length > 0) {
-      if (DEBUG_LOGGING) console.log(`[DataService] Using cached ${type}`);
+      if (DEBUG_LOGGING) throttledLog(`cached-${type}`, `[DataService] Using cached ${type}`);
       return cached;
     }
 
@@ -1124,7 +1136,7 @@ class DataServiceImpl {
     }
 
     // Only use defaults if we have no data at all (new tenant)
-    if (DEBUG_LOGGING) console.info(`[DataService] No ${type} found, using defaults for new tenant`);
+    if (DEBUG_LOGGING) throttledLog(`defaults-${type}`, `[DataService] No ${type} found, using defaults for new tenant`);
     return defaults;
   }
 
