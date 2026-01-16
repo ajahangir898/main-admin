@@ -86,6 +86,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 
 	// System items
 	const systemItems = [
+		{ id: 'billing', icon: <DollarSign size={18} />, label: 'Billing & Subscription', resource: 'settings' },
 		{ id: 'activity_log', icon: <ClipboardList size={18} />, label: 'Activity Log', resource: 'settings' },
 		{ id: 'support', icon: <Headphones size={18} />, label: 'Support', resource: 'settings' },
 		{ id: 'tutorial', icon: <FileText size={18} />, label: 'Tutorial', resource: 'settings' },

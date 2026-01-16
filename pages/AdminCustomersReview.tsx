@@ -8,7 +8,9 @@ import {
   ChevronDown, 
   MoreVertical, 
   Plus,
-  SlidersHorizontal
+  SlidersHorizontal,
+  UserPlus,
+  RefreshCw
 } from 'lucide-react';
 import { Order, Product } from '../types';
 import { MetricsSkeleton } from '../components/SkeletonLoaders';
@@ -239,68 +241,67 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
   };
 
   const getRatingBadgeStyle = (rating: number) => {
-    if (rating >= 4) return 'bg-emerald-100 text-emerald-600';
-    if (rating >= 3) return 'bg-orange-100 text-orange-600';
-    return 'bg-red-100 text-red-600';
+    if (rating >= 4) return { bg: 'bg-sky-100', text: 'text-sky-400', starBg: 'bg-gradient-to-r from-sky-400 to-blue-500' };
+    if (rating >= 3) return { bg: 'bg-red-200', text: 'text-orange-500', starBg: 'bg-orange-500' };
+    return { bg: 'bg-rose-200', text: 'text-red-700', starBg: 'bg-red-700' };
   };
 
   return (
-    <div className="space-y-6 animate-fade-in p-6 bg-[#F8F9FB] min-h-screen">
+    <div className="space-y-6 animate-fade-in bg-stone-50 min-h-screen font-['Poppins']">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">
-          <span className="text-gray-800">Customers</span>{' '}
-          <span className="text-cyan-500">Review</span>
+        <h1 className="text-xl font-bold text-teal-950 tracking-tight font-['Lato']">
+          Customers  Review
         </h1>
         
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
           {/* Search Category */}
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <div className="relative w-72 h-8 bg-zinc-100 rounded-lg overflow-hidden">
+            <div className="w-6 h-6 absolute left-2 top-1 flex items-center justify-center">
+              <Search size={16} className="text-black" />
+            </div>
             <input
               type="text"
               value={categorySearch}
               onChange={(e) => setCategorySearch(e.target.value)}
               placeholder="Search Category"
-              className="pl-10 pr-20 py-2.5 w-56 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-cyan-100 focus:border-cyan-400 text-sm"
+              className="w-full h-full pl-11 pr-16 bg-transparent text-xs font-normal text-black placeholder:text-neutral-500 focus:outline-none"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-white text-gray-600 text-sm font-medium border-l border-gray-200 hover:text-gray-800">
-              Search
-            </button>
+            <span className="absolute right-3 top-2 text-xs font-normal text-black">Search</span>
           </div>
           
           {/* All Status Dropdown */}
-          <div className="relative">
+          <div className="px-1.5 py-2 bg-zinc-100 rounded-lg flex items-center gap-2 cursor-pointer">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none pl-4 pr-10 py-2.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-100 cursor-pointer"
+              className="appearance-none bg-transparent text-xs font-normal text-black focus:outline-none cursor-pointer pr-4"
             >
               <option>All Status</option>
               <option>Active</option>
               <option>Blocked</option>
             </select>
-            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={16} className="text-black -ml-2" />
           </div>
           
           {/* Tags Dropdown */}
-          <div className="relative">
+          <div className="px-1.5 py-2 bg-zinc-100 rounded-lg flex items-center gap-2 cursor-pointer">
             <select
               value={tagFilter}
               onChange={(e) => setTagFilter(e.target.value)}
-              className="appearance-none pl-4 pr-10 py-2.5 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-100 cursor-pointer"
+              className="appearance-none bg-transparent text-xs font-normal text-black focus:outline-none cursor-pointer pr-4"
             >
               <option>10 Tags</option>
               <option>5 Tags</option>
               <option>20 Tags</option>
             </select>
-            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={16} className="text-black -ml-2" />
           </div>
           
           {/* Add Customer Button */}
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition shadow-sm">
-            <Plus size={18} />
-            Add Customer
+          <button className="w-36 h-12 pl-3 pr-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center justify-center gap-1 hover:opacity-90 transition">
+            <UserPlus size={20} className="text-white" />
+            <span className="text-white text-base font-bold font-['Lato']">Add Customer</span>
           </button>
         </div>
       </div>
@@ -309,59 +310,67 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
       {isLoading ? (
         <MetricsSkeleton count={4} />
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex flex-wrap gap-4">
           {/* Customer Card */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-cyan-600">Customer</p>
-                <p className="mt-2 text-4xl font-bold text-gray-800">{customerStats.totalCustomers}</p>
-                <p className="text-xs text-gray-400 mt-1">Total user</p>
+          <div className="w-64 px-4 py-3.5 bg-sky-50 rounded-lg">
+            <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-2">
+                <span className="text-black text-base font-medium">Customer</span>
+                <div className="flex flex-col">
+                  <span className="text-black text-2xl font-medium">{customerStats.totalCustomers}</span>
+                  <span className="text-neutral-400 text-xs font-medium">Total user</span>
+                </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center">
-                <Users size={24} className="text-cyan-500" />
+              <div className="w-11 h-11 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center justify-center">
+                <Users size={24} className="text-white" strokeWidth={2.5} />
               </div>
             </div>
           </div>
 
           {/* Review Card */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Review</p>
-                <p className="mt-2 text-4xl font-bold text-gray-800">{customerStats.totalReviews}</p>
-                <p className="text-xs text-gray-400 mt-1">Consumers review</p>
+          <div className="w-64 px-4 py-3.5 bg-orange-50 rounded-lg">
+            <div className="flex justify-between items-end">
+              <div className="flex flex-col gap-2">
+                <span className="text-black text-base font-medium">Review</span>
+                <div className="flex flex-col">
+                  <span className="text-black text-2xl font-medium">{customerStats.totalReviews}</span>
+                  <span className="text-neutral-400 text-xs font-medium">Consumers review</span>
+                </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-                <Star size={24} className="text-amber-500 fill-amber-500" />
+              <div className="w-11 h-11 bg-gradient-to-b from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+                <Star size={24} className="text-white" fill="white" strokeWidth={2.5} />
               </div>
             </div>
           </div>
 
           {/* Recurring Customers Card */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Recurring customers</p>
-                <p className="mt-2 text-4xl font-bold text-gray-800">{customerStats.repeatCustomers}</p>
-                <p className="text-xs text-gray-400 mt-1">Repeat customers</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center">
-                <MessageSquare size={24} className="text-cyan-500" />
+          <div className="w-64 px-4 py-3.5 bg-green-50 rounded-lg">
+            <div className="flex flex-col gap-2.5">
+              <span className="text-black text-base font-medium">Recurring customers</span>
+              <div className="flex justify-between items-end">
+                <div className="flex flex-col">
+                  <span className="text-black text-2xl font-medium">{customerStats.repeatCustomers}</span>
+                  <span className="text-neutral-400 text-xs font-medium">Repeat customers</span>
+                </div>
+                <div className="w-11 h-11 bg-green-900 rounded-lg flex items-center justify-center">
+                  <RefreshCw size={24} className="text-white" strokeWidth={2.5} />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Blocked Card */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Blocked</p>
-                <p className="mt-2 text-4xl font-bold text-gray-800">{customerStats.blockedCustomers}</p>
-                <p className="text-xs text-gray-400 mt-1">Blocked users</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
-                <Ban size={24} className="text-red-500" />
+          <div className="w-64 px-4 py-3.5 bg-rose-50 rounded-lg">
+            <div className="flex flex-col gap-2.5">
+              <span className="text-black text-base font-medium">Blocked</span>
+              <div className="flex justify-between items-end">
+                <div className="flex flex-col">
+                  <span className="text-black text-2xl font-medium">{customerStats.blockedCustomers}</span>
+                  <span className="text-neutral-400 text-xs font-medium">Blocked users</span>
+                </div>
+                <div className="w-11 h-11 bg-red-700 rounded-lg flex items-center justify-center">
+                  <Ban size={24} className="text-white" strokeWidth={2.5} />
+                </div>
               </div>
             </div>
           </div>
@@ -369,42 +378,42 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
       )}
 
       {/* Tables Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div className="flex flex-col xl:flex-row gap-6">
         {/* Customers Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="flex-1 bg-white overflow-hidden">
           {/* Table Header */}
-          <div className="px-4 py-4 border-b border-gray-100">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={customerSearch}
-                  onChange={(e) => setCustomerSearch(e.target.value)}
-                  placeholder="Search Customers"
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-cyan-100 focus:border-cyan-400 text-sm"
-                />
+          <div className="flex flex-wrap items-center gap-4 lg:gap-10 mb-4">
+            <div className="relative w-96 h-8 bg-zinc-100 rounded-lg overflow-hidden">
+              <div className="w-6 h-6 absolute left-2 top-1 flex items-center justify-center">
+                <Search size={16} className="text-black" />
               </div>
-              <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
-                Search
-              </button>
+              <input
+                type="text"
+                value={customerSearch}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                placeholder="Search Customers"
+                className="w-full h-full pl-11 pr-16 bg-transparent text-xs font-normal text-black placeholder:text-neutral-500 focus:outline-none"
+              />
+              <span className="absolute right-3 top-2 text-xs font-normal text-black">Search</span>
+            </div>
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Sort by</span>
-                <div className="relative">
+                <span className="text-neutral-500 text-xs font-normal">Sort by</span>
+                <div className="px-1.5 py-2 bg-zinc-100 rounded-lg flex items-center gap-2">
                   <select
                     value={customerSortBy}
                     onChange={(e) => setCustomerSortBy(e.target.value)}
-                    className="appearance-none pl-3 pr-8 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer"
+                    className="appearance-none bg-transparent text-xs font-normal text-black focus:outline-none cursor-pointer pr-4"
                   >
                     <option>Newest</option>
                     <option>Oldest</option>
                     <option>Name</option>
                   </select>
-                  <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <ChevronDown size={16} className="text-black -ml-2" />
                 </div>
               </div>
-              <button className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
-                <SlidersHorizontal size={18} className="text-gray-500" />
+              <button className="w-8 h-8 p-2.5 bg-zinc-100 rounded flex items-center justify-center hover:bg-zinc-200 transition">
+                <SlidersHorizontal size={20} className="text-black" />
               </button>
             </div>
           </div>
@@ -412,25 +421,34 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
           {/* Table Content */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cyan-500 text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0}
-                      onChange={handleSelectAllCustomers}
-                      className="w-4 h-4 rounded border-white/30 text-cyan-600 focus:ring-cyan-500"
+              <thead>
+                <tr className="bg-gradient-to-b from-sky-400/25 to-blue-500/25 h-12">
+                  <th className="px-5 py-3 text-left">
+                    <div className="w-6 h-6 rounded border-2 border-slate-900/75 cursor-pointer" 
+                      onClick={handleSelectAllCustomers}
                     />
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">SI</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">Image</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">Name</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide">Contact</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide">Status</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide">Action</th>
+                  <th className="px-3 py-3 text-center">
+                    <span className="text-stone-900 text-base font-medium">Sl</span>
+                  </th>
+                  <th className="px-3 py-3 text-left">
+                    <span className="text-black text-base font-medium">Image</span>
+                  </th>
+                  <th className="px-3 py-3 text-left">
+                    <span className="text-black text-base font-medium">Name</span>
+                  </th>
+                  <th className="px-3 py-3 text-left">
+                    <span className="text-black text-base font-medium">Contact</span>
+                  </th>
+                  <th className="px-3 py-3 text-left">
+                    <span className="text-black text-base font-medium">Status</span>
+                  </th>
+                  <th className="px-3 py-3 text-center">
+                    <span className="text-black text-base font-medium">Action</span>
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {filteredCustomers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-12 text-center text-gray-500">
@@ -440,42 +458,52 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
                   </tr>
                 ) : (
                   filteredCustomers.map((customer) => (
-                    <tr key={customer.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedCustomers.includes(customer.id)}
-                          onChange={() => handleSelectCustomer(customer.id)}
-                          className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
-                        />
-                      </td>
-                      <td className="px-3 py-3 text-gray-600">{customer.serialNumber}</td>
-                      <td className="px-3 py-3">
-                        <img 
-                          src={customer.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'} 
-                          alt={customer.name}
-                          className="w-10 h-10 rounded-lg object-cover"
-                        />
-                      </td>
-                      <td className="px-3 py-3">
-                        <p className="font-medium text-gray-800">{customer.name}</p>
+                    <tr key={customer.id} className="h-16 border-b border-zinc-400/50 hover:bg-gray-50 transition">
+                      <td className="px-5 py-3">
+                        <div 
+                          className={`w-6 h-6 rounded border-2 border-slate-900/75 cursor-pointer flex items-center justify-center ${selectedCustomers.includes(customer.id) ? 'bg-sky-400' : ''}`}
+                          onClick={() => handleSelectCustomer(customer.id)}
+                        >
+                          {selectedCustomers.includes(customer.id) && (
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
                       </td>
                       <td className="px-3 py-3 text-center">
-                        <p className="text-gray-700">{customer.phone}</p>
-                        <p className="text-xs text-gray-400">{customer.email}</p>
+                        <span className="text-stone-900 text-xs font-normal">{customer.serialNumber}</span>
                       </td>
-                      <td className="px-3 py-3 text-center">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                      <td className="px-3 py-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg overflow-hidden">
+                          <img 
+                            src={customer.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'}
+                            alt={customer.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-stone-900 text-xs font-normal">{customer.name}</span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <div className="flex flex-col">
+                          <span className="text-stone-900 text-xs font-normal">{customer.phone}</span>
+                          <span className="text-stone-900 text-xs font-normal">{customer.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className={`px-2 py-0.5 rounded-[30px] text-xs font-medium ${
                           customer.status === 'Active' 
-                            ? 'bg-emerald-100 text-emerald-600' 
-                            : 'bg-red-100 text-red-600'
+                            ? 'bg-green-200 text-green-900' 
+                            : 'bg-red-200 text-red-700'
                         }`}>
                           {customer.status}
                         </span>
                       </td>
                       <td className="px-3 py-3 text-center">
-                        <button className="p-1.5 rounded-lg hover:bg-gray-100 transition">
-                          <MoreVertical size={18} className="text-gray-500" />
+                        <button className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded transition">
+                          <MoreVertical size={18} className="text-black" />
                         </button>
                       </td>
                     </tr>
@@ -487,55 +515,60 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
         </div>
 
         {/* Reviews Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="w-full xl:w-96 px-4 py-3.5 bg-white rounded-lg shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex flex-col gap-2.5 overflow-hidden">
           {/* Table Header */}
-          <div className="px-4 py-4 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold text-gray-800">Review</h3>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">Sort by</span>
-                  <div className="relative">
-                    <select
-                      value={reviewSortBy}
-                      onChange={(e) => setReviewSortBy(e.target.value)}
-                      className="appearance-none pl-3 pr-8 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer"
-                    >
-                      <option>Newest</option>
-                      <option>Oldest</option>
-                      <option>Rating</option>
-                    </select>
-                    <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                  </div>
+          <div className="flex justify-between items-start">
+            <span className="text-black text-base font-medium">Review</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-neutral-500 text-xs font-normal">Sort by</span>
+                <div className="px-1.5 py-2 bg-zinc-100 rounded-lg flex items-center gap-2">
+                  <select
+                    value={reviewSortBy}
+                    onChange={(e) => setReviewSortBy(e.target.value)}
+                    className="appearance-none bg-transparent text-xs font-normal text-black focus:outline-none cursor-pointer pr-4"
+                  >
+                    <option>Newest</option>
+                    <option>Oldest</option>
+                    <option>Rating</option>
+                  </select>
+                  <ChevronDown size={16} className="text-black -ml-2" />
                 </div>
-                <button className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
-                  <SlidersHorizontal size={18} className="text-gray-500" />
-                </button>
               </div>
+              <button className="w-8 h-8 p-2.5 bg-zinc-100 rounded flex items-center justify-center hover:bg-zinc-200 transition">
+                <SlidersHorizontal size={20} className="text-black" />
+              </button>
             </div>
           </div>
 
           {/* Table Content */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cyan-500 text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedReviews.length === filteredReviews.length && filteredReviews.length > 0}
-                      onChange={handleSelectAllReviews}
-                      className="w-4 h-4 rounded border-white/30 text-cyan-600 focus:ring-cyan-500"
+              <thead>
+                <tr className="bg-gradient-to-b from-sky-400/25 to-blue-500/25 h-12">
+                  <th className="px-5 py-3 text-left">
+                    <div className="w-6 h-6 rounded border-2 border-slate-900/75 cursor-pointer"
+                      onClick={handleSelectAllReviews}
                     />
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">SI</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">Image</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">Name</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide">Star</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide">Action</th>
+                  <th className="px-2 py-3 text-center">
+                    <span className="text-stone-900 text-base font-medium">Sl</span>
+                  </th>
+                  <th className="px-2 py-3 text-left">
+                    <span className="text-black text-base font-medium">Image</span>
+                  </th>
+                  <th className="px-2 py-3 text-left">
+                    <span className="text-black text-base font-medium">Name</span>
+                  </th>
+                  <th className="px-2 py-3 text-left">
+                    <span className="text-black text-base font-medium">Star</span>
+                  </th>
+                  <th className="px-2 py-3 text-center">
+                    <span className="text-black text-base font-medium">Action</span>
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {filteredReviews.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
@@ -544,40 +577,53 @@ const AdminCustomersReview: React.FC<AdminCustomersReviewProps> = ({ orders, pro
                     </td>
                   </tr>
                 ) : (
-                  filteredReviews.map((review, index) => (
-                    <tr key={review.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedReviews.includes(review.id)}
-                          onChange={() => handleSelectReview(review.id)}
-                          className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
-                        />
-                      </td>
-                      <td className="px-3 py-3 text-gray-600">{100 + index}</td>
-                      <td className="px-3 py-3">
-                        <img 
-                          src={review.avatar} 
-                          alt={review.customer}
-                          className="w-10 h-10 rounded-lg object-cover"
-                        />
-                      </td>
-                      <td className="px-3 py-3">
-                        <p className="font-medium text-gray-800">{review.customer}</p>
-                      </td>
-                      <td className="px-3 py-3 text-center">
-                        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getRatingBadgeStyle(review.rating)}`}>
-                          {review.rating}
-                          <Star size={12} className="fill-current" />
-                        </span>
-                      </td>
-                      <td className="px-3 py-3 text-center">
-                        <button className="p-1.5 rounded-lg hover:bg-gray-100 transition">
-                          <MoreVertical size={18} className="text-gray-500" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  filteredReviews.map((review, index) => {
+                    const ratingStyle = getRatingBadgeStyle(review.rating);
+                    return (
+                      <tr key={review.id} className="h-16 border-b border-zinc-400/50 hover:bg-gray-50 transition">
+                        <td className="px-5 py-3">
+                          <div 
+                            className={`w-6 h-6 rounded border-2 border-slate-900/75 cursor-pointer flex items-center justify-center ${selectedReviews.includes(review.id) ? 'bg-sky-400' : ''}`}
+                            onClick={() => handleSelectReview(review.id)}
+                          >
+                            {selectedReviews.includes(review.id) && (
+                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-2 py-3 text-center">
+                          <span className="text-stone-900 text-xs font-normal">{100 + index}</span>
+                        </td>
+                        <td className="px-2 py-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg overflow-hidden">
+                            <img 
+                              src={review.avatar} 
+                              alt={review.customer}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </td>
+                        <td className="px-2 py-3">
+                          <span className="text-stone-900 text-xs font-normal">{review.customer}</span>
+                        </td>
+                        <td className="px-2 py-3">
+                          <div className={`w-16 px-2 py-0.5 ${ratingStyle.bg} rounded-[30px] flex items-center justify-center gap-0.5`}>
+                            <span className={`${ratingStyle.text} text-xs font-medium`}>{review.rating}</span>
+                            <div className="w-3.5 h-3.5 overflow-hidden">
+                              <Star size={14} className={`${ratingStyle.starBg} rounded-sm`} fill="currentColor" />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-2 py-3 text-center">
+                          <button className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded transition">
+                            <MoreVertical size={18} className="text-black" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
