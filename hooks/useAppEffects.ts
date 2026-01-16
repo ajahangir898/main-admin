@@ -298,8 +298,11 @@ export const useInitialDataLoad = ({
             }
             resolvedTenantId = resolved.id;
             setCachedTenantIdForSubdomain(sanitizedSlug, resolved.id);
-            setActiveTenantId(resolvedTenantId);
-            setHostTenantId(resolved.id);
+            // Only update state if the value is actually different to prevent loops
+            if (activeTenantId !== resolved.id) {
+              setActiveTenantId(resolvedTenantId);
+              setHostTenantId(resolved.id);
+            }
           }
         }
         

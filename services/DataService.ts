@@ -6,6 +6,10 @@ import type { Socket } from 'socket.io-client';
 // Debug flag - set to false in production to reduce console noise
 const DEBUG_LOGGING = import.meta.env.DEV || false;
 
+// Throttle map to prevent excessive API calls
+const revalidationThrottleMap = new Map<string, number>();
+const REVALIDATION_THROTTLE_MS = 30000; // Only revalidate once per 30 seconds
+
 // Reserved subdomains that cannot be used for tenants
 const RESERVED_TENANT_SLUGS = [
   'www', 'admin', 'adminlogin', 'superadmin', 'login', 'app',
@@ -628,6 +632,16 @@ class DataServiceImpl {
   }
 
   private async revalidateBootstrap(scope: string, tenantId: string | undefined, defaultWebsite: WebsiteConfig, cachedProducts?: Product[]) {
+    // Throttle revalidation to prevent excessive API calls
+    const throttleKey = `revalidate:${scope}`;
+    const lastRevalidation = revalidationThrottleMap.get(throttleKey) || 0;
+    const now = Date.now();
+    if (now - lastRevalidation < REVALIDATION_THROTTLE_MS) {
+      console.log(`[DataService] Skipping revalidation for ${scope} - throttled`);
+      return;
+    }
+    revalidationThrottleMap.set(throttleKey, now);
+
     // Capture cached values BEFORE revalidation fetch updates local cache
     const prevWebsite = getCachedData<WebsiteConfig>('website_config', tenantId);
     const prevTheme = getCachedData<ThemeConfig | null>('theme_config', tenantId);

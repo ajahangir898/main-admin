@@ -75,8 +75,21 @@ export const useVisitorStats = (options: UseVisitorStatsOptions = {}) => {
 };
 
 // Track page view (for storefront)
+// Throttle tracking to prevent excessive API calls
+const lastPageViewTrack = new Map<string, number>();
+const PAGE_VIEW_THROTTLE_MS = 5000; // Only track same page once per 5 seconds
+
 export const trackPageView = async (tenantId: string, page: string) => {
   if (!tenantId) return;
+  
+  // Throttle to prevent excessive tracking
+  const throttleKey = `${tenantId}:${page}`;
+  const lastTrack = lastPageViewTrack.get(throttleKey) || 0;
+  const now = Date.now();
+  if (now - lastTrack < PAGE_VIEW_THROTTLE_MS) {
+    return; // Skip - already tracked recently
+  }
+  lastPageViewTrack.set(throttleKey, now);
   
   // Get or create visitor ID
   let visitorId = localStorage.getItem('_vid');
