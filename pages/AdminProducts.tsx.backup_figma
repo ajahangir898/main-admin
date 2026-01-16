@@ -953,7 +953,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
     <div className="space-y-4 animate-fade-in relative">
       {/* Header Section - Figma Design */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-xl font-bold text-teal-950 tracking-tight" style={{fontFamily: "Lato"}}>Products</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Products</h2>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Search Input */}
           <div className="relative">
@@ -982,7 +982,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
           {/* Add Product Button */}
           <button 
             onClick={() => handleOpenModal()}
-            className="h-12 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center gap-1 text-white text-base font-bold hover:opacity-90 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-[#2DD4BF] text-white rounded-lg text-sm font-medium hover:bg-[#26B8A5] transition"
           >
             <Plus size={16} /> Add Product
           </button>
@@ -1215,9 +1215,9 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-20">
           <div className="overflow-x-auto overflow-y-visible">
             <table className="w-full">
-              <thead className="h-12 bg-gradient-to-b from-sky-400/25 to-blue-500/25">
+              <thead className="bg-[#2DD4BF]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black w-12">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-12">
                     <input
                       type="checkbox"
                       checked={selectedIds.length === paginatedProducts.length && paginatedProducts.length > 0}
@@ -1231,19 +1231,19 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] cursor-pointer"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black w-16">SL</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black w-20">Image</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black min-w-[200px]">Name</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black">Category</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black">Sub Category</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black w-20">Priority</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black">SKU</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black">Tags</th>
-                  <th className="px-4 py-3 text-left text-base font-medium text-black w-24">Status</th>
-                  <th className="px-4 py-3 text-center text-base font-medium text-black w-20">Action</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-16">SL</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-20">Image</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white min-w-[200px]">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white">Category</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white">Sub Category</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-20">Priority</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white">SKU</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white">Tags</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-white w-24">Status</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium text-white w-20">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-400">
+              <tbody className="divide-y divide-gray-100">
                 {paginatedProducts.map((product, index) => {
                   const isSelected = selectedIds.includes(product.id);
                   const isDraftProduct = (product as any)._isDraft;
@@ -1373,7 +1373,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className={`h-10 pl-2 pr-3 py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-base font-medium ${
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition ${
                   currentPage === 1
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-gray-700 hover:bg-gray-100'
@@ -1399,8 +1399,8 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                       onClick={() => setCurrentPage(pageNum)}
                       className={`min-w-[36px] h-9 px-3 text-sm font-medium rounded-lg transition ${
                         currentPage === pageNum
-                          ? 'bg-sky-100 text-blue-500 font-bold'
-                          : 'text-teal-950 border border-neutral-300 hover:bg-gray-100'
+                          ? 'bg-[#2DD4BF] text-white'
+                          : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
                       {pageNum}
@@ -1422,7 +1422,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className={`h-10 pl-2 pr-3 py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-base font-medium ${
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition ${
                   currentPage === totalPages
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-gray-700 hover:bg-gray-100'

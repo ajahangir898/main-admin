@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Search, Filter, Edit3, Printer, ShieldAlert, ShieldCheck, X, Package2, MapPin, Mail, Truck, AlertTriangle, CheckCircle2, Send, Loader2, MoreVertical, Download, Trash2, Phone, MessageCircle, ExternalLink, FileText, Plus, TrendingUp, Eye, ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
+import { Search, Filter, Edit3, Printer, ShieldAlert, ShieldCheck, X, Package2, MapPin, Mail, Truck, AlertTriangle, CheckCircle2, Send, Loader2, MoreVertical, Download, Trash2, Phone, MessageCircle, ExternalLink, FileText, Plus, TrendingUp, Eye, ChevronLeft, ChevronRight, ChevronDown, MoreHorizontal } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Order, CourierConfig } from '../types';
 import { CourierService, FraudCheckResult } from '../services/CourierService';
@@ -464,14 +464,14 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
   }), [orders]);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Order List</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
 
 
-          <button className="flex w-[142px] pt-[6px] pr-[16px] pb-[6px] pl-[12px] justify-center items-center gap-[4px] shrink-0 self-stretch rounded-lg bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-medium text-sm transition-all hover:opacity-90 active:scale-95 shadow-md">
+          <button className="flex px-3 sm:px-4 py-1.5 sm:py-2 justify-center items-center gap-1 rounded-lg bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-medium text-xs sm:text-sm transition-all hover:opacity-90 active:scale-95 shadow-md">
             {/* "rounded-[18px] bg-gradient-to-r from-[#38BDF8] to-[#1E90FF]" */}
             <Plus size={18} />
 
@@ -479,7 +479,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           </button>
 
 
-          <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm">
+          <button className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-xs sm:text-sm">
             <MoreHorizontal size={18} />
             More Action
           </button>
@@ -497,170 +497,154 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
         </div>
       )}
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Figma Design */}
       {isLoading ? (
         <MetricsSkeleton count={4} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Orders */}
-            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Total Orders</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{metrics.total.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <Package2 size={24} className="text-blue-500" />
+          <div className="w-full h-32 relative bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden">
+            <div className="w-56 left-4 top-4 absolute inline-flex justify-start items-center gap-[3px]">
+              <div className="flex-1 text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Total Orders</div>
+            </div>
+            <div className="left-4 top-[58px] absolute inline-flex justify-start items-end gap-2">
+              <div className="text-teal-950 text-3xl font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>{metrics.total.toLocaleString()}</div>
+              <div className="flex justify-start items-center">
+                <TrendingUp size={16} className="text-green-500" />
+                <span className="text-green-500 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}> 14.4%</span>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-1.5">
-              <span className="flex items-center gap-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                <TrendingUp size={12} />
-                +14.4%
-              </span>
-              <span className="text-xs text-gray-500">Last 7 days</span>
-            </div>
+            <div className="left-4 top-[100px] absolute text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Since last month</div>
           </div>
 
           {/* GMV */}
-            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">GMV</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{formatCurrency(metrics.revenue)}</p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-                <span className="text-emerald-500 font-bold text-lg">৳</span>
+          <div className="w-full h-32 relative bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden">
+            <div className="w-56 left-4 top-4 absolute inline-flex justify-start items-center gap-[3px]">
+              <div className="flex-1 text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>GMV</div>
+              <ChevronDown size={16} className="text-zinc-800" />
+            </div>
+            <div className="left-4 top-[58px] absolute inline-flex justify-start items-end gap-2">
+              <div className="text-teal-950 text-3xl font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>{formatCurrency(metrics.revenue)}</div>
+              <div className="flex justify-start items-center">
+                <TrendingUp size={16} className="text-green-500" />
+                <span className="text-green-500 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}> 8.2%</span>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-1.5">
-              <span className="flex items-center gap-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                <TrendingUp size={12} />
-                +20%
-              </span>
-              <span className="text-xs text-gray-500">Last 7 days</span>
-            </div>
+            <div className="left-4 top-[100px] absolute text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Since last month</div>
           </div>
 
           {/* Pending */}
-            <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Pending</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{metrics.pending}</p>
-                <p className="mt-1 text-xs text-gray-400">Need confirmation</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-                <AlertTriangle size={22} className="text-orange-500" />
-              </div>
+          <div className="w-full h-32 relative bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden">
+            <div className="w-56 left-4 top-4 absolute inline-flex justify-start items-center gap-[3px]">
+              <div className="flex-1 text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Pending</div>
             </div>
-            <button
-              onClick={() => setStatusFilter('Pending')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
-            >
-              <Eye size={14} />
-              View
-            </button>
+            <div className="left-4 top-[58px] absolute inline-flex justify-start items-end gap-2">
+              <div className="text-amber-600 text-3xl font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>{metrics.pending.toLocaleString()}</div>
+            </div>
+            <div className="left-4 top-[100px] absolute text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Need confirmation</div>
+            <button className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded text-white text-xs font-semibold" style={{ fontFamily: 'Lato, sans-serif', writingMode: 'vertical-rl', textOrientation: 'mixed' }}>View</button>
           </div>
 
           {/* AVG Order */}
-          <div className="">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">AVG Order</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{formatCurrency(metrics.average)}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-                <TrendingUp size={22} className="text-purple-500" />
+          <div className="w-full h-32 relative bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden">
+            <div className="w-56 left-4 top-4 absolute inline-flex justify-start items-center gap-[3px]">
+              <div className="flex-1 text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>AVG Order</div>
+            </div>
+            <div className="left-4 top-[58px] absolute inline-flex justify-start items-end gap-2">
+              <div className="text-teal-950 text-3xl font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>{formatCurrency(metrics.average)}</div>
+              <div className="flex justify-start items-center">
+                <TrendingUp size={16} className="text-red-500 rotate-180" />
+                <span className="text-red-500 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}> 5%</span>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-1.5">
-              <span className="flex items-center gap-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                <TrendingUp size={12} />
-                +5%
-              </span>
-              <span className="text-xs text-gray-500">Per customer spend</span>
-            </div>
+            <div className="left-4 top-[100px] absolute text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Per customer spend</div>
           </div>
         </div>
       )}
 
-      {/* Filter Tabs */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => setStatusFilter('all')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'all'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-              }`}
-          >
-            All order ({tabCounts.all})
-          </button>
-          <button
-            onClick={() => setStatusFilter('Delivered')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Delivered'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-              }`}
-          >
-            Completed ({tabCounts.completed})
-          </button>
-          <button
-            onClick={() => setStatusFilter('Pending')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Pending'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-              }`}
-          >
-            Pending ({tabCounts.pending})
-          </button>
-          <button
-            onClick={() => setStatusFilter('Cancelled')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Cancelled'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-              }`}
-          >
-            Cancelled ({tabCounts.cancelled})
-          </button>
-          <button
-            onClick={() => setStatusFilter('Return')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${statusFilter === 'Return'
-              ? 'bg-white text-gray-900 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-              }`}
-          >
-            Returned ({tabCounts.returned})
-          </button>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input
-              className="w-64 rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              placeholder="Search order report"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-            />
+      {/* Filter Tabs & Table Container - Figma Design */}
+      <div className="w-full bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden p-3 sm:p-4 md:p-6">
+        {/* Filter Tabs Row */}
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Tab Buttons */}
+          <div className="p-1 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-lg flex flex-wrap justify-start items-center gap-1 overflow-x-auto">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1.5 rounded-md flex justify-center items-center gap-2 transition ${statusFilter === 'all' ? 'bg-white shadow-sm' : ''}`}
+            >
+              <span className={`text-sm sm:text-base font-medium ${statusFilter === 'all' ? 'text-black' : 'text-neutral-600'}`} style={{ fontFamily: 'Lato, sans-serif' }}>All order</span>
+              <span className="text-sky-400 text-sm font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>({tabCounts.all})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('Delivered')}
+              className={`px-3 py-1.5 rounded-md flex justify-center items-center gap-2 transition ${statusFilter === 'Delivered' ? 'bg-white shadow-sm' : ''}`}
+            >
+              <span className={`text-sm sm:text-base font-medium ${statusFilter === 'Delivered' ? 'text-black' : 'text-neutral-600'}`} style={{ fontFamily: 'Lato, sans-serif' }}>Completed</span>
+              <span className="text-sky-400 text-sm font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>({tabCounts.completed})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('Pending')}
+              className={`px-3 py-1.5 rounded-md flex justify-center items-center gap-2 transition ${statusFilter === 'Pending' ? 'bg-white shadow-sm' : ''}`}
+            >
+              <span className={`text-sm sm:text-base font-medium ${statusFilter === 'Pending' ? 'text-black' : 'text-neutral-600'}`} style={{ fontFamily: 'Lato, sans-serif' }}>Pending</span>
+              <span className="text-sky-400 text-sm font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>({tabCounts.pending})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('Cancelled')}
+              className={`px-3 py-1.5 rounded-md flex justify-center items-center gap-2 transition ${statusFilter === 'Cancelled' ? 'bg-white shadow-sm' : ''}`}
+            >
+              <span className={`text-sm sm:text-base font-medium ${statusFilter === 'Cancelled' ? 'text-black' : 'text-neutral-600'}`} style={{ fontFamily: 'Lato, sans-serif' }}>Canceled</span>
+              <span className="text-sky-400 text-sm font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>({tabCounts.cancelled})</span>
+            </button>
+            <button
+              onClick={() => setStatusFilter('Return')}
+              className={`px-3 py-1.5 rounded-md flex justify-center items-center gap-2 transition ${statusFilter === 'Return' ? 'bg-white shadow-sm' : ''}`}
+            >
+              <span className={`text-sm sm:text-base font-medium ${statusFilter === 'Return' ? 'text-black' : 'text-neutral-600'}`} style={{ fontFamily: 'Lato, sans-serif' }}>Returned</span>
+              <span className="text-sky-400 text-sm font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>({tabCounts.returned})</span>
+            </button>
           </div>
-          <button className="p-2.5 border border-gray-300 bg-white text-gray-600 rounded-lg hover:bg-gray-50 transition">
-            <Filter size={18} />
-          </button>
+          
+          {/* Search & Actions */}
+          <div className="flex flex-wrap justify-start items-center gap-2 sm:gap-3">
+            <div className="w-full sm:w-64 h-10 pl-3 pr-2 py-1.5 bg-neutral-50 rounded-lg border border-neutral-200 flex justify-start items-center gap-1.5">
+              <input
+                type="text"
+                placeholder="Search order report"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-1 bg-transparent text-neutral-500 text-sm font-normal outline-none"
+                style={{ fontFamily: 'Lato, sans-serif' }}
+              />
+              <Search size={20} className="text-neutral-600" />
+            </div>
+            <button className="p-2.5 bg-white rounded border border-neutral-300 flex justify-center items-center hover:bg-gray-50 transition">
+              <Filter size={20} className="text-neutral-600" />
+            </button>
+            <button 
+              onClick={() => handleDownloadExcel()}
+              disabled={selectedOrderIds.length === 0}
+              className="p-2.5 bg-white rounded border border-neutral-300 flex justify-center items-center hover:bg-gray-50 transition disabled:opacity-50"
+            >
+              <Download size={20} className="text-neutral-600" />
+            </button>
+            <button className="p-2.5 bg-white rounded border border-neutral-300 flex justify-center items-center hover:bg-gray-50 transition">
+              <MoreHorizontal size={20} className="text-neutral-600" />
+            </button>
+          </div>
         </div>
-      </div>
 
       {/* Orders Table */}
       {isLoading ? (
         <TableSkeleton rows={6} cols={7} />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <table className="w-full text-sm" style={{ fontFamily: 'Lato, sans-serif' }}>
+              <thead>
+                <tr className="h-10 bg-gradient-to-r from-sky-400/10 to-blue-500/10 rounded-md">
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">
                     <input
                       type="checkbox"
                       checked={selectedOrderIds.length === paginatedOrders.length && paginatedOrders.length > 0}
@@ -668,19 +652,19 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No.</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Order Id</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">SKU</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer Info</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Payment</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">No.</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Order Id</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">SKU</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Product</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Customer Info</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Date</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Price</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Payment</th>
+                  <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Status</th>
+                    <th className="px-3 py-2 text-left text-neutral-600 text-sm font-semibold">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
+              <tbody>
                 {paginatedOrders.length ? (
                   paginatedOrders.map((order, index) => {
                     const isSelected = selectedOrderIds.includes(order.id);
@@ -691,7 +675,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                       <tr
                         key={order.id}
                         ref={(el) => { if (el) orderRowRefs.current.set(order.id, el); }}
-                        className={`transition hover:bg-gray-50 ${highlightedOrderId === order.id
+                        className={`h-16 border-b border-zinc-300 transition hover:bg-gray-50 ${highlightedOrderId === order.id
                           ? 'bg-blue-50 ring-2 ring-blue-300'
                           : isSelected
                             ? 'bg-blue-50/50'
@@ -699,7 +683,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                           }`}
                       >
                         {/* Checkbox */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <input
                             type="checkbox"
                             checked={isSelected}
@@ -712,21 +696,21 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                         </td>
 
                         {/* Row Number */}
-                        <td className="px-4 py-4 text-gray-600 font-medium">{rowNumber}</td>
+                        <td className="px-3 py-3 text-zinc-800 text-sm font-normal">{rowNumber}</td>
 
                         {/* Order ID */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <span className="text-gray-900 font-medium">#{order.id.slice(-6)}</span>
                         </td>
 
                         {/* SKU */}
-                        <td className="px-4 py-4 text-gray-600">
+                        <td className="px-3 py-3 text-zinc-800 text-sm">
                           {order.sku || `SKU-${order.id.slice(-4)}`}
                         </td>
 
                         {/* Product */}
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-3">
+                        <td className="px-3 py-3">
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                             <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                               {order.productImage ? (
                                 <img
@@ -747,7 +731,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                         </td>
 
                         {/* Customer Info */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <div>
                             <p className="text-gray-900 font-medium">{order.customer}</p>
                             <p className="text-gray-500 text-xs">{order.phone || 'No phone'}</p>
@@ -755,7 +739,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                         </td>
 
                         {/* Date */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
                             <span className="text-gray-600 text-xs">
                               {order.date ? new Date(order.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
@@ -770,29 +754,29 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                         </td>
 
                         {/* Price */}
-                        <td className="px-4 py-4">
-                          <span className="text-gray-900 font-semibold">{formatCurrency(order.amount)}</span>
+                        <td className="px-3 py-3">
+                          <span className="text-black text-sm font-semibold">{formatCurrency(order.amount)}</span>
                         </td>
 
                         {/* Payment */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-gray-300'}`}></span>
-                            <span className={`text-sm ${isPaid ? 'text-emerald-600 font-medium' : 'text-gray-500'}`}>
+                            <span className={`w-2 h-2 rounded-full ${isPaid ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                            <span className={`text-sm ${isPaid ? 'text-black' : 'text-gray-500'}`}>
                               {isPaid ? 'Paid' : 'Unpaid'}
                             </span>
                           </div>
                         </td>
 
                         {/* Status */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[order.status]}`}>
                             {order.status}
                           </span>
                         </td>
 
                         {/* Action */}
-                        <td className="px-4 py-4">
+                        <td className="px-3 py-3">
                           <button
                             className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
                             onClick={() => openOrderModal(order)}
@@ -818,15 +802,15 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
 
           {/* Pagination */}
           {filteredOrders.length > 0 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50">
-              <p className="text-sm text-gray-600">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-4 mt-4">
+              <p className="text-neutral-600 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>
                 Showing {((currentPage - 1) * ordersPerPage) + 1} to {Math.min(currentPage * ordersPerPage, filteredOrders.length)} of {filteredOrders.length} orders
               </p>
-              <div className="flex items-center gap-1">
+              <div className="inline-flex justify-start items-center gap-1.5">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  className="px-3 py-1.5 bg-white rounded shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] text-neutral-500 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-50" style={{ fontFamily: 'Lato, sans-serif' }}
                 >
                   Previous
                 </button>
@@ -845,10 +829,10 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 text-sm font-medium rounded-lg transition ${currentPage === pageNum
-                        ? 'bg-teal-500 text-white'
-                        : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
-                        }`}
+                      className={`w-9 h-9 rounded text-sm font-bold flex justify-center items-center transition ${currentPage === pageNum
+                        ? 'bg-sky-100 text-blue-500'
+                        : 'bg-white text-neutral-500 hover:bg-gray-50'
+                        }`} style={{ fontFamily: 'Lato, sans-serif' }}
                     >
                       {pageNum}
                     </button>
@@ -868,7 +852,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  className="px-3 py-1.5 bg-white rounded shadow-[0px_1px_3px_0px_rgba(0,0,0,0.10)] text-neutral-500 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-gray-50" style={{ fontFamily: 'Lato, sans-serif' }}
                 >
                   Next
                 </button>
@@ -877,6 +861,7 @@ footer { text-align: center; margin-top: 32px; font-size: 12px; color: #475569; 
           )}
         </div>
       )}
+      </div>
 
       {/* Floating Selection Bar */}
       {selectedOrderIds.length > 0 && (
