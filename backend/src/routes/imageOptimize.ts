@@ -73,16 +73,19 @@ async function processImage(req: Request, res: Response, fullPath: string) {
     // Parse optimization parameters
     const width = parseInt(req.query.w as string) || undefined;
     const height = parseInt(req.query.h as string) || undefined;
-    const quality = Math.min(100, Math.max(1, parseInt(req.query.q as string) || 80));
+    const quality = Math.min(100, Math.max(1, parseInt(req.query.q as string) || 85));
     const format = (req.query.f as string) || 'webp';
     
     // Generate cache key using file path
     const relativePath = fullPath.replace(process.cwd(), '');
 
-    // If no optimization needed or sharp not available, serve original
+    // If no optimization needed or sharp not available, serve original with STRONG cache headers
     if (!sharp || (!width && !height && !req.query.q && !req.query.f)) {
       res.set({
-        'Cache-Control': 'public, max-age=31536000, immutable'
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'CDN-Cache-Control': 'max-age=31536000',
+        'Cloudflare-CDN-Cache-Control': 'max-age=31536000',
+        'Vary': 'Accept-Encoding'
       });
       return res.sendFile(fullPath);
     }
@@ -96,8 +99,11 @@ async function processImage(req: Request, res: Response, fullPath: string) {
       res.set({
         'Content-Type': `image/${format}`,
         'Cache-Control': 'public, max-age=31536000, immutable',
+        'CDN-Cache-Control': 'max-age=31536000',
+        'Cloudflare-CDN-Cache-Control': 'max-age=31536000',
         'X-Image-Optimized': 'true',
-        'X-Cache': 'HIT'
+        'X-Cache': 'HIT',
+        'Vary': 'Accept-Encoding'
       });
       return res.send(cached);
     }
@@ -140,15 +146,18 @@ async function processImage(req: Request, res: Response, fullPath: string) {
     }
     imageCache.set(cacheKey, buffer);
 
-    // Send optimized image
+    // Send optimized image with STRONG cache headers for CDN
     res.set({
       'Content-Type': `image/${format === 'jpg' ? 'jpeg' : format}`,
       'Content-Length': buffer.length.toString(),
       'Cache-Control': 'public, max-age=31536000, immutable',
+      'CDN-Cache-Control': 'max-age=31536000',
+      'Cloudflare-CDN-Cache-Control': 'max-age=31536000',
       'X-Image-Optimized': 'true',
       'X-Original-Size': (await fs.promises.stat(fullPath)).size.toString(),
       'X-Optimized-Size': buffer.length.toString(),
-      'X-Cache': 'MISS'
+      'X-Cache': 'MISS',
+      'Vary': 'Accept-Encoding'
     });
     
     res.send(buffer);

@@ -27,6 +27,7 @@ import { courierRouter } from './routes/courier';
 import supportRouter from './routes/support';
 import { User } from './models/User';
 import imageOptimizeRouter from './routes/imageOptimize';
+import { imageCacheHeaders, apiCacheHeaders } from './middleware/cacheHeaders';
 import { subscriptionsRouter } from './routes/subscriptions';
 import auditLogsRouter from './routes/auditLogs';
 import cloudflareUploadRouter from './routes/cloudflareUpload';
@@ -163,7 +164,8 @@ app.use(morgan('dev'));
 
 // Serve static files for uploaded images
 // Use image optimization route first (handles ?w=&q= params)
-app.use('/uploads', imageOptimizeRouter);
+// Apply cache headers to uploads
+app.use('/uploads', imageCacheHeaders, imageOptimizeRouter);
 // Fallback to static files for non-optimized requests
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 

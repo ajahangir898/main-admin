@@ -1,6 +1,7 @@
 /**
  * Normalizes image URLs to use current domain or production domain
  * Fixes legacy localhost URLs from development
+ * OPTIMIZED: Serves images without query params for better Cloudflare CDN caching
  */
 import { getCDNImageUrl, isCDNEnabled } from '../config/cdnConfig';
 
@@ -26,12 +27,14 @@ const PRODUCTION_URL = 'https://systemnextit.com';
 export type ImageSize = 'thumb' | 'small' | 'medium' | 'large' | 'full';
 export type ImageFormat = 'webp' | 'jpeg' | 'png' | 'avif' | 'auto';
 
+// DISABLED: Query params break Cloudflare CDN caching
+// Images are served as-is for maximum CDN HIT rate
 const IMAGE_SIZES: Record<ImageSize, { width: number; height?: number; quality: number }> = {
-  thumb: { width: 150, height: 150, quality: 95 },   // For tiny thumbnails
-  small: { width: 300, height: 300, quality: 95 },   // For cart items, lists
-  medium: { width: 500, height: 500, quality: 95 },  // For product cards
-  large: { width: 1000, height: 1000, quality: 98 },   // For product details
-  full: { width: 1600, quality: 100 },                // For hero images
+  thumb: { width: 150, height: 150, quality: 95 },
+  small: { width: 300, height: 300, quality: 95 },
+  medium: { width: 500, height: 500, quality: 95 },
+  large: { width: 1000, height: 1000, quality: 98 },
+  full: { width: 1600, quality: 100 },
 };
 
 const stripWrappingQuotes = (value: string): string => {
@@ -43,12 +46,9 @@ const stripWrappingQuotes = (value: string): string => {
 };
 
 const normalizeDataUrl = (value: string): string => {
-  // Keep non-data URLs untouched.
   const v = stripWrappingQuotes(value);
   if (!v.toLowerCase().startsWith('data:')) return v;
-
-  // data:[<mediatype>][;base64],<data>
-  // If base64, strip whitespace/newlines from the data payload.
+  
   const match = v.match(/^data:([^,]*),(.*)$/s);
   if (!match) return v;
 
@@ -61,10 +61,6 @@ const normalizeDataUrl = (value: string): string => {
 };
 
 export interface NormalizeImageUrlOptions {
-  /**
-   * When true, skips CDN rewriting and returns an origin/relative URL.
-   * Useful when a component has its own CDN/fallback logic.
-   */
   disableCDN?: boolean;
 }
 
@@ -80,66 +76,55 @@ export const normalizeImageUrl = (url: string | undefined | null, options?: Norm
 
   const cdnAllowed = !options?.disableCDN;
 
-  // If CDN is enabled, prefer CDN URLs and avoid downgrading them back to origin.
+  // If CDN is enabled, prefer CDN URLs
   if (cdnAllowed && isCDNEnabled()) {
-    // If it's already a CDN URL, keep it.
-    if (cleaned.includes('cdn.systemnextit.com') || cleaned.includes('images.systemnextit.com') || cleaned.includes('static.systemnextit.com')) {
+    if (cleaned.includes('cdn.systemnextit.com') || 
+        cleaned.includes('images.systemnextit.com') || 
+        cleaned.includes('static.systemnextit.com')) {
       return cleaned;
     }
 
-    // If it's a systemnextit.com upload URL, CDN-ify it.
     if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
       if (cleaned.includes('systemnextit.com') && cleaned.includes('/uploads')) {
         return getCDNImageUrl(cleaned);
       }
-      // External URL
       return cleaned;
     }
 
-    // Relative upload paths should go through CDN.
     if (cleaned.startsWith('/uploads') || cleaned.startsWith('uploads/')) {
       return getCDNImageUrl(cleaned);
     }
   }
 
-  // CDN disabled (or disabled for this call): Convert cdn.systemnextit.com URLs to production URL (fallback if CDN doesn't have files)
+  // CDN disabled: fallback handling
   if (cleaned.includes('cdn.systemnextit.com')) {
     return cleaned.replace(/^https?:\/\/cdn\.systemnextit\.com/i, PRODUCTION_URL);
   }
 
-  // If it's already a full URL with systemnextit.com, keep it
   if (cleaned.includes('systemnextit.com')) {
     return cleaned;
   }
   
-  // If it's a relative URL (starts with /uploads), prepend the base URL
   if (cleaned.startsWith('/uploads')) {
     return `${getBaseUrl()}${cleaned}`;
   }
   
-  // Handle relative URLs without leading slash (e.g., uploads/...)
   if (cleaned.startsWith('uploads/')) {
     return `${getBaseUrl()}/${cleaned}`;
   }
   
-  // If it's a localhost URL, replace with current origin or production
   if (cleaned.includes('localhost') || cleaned.includes('127.0.0.1')) {
     const baseUrl = getBaseUrl();
     return cleaned.replace(/https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
   }
   
-  // If it's already a full URL (http:// or https://), return as-is
   if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
     return cleaned;
   }
   
-  // Return as-is if it doesn't match any pattern
   return cleaned;
 };
 
-/**
- * Options for custom image optimization
- */
 export interface ImageOptimizeOptions {
   width?: number;
   height?: number;
@@ -148,9 +133,9 @@ export interface ImageOptimizeOptions {
 }
 
 /**
- * Build optimized image URL with width, height, quality, and format
- * Example: buildOptimizedUrl('/uploads/image.jpg', { width: 400, height: 300, format: 'webp' })
- * Output: /uploads/image.jpg?w=400&h=300&q=80&f=webp
+ * Build optimized image URL
+ * SIMPLIFIED: Returns normalized URL without query params for Cloudflare CDN caching
+ * Images are pre-optimized as WebP on upload, no runtime transformation needed
  */
 export const buildOptimizedUrl = (
   url: string | undefined | null,
@@ -159,37 +144,19 @@ export const buildOptimizedUrl = (
   const normalizedUrl = normalizeImageUrl(url);
   if (!normalizedUrl) return '';
   
-  // For data URIs or blob URLs, return as-is
+  // Return as-is for data/blob URLs
   if (normalizedUrl.startsWith('data:') || normalizedUrl.startsWith('blob:')) {
     return normalizedUrl;
   }
   
-  // For external URLs (not on our domain), return as-is
-  const baseUrl = getBaseUrl();
-  if (!normalizedUrl.includes(baseUrl) && 
-      !normalizedUrl.includes(PRODUCTION_URL) && 
-      !normalizedUrl.includes('systemnextit.com')) {
-    return normalizedUrl;
-  }
-  
-  // Build query params
-  const params: string[] = [];
-  if (options.width) params.push(`w=${options.width}`);
-  if (options.height) params.push(`h=${options.height}`);
-  if (options.quality) params.push(`q=${options.quality}`);
-  if (options.format && options.format !== 'auto') params.push(`f=${options.format}`);
-  
-  if (params.length === 0) return normalizedUrl;
-  
-  // Remove existing optimization params to avoid duplicates
-  const urlWithoutParams = normalizedUrl.split('?')[0];
-  return `${urlWithoutParams}?${params.join('&')}`;
+  // Return normalized URL WITHOUT query params for CDN caching
+  // This ensures cf-cache-status: HIT instead of DYNAMIC
+  return normalizedUrl;
 };
 
 /**
- * Get WebP optimized image URL (most common use case)
- * Example: getWebPUrl('/uploads/image.jpg', 400, 300) 
- * Output: /uploads/image.jpg?w=400&h=300&q=80&f=webp
+ * Get WebP optimized image URL
+ * SIMPLIFIED: Returns normalized URL for CDN caching
  */
 export const getWebPUrl = (
   url: string | undefined | null,
@@ -197,12 +164,12 @@ export const getWebPUrl = (
   height?: number,
   quality: number = 95
 ): string => {
-  return buildOptimizedUrl(url, { width, height, quality, format: 'webp' });
+  return normalizeImageUrl(url);
 };
 
 /**
- * Get responsive image srcset for modern browsers
- * Returns srcset string with multiple sizes in WebP format
+ * Get responsive image srcset
+ * SIMPLIFIED: Returns single URL for CDN caching efficiency
  */
 export const getResponsiveSrcSet = (
   url: string | undefined | null,
@@ -213,37 +180,21 @@ export const getResponsiveSrcSet = (
     return '';
   }
   
-  return sizes
-    .map(w => `${buildOptimizedUrl(normalizedUrl, { width: w, format: 'webp' })} ${w}w`)
-    .join(', ');
+  // Return single srcset entry for CDN caching
+  // Browser handles responsive sizing via CSS
+  return `${normalizedUrl} 1600w`;
 };
 
 /**
- * Get optimized image URL with size parameters
- * Falls back to original if optimization not available
+ * Get optimized image URL
+ * SIMPLIFIED: Returns normalized URL without size params for CDN caching
  */
 export const getOptimizedImageUrl = (
   url: string | undefined | null, 
   size: ImageSize = 'medium',
   format: ImageFormat = 'webp'
 ): string => {
-  const normalizedUrl = normalizeImageUrl(url);
-  if (!normalizedUrl) return '';
-  
-  // For data URIs, return as-is
-  if (normalizedUrl.startsWith('data:')) {
-    return normalizedUrl;
-  }
-  
-  // For external URLs (not on our domain), return as-is
-  const baseUrl = getBaseUrl();
-  if (!normalizedUrl.includes(baseUrl) && !normalizedUrl.includes(PRODUCTION_URL) && !normalizedUrl.includes('systemnextit.com')) {
-    return normalizedUrl;
-  }
-  
-  const { width, height, quality } = IMAGE_SIZES[size];
-  
-  return buildOptimizedUrl(normalizedUrl, { width, height, quality, format });
+  return normalizeImageUrl(url);
 };
 
 /**
@@ -262,5 +213,5 @@ export const getOptimizedImageUrls = (
   size: ImageSize = 'medium'
 ): string[] => {
   if (!urls || !Array.isArray(urls)) return [];
-  return urls.map(url => getOptimizedImageUrl(url, size)).filter(Boolean);
+  return urls.map(url => normalizeImageUrl(url)).filter(Boolean);
 };
