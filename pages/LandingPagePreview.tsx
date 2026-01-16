@@ -144,7 +144,7 @@ const ReadyLandingPreview: React.FC<{ page: LandingPage; product?: Product; onSu
             </h3>
             <div className="grid sm:grid-cols-2 gap-4">
               {config.benefits.map((benefit: string, i: number) => (
-                <div key={i} className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                <div key={i} className="flex items-start gap-3 bg-white rounded-lg p-1 shadow-sm">
                   <Check size={20} style={{ color: config.primaryColor || '#ec4899' }} className="mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700 text-sm sm:text-base">{benefit}</span>
                 </div>

@@ -237,196 +237,191 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="min-h-screen bg-[#F8FAFC]">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
-          <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</h2>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-black mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</h2>
+          
+          {/* Grid with Important Notification spanning 2 rows */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[64px]">
             {/* Products on Hands */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{products.length}</p>
-                  <p className="text-xs text-gray-500 mt-1">Products on Hands</p>
-                </div>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 3v18M3 12h18" strokeLinecap="round"/>
-                  </svg>
-                </div>
+            <div className="bg-zinc-100 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{products.length}</p>
+                <p className="text-xs font-medium text-black">Products on Hands</p>
+              </div>
+              <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalOrders}</p>
-                  <p className="text-xs text-gray-500 mt-1">Total Orders</p>
-                </div>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M9 12h6M9 16h6" strokeLinecap="round"/>
-                  </svg>
-                </div>
+            <div className="bg-zinc-100 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalOrders}</p>
+                <p className="text-xs font-medium text-black">Total Orders</p>
+              </div>
+              <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                  <rect x="9" y="3" width="6" height="4" rx="1"/>
+                  <path d="M9 12h6M9 16h6"/>
+                </svg>
               </div>
             </div>
 
             {/* Language Selector */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <p className="text-sm font-medium text-gray-700 mb-3">Language</p>
-              <div className="flex items-center gap-2">
+            <div className="bg-zinc-100 rounded-lg p-4">
+              <p className="text-xs font-normal text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>Language</p>
+              <div className="flex items-center h-6 rounded-full border border-white overflow-hidden">
                 <button
                   onClick={() => setLanguage('Eng')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${language === 'Eng' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`px-3 py-1 rounded-full text-xs transition ${language === 'Eng' ? 'bg-white text-black' : 'text-black'}`}
+                  style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   Eng
                 </button>
                 <button
                   onClick={() => setLanguage('বাংলা')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${language === 'বাংলা' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`px-3 py-1 text-xs transition ${language === 'বাংলা' ? 'bg-white text-black rounded-full' : 'text-black'}`}
+                  style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   বাংলা
                 </button>
               </div>
             </div>
 
-            {/* Date Display - Modern Calendar Card */}
-            <div className="bg-[#f5f5f5] rounded-2xl overflow-hidden relative p-4 sm:p-5">
-              {/* Date at top-left */}
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</p>
-              {/* Blue curved wave with day */}
-              <svg viewBox="0 0 100 60" preserveAspectRatio="none" className="absolute bottom-0 right-0 w-[70%] h-[55%]">
-                <path 
-                  d="M100,60 L100,20 Q70,0 40,25 Q10,50 0,35 L0,60 Z" 
-                  fill="url(#blueGradient)"
-                />
-                <defs>
-                  <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#38bdf8" />
-                    <stop offset="100%" stopColor="#0ea5e9" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute bottom-3 right-4">
-                <p className="text-white font-bold text-xl sm:text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</p>
+            {/* Date Display */}
+            <div className="bg-zinc-100 rounded-lg overflow-hidden relative">
+              <div className="absolute w-40 h-40 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full" style={{ left: '26px', top: '22px' }}></div>
+              <p className="absolute left-2.5 top-2.5 text-base font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</p>
+              <p className="absolute right-4 bottom-2 text-2xl font-medium text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</p>
+            </div>
+
+            {/* Important Notification - spans 2 rows */}
+            <div className="bg-zinc-100 rounded-lg p-4 row-span-2 hidden lg:flex flex-col">
+              <p className="text-xs font-normal text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>Important Notification</p>
+              <div className="flex-1 bg-white rounded-lg"></div>
+              <div className="flex justify-center items-center gap-1 mt-3">
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-4 h-2 rounded-full bg-gradient-to-r from-sky-400 to-blue-500"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
               </div>
             </div>
 
-            {/* Important Notification */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5 col-span-2">
-              <p className="text-sm font-medium text-gray-700 mb-3">Important Notification</p>
-              <div className="h-20 sm:h-24 bg-white rounded-xl border border-gray-100"></div>
-              <div className="flex justify-center items-center gap-1.5 mt-4">
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                <span className="w-6 h-2 rounded-full bg-blue-500"></span>
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-              </div>
-            </div>
-          </div>
-
-          {/* Second Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 mt-4">
             {/* Reserved Price */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalRevenue.toLocaleString()}</p>
-                  <p className="text-xs text-gray-500 mt-1">Reserved Price</p>
-                </div>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+            <div className="bg-zinc-100 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalRevenue.toLocaleString()}</p>
+                <p className="text-xs font-medium text-black">Reserved Price</p>
+              </div>
+              <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{lowStockProducts}</p>
-                  <p className="text-xs text-gray-500 mt-1">Low Stock</p>
-                </div>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+            <div className="bg-zinc-100 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{lowStockProducts}</p>
+                <p className="text-xs font-medium text-black">Low Stock</p>
+              </div>
+              <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                  <circle cx="12" cy="16" r="1"/>
+                  <path d="M12 8v5"/>
+                </svg>
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{toBeReviewed}</p>
-                  <p className="text-xs text-gray-500 mt-1">To be Reviewed</p>
-                </div>
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+            <div className="bg-zinc-100 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-medium text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{toBeReviewed}</p>
+                <p className="text-xs font-medium text-black">To be Reviewed</p>
+              </div>
+              <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+                </svg>
               </div>
             </div>
 
+            {/* Empty cell placeholder for grid alignment on lg */}
+            <div className="hidden lg:block"></div>
+
+            {/* Important Notification - Mobile only */}
+            <div className="bg-zinc-100 rounded-lg p-4 col-span-2 sm:col-span-4 lg:hidden">
+              <p className="text-xs font-normal text-black mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>Important Notification</p>
+              <div className="h-20 bg-white rounded-lg"></div>
+              <div className="flex justify-center items-center gap-1 mt-3">
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-4 h-2 rounded-full bg-gradient-to-r from-sky-400 to-blue-500"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+                <span className="w-2 h-2 rounded-full bg-white"></span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Visitor Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Online Now */}
-          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <Wifi className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm sm:text-base font-medium text-blue-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Online Now</p>
-                <p className="text-xs text-gray-500">Active visitors on site</p>
-              </div>
-              <div className="px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500 rounded-lg">
-                <p className="text-lg sm:text-xl font-semibold text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.onlineNow || 35}</p>
-              </div>
+          <div className="relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden h-16 flex items-center px-4">
+            <div className="absolute w-48 h-48 bg-sky-500/20 rounded-full" style={{ left: '237px', top: '-83px' }}></div>
+            <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-6 text-sky-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 6c-3.31 0-6 2.69-6 6h2c0-2.21 1.79-4 4-4s4 1.79 4 4h2c0-3.31-2.69-6-6-6z"/>
+              </svg>
             </div>
+            <div className="flex-1 ml-4">
+              <p className="text-base font-medium text-sky-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Online Now</p>
+              <p className="text-xs font-normal text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>Active visitors on site</p>
+            </div>
+            <p className="text-2xl font-medium text-black z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.onlineNow || 35}</p>
           </div>
 
           {/* Today Visitors */}
-          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm sm:text-base font-medium text-orange-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Today visitors</p>
-                <p className="text-xs text-gray-500">Last 7 days: {visitorStats?.periodVisitors || 4}</p>
-              </div>
-              <div className="px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg">
-                <p className="text-lg sm:text-xl font-semibold text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.todayVisitors || 35}</p>
-              </div>
+          <div className="relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden h-16 flex items-center px-4">
+            <div className="absolute w-48 h-48 bg-orange-500/25 rounded-full" style={{ left: '237px', top: '-83px' }}></div>
+            <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+              <svg className="w-9 h-8 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="6" r="3"/>
+                <circle cx="6" cy="10" r="2.5"/>
+                <circle cx="18" cy="10" r="2.5"/>
+                <path d="M12 10c-2.5 0-4.5 2-4.5 4.5V16h9v-1.5c0-2.5-2-4.5-4.5-4.5z"/>
+              </svg>
             </div>
+            <div className="flex-1 ml-4">
+              <p className="text-base font-medium text-orange-600" style={{ fontFamily: 'Poppins, sans-serif' }}>Today visitors</p>
+              <p className="text-xs font-normal text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>Last 7 days: {visitorStats?.periodVisitors || 4}</p>
+            </div>
+            <p className="text-2xl font-medium text-black z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.todayVisitors || 35}</p>
           </div>
 
           {/* Total Visitors */}
-          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm sm:text-base font-medium text-blue-600" style={{ fontFamily: 'Poppins, sans-serif' }}>Total visitors</p>
-                <p className="text-xs text-gray-500">{visitorStats?.totalPageViews || 15} page view</p>
-              </div>
-              <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg">
-                <p className="text-lg sm:text-xl font-semibold text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalVisitors || 35}</p>
-              </div>
+          <div className="relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden h-16 flex items-center px-4">
+            <div className="absolute w-48 h-48 bg-violet-700/20 rounded-full" style={{ left: '237px', top: '-83px' }}></div>
+            <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+              <svg className="w-8 h-8 text-violet-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
             </div>
+            <div className="flex-1 ml-4">
+              <p className="text-base font-medium text-violet-700" style={{ fontFamily: 'Poppins, sans-serif' }}>Total visitors</p>
+              <p className="text-xs font-normal text-black" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalPageViews || 15} page view</p>
+            </div>
+            <p className="text-2xl font-medium text-black z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalVisitors || 35}</p>
           </div>
         </div>
 
