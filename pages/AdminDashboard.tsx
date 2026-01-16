@@ -293,28 +293,24 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Date Display - Modern Calendar Card */}
-            <div className="bg-[#f5f5f5] rounded-xl overflow-hidden relative h-[100px] sm:h-[120px]">
+            <div className="bg-[#f5f5f5] rounded-2xl overflow-hidden relative p-4 sm:p-5">
               {/* Date at top-left */}
-              <div className="absolute top-3 left-4 z-10">
-                <p className="text-2xl sm:text-3xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</p>
-              </div>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</p>
               {/* Blue curved wave with day */}
-              <div className="absolute bottom-0 right-0 w-full h-[60%]">
-                <svg viewBox="0 0 200 100" preserveAspectRatio="none" className="absolute bottom-0 right-0 w-full h-full">
-                  <path 
-                    d="M200,100 L200,30 Q150,0 100,30 Q50,60 0,40 L0,100 Z" 
-                    fill="url(#blueGradient)"
-                  />
-                  <defs>
-                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#38bdf8" />
-                      <stop offset="100%" stopColor="#0ea5e9" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute bottom-2 right-4 z-10">
-                  <p className="text-white font-bold text-xl sm:text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</p>
-                </div>
+              <svg viewBox="0 0 100 60" preserveAspectRatio="none" className="absolute bottom-0 right-0 w-[70%] h-[55%]">
+                <path 
+                  d="M100,60 L100,20 Q70,0 40,25 Q10,50 0,35 L0,60 Z" 
+                  fill="url(#blueGradient)"
+                />
+                <defs>
+                  <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#38bdf8" />
+                    <stop offset="100%" stopColor="#0ea5e9" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute bottom-3 right-4">
+                <p className="text-white font-bold text-xl sm:text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</p>
               </div>
             </div>
 
@@ -333,7 +329,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Second Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 mt-4">
             {/* Reserved Price */}
             <div className="bg-[#f5f5f5] rounded-2xl p-4 sm:p-5">
               <div className="flex items-start justify-between">
@@ -380,8 +376,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
-            {/* Hidden placeholder */}
-            <div className="hidden md:block opacity-0"></div>
           </div>
         </div>
 
