@@ -1,10 +1,10 @@
 // components/ProductFormModal.tsx
-// New Product Form Modal with Figma Design Implementation
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+// Product Form Modal with Figma Design Implementation
+import React, { useState, useRef, useEffect } from 'react';
 import { 
-  X, Upload, Image as ImageIcon, Plus, Trash2, Check, 
-  Calendar, RefreshCw, ChevronDown, Minus, Scan,
-  Save, FileText
+  X, Upload, Image as ImageIcon, Plus, Trash2, 
+  Calendar, RefreshCw, ChevronDown, Minus, ScanLine,
+  Save, FolderOpen
 } from 'lucide-react';
 import { Product, Category, SubCategory, ChildCategory, Brand, Tag } from '../types';
 
@@ -61,6 +61,9 @@ interface ProductFormData {
   galleryImages: string[];
   variations: Variation[];
   variantRows: VariantRow[];
+  additionalSku: string;
+  additionalBarcode: string;
+  additionalMoq: number;
 }
 
 interface ProductFormModalProps {
@@ -131,7 +134,10 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       { id: '2', image: '', name: '', regularPrice: 0, salePrice: 0, costPrice: 0, quantity: 0, sku: '', isDefault: false },
       { id: '3', image: '', name: '', regularPrice: 0, salePrice: 0, costPrice: 0, quantity: 0, sku: '', isDefault: false },
       { id: '4', image: '', name: '', regularPrice: 0, salePrice: 0, costPrice: 0, quantity: 0, sku: '', isDefault: false },
-    ]
+    ],
+    additionalSku: 'SKU1234567',
+    additionalBarcode: '215464578621684',
+    additionalMoq: 10,
   });
 
   const [variationInputs, setVariationInputs] = useState<Record<string, string>>({});
@@ -159,16 +165,6 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       }));
     }
   }, [editingProduct]);
-
-  const availableSubCategories = subCategories.filter(s => {
-    const parentCat = categories.find(c => c.name === formData.category);
-    return parentCat && s.categoryId === parentCat.id;
-  });
-
-  const availableChildCategories = childCategories.filter(c => {
-    const parentSub = subCategories.find(s => s.name === formData.subCategory);
-    return parentSub && c.subCategoryId === parentSub.id;
-  });
 
   const generateSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -329,215 +325,602 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 md:p-8">
-      <div className="relative w-full max-w-6xl bg-gray-100 rounded-2xl shadow-2xl my-4">
-        <button onClick={onClose} className="absolute right-4 top-4 z-10 p-2 rounded-lg hover:bg-gray-200 transition-colors">
-          <X size={20} className="text-gray-500" />
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 md:p-8">
+      <div className="relative w-full max-w-[1280px] bg-white rounded-[30px] shadow-[0px_0px_37.8px_0px_rgba(0,0,0,0.40)] my-4 overflow-hidden">
+        {/* Close Button */}
+        <button 
+          onClick={onClose} 
+          className="absolute right-8 top-8 z-10 w-9 h-9 bg-neutral-400/25 rounded-lg flex items-center justify-center hover:bg-neutral-400/40 transition-colors"
+        >
+          <X size={16} className="text-black" />
         </button>
 
-        <form onSubmit={handleSubmit} className="p-6 md:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Basic Details */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Basic Details</h2>
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-sm font-semibold text-gray-700">Product Name</label>
-                    <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer">
-                      <input type="checkbox" checked={formData.autoSlug} onChange={(e) => setFormData(prev => ({ ...prev, autoSlug: e.target.checked }))} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400" />
-                      Auto Slug
+        <form onSubmit={handleSubmit} className="p-6 md:p-[82px] pt-[100px]">
+          <div className="flex gap-6">
+            {/* Left Column - 611px */}
+            <div className="w-[611px] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-6 space-y-6 overflow-hidden">
+              
+              {/* Basic Details Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Basic Details</h2>
+                
+                {/* Product Name */}
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-teal-950 text-base font-bold font-['Lato']">Product Name</label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.autoSlug} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, autoSlug: e.target.checked }))} 
+                        className="w-4 h-4 rounded border-2 border-neutral-400 text-blue-500 focus:ring-blue-400" 
+                      />
+                      <span className="text-neutral-400 text-base font-medium font-['Poppins']">Auto Slug</span>
                     </label>
                   </div>
-                  <input type="text" value={formData.name} onChange={(e) => handleNameChange(e.target.value)} placeholder="Jasmine Fragrance Oil" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                  <input 
+                    type="text" 
+                    value={formData.name} 
+                    onChange={(e) => handleNameChange(e.target.value)} 
+                    placeholder="Jasmine Fragrance Oil" 
+                    className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                  />
                 </div>
+
+                {/* Product Description */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product Description</label>
-                  <textarea value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} placeholder="Enter product description..." rows={4} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm resize-none" />
+                  <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Product Description</label>
+                  <div className="relative">
+                    <textarea 
+                      value={formData.description} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} 
+                      placeholder="Jasmine Fragrance oil, extracted from the delicate jasmine blossoms, is renowned for its enchanting and luxurious aroma. Prized for centuries in perfumery and aromatherapy, this exquisite oil offers a multitude of benefits and applications."
+                      rows={5}
+                      className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] leading-6 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Price & Stock */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Price & Stock</h2>
+              {/* Divider */}
+              <div className="w-full h-[0.5px] bg-zinc-400" />
+
+              {/* Price & Stock Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Price & Stock</h2>
+                
+                {/* Row 1: Regular Price, Sale Price, Cost Price, SKU */}
                 <div className="grid grid-cols-4 gap-3 mb-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Regular Price</label>
-                    <input type="text" value={formData.regularPrice || ''} onChange={(e) => setFormData(prev => ({ ...prev, regularPrice: parseFloat(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Regular Price</label>
+                    <input 
+                      type="text" 
+                      value={formData.regularPrice || ''} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, regularPrice: parseFloat(e.target.value) || 0 }))} 
+                      placeholder="Ex 1990" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Sale Price</label>
-                    <input type="text" value={formData.salePrice || ''} onChange={(e) => setFormData(prev => ({ ...prev, salePrice: parseFloat(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Sale Price</label>
+                    <input 
+                      type="text" 
+                      value={formData.salePrice || ''} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, salePrice: parseFloat(e.target.value) || 0 }))} 
+                      placeholder="Ex 1990" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Cost Price</label>
-                    <input type="text" value={formData.costPrice || ''} onChange={(e) => setFormData(prev => ({ ...prev, costPrice: parseFloat(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Cost Price</label>
+                    <input 
+                      type="text" 
+                      value={formData.costPrice || ''} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, costPrice: parseFloat(e.target.value) || 0 }))} 
+                      placeholder="Ex 1990" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">SKU</label>
-                    <input type="text" value={formData.sku} onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))} placeholder="#SK0001" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">SKU</label>
+                    <input 
+                      type="text" 
+                      value={formData.sku} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))} 
+                      placeholder="#SK0001" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-black text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-3 items-end">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Bar code</label>
+
+                {/* Row 2: Bar code, MOQ, Quantity, Apply to all */}
+                <div className="flex gap-3 items-end">
+                  <div className="w-44">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Bar code</label>
                     <div className="relative">
-                      <input type="text" value={formData.barcode} onChange={(e) => setFormData(prev => ({ ...prev, barcode: e.target.value }))} placeholder="2154645786216" className="w-full p-2.5 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
-                      <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><Scan size={18} /></button>
+                      <input 
+                        type="text" 
+                        value={formData.barcode} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, barcode: e.target.value }))} 
+                        placeholder="2154645786216" 
+                        className="w-full h-12 px-3 py-2.5 pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      />
+                      <ScanLine size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600" />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">MOQ</label>
-                    <input type="text" value={formData.moq || ''} onChange={(e) => setFormData(prev => ({ ...prev, moq: parseInt(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                  <div className="w-28">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">MOQ</label>
+                    <input 
+                      type="text" 
+                      value={formData.moq || ''} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, moq: parseInt(e.target.value) || 0 }))} 
+                      placeholder="Ex 1990" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Quantity</label>
-                    <input type="text" value={formData.quantity || ''} onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 }))} placeholder="Ex 1990" className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
+                  <div className="w-28">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Quantity</label>
+                    <input 
+                      type="text" 
+                      value={formData.quantity || ''} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 }))} 
+                      placeholder="Ex 1990" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
                   </div>
-                  <div>
-                    <button type="button" onClick={applyToAll} className="w-full px-4 py-2.5 bg-emerald-50 text-emerald-600 font-semibold rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors text-sm">Apply to all</button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Variant Rows */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="space-y-4">
-                  {formData.variantRows.map((variant) => (
-                    <div key={variant.id} className="flex items-start gap-3">
-                      <div onClick={() => handleVariantImageUpload(variant.id)} className="w-20 h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
-                        {variant.image ? <img src={variant.image} alt="" className="w-full h-full object-cover rounded-lg" /> : <><Upload size={20} className="text-gray-400 mb-1" /><span className="text-xs text-gray-400">Upload Image</span></>}
-                      </div>
-                      <div className="flex-1 grid grid-cols-6 gap-2">
-                        <input type="text" value={variant.name} onChange={(e) => updateVariantRow(variant.id, 'name', e.target.value)} placeholder="Name" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <input type="text" value={variant.regularPrice || ''} onChange={(e) => updateVariantRow(variant.id, 'regularPrice', parseFloat(e.target.value) || 0)} placeholder="Regular Price" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <input type="text" value={variant.salePrice || ''} onChange={(e) => updateVariantRow(variant.id, 'salePrice', parseFloat(e.target.value) || 0)} placeholder="Sale Price" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <div className="col-span-3 flex items-center justify-end">
-                          <label className="flex items-center gap-2 text-xs text-gray-500">
-                            <input type="checkbox" checked={variant.isDefault} onChange={(e) => updateVariantRow(variant.id, 'isDefault', e.target.checked)} className="w-3.5 h-3.5 rounded border-gray-300 text-blue-500" />
-                            Default
-                          </label>
-                        </div>
-                        <input type="text" value={variant.costPrice || ''} onChange={(e) => updateVariantRow(variant.id, 'costPrice', parseFloat(e.target.value) || 0)} placeholder="Cost Price" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <input type="text" value={variant.quantity || ''} onChange={(e) => updateVariantRow(variant.id, 'quantity', parseInt(e.target.value) || 0)} placeholder="Quantity" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                        <input type="text" value={variant.sku} onChange={(e) => updateVariantRow(variant.id, 'sku', e.target.value)} placeholder="SKU" className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-xs" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Inventory */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Inventory</h2>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Stock Quantity</label>
-                    <input type="text" value={formData.stockQuantity} onChange={(e) => setFormData(prev => ({ ...prev, stockQuantity: e.target.value }))} placeholder="Unlimited" disabled={formData.unlimited} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm disabled:opacity-50" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Stock Status</label>
-                    <select value={formData.stockStatus} onChange={(e) => setFormData(prev => ({ ...prev, stockStatus: e.target.value }))} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm appearance-none cursor-pointer">
-                      <option value="In Stock">In Stock</option>
-                      <option value="Out of Stock">Out of Stock</option>
-                      <option value="Pre-order">Pre-order</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mb-3">
-                  <button type="button" onClick={() => setFormData(prev => ({ ...prev, unlimited: !prev.unlimited }))} className={`relative w-11 h-6 rounded-full transition-colors ${formData.unlimited ? 'bg-blue-500' : 'bg-gray-300'}`}>
-                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${formData.unlimited ? 'translate-x-5' : 'translate-x-0'}`} />
+                  <button 
+                    type="button" 
+                    onClick={applyToAll} 
+                    className="h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-blue-500 text-sky-400 text-base font-bold font-['Poppins'] hover:bg-blue-50 transition-colors"
+                  >
+                    Apply to all
                   </button>
-                  <span className="text-sm text-gray-700">Unlimited</span>
                 </div>
-                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                  <input type="checkbox" checked={formData.hideInWebsite} onChange={(e) => setFormData(prev => ({ ...prev, hideInWebsite: e.target.checked }))} className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400" />
-                  Hide in website (for landing page)
+              </div>
+
+              {/* Variant Rows Section */}
+              <div className="space-y-4">
+                {formData.variantRows.map((variant) => (
+                  <div key={variant.id} className="flex flex-col gap-2">
+                    {/* Default checkbox aligned right */}
+                    <div className="flex justify-end items-center gap-2">
+                      <input 
+                        type="checkbox" 
+                        checked={variant.isDefault} 
+                        onChange={(e) => updateVariantRow(variant.id, 'isDefault', e.target.checked)} 
+                        className="w-4 h-4 rounded border-2 border-slate-900/75" 
+                      />
+                      <span className="text-neutral-400 text-base font-medium font-['Poppins']">Default</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      {/* Upload Image Box */}
+                      <div 
+                        onClick={() => handleVariantImageUpload(variant.id)} 
+                        className="w-36 h-24 bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden"
+                      >
+                        {variant.image ? (
+                          <img src={variant.image} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 flex items-center justify-center">
+                              <ImageIcon size={32} className="text-neutral-400" />
+                            </div>
+                            <span className="text-neutral-400 text-base font-medium font-['Poppins']">Upload Image</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Input Fields Grid */}
+                      <div className="w-96 flex flex-col gap-2">
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            value={variant.name} 
+                            onChange={(e) => updateVariantRow(variant.id, 'name', e.target.value)} 
+                            placeholder="Name" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                          <input 
+                            type="text" 
+                            value={variant.regularPrice || ''} 
+                            onChange={(e) => updateVariantRow(variant.id, 'regularPrice', parseFloat(e.target.value) || 0)} 
+                            placeholder="Regular Price" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                          <input 
+                            type="text" 
+                            value={variant.salePrice || ''} 
+                            onChange={(e) => updateVariantRow(variant.id, 'salePrice', parseFloat(e.target.value) || 0)} 
+                            placeholder="Sale Price" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            value={variant.costPrice || ''} 
+                            onChange={(e) => updateVariantRow(variant.id, 'costPrice', parseFloat(e.target.value) || 0)} 
+                            placeholder="Cost Price" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                          <input 
+                            type="text" 
+                            value={variant.quantity || ''} 
+                            onChange={(e) => updateVariantRow(variant.id, 'quantity', parseInt(e.target.value) || 0)} 
+                            placeholder="Quantity" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                          <input 
+                            type="text" 
+                            value={variant.sku} 
+                            onChange={(e) => updateVariantRow(variant.id, 'sku', e.target.value)} 
+                            placeholder="SKU" 
+                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Additional (Optional) Section */}
+              <div>
+                <h2 className="mb-6">
+                  <span className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6">Additional</span>
+                  <span className="text-neutral-400 text-xl font-bold font-['Lato'] leading-6"> </span>
+                  <span className="text-neutral-400 text-xl font-normal font-['Lato'] leading-6">(Optional)</span>
+                </h2>
+
+                {/* SKU and Bar Code */}
+                <div className="flex gap-8 mb-6">
+                  <div className="w-64">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">SKU</label>
+                    <input 
+                      type="text" 
+                      value={formData.additionalSku} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, additionalSku: e.target.value }))} 
+                      placeholder="SKU1234567" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
+                  </div>
+                  <div className="w-64">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Bar Code</label>
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        value={formData.additionalBarcode} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, additionalBarcode: e.target.value }))} 
+                        placeholder="215464578621684" 
+                        className="w-full h-12 px-3 py-2.5 pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      />
+                      <ScanLine size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Delivery Charge */}
+                <div className="mb-6">
+                  <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Delivery charge</label>
+                  <div className="flex gap-3">
+                    <div className="flex-1 flex items-center gap-2">
+                      <span className="text-gray-500 text-base font-normal font-['Lato']">Inside Dhaka</span>
+                      <input 
+                        type="text" 
+                        value={formData.deliveryInsideDhaka} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, deliveryInsideDhaka: parseInt(e.target.value) || 0 }))} 
+                        className="flex-1 h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      />
+                    </div>
+                    <div className="flex-1 flex items-center gap-2">
+                      <span className="text-gray-500 text-base font-normal font-['Lato']">Outside Dhaka</span>
+                      <input 
+                        type="text" 
+                        value={formData.deliveryOutsideDhaka} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, deliveryOutsideDhaka: parseInt(e.target.value) || 0 }))} 
+                        className="flex-1 h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expiration and MOQ */}
+                <div className="flex gap-5">
+                  <div className="w-96">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Expiration</label>
+                    <div className="flex gap-5">
+                      <div className="flex-1 relative">
+                        <input 
+                          type="date" 
+                          value={formData.expirationStart} 
+                          onChange={(e) => setFormData(prev => ({ ...prev, expirationStart: e.target.value }))} 
+                          className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          placeholder="Start"
+                        />
+                      </div>
+                      <div className="flex-1 relative">
+                        <input 
+                          type="date" 
+                          value={formData.expirationEnd} 
+                          onChange={(e) => setFormData(prev => ({ ...prev, expirationEnd: e.target.value }))} 
+                          className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          placeholder="End"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-32">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">MOQ</label>
+                    <input 
+                      type="text" 
+                      value={formData.additionalMoq} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, additionalMoq: parseInt(e.target.value) || 0 }))} 
+                      placeholder="10" 
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Inventory Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Inventory</h2>
+                
+                <div className="flex gap-5 mb-4">
+                  <div className="flex-1">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Stock Quantity</label>
+                    <input 
+                      type="text" 
+                      value={formData.stockQuantity} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, stockQuantity: e.target.value }))} 
+                      placeholder="Unlimited" 
+                      disabled={formData.unlimited}
+                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50" 
+                    />
+                    {/* Unlimited Toggle */}
+                    <div className="flex items-center gap-3 mt-3">
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData(prev => ({ ...prev, unlimited: !prev.unlimited }))} 
+                        className={`w-12 h-6 px-1 py-1.5 rounded-[200px] flex items-center overflow-hidden transition-colors ${formData.unlimited ? 'bg-gradient-to-r from-sky-400 to-blue-500 justify-end' : 'bg-gray-300 justify-start'}`}
+                      >
+                        <div className="w-4 h-4 bg-lime-50 rounded-full" />
+                      </button>
+                      <span className="text-teal-950 text-base font-normal font-['Lato']">Unlimited</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Stock Status</label>
+                    <div className="relative">
+                      <select 
+                        value={formData.stockStatus} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, stockStatus: e.target.value }))} 
+                        className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                      >
+                        <option value="In Stock">In Stock</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                        <option value="Pre-order">Pre-order</option>
+                      </select>
+                      <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-teal-950 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hide in website checkbox */}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <div 
+                    className={`w-5 h-5 rounded overflow-hidden flex items-center justify-center ${formData.hideInWebsite ? 'bg-gradient-to-r from-sky-400 to-blue-500' : 'border-2 border-gray-300'}`}
+                    onClick={() => setFormData(prev => ({ ...prev, hideInWebsite: !prev.hideInWebsite }))}
+                  >
+                    {formData.hideInWebsite && (
+                      <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                        <path d="M1 5L4.5 8.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-gray-500 text-base font-normal font-['Lato']">Hide in website (for landing page)</span>
                 </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-6">
+                <button 
+                  type="button" 
+                  onClick={handleSaveDraft} 
+                  className="h-10 px-3 py-1.5 bg-white rounded-lg border border-gray-200 flex items-center gap-2 hover:bg-gray-50 transition-colors"
+                >
+                  <FolderOpen size={16} className="text-teal-950" />
+                  <span className="text-teal-950 text-base font-bold font-['Lato']">Save to draft</span>
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="h-10 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center gap-1 hover:from-sky-500 hover:to-blue-600 transition-colors disabled:opacity-50"
+                >
+                  <span className="text-white text-base font-bold font-['Lato']">{isLoading ? 'Publishing...' : 'Publish Product'}</span>
+                </button>
               </div>
             </div>
 
-            {/* Right Column */}
-            <div className="space-y-6">
-              {/* Upload Product Image */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-1">Upload Product Image</h2>
-                <p className="text-xs text-gray-400 mb-4">Up to 10 Images</p>
-                <div className="relative mb-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-50">
-                  <div className="aspect-square flex items-center justify-center p-4">
-                    {formData.mainImage ? <img src={formData.mainImage} alt="Product" className="max-w-full max-h-full object-contain" /> : <div className="text-center text-gray-400"><ImageIcon size={48} className="mx-auto mb-2 opacity-50" /><p className="text-sm">No image uploaded</p></div>}
+            {/* Right Column - 485px */}
+            <div className="w-[485px] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-6 space-y-6 overflow-hidden">
+              
+              {/* Upload Product Image Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-1">Upload Product Image</h2>
+                <p className="text-teal-950 text-base font-bold font-['Lato'] mb-3">Up to 10 Images</p>
+                
+                {/* Main Image Upload */}
+                <div className="w-96 h-64 relative bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+                  {formData.mainImage ? (
+                    <img src={formData.mainImage} alt="Product" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <ImageIcon size={100} className="text-gray-300" />
+                    </div>
+                  )}
+                  
+                  {/* Browse and Replace buttons */}
+                  <div className="absolute bottom-3 left-3">
+                    <button 
+                      type="button" 
+                      onClick={() => fileInputRef.current?.click()} 
+                      className="h-9 px-3 py-2 rounded-lg border border-gray-200 flex items-center gap-1 bg-white hover:bg-gray-50"
+                    >
+                      <FolderOpen size={20} className="text-gray-500" />
+                      <span className="text-gray-500 text-sm font-normal font-['Lato']">Browse</span>
+                    </button>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 flex">
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="flex-1 py-2.5 bg-white border-t border-r border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"><ImageIcon size={16} />Browse</button>
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="flex-1 py-2.5 bg-white border-t border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"><RefreshCw size={16} />Replace</button>
+                  <div className="absolute bottom-3 right-3">
+                    <button 
+                      type="button" 
+                      onClick={() => fileInputRef.current?.click()} 
+                      className="h-9 p-2 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] flex items-center gap-2 hover:bg-gray-50"
+                    >
+                      <RefreshCw size={16} className="text-black" />
+                      <span className="text-black text-sm font-normal font-['Lato']">Replace</span>
+                    </button>
                   </div>
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handleMainImageUpload} className="hidden" />
                 </div>
-                <div className="flex gap-2 flex-wrap">
-                  {formData.galleryImages.map((img, index) => (
-                    <div key={index} className="relative w-16 h-16 rounded-lg border border-gray-200 overflow-hidden group">
+
+                {/* Gallery Images */}
+                <div className="flex gap-4 flex-wrap">
+                  {formData.galleryImages.slice(0, 2).map((img, index) => (
+                    <div key={index} className="w-24 h-24 relative rounded-lg border border-gray-200 overflow-hidden group">
                       <img src={img} alt="" className="w-full h-full object-cover" />
-                      <button type="button" onClick={() => removeGalleryImage(index)} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><X size={16} className="text-white" /></button>
+                      <button 
+                        type="button" 
+                        onClick={() => removeGalleryImage(index)} 
+                        className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={14} className="text-gray-500" />
+                      </button>
                     </div>
                   ))}
+                  
+                  {/* Add Image Button */}
                   {formData.galleryImages.length < 10 && (
-                    <button type="button" onClick={() => galleryInputRef.current?.click()} className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-emerald-500 hover:border-emerald-400 hover:bg-emerald-50 transition-colors">
-                      <Plus size={16} /><span className="text-[10px] mt-0.5">Add Image</span>
+                    <button 
+                      type="button" 
+                      onClick={() => galleryInputRef.current?.click()} 
+                      className="w-52 h-24 rounded-lg border border-neutral-400 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors"
+                    >
+                      <Plus size={24} className="text-lime-500 mb-1" />
+                      <span className="text-lime-500 text-base font-normal font-['Lato'] leading-5">Add Image</span>
                     </button>
                   )}
                   <input ref={galleryInputRef} type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
                 </div>
               </div>
 
-              {/* Categories */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Categories</h2>
+              {/* Categories Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-4">Categories</h2>
+                
+                {/* Product Categories */}
                 <div className="mb-4">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-gray-600">Product Categories</label>
-                    <button type="button" className="text-xs font-medium text-emerald-500 hover:text-emerald-600 flex items-center gap-1"><Plus size={12} />Add New</button>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-teal-950 text-base font-bold font-['Lato']">Product Categories</label>
+                    <button type="button" className="flex items-center gap-1 hover:opacity-80">
+                      <Plus size={20} className="text-black" />
+                      <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
+                    </button>
                   </div>
-                  <select value={formData.category} onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value, subCategory: '', childCategory: '' }))} className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm appearance-none cursor-pointer">
-                    <option value="">Select your category</option>
-                    {categories.map(cat => <option key={cat.id} value={cat.name}>{cat.name}</option>)}
-                  </select>
+                  <div className="relative">
+                    <select 
+                      value={formData.category} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value, subCategory: '', childCategory: '' }))} 
+                      className="w-full p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                    >
+                      <option value="">Select your category</option>
+                      {categories.map(cat => <option key={cat.id} value={cat.name}>{cat.name}</option>)}
+                    </select>
+                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+                  </div>
                 </div>
+
+                {/* Tags */}
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-gray-600">Tags</label>
-                    <button type="button" className="text-xs font-medium text-emerald-500 hover:text-emerald-600 flex items-center gap-1"><Plus size={12} />Add New</button>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-teal-950 text-base font-bold font-['Lato']">Tags</label>
+                    <button type="button" className="flex items-center gap-1 hover:opacity-80">
+                      <Plus size={20} className="text-black" />
+                      <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
+                    </button>
                   </div>
-                  <select className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm appearance-none cursor-pointer">
-                    <option value="">Select your tags</option>
-                    {tags.map(tag => <option key={tag.id} value={tag.name}>{tag.name}</option>)}
-                  </select>
+                  <div className="relative">
+                    <select 
+                      className="w-full p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                    >
+                      <option value="">Select your tags</option>
+                      {tags.map(tag => <option key={tag.id} value={tag.name}>{tag.name}</option>)}
+                    </select>
+                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+                  </div>
                 </div>
               </div>
 
-              {/* Variation */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Variation</h2>
+              {/* Variation Section */}
+              <div>
+                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-4">Variation</h2>
+                
                 <div className="space-y-3">
-                  {formData.variations.map((variation) => (
-                    <div key={variation.id} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
-                      <button type="button" onClick={() => toggleVariation(variation.id)} className="w-full flex items-center justify-between py-1 text-gray-700 hover:text-gray-900">
-                        <span className="text-sm font-medium">{variation.name}</span>
-                        {expandedVariations[variation.id] ? <Minus size={16} className="text-gray-400" /> : <Plus size={16} className="text-gray-400" />}
-                      </button>
-                      {expandedVariations[variation.id] && (
-                        <div className="mt-2 space-y-2">
-                          <input type="text" value={variationInputs[variation.id] || ''} onChange={(e) => setVariationInputs(prev => ({ ...prev, [variation.id]: e.target.value }))} onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addVariationOption(variation.id))} placeholder={variation.id === '1' ? 'Colour' : 'Variation name'} className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-sm" />
-                          {variation.options.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {variation.options.map((option) => (
-                                <span key={option.id} className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 text-sm rounded-lg border border-blue-200">
-                                  {option.name}
-                                  <button type="button" onClick={() => removeVariationOption(variation.id, option.id)} className="text-blue-400 hover:text-blue-600"><Trash2 size={12} /></button>
-                                </span>
-                              ))}
-                            </div>
+                  {formData.variations.map((variation, index) => (
+                    <div 
+                      key={variation.id} 
+                      className="p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)]"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-teal-950 text-base font-bold font-['Lato']">{variation.name}</span>
+                        <button 
+                          type="button" 
+                          onClick={() => toggleVariation(variation.id)}
+                          className="w-6 h-6 flex items-center justify-center"
+                        >
+                          {expandedVariations[variation.id] ? (
+                            <Minus size={14} className="text-black" />
+                          ) : (
+                            <Plus size={14} className="text-black" />
                           )}
+                        </button>
+                      </div>
+                      
+                      {expandedVariations[variation.id] && (
+                        <div className="space-y-2">
+                          <input 
+                            type="text" 
+                            value={variationInputs[variation.id] || ''} 
+                            onChange={(e) => setVariationInputs(prev => ({ ...prev, [variation.id]: e.target.value }))} 
+                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addVariationOption(variation.id))}
+                            placeholder={index === 0 ? 'Colour' : 'Variation name'} 
+                            className="w-full h-8 p-3 bg-white rounded-lg border border-stone-300 text-teal-950 text-xs font-normal font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          />
+                          
+                          {/* Variation Options */}
+                          <div className="flex flex-wrap gap-2">
+                            {variation.options.map((option) => (
+                              <div 
+                                key={option.id} 
+                                className="w-24 h-8 p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center"
+                              >
+                                <span className="text-teal-950 text-xs font-normal font-['Poppins']">{option.name}</span>
+                                <button 
+                                  type="button" 
+                                  onClick={() => removeVariationOption(variation.id, option.id)}
+                                  className="text-red-700 hover:text-red-800"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            ))}
+                            
+                            {/* Empty Option Input */}
+                            <div className="w-24 h-8 p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center">
+                              <span className="text-neutral-400 text-xs font-normal font-['Poppins']">Option</span>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -545,14 +928,6 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Footer Buttons */}
-          <div className="flex items-center justify-center gap-3 mt-8 pt-6 border-t border-gray-200">
-            <button type="button" onClick={handleSaveDraft} className="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"><Save size={16} />Save to draft</button>
-            <button type="submit" disabled={isLoading} className="px-8 py-2.5 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white font-semibold rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              {isLoading ? 'Publishing...' : 'Publish Product'}
-            </button>
           </div>
         </form>
       </div>

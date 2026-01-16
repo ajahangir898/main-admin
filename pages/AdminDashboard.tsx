@@ -342,7 +342,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {/* Date */}
             <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute right-0 bottom-100 w-28 h-28 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full"></div>
+              <div className="absolute left-0 bottom-100 w-80 h-80 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full"></div>
               <div className="absolute left-3 top-2 text-black text-base font-medium z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</div>
               <div className="absolute right-4 bottom-2 text-white text-2xl font-medium z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</div>
             </div>
