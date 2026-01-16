@@ -81,8 +81,13 @@ function criticalPreloadPlugin(): Plugin {
       cssFiles.sort((a, b) => a.priority - b.priority);
 
       // Create preload hints for CSS with crossorigin for subdomain support
-      const cssPreloads = cssFiles.map(({ fileName }) => 
+      const cssPreloads = cssFiles.map(({ fileName }) =>
         `<link rel="preload" href="${resolvedBase}${fileName}" as="style" fetchpriority="high" crossorigin />`
+      ).join('\n    ');
+
+      // Create actual stylesheet links for CSS files (async loading pattern)
+      const cssStylesheets = cssFiles.map(({ fileName }) =>
+        `<link rel="stylesheet" href="${resolvedBase}${fileName}" media="print" onload="this.media='all'" crossorigin />\n    <noscript><link rel="stylesheet" href="${resolvedBase}${fileName}" /></noscript>`
       ).join('\n    ');
 
       const allPreloads = [cssPreloads, ...modulepreloadLinks].filter(Boolean).join('\n    ');
@@ -94,29 +99,42 @@ function criticalPreloadPlugin(): Plugin {
         );
       }
 
-      // Convert CSS stylesheet links to non-render-blocking using media="print" pattern
-      // This defers CSS loading without blocking first paint
-      for (const { fileName } of cssFiles) {
-        const escapedFileName = fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const cssLinkRegex = new RegExp(
-          `<link[^>]*href="[^"]*${escapedFileName}"[^>]*rel="stylesheet"[^>]*>|` +
-          `<link[^>]*rel="stylesheet"[^>]*href="[^"]*${escapedFileName}"[^>]*>`,
-          'gi'
+      // Inject CSS stylesheets before </head> if not already present
+      if (cssStylesheets) {
+        // Check if stylesheet links already exist
+        const hasExistingStylesheet = cssFiles.some(({ fileName }) => 
+          html.includes(`href="${resolvedBase}${fileName}"`) && html.includes('rel="stylesheet"')
         );
         
-        html = html.replace(cssLinkRegex, (match) => {
-          // Skip if already has media attribute or onload
-          if (match.includes('media=') || match.includes('onload=')) {
-            return match;
+        if (!hasExistingStylesheet) {
+          // Add stylesheet links before </head>
+          html = html.replace(
+            /<\/head>/i,
+            `    <!-- CSS Stylesheets -->\n    ${cssStylesheets}\n  </head>`
+          );
+        } else {
+          // Convert existing CSS stylesheet links to non-render-blocking using media="print" pattern
+          for (const { fileName } of cssFiles) {
+            const escapedFileName = fileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const cssLinkRegex = new RegExp(
+              `<link[^>]*href="[^"]*${escapedFileName}"[^>]*rel="stylesheet"[^>]*>|` +
+              `<link[^>]*rel="stylesheet"[^>]*href="[^"]*${escapedFileName}"[^>]*>`,
+              'gi'
+            );
+            
+            html = html.replace(cssLinkRegex, (match) => {
+              // Skip if already has media attribute or onload
+              if (match.includes('media=') || match.includes('onload=')) {
+                return match;
+              }
+              // Convert to non-render-blocking CSS
+              const deferredCss = match
+                .replace('rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"');
+              const noscriptFallback = `<noscript>${match}</noscript>`;
+              return `${deferredCss}\n    ${noscriptFallback}`;
+            });
           }
-          // Convert to non-render-blocking CSS using media="print" pattern
-          // This loads CSS asynchronously and switches to media="all" when loaded
-          const deferredCss = match
-            .replace('rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"');
-          // Add noscript fallback for users without JavaScript
-          const noscriptFallback = `<noscript>${match}</noscript>`;
-          return `${deferredCss}\n    ${noscriptFallback}`;
-        });
+        }
       }
 
       return html;
