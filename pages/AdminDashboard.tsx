@@ -237,7 +237,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="min-h-screen bg-[#F8FAFC]">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Order Analytics Section */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="bg-white rounded-lg p-1 shadow-sm">
           <h2 className="text-base font-semibold text-black mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</h2>
           
           {/* Grid with Important Notification spanning 2 rows */}
