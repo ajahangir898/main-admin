@@ -746,7 +746,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
               <p className="text-xs uppercase text-slate-500">Avg Rating</p>
               <div className="flex items-center gap-2">
                 <p className="text-xl sm:text-2xl font-bold text-white">{reviewStats.avgRating}</p>
-                <Star size={16} className="text-yellow-400 fill-yellow-400 sm:w-[18px] sm:h-[18px]" />
+                <Star className="text-yellow-400 fill-yellow-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </div>
             </div>
           </div>
@@ -962,13 +962,13 @@ const AdminControl: React.FC<AdminControlProps> = ({
           <div className="bg-slate-900 rounded-2xl w-full max-w-md max-h-[95vh] sm:max-h-[90vh] border border-white/10 flex flex-col">
             <div className="p-4 sm:p-5 border-b border-white/10 flex justify-between items-center flex-shrink-0">
               <h3 className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
-                <UserPlus size={18} className="text-emerald-400 sm:w-5 sm:h-5" />
+                <UserPlus className="text-emerald-400 w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 {editUser ? 'Edit User' : 'Add User'}
               </h3>
               <button onClick={() => setUserModal(false)} className="text-slate-400 hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={18} /></button>
             </div>
             
-            <form onSubmit={saveUser} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+            <form id="userForm" onSubmit={saveUser} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="text-sm text-slate-400 block mb-1">Name *</label>
                 <input type="text" required value={userForm.name} onChange={e => setUserForm({...userForm, name: e.target.value})}
@@ -991,7 +991,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
                     <Lock size={16} className="absolute left-3 top-3.5 text-slate-500" />
                     <input type={showPwd ? 'text' : 'password'} required minLength={6} value={userForm.password} onChange={e => setUserForm({...userForm, password: e.target.value})}
                       className="w-full pl-9 pr-12 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 min-h-[44px]" placeholder="Min 6 chars" />
-                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-2.5 text-slate-500 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center">
+                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-2 top-2 text-slate-500 hover:text-white w-10 h-10 flex items-center justify-center">
                       {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
@@ -1064,7 +1064,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
           <div className="bg-slate-900 rounded-2xl w-full max-w-full sm:max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col border border-white/10 mx-3 sm:mx-0">
             <div className="p-4 sm:p-5 border-b border-white/10 flex justify-between items-center flex-shrink-0">
               <h3 className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
-                <Key size={18} className="text-emerald-400 sm:w-5 sm:h-5" />
+                <Key className="text-emerald-400 w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 {editRole ? 'Edit Role' : 'Create Role'}
               </h3>
               <button onClick={() => setRoleModal(false)} className="text-slate-400 hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><X size={18} /></button>
@@ -1105,7 +1105,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
                             <div key={r.id} className="px-3 sm:px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 hover:bg-white/5">
                               <div className="flex items-center gap-2 min-w-0 flex-1">
                                 <button type="button" onClick={() => toggleAllPerms(r.id)}
-                                  className={`w-8 h-8 sm:w-6 sm:h-6 rounded flex items-center justify-center text-xs border transition flex-shrink-0 ${count === 4 ? 'bg-emerald-500 border-emerald-500 text-white' : count > 0 ? 'bg-emerald-500/30 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/20 text-slate-500'}`}>
+                                  className={`w-6 h-6 sm:w-6 sm:h-6 rounded flex items-center justify-center text-xs border transition flex-shrink-0 ${count === 4 ? 'bg-emerald-500 border-emerald-500 text-white' : count > 0 ? 'bg-emerald-500/30 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/20 text-slate-500'}`}>
                                   {count === 4 ? <Check size={12} /> : count > 0 ? count : ''}
                                 </button>
                                 <span className="text-xs sm:text-sm text-white truncate">{r.label}</span>
