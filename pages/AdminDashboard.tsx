@@ -301,57 +301,63 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Order Analytics Section */}
-        <div className="w-full bg-white rounded-lg p-6">
-          <div className="text-black text-base font-semibold mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</div>
+        <div className="w-full bg-white rounded-lg p-4 sm:p-6">
+          <div className="text-black text-sm sm:text-base font-semibold mb-3 sm:mb-4" style={{ fontFamily: 'Poppins, sans-serif' }}>Order Analytics</div>
           
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {/* Products on Hands */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 bottom-2 text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Products on Hands</div>
-              <div className="absolute left-4 top-2 text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{products.length}</div>
-              <div className="w-11 h-11 absolute right-3 top-3 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/f6d089a7-832a-477b-8b1a-ecf65be958e3.webp" alt="Products" className="w-8 h-8 object-contain" />
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex items-center justify-between px-3 sm:px-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-black text-lg sm:text-2xl font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{products.length}</div>
+                <div className="text-black text-[10px] sm:text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Products on Hands</div>
+              </div>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 bg-white rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/f6d089a7-832a-477b-8b1a-ecf65be958e3.webp" alt="Products" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               </div>
             </div>
 
             {/* Total Orders */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 bottom-2 text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Total Orders</div>
-              <div className="absolute left-4 top-2 text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalOrders}</div>
-              <div className="w-11 h-11 absolute right-3 top-3 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/bbc0c228-f29a-4500-ab70-dad18eacd48d.webp" alt="Total Orders" className="w-8 h-8 object-contain" />
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex items-center justify-between px-3 sm:px-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-black text-lg sm:text-2xl font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalOrders}</div>
+                <div className="text-black text-[10px] sm:text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Total Orders</div>
+              </div>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 bg-white rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/bbc0c228-f29a-4500-ab70-dad18eacd48d.webp" alt="Total Orders" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               </div>
             </div>
 
             {/* Language */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 top-2 text-black text-xs font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>Language</div>
-              <div className="absolute left-4 top-8 w-24 h-6 rounded-3xl border border-white overflow-hidden flex items-center">
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex flex-col justify-center px-3 sm:px-4">
+              <div className="text-black text-[10px] sm:text-xs font-normal mb-1" style={{ fontFamily: 'Poppins, sans-serif' }}>Language</div>
+              <div className="w-full max-w-[100px] h-6 rounded-3xl border border-white overflow-hidden flex items-center">
                 <button
                   onClick={() => setLanguage('Eng')}
-                  className={`h-4 px-2 mx-1 rounded-full text-xs transition ${language === 'Eng' ? 'bg-white text-black' : 'text-black'}`}
+                  className={`h-4 px-2 mx-1 rounded-full text-[10px] sm:text-xs transition ${language === 'Eng' ? 'bg-white text-black' : 'text-black'}`}
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >Eng</button>
                 <button
                   onClick={() => setLanguage('বাংলা')}
-                  className={`px-1 text-xs transition ${language === 'বাংলা' ? 'bg-white text-black rounded-full h-4' : 'text-black'}`}
+                  className={`px-1 text-[10px] sm:text-xs transition ${language === 'বাংলা' ? 'bg-white text-black rounded-full h-4' : 'text-black'}`}
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >বাংলা</button>
               </div>
             </div>
 
             {/* Date */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-0 bottom-100 w-80 h-80 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full"></div>
-              <div className="absolute left-3 top-2 text-black text-base font-medium z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</div>
-              <div className="absolute right-4 bottom-2 text-white text-2xl font-medium z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</div>
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg"></div>
+              <div className="relative z-10 h-full flex flex-col justify-between p-3">
+                <div className="text-white text-sm sm:text-base font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDate}</div>
+                <div className="text-white text-lg sm:text-2xl font-medium text-right" style={{ fontFamily: 'Poppins, sans-serif' }}>{currentDay}</div>
+              </div>
             </div>
 
-            {/* Important Notification - spans 2 rows */}
-            <div className="h-16 md:row-span-2 md:h-auto relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 top-2 text-black text-xs font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>Important Notification</div>
-              <div className="hidden md:block absolute left-4 top-8 right-4 bottom-8 bg-white rounded-lg"></div>
-              <div className="hidden md:flex absolute bottom-2 left-1/2 -translate-x-1/2 justify-center items-center gap-1">
+            {/* Important Notification - spans 2 rows on md+ */}
+            <div className="h-16 sm:h-16 md:row-span-2 md:h-auto bg-zinc-100 rounded-lg overflow-hidden flex flex-col justify-center md:justify-start p-3 sm:p-4">
+              <div className="text-black text-[10px] sm:text-xs font-normal mb-1 md:mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>Important Notification</div>
+              <div className="hidden md:block flex-1 bg-white rounded-lg min-h-[60px]"></div>
+              <div className="hidden md:flex justify-center items-center gap-1 mt-2">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
                 <div className="w-4 h-2 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full"></div>
                 <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -361,156 +367,162 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
             {/* Reserved Price */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 bottom-2 text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Reserved Price</div>
-              <div className="absolute left-4 top-2 text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalRevenue.toLocaleString()}</div>
-              <div className="w-11 h-11 absolute right-3 top-3 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/653c0fcb-26a8-4941-b3a4-edd97eb7cac1.webp" alt="Reserved Price" className="w-8 h-8 object-contain" />
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex items-center justify-between px-3 sm:px-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-black text-lg sm:text-2xl font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{totalRevenue.toLocaleString()}</div>
+                <div className="text-black text-[10px] sm:text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Reserved Price</div>
+              </div>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 bg-white rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/653c0fcb-26a8-4941-b3a4-edd97eb7cac1.webp" alt="Reserved Price" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               </div>
             </div>
 
             {/* Low Stock */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 bottom-2 text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Low Stock</div>
-              <div className="absolute left-4 top-2 text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{lowStockProducts}</div>
-              <div className="w-11 h-11 absolute right-3 top-3 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/37d57dc7-b0ee-498f-9f0d-173fbab118fc.webp" alt="Low Stock" className="w-8 h-8 object-contain" />
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex items-center justify-between px-3 sm:px-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-black text-lg sm:text-2xl font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{lowStockProducts}</div>
+                <div className="text-black text-[10px] sm:text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Low Stock</div>
+              </div>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 bg-white rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/37d57dc7-b0ee-498f-9f0d-173fbab118fc.webp" alt="Low Stock" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               </div>
             </div>
 
             {/* To be Reviewed */}
-            <div className="h-16 relative bg-zinc-100 rounded-lg overflow-hidden">
-              <div className="absolute left-4 bottom-2 text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>To be Reviewed</div>
-              <div className="absolute left-4 top-2 text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{toBeReviewed}</div>
-              <div className="w-11 h-11 absolute right-3 top-3 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/5f8351b3-66f5-429f-81b0-6c2fe7dfe99e.webp" alt="To be Reviewed" className="w-8 h-8 object-contain" />
+            <div className="h-16 bg-zinc-100 rounded-lg overflow-hidden flex items-center justify-between px-3 sm:px-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-black text-lg sm:text-2xl font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{toBeReviewed}</div>
+                <div className="text-black text-[10px] sm:text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>To be Reviewed</div>
+              </div>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 bg-white rounded-lg overflow-hidden flex items-center justify-center ml-2">
+                <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/5f8351b3-66f5-429f-81b0-6c2fe7dfe99e.webp" alt="To be Reviewed" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Visitor Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Online Now */}
-          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden">
-            <div className="w-48 h-48 left-[237px] top-[-83px] absolute bg-sky-500/20 rounded-full"></div>
-            <div className="w-32 left-[70px] top-[14.5px] absolute inline-flex flex-col justify-start items-start">
-              <div className="self-stretch text-sky-500 text-base font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Online Now</div>
-              <div className="self-stretch text-black text-xs font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>Active visitors on site</div>
-            </div>
-            <div className="w-9 h-9 left-[16px] top-[16px] absolute overflow-hidden flex items-center justify-center">
+          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden flex items-center px-4">
+            <div className="w-48 h-48 absolute -top-20 -right-10 bg-sky-500/20 rounded-full pointer-events-none"></div>
+            <div className="w-9 h-9 flex-shrink-0 overflow-hidden flex items-center justify-center">
               <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/ef4c29da-1e5d-4201-8257-20c61ca4b02e.webp" alt="Online Now" className="w-8 h-8 object-contain" />
             </div>
-            <div className="left-[310px] top-[17px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.onlineNow || 35}</div>
+            <div className="ml-3 flex-1 min-w-0">
+              <div className="text-sky-500 text-sm sm:text-base font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Online Now</div>
+              <div className="text-black text-xs font-normal truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Active visitors on site</div>
+            </div>
+            <div className="text-black text-xl sm:text-2xl font-medium ml-2 flex-shrink-0 z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.onlineNow || 35}</div>
           </div>
 
           {/* Today Visitors */}
-          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden">
-            <div className="w-48 h-48 left-[237px] top-[-83px] absolute bg-orange-500/25 rounded-full"></div>
-            <div className="w-32 left-[70px] top-[14.5px] absolute inline-flex flex-col justify-start items-start">
-              <div className="self-stretch text-orange-600 text-base font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Today visitors</div>
-              <div className="self-stretch text-black text-xs font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>Last 7 days: {visitorStats?.periodVisitors || 4}</div>
-            </div>
-            <div className="w-9 h-9 left-[16px] top-[16px] absolute overflow-hidden flex items-center justify-center">
+          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden flex items-center px-4">
+            <div className="w-48 h-48 absolute -top-20 -right-10 bg-orange-500/25 rounded-full pointer-events-none"></div>
+            <div className="w-9 h-9 flex-shrink-0 overflow-hidden flex items-center justify-center">
               <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/418ad3f2-6edb-4352-8b4e-05f202ceeda1.webp" alt="Today Visitors" className="w-8 h-8 object-contain" />
             </div>
-            <div className="left-[310px] top-[17px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.todayVisitors || 35}</div>
+            <div className="ml-3 flex-1 min-w-0">
+              <div className="text-orange-600 text-sm sm:text-base font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Today visitors</div>
+              <div className="text-black text-xs font-normal truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Last 7 days: {visitorStats?.periodVisitors || 4}</div>
+            </div>
+            <div className="text-black text-xl sm:text-2xl font-medium ml-2 flex-shrink-0 z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.todayVisitors || 35}</div>
           </div>
 
           {/* Total Visitors */}
-          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden">
-            <div className="w-48 h-48 left-[237px] top-[-83px] absolute bg-violet-700/20 rounded-full"></div>
-            <div className="w-32 left-[70px] top-[14.5px] absolute inline-flex flex-col justify-start items-start">
-              <div className="self-stretch text-violet-700 text-base font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Total visitors</div>
-              <div className="self-stretch text-black text-xs font-normal" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalPageViews || 15} page view</div>
-            </div>
-            <div className="w-9 h-9 left-[16px] top-[16px] absolute overflow-hidden flex items-center justify-center">
+          <div className="h-16 relative bg-white/95 rounded-lg shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)] overflow-hidden flex items-center px-4 sm:col-span-2 lg:col-span-1">
+            <div className="w-48 h-48 absolute -top-20 -right-10 bg-violet-700/20 rounded-full pointer-events-none"></div>
+            <div className="w-9 h-9 flex-shrink-0 overflow-hidden flex items-center justify-center">
               <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/2007a96f-3532-4f2b-ae57-80ac195233fa.webp" alt="Total Visitors" className="w-8 h-8 object-contain" />
             </div>
-            <div className="left-[310px] top-[17px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalVisitors || 35}</div>
+            <div className="ml-3 flex-1 min-w-0">
+              <div className="text-violet-700 text-sm sm:text-base font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Total visitors</div>
+              <div className="text-black text-xs font-normal truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalPageViews || 15} page view</div>
+            </div>
+            <div className="text-black text-xl sm:text-2xl font-medium ml-2 flex-shrink-0 z-10" style={{ fontFamily: 'Poppins, sans-serif' }}>{visitorStats?.totalVisitors || 35}</div>
           </div>
         </div>
 
         {/* Order Status Row */}
         <div>
           <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Order</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {/* Today */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-pink-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-pink-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/1c12cf7d-7405-49a9-ae59-98c3f2a67b30.webp" alt="Today" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Today</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{todayOrders}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Today</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{todayOrders}</div>
               </div>
 
               {/* Courier */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-orange-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-orange-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/598e5b78-d151-4943-a02b-9ffd96248d5f.webp" alt="Courier" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Courier</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{courierOrders}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Courier</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{courierOrders}</div>
               </div>
 
               {/* Confirmed */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-green-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-green-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/15fc971c-c7b6-4eeb-9f7e-2b7d1e4f43d8.webp" alt="Confirmed" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Confirmed</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{confirmedOrders}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Confirmed</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{confirmedOrders}</div>
               </div>
 
               {/* Pending */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-amber-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-amber-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/311a5c20-581e-42d4-b3e8-4bafa23c3a4b.webp" alt="Pending" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Pending</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{pendingOrders}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Pending</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{pendingOrders}</div>
               </div>
 
               {/* Cancelled */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-red-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-red-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/cf924a55-6e93-4cf4-bc87-84be6e6d7d72.webp" alt="Cancelled" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Canceled</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{cancelledOrders}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Canceled</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{cancelledOrders}</div>
               </div>
 
               {/* Returns */}
-            <div className="h-12 relative bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden">
-              <div className="w-8 h-8 left-[8px] top-[8px] absolute bg-blue-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="h-12 bg-white rounded-lg shadow-[0px_2px_9.6px_0px_rgba(0,0,0,0.08)] overflow-hidden flex items-center px-2">
+              <div className="w-8 h-8 flex-shrink-0 bg-blue-100 rounded-lg overflow-hidden flex items-center justify-center">
                 <img src="https://systemnextit.com/uploads/images/695d12eba327aa48196200fa/b2dc7881-ace0-44cc-ae4b-654e012ce4bc.webp" alt="Returns" className="w-6 h-6 object-contain" />
                 </div>
-              <div className="left-[46px] top-[15px] absolute text-black text-xs font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>Returns</div>
-              <div className="left-[140px] top-[6px] absolute text-black text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{returnsCount}</div>
+              <div className="ml-2 flex-1 text-black text-xs font-medium truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>Returns</div>
+              <div className="text-black text-lg sm:text-2xl font-medium" style={{ fontFamily: 'Poppins, sans-serif' }}>{returnsCount}</div>
             </div>
           </div>
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {/* Revenue & Costs */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Revenue & Costs</h3>
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Revenue & Costs</h3>
 
-            <div className="flex items-center gap-6 mb-4">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 sm:gap-6 mb-3 sm:mb-4">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="w-3 h-0.5 bg-blue-500"></span>
-                <span className="text-xs text-blue-500 font-medium">Net Sales</span>
+                <span className="text-[10px] sm:text-xs text-blue-500 font-medium">Net Sales</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="w-3 h-0.5 bg-red-400"></span>
-                <span className="text-xs text-red-400 font-medium">Costs</span>
+                <span className="text-[10px] sm:text-xs text-red-400 font-medium">Costs</span>
               </div>
             </div>
 
             {/* Area Chart */}
-            <div className="h-44 relative">
-              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="none">
+            <div className="h-36 sm:h-44 relative">
+              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid meet">
                 <defs>
                   <linearGradient id="salesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.15" />
@@ -554,28 +566,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </svg>
 
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400">
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[8px] sm:text-[10px] text-gray-400">
                 <span>Dec 1</span>
-                <span>Dec 8</span>
+                <span className="hidden xs:inline">Dec 8</span>
                 <span>Dec 15</span>
-                <span>Dec 22</span>
+                <span className="hidden xs:inline">Dec 22</span>
                 <span>Dec 29</span>
               </div>
             </div>
           </div>
 
           {/* Total Profit */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Total Profit</h3>
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Total Profit</h3>
 
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
               <span className="w-3 h-0.5 bg-blue-500"></span>
-              <span className="text-xs text-blue-500 font-medium">Profit</span>
+              <span className="text-[10px] sm:text-xs text-blue-500 font-medium">Profit</span>
             </div>
 
             {/* Area Chart */}
-            <div className="h-44 relative">
-              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="none">
+            <div className="h-36 sm:h-44 relative">
+              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid meet">
                 <defs>
                   <linearGradient id="profitGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.15" />
@@ -610,33 +622,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </svg>
 
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[10px] text-gray-400">
+              <div className="absolute bottom-0 left-7 right-0 flex justify-between text-[8px] sm:text-[10px] text-gray-400">
                 <span>Dec 1</span>
-                <span>Dec 8</span>
+                <span className="hidden xs:inline">Dec 8</span>
                 <span>Dec 15</span>
-                <span>Dec 22</span>
+                <span className="hidden xs:inline">Dec 22</span>
                 <span>Dec 29</span>
               </div>
             </div>
           </div>
 
           {/* Sale by Category */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Sale by Category</h3>
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm sm:col-span-2 lg:col-span-1">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>Sale by Category</h3>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-3 mb-4">
+            <div className="flex flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4">
               {CATEGORY_COLORS.map((cat, index) => (
-                <div key={index} className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.bg }}></span>
-                  <span className="text-xs text-gray-500">{cat.label}</span>
+                <div key={index} className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: cat.bg }}></span>
+                  <span className="text-[10px] sm:text-xs text-gray-500">{cat.label}</span>
                 </div>
               ))}
             </div>
 
             {/* Semi-Donut Chart */}
             <div className="flex justify-center">
-              <div className="relative w-72 h-40">
+              <div className="relative w-48 h-28 sm:w-72 sm:h-40">
                 <svg viewBox="0 0 400 220" className="w-full h-full">
                   <defs>
                     <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -717,119 +729,102 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
 
         {/* Best Selling & Top Products */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Best Selling Product Table - Figma Design */}
-          <div className="lg:col-span-2 h-96 relative bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Best Selling Product Table - Responsive Design */}
+          <div className="lg:col-span-2 min-h-[24rem] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="absolute left-5 top-5 right-5 inline-flex justify-between items-center">
-              <div className="text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Best selling product</div>
+            <div className="flex flex-wrap justify-between items-center gap-2 p-4 sm:p-5 border-b border-gray-100">
+              <div className="text-zinc-800 text-base sm:text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Best selling product</div>
               <div className="px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex justify-center items-center gap-2 cursor-pointer hover:opacity-90 transition">
-                <div className="text-white text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Filter</div>
-                <div className="w-5 h-5 relative">
-                  <div className="w-4 h-[1.25px] left-[1.88px] top-[5.21px] absolute bg-white" />
-                  <div className="w-3 h-[1.25px] left-[4.38px] top-[9.38px] absolute bg-white" />
-                  <div className="w-1 h-[1.25px] left-[7.71px] top-[13.54px] absolute bg-white" />
-                </div>
+                <span className="text-white text-xs sm:text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Filter</span>
+                <Filter className="w-4 h-4 text-white" />
               </div>
             </div>
 
-            {/* Details Button */}
-            <div className="absolute right-5 bottom-2 h-8 px-3 py-1 rounded-[50px] outline outline-1 outline-offset-[-1px] outline-sky-400 inline-flex justify-center items-center gap-2.5 cursor-pointer hover:bg-sky-50 transition">
-              <div className="text-sky-400 text-base font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Details</div>
-            </div>
+            {/* Table - Responsive */}
+            <div className="flex-1 overflow-x-auto">
+              {/* Table Header */}
+              <div className="bg-blue-50 flex items-center min-w-[500px] px-4 py-2">
+                <div className="w-32 sm:w-40 md:w-48 flex-shrink-0 text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Product</div>
+                <div className="flex-1 text-center text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Total Order</div>
+                <div className="flex-1 text-center text-neutral-500 text-xs font-medium uppercase hidden xs:block" style={{ fontFamily: 'Public Sans, sans-serif' }}>Status</div>
+                <div className="w-20 sm:w-24 flex-shrink-0 text-right text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Price</div>
+              </div>
 
-            {/* Table Header */}
-            <div className="absolute left-5 top-[72px] right-5 bg-blue-50 rounded-lg inline-flex justify-start items-center">
-              <div className="w-60 self-stretch px-5 py-2 flex justify-start items-center gap-1">
-                <div className="flex-1 text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Product</div>
-              </div>
-              <div className="flex-1 self-stretch pl-5 pr-2 py-2 flex justify-start items-center gap-1">
-                <div className="flex-1 text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Total Order</div>
-              </div>
-              <div className="flex-1 self-stretch px-5 py-2 flex justify-start items-center gap-1">
-                <div className="flex-1 text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Status</div>
-              </div>
-              <div className="flex-1 px-5 py-2 flex justify-start items-center gap-1">
-                <div className="flex-1 text-neutral-500 text-xs font-medium uppercase" style={{ fontFamily: 'Public Sans, sans-serif' }}>Price</div>
-              </div>
-            </div>
-
-            {/* Table Body */}
-            <div className="absolute left-5 top-[120px] right-5 bottom-14 overflow-y-auto">
-              {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
-                <div key={item.product.id} className="rounded-lg border-b inline-flex justify-start items-center w-full mb-2">
-                  <div className="w-60 self-stretch pr-5 pb-2 flex justify-start items-center gap-2">
-                    <div className="w-11 h-11 relative rounded-xl overflow-hidden">
-                      {item.product.image ? (
-                        <img className="w-11 h-11 object-cover" src={normalizeImageUrl(item.product.image)} alt={item.product.name} />
-                      ) : (
-                        <div className="w-11 h-11 bg-gray-200 flex items-center justify-center">
-                          <Package className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 text-teal-950 text-base font-bold truncate" style={{ fontFamily: 'Lato, sans-serif' }}>{item.product.name}</div>
-                  </div>
-                  <div className="flex-1 self-stretch pl-5 pr-2 pb-2 flex justify-start items-center gap-1">
-                    <div className="flex-1 text-center text-zinc-800 text-base font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>{item.orders}</div>
-                  </div>
-                  <div className="flex-1 self-stretch px-5 pb-2 flex justify-start items-center gap-1">
-                    <div className="flex-1 flex justify-start items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-                      <div className={`flex-1 text-base font-normal ${(item.product.stock || 0) > 0 ? 'text-green-500' : 'text-red-500'}`} style={{ fontFamily: 'Public Sans, sans-serif' }}>
-                        {(item.product.stock || 0) > 0 ? 'Stock' : 'Stock out'}
+              {/* Table Body */}
+              <div className="flex-1 overflow-y-auto min-w-[500px]">
+                {(bestSellingProducts.length > 0 ? bestSellingProducts : products.slice(0, 4).map(p => ({ product: p, orders: Math.floor(Math.random() * 500) + 50, revenue: p.price || 0 }))).map((item, index) => (
+                  <div key={item.product.id} className="flex items-center px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div className="w-32 sm:w-40 md:w-48 flex-shrink-0 flex items-center gap-2">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 rounded-xl overflow-hidden">
+                        {item.product.image ? (
+                          <img className="w-full h-full object-cover" src={normalizeImageUrl(item.product.image)} alt={item.product.name} />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                          </div>
+                        )}
                       </div>
+                      <div className="flex-1 text-teal-950 text-sm sm:text-base font-bold truncate" style={{ fontFamily: 'Lato, sans-serif' }}>{item.product.name}</div>
                     </div>
+                    <div className="flex-1 text-center text-zinc-800 text-sm sm:text-base font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>{item.orders}</div>
+                    <div className="flex-1 hidden xs:flex items-center justify-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                      <span className={`text-sm sm:text-base font-normal ${(item.product.stock || 0) > 0 ? 'text-green-500' : 'text-red-500'}`} style={{ fontFamily: 'Public Sans, sans-serif' }}>
+                        {(item.product.stock || 0) > 0 ? 'Stock' : 'Out'}
+                      </span>
+                    </div>
+                    <div className="w-20 sm:w-24 flex-shrink-0 text-right text-teal-950 text-sm sm:text-base font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>${(item.product.price || 999).toFixed(2)}</div>
                   </div>
-                  <div className="flex-1 self-stretch px-5 pb-2 flex justify-start items-center gap-1">
-                    <div className="text-right text-teal-950 text-base font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>${(item.product.price || 999).toFixed(2)}</div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end p-3 sm:p-4 border-t border-gray-100">
+              <button className="px-4 py-1.5 rounded-full border border-sky-400 text-sky-400 text-sm font-normal hover:bg-sky-50 transition" style={{ fontFamily: 'Lato, sans-serif' }}>
+                Details
+              </button>
             </div>
           </div>
 
-          {/* Top Products Sidebar - Figma Design */}
-          <div className="h-96 pl-4 py-5 pr-2 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] inline-flex flex-col justify-start items-start gap-4 overflow-hidden">
+          {/* Top Products Sidebar - Responsive Design */}
+          <div className="min-h-[24rem] md:min-h-[20rem] lg:min-h-[24rem] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] flex flex-col overflow-hidden">
             {/* Header & Search */}
-            <div className="w-full pr-2 flex flex-col justify-start items-start gap-3">
-              <div className="self-stretch inline-flex justify-start items-center gap-3">
-                <div className="flex-1 text-zinc-800 text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Top Products</div>
+            <div className="p-4 sm:p-5 border-b border-gray-100">
+              <div className="flex justify-between items-center mb-3">
+                <div className="text-zinc-800 text-base sm:text-lg font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>Top Products</div>
                 <div className="text-sky-400 text-xs font-normal cursor-pointer hover:text-sky-500" style={{ fontFamily: 'Lato, sans-serif' }}>All product</div>
               </div>
-              <div className="self-stretch p-2 bg-neutral-50 rounded-lg outline outline-1 outline-offset-[-1px] outline-neutral-200 inline-flex justify-start items-center gap-1.5 overflow-hidden">
-                <div className="flex justify-start items-center gap-2">
-                  <Search className="w-5 h-5 text-neutral-500" />
-                  <div className="text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Search</div>
-                </div>
+              <div className="p-2 bg-neutral-50 rounded-lg border border-neutral-200 flex items-center gap-2">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-500 flex-shrink-0" />
+                <span className="text-neutral-500 text-sm font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Search</span>
               </div>
             </div>
 
             {/* Product List */}
-            <div className="w-full flex-1 flex flex-col justify-start items-start gap-4 overflow-y-auto pr-2">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 pt-2 space-y-3">
               {topProducts.map((product, index) => (
-                <div key={product.id} className="self-stretch pr-2 pb-2 border-b border-neutral-300 inline-flex justify-start items-center gap-4">
-                  <div className="w-14 h-14 relative rounded-xl overflow-hidden flex-shrink-0">
+                <div key={product.id} className="flex items-center gap-3 pb-3 border-b border-neutral-200 last:border-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 rounded-xl overflow-hidden">
                     {product.image ? (
-                      <img className="w-14 h-14 object-cover" src={normalizeImageUrl(product.image)} alt={product.name} />
+                      <img className="w-full h-full object-cover" src={normalizeImageUrl(product.image)} alt={product.name} />
                     ) : (
-                        <div className="w-14 h-14 bg-gray-200 flex items-center justify-center">
-                          <Package className="w-6 h-6 text-gray-400" />
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <Package className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" />
                       </div>
                     )}
                   </div>
-                  <div className="flex-1 inline-flex flex-col justify-center items-start gap-1 overflow-hidden">
-                    <div className="self-stretch text-teal-950 text-base font-medium truncate" style={{ fontFamily: 'Lato, sans-serif' }}>{product.name}</div>
-                    <div className="self-stretch h-6 relative">
-                      <div className="text-neutral-400 text-xs font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Item: #FXZ-{4567 + index}</div>
-                    </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-teal-950 text-sm sm:text-base font-medium truncate" style={{ fontFamily: 'Lato, sans-serif' }}>{product.name}</div>
+                    <div className="text-neutral-400 text-xs font-normal" style={{ fontFamily: 'Lato, sans-serif' }}>Item: #FXZ-{4567 + index}</div>
                   </div>
-                  <div className="text-right text-teal-950 text-base font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>${(product.price || 99).toFixed(2)}</div>
+                  <div className="text-teal-950 text-sm sm:text-base font-bold flex-shrink-0" style={{ fontFamily: 'Lato, sans-serif' }}>${(product.price || 99).toFixed(2)}</div>
                 </div>
               ))}
 
               {topProducts.length === 0 && (
-                <div className="w-full py-8 text-center">
+                <div className="py-8 text-center">
                   <Package className="w-12 h-12 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-500">No products yet</p>
                 </div>
