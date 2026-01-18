@@ -42,10 +42,10 @@ const formatDate = (d?: string) => d ? new Date(d).toLocaleDateString('en-US', {
 
 // Settings card for navigation
 const SettingsCard: React.FC<{ title: string; icon: React.ReactNode; color: string; onClick: () => void }> = ({ title, icon, color, onClick }) => (
-  <button onClick={onClick} className={`p-5 rounded-xl border ${color} flex items-center gap-4 hover:shadow-md transition group w-full text-left`}>
-    <div className="p-3 rounded-full bg-white/80 shadow-sm group-hover:scale-110 transition">{icon}</div>
-    <div className="flex-1">
-      <h3 className="font-bold text-gray-800">{title}</h3>
+  <button onClick={onClick} className={`p-3 sm:p-5 rounded-lg sm:rounded-xl border ${color} flex items-center gap-3 sm:gap-4 hover:shadow-md transition group w-full text-left active:scale-[0.98]`}>
+    <div className="p-2 sm:p-3 rounded-full bg-white/80 shadow-sm group-hover:scale-110 transition flex-shrink-0">{icon}</div>
+    <div className="flex-1 min-w-0">
+      <h3 className="font-bold text-gray-800 text-sm sm:text-base truncate">{title}</h3>
       <span className="text-xs text-gray-500 flex items-center gap-1">Manage <ArrowRight size={12} /></span>
     </div>
   </button>
@@ -53,23 +53,23 @@ const SettingsCard: React.FC<{ title: string; icon: React.ReactNode; color: stri
 
 // Status banner component
 const Banner: React.FC<{ type: 'success' | 'error'; message: string }> = ({ type, message }) => (
-  <div className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium ${type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'} border`}>
-    {type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-    <span>{message}</span>
+  <div className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium ${type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'} border`}>
+    {type === 'success' ? <CheckCircle size={16} className="flex-shrink-0" /> : <AlertCircle size={16} className="flex-shrink-0" />}
+    <span className="truncate">{message}</span>
   </div>
 );
 
 // Input field component
 const Field: React.FC<{ label: string; icon: React.ReactNode; value: string; onChange?: (v: string) => void; readOnly?: boolean; type?: string; placeholder?: string; textarea?: boolean }> =
 ({ label, icon, value, onChange, readOnly, type = 'text', placeholder, textarea }) => (
-  <div className="space-y-2">
+  <div className="space-y-1.5 sm:space-y-2">
     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</label>
     <div className="relative">
-      <span className="absolute left-3 top-3 text-gray-400">{icon}</span>
+      <span className="absolute left-3 top-2.5 sm:top-3 text-gray-400">{icon}</span>
       {textarea ? (
-        <textarea className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 text-sm h-20 resize-none" value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} />
+        <textarea className="w-full pl-9 pr-4 py-2 sm:py-2.5 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 text-sm h-20 resize-none" value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} />
       ) : (
-        <input type={type} className={`w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm ${readOnly ? 'bg-gray-50 text-gray-500' : 'focus:border-purple-500 focus:ring-2 focus:ring-purple-100'}`} value={value} onChange={e => onChange?.(e.target.value)} readOnly={readOnly} placeholder={placeholder} />
+        <input type={type} className={`w-full pl-9 pr-4 py-2 sm:py-2.5 rounded-lg border border-gray-200 text-sm ${readOnly ? 'bg-gray-50 text-gray-500' : 'focus:border-purple-500 focus:ring-2 focus:ring-purple-100'}`} value={value} onChange={e => onChange?.(e.target.value)} readOnly={readOnly} placeholder={placeholder} />
       )}
     </div>
   </div>
@@ -191,72 +191,78 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
   // Render General Settings content
   const renderGeneralSettings = () => (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] xl:grid-cols-[340px_1fr] gap-4 sm:gap-6">
         {/* Profile Card - Left side */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* User Profile Card */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
             <div className="flex flex-col items-center text-center">
-              <div className="relative mb-4">
-                <img src={avatar} alt="Avatar" className="w-24 h-24 rounded-2xl object-cover border-2 border-gray-100 bg-gray-50" />
+              <div className="relative mb-3 sm:mb-4">
+                <img src={avatar} alt="Avatar" className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl object-cover border-2 border-gray-100 bg-gray-50" />
                 <div className="absolute -bottom-2 -right-2 flex gap-1">
-                  <button onClick={() => openGallery('avatar')} className="bg-white border border-gray-200 text-gray-600 rounded-full p-2 shadow-sm hover:scale-105 transition" title="Choose from Gallery">
-                    <FolderOpen size={14} />
+                  <button onClick={() => openGallery('avatar')} className="bg-white border border-gray-200 text-gray-600 rounded-full p-1.5 sm:p-2 shadow-sm hover:scale-105 transition" title="Choose from Gallery">
+                    <FolderOpen size={12} className="sm:hidden" />
+                    <FolderOpen size={14} className="hidden sm:block" />
                   </button>
-                  <button onClick={() => fileRef.current?.click()} className="bg-white border border-gray-200 text-gray-600 rounded-full p-2 shadow-sm hover:scale-105 transition" title="Upload new">
-                    {avatarLoading ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
+                  <button onClick={() => fileRef.current?.click()} className="bg-white border border-gray-200 text-gray-600 rounded-full p-1.5 sm:p-2 shadow-sm hover:scale-105 transition" title="Upload new">
+                    {avatarLoading ? <Loader2 size={12} className="animate-spin sm:hidden" /> : <Camera size={12} className="sm:hidden" />}
+                    {avatarLoading ? <Loader2 size={14} className="animate-spin hidden sm:block" /> : <Camera size={14} className="hidden sm:block" />}
                   </button>
                 </div>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">{formatRole(user?.role)}</p>
-              <h3 className="text-xl font-bold text-gray-900">{form.name || 'Admin'}</h3>
-              <p className="text-gray-500 text-sm">{form.email}</p>
-              <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs">
-                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full flex items-center gap-1"><Shield size={12} /> {user?.roleId ? 'Custom' : 'Full'}</span>
-                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full flex items-center gap-1"><Clock3 size={12} /> {formatDate(user?.updatedAt)}</span>
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">{formatRole(user?.role)}</p>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">{form.name || 'Admin'}</h3>
+              <p className="text-gray-500 text-xs sm:text-sm truncate max-w-full">{form.email}</p>
+              <div className="mt-2 sm:mt-3 flex flex-wrap justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
+                <span className="bg-gray-100 text-gray-600 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full flex items-center gap-1"><Shield size={10} className="sm:hidden" /><Shield size={12} className="hidden sm:block" /> {user?.roleId ? 'Custom' : 'Full'}</span>
+                <span className="bg-gray-100 text-gray-600 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full flex items-center gap-1"><Clock3 size={10} className="sm:hidden" /><Clock3 size={12} className="hidden sm:block" /> {formatDate(user?.updatedAt)}</span>
               </div>
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-4 text-sm border-t border-gray-100 pt-5">
-              <div><p className="text-gray-400 text-xs mb-1">Username</p><p className="font-medium text-gray-800">{form.username ? `@${form.username}` : 'Not set'}</p></div>
-              <div><p className="text-gray-400 text-xs mb-1">Phone</p><p className="font-medium text-gray-800">{form.phone || 'Not set'}</p></div>
+            <div className="mt-4 sm:mt-6 grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm border-t border-gray-100 pt-4 sm:pt-5">
+              <div><p className="text-gray-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">Username</p><p className="font-medium text-gray-800 truncate">{form.username ? `@${form.username}` : 'Not set'}</p></div>
+              <div><p className="text-gray-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">Phone</p><p className="font-medium text-gray-800 truncate">{form.phone || 'Not set'}</p></div>
             </div>
-            <button onClick={() => setPwModal(true)} className="mt-5 w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:bg-gray-100 transition text-sm font-medium text-gray-700">
-              <span className="flex items-center gap-2"><Lock size={14} /> Change Password</span>
-              <ArrowRight size={14} />
+            <button onClick={() => setPwModal(true)} className="mt-4 sm:mt-5 w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-gray-100 transition text-xs sm:text-sm font-medium text-gray-700">
+              <span className="flex items-center gap-2"><Lock size={12} className="sm:hidden" /><Lock size={14} className="hidden sm:block" /> Change Password</span>
+              <ArrowRight size={12} className="sm:hidden" /><ArrowRight size={14} className="hidden sm:block" />
             </button>
           </div>
 
           {/* Shop Logo Card */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Settings size={18} className="text-emerald-600" /> Shop Info
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
+            <h4 className="font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+              <Settings size={16} className="text-emerald-600 sm:hidden" />
+              <Settings size={18} className="text-emerald-600 hidden sm:block" /> Shop Info
             </h4>
             <div className="flex flex-col items-center">
-              <div className="relative mb-4">
+              <div className="relative mb-3 sm:mb-4">
                 {shopLogo ? (
-                  <img src={shopLogo} alt="Shop Logo" className="w-28 h-28 rounded-xl object-contain border-2 border-gray-100 bg-gray-50 p-2" />
+                  <img src={shopLogo} alt="Shop Logo" className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg sm:rounded-xl object-contain border-2 border-gray-100 bg-gray-50 p-2" />
                 ) : (
-                  <div className="w-28 h-28 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center">
-                    <Camera size={32} className="text-gray-300" />
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg sm:rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center">
+                    <Camera size={28} className="text-gray-300 sm:hidden" />
+                    <Camera size={32} className="text-gray-300 hidden sm:block" />
                   </div>
                 )}
                 <div className="absolute -bottom-2 -right-2 flex gap-1">
-                  <button onClick={() => openGallery('shopLogo')} className="bg-emerald-500 text-white rounded-full p-2 shadow-sm hover:bg-emerald-600 hover:scale-105 transition" title="Choose from Gallery">
-                    <FolderOpen size={14} />
+                  <button onClick={() => openGallery('shopLogo')} className="bg-emerald-500 text-white rounded-full p-1.5 sm:p-2 shadow-sm hover:bg-emerald-600 hover:scale-105 transition" title="Choose from Gallery">
+                    <FolderOpen size={12} className="sm:hidden" />
+                    <FolderOpen size={14} className="hidden sm:block" />
                   </button>
-                  <button onClick={() => shopLogoRef.current?.click()} className="bg-emerald-500 text-white rounded-full p-2 shadow-sm hover:bg-emerald-600 hover:scale-105 transition" title="Upload new">
-                    {shopLogoLoading ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
+                  <button onClick={() => shopLogoRef.current?.click()} className="bg-emerald-500 text-white rounded-full p-1.5 sm:p-2 shadow-sm hover:bg-emerald-600 hover:scale-105 transition" title="Upload new">
+                    {shopLogoLoading ? <Loader2 size={12} className="animate-spin sm:hidden" /> : <Camera size={12} className="sm:hidden" />}
+                    {shopLogoLoading ? <Loader2 size={14} className="animate-spin hidden sm:block" /> : <Camera size={14} className="hidden sm:block" />}
                   </button>
                 </div>
                 <input ref={shopLogoRef} type="file" accept="image/*" className="hidden" onChange={handleShopLogo} />
               </div>
-              <p className="text-sm font-medium text-gray-800">{activeTenant?.name || 'My Shop'}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-800">{activeTenant?.name || 'My Shop'}</p>
               {activeTenant?.subdomain && (
-                <p className="text-xs text-gray-500">{activeTenant.subdomain}.systemnextit.com</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 truncate max-w-full">{activeTenant.subdomain}.systemnextit.com</p>
               )}
               {activeTenant?.plan && (
-                <span className="mt-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 capitalize">
+                <span className="mt-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-emerald-100 text-emerald-700 capitalize">
                   {activeTenant.plan} Plan
                 </span>
               )}
@@ -265,7 +271,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
         </div>
 
         {/* Profile Form - Right side */}
-        <form onSubmit={handleSave} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
+        <form onSubmit={handleSave} className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-5">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-lg font-bold text-gray-800">Profile Details</h3>
@@ -275,19 +281,19 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
 
           {status && <Banner type={status.type} message={status.msg} />}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Field label="Full Name" icon={<UserCircle size={16} />} value={form.name} onChange={v => setForm({ ...form, name: v })} />
             <Field label="Username" icon={<AtSign size={16} />} value={form.username} onChange={v => setForm({ ...form, username: v.toLowerCase().replace(/\s/g, '') })} placeholder="john.doe" />
             <Field label="Email" icon={<Mail size={16} />} value={form.email} readOnly />
             <Field label="Phone" icon={<Phone size={16} />} value={form.phone} onChange={v => setForm({ ...form, phone: v })} placeholder="+880 1XXX-XXXXXX" />
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2">
               <Field label="Address" icon={<MapPin size={16} />} value={form.address} onChange={v => setForm({ ...form, address: v })} textarea placeholder="Street, City, Postal Code" />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
-            <button type="button" onClick={() => { if (user) { setForm({ name: user.name || '', username: user.username || '', email: user.email || '', phone: user.phone || '', address: user.address || '' }); setAvatar(user.image || DEFAULT_AVATAR); } }} className="px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-50">Reset</button>
-            <button type="submit" disabled={saving} className="px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8] shadow-lg shadow-purple-200 flex items-center gap-2">
+          <div className="flex flex-col xs:flex-row justify-end gap-2 sm:gap-3 pt-2 border-t border-gray-100">
+            <button type="button" onClick={() => { if (user) { setForm({ name: user.name || '', username: user.username || '', email: user.email || '', phone: user.phone || '', address: user.address || '' }); setAvatar(user.image || DEFAULT_AVATAR); } }} className="px-4 sm:px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-50 text-sm order-2 xs:order-1">Reset</button>
+            <button type="submit" disabled={saving} className="px-4 sm:px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8] shadow-lg shadow-purple-200 flex items-center justify-center gap-2 text-sm order-1 xs:order-2">
               {saving ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : 'Save Changes'}
             </button>
           </div>
@@ -295,51 +301,51 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
       </div>
 
       {/* System Settings */}
-      <section className="mt-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-bold text-gray-800">System Settings</h3>
-          <p className="text-sm text-gray-500">Configure your store settings</p>
+      <section className="mt-4 sm:mt-6">
+        <div className="mb-3 sm:mb-4">
+          <h3 className="text-base sm:text-lg font-bold text-gray-800">System Settings</h3>
+          <p className="text-xs sm:text-sm text-gray-500">Configure your store settings</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <SettingsCard title="Delivery Charge" icon={<Truck size={22} className="text-blue-600" />} color="bg-blue-50 border-blue-100 hover:border-blue-300" onClick={() => onNavigate('settings_delivery')} />
-          <SettingsCard title="Courier API" icon={<Settings size={22} className="text-purple-600" />} color="bg-purple-50 border-purple-100 hover:border-purple-300" onClick={() => onNavigate('settings_courier')} />
-          <SettingsCard title="Facebook Pixel" icon={<Facebook size={22} className="text-blue-700" />} color="bg-blue-50 border-blue-100 hover:border-blue-300" onClick={() => onNavigate('settings_facebook_pixel')} />
-          <SettingsCard title="Google Tag Manager" icon={<Code size={22} className="text-blue-500" />} color="bg-sky-50 border-sky-100 hover:border-sky-300" onClick={() => onNavigate('settings_gtm')} />
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <SettingsCard title="Delivery Charge" icon={<Truck size={20} className="text-blue-600" />} color="bg-blue-50 border-blue-100 hover:border-blue-300" onClick={() => onNavigate('settings_delivery')} />
+          <SettingsCard title="Courier API" icon={<Settings size={20} className="text-purple-600" />} color="bg-purple-50 border-purple-100 hover:border-purple-300" onClick={() => onNavigate('settings_courier')} />
+          <SettingsCard title="Facebook Pixel" icon={<Facebook size={20} className="text-blue-700" />} color="bg-blue-50 border-blue-100 hover:border-blue-300" onClick={() => onNavigate('settings_facebook_pixel')} />
+          <SettingsCard title="Google Tag Manager" icon={<Code size={20} className="text-blue-500" />} color="bg-sky-50 border-sky-100 hover:border-sky-300" onClick={() => onNavigate('settings_gtm')} />
         </div>
       </section>
     </>
   );
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-4 sm:space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
-        <p className="text-sm text-gray-500">Manage your profile, users, and subscription</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Settings</h2>
+        <p className="text-xs sm:text-sm text-gray-500">Manage your profile, users, and subscription</p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <div className="flex gap-1 -mb-px">
+      <div className="border-b border-gray-200 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-0.5 sm:gap-1 -mb-px min-w-max">
           {TABS.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-purple-600 text-purple-600 bg-purple-50/50'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
               {tab.icon}
-              {tab.label}
+              <span className="hidden xs:inline">{tab.label}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Tab Content */}
-      <div className="min-h-[400px]">
+      <div className="min-h-[300px] sm:min-h-[400px]">
         {activeTab === 'general' && renderGeneralSettings()}
         
         {activeTab === 'admin_control' && (
@@ -369,25 +375,25 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
 
       {/* Password Modal */}
       {pwModal && (
-        <div className="fixed inset-0 z-[120] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-            <div className="p-5 border-b flex justify-between items-center">
+        <div className="fixed inset-0 z-[120] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md shadow-2xl">
+            <div className="p-4 sm:p-5 border-b flex justify-between items-center">
               <div>
-                <h4 className="font-bold text-gray-800">Change Password</h4>
-                <p className="text-sm text-gray-500">Use a strong, unique password</p>
+                <h4 className="font-bold text-gray-800 text-sm sm:text-base">Change Password</h4>
+                <p className="text-xs sm:text-sm text-gray-500">Use a strong, unique password</p>
               </div>
-              <button onClick={() => setPwModal(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+              <button onClick={() => setPwModal(false)} className="text-gray-400 hover:text-gray-600 text-xl p-1">×</button>
             </div>
-            <form onSubmit={handlePassword} className="p-5 space-y-4">
+            <form onSubmit={handlePassword} className="p-4 sm:p-5 space-y-3 sm:space-y-4">
               {pwStatus && <Banner type={pwStatus.type} message={pwStatus.msg} />}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div><label className="text-xs font-semibold text-gray-500 uppercase">Current Password</label><input type="password" className="w-full mt-1 px-3 py-2 rounded-lg border text-sm" value={pwForm.current} onChange={e => setPwForm({ ...pwForm, current: e.target.value })} /></div>
                 <div><label className="text-xs font-semibold text-gray-500 uppercase">New Password</label><input type="password" className="w-full mt-1 px-3 py-2 rounded-lg border text-sm" value={pwForm.next} onChange={e => setPwForm({ ...pwForm, next: e.target.value })} placeholder="Min 6 characters" /></div>
                 <div><label className="text-xs font-semibold text-gray-500 uppercase">Confirm Password</label><input type="password" className="w-full mt-1 px-3 py-2 rounded-lg border text-sm" value={pwForm.confirm} onChange={e => setPwForm({ ...pwForm, confirm: e.target.value })} /></div>
               </div>
-              <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setPwModal(false)} className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50">Cancel</button>
-                <button type="submit" className="px-5 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save</button>
+              <div className="flex flex-col-reverse xs:flex-row justify-end gap-2 sm:gap-3 pt-2">
+                <button type="button" onClick={() => setPwModal(false)} className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50 text-sm">Cancel</button>
+                <button type="submit" className="px-5 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:from-[#2BAEE8] hover:to-[#1A7FE8] text-sm">Save</button>
               </div>
             </form>
           </div>
