@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   ArrowRight,
-  Truck, Settings, Facebook, Code
+  Truck, Settings, Facebook, Code, Shield
 } from 'lucide-react';
 import { CourierConfig, User as UserType, Tenant, Role } from '../types';
 
@@ -92,6 +92,13 @@ const AdminSettingsNew: React.FC<AdminSettingsNewProps> = ({
             icon={<Code size={20} className="text-sky-500" />} 
             color="bg-sky-50 border-sky-100 hover:border-sky-300" 
             onClick={() => onNavigate('settings_gtm')} 
+          />
+          <SettingsCard 
+            title="Admin Control" 
+            description="Manage users, roles & permissions"
+            icon={<Shield size={20} className="text-emerald-600" />} 
+            color="bg-emerald-50 border-emerald-100 hover:border-emerald-300" 
+            onClick={() => onNavigate('admin')} 
           />
         </div>
       </div>
