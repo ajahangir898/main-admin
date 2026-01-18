@@ -366,56 +366,62 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="flex flex-col gap-4">
+          {/* Title */}
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              <Activity className="w-6 h-6 text-indigo-500" />
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-500" />
               Activity Log
             </h1>
-            <p className="text-gray-500 text-sm mt-1">Track all system activities and changes</p>
+            <p className="text-gray-500 text-xs sm:text-sm mt-1">Track all system activities and changes</p>
           </div>
 
-          {/* Filters Row */}
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Date Range */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
+          {/* Filters Row - Responsive */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+            {/* Date Range - Stack on mobile */}
+            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
+              <div className="relative flex-1 xs:flex-initial">
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full xs:w-auto pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Start date"
                 />
               </div>
-              <span className="text-gray-400">to</span>
-              <div className="relative">
+              <span className="text-gray-400 hidden xs:inline">to</span>
+              <div className="relative flex-1 xs:flex-initial">
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full xs:w-auto pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="End date"
                 />
               </div>
             </div>
 
+            {/* Dropdowns Row */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+
             {/* Resource Type Dropdown */}
-            <div className="relative dropdown-container">
+            <div className="relative dropdown-container flex-1 xs:flex-initial min-w-[120px]">
               <button
                 onClick={() => {
                   setShowTypeDropdown(!showTypeDropdown);
                   setShowActionDropdown(false);
                   setShowItemsDropdown(false);
                 }}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between gap-2 px-3 sm:px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
               >
-                <Filter className="w-4 h-4 text-gray-400" />
-                <span>{resourceTypes.find(t => t.value === resourceTypeFilter)?.label || 'All Type'}</span>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showTypeDropdown ? 'rotate-180' : ''}`} />
+                <div className="flex items-center gap-2 truncate">
+                  <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="truncate">{resourceTypes.find(t => t.value === resourceTypeFilter)?.label || 'All Type'}</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${showTypeDropdown ? 'rotate-180' : ''}`} />
               </button>
               {showTypeDropdown && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
@@ -438,18 +444,20 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
             </div>
 
             {/* Action Type Dropdown */}
-            <div className="relative dropdown-container">
+            <div className="relative dropdown-container flex-1 xs:flex-initial min-w-[120px]">
               <button
                 onClick={() => {
                   setShowActionDropdown(!showActionDropdown);
                   setShowTypeDropdown(false);
                   setShowItemsDropdown(false);
                 }}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between gap-2 px-3 sm:px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
               >
-                <Activity className="w-4 h-4 text-gray-400" />
-                <span>{actionTypes.find(a => a.value === actionTypeFilter)?.label || 'All Actions'}</span>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showActionDropdown ? 'rotate-180' : ''}`} />
+                <div className="flex items-center gap-2 truncate">
+                  <Activity className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="truncate">{actionTypes.find(a => a.value === actionTypeFilter)?.label || 'All Actions'}</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${showActionDropdown ? 'rotate-180' : ''}`} />
               </button>
               {showActionDropdown && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
@@ -478,9 +486,9 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                   setShowTypeDropdown(false);
                   setShowActionDropdown(false);
                 }}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition-colors"
               >
-                <span>{itemsPerPage} Items</span>
+                <span>{itemsPerPage} <span className="hidden xs:inline">Items</span></span>
                 <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showItemsDropdown ? 'rotate-180' : ''}`} />
               </button>
               {showItemsDropdown && (
@@ -505,10 +513,10 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
             {/* Clear Filter Button */}
             <button
               onClick={clearFilters}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition-colors"
+              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition-colors"
             >
               <X className="w-4 h-4" />
-              Clear filter
+              <span className="hidden xs:inline">Clear filter</span>
             </button>
 
             {/* Refresh Button */}
@@ -518,6 +526,7 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
+            </div>
           </div>
         </div>
       </div>
@@ -527,41 +536,91 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
         {loading ? (
           <ActivityLogSkeleton />
         ) : logs.length === 0 ? (
-          <div className="p-8 text-center">
-            <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-gray-700 mb-1">No Activity Logs Found</h3>
-            <p className="text-gray-500 text-sm">No logs match your current filters</p>
+          <div className="p-6 sm:p-8 text-center">
+            <Activity className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-3" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-1">No Activity Logs Found</h3>
+            <p className="text-gray-500 text-xs sm:text-sm">No logs match your current filters</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">SL</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Entity</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Vendor</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date & Time</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {logs.map((log, index) => (
+                <div key={log._id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      log.resourceType === 'inventory' ? 'bg-emerald-100' : 'bg-gray-100'
+                    }`}>
+                      {getActionIcon(log.actionType, log.resourceType)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-sm font-medium text-gray-700">
+                          {log.resourceType === 'inventory' 
+                            ? 'Inventory_update' 
+                            : `${log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)}_${log.actionType}`
+                          }
+                        </span>
+                        {isBulkAction(log.actionType) && (
+                          <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                            Bulk
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        {getResourceIcon(log.resourceType)}
+                        <p className="text-xs font-medium text-gray-800 truncate">
+                          {log.resourceName || `${log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)} ${log.resourceId?.slice(-4) || ''}`}
+                        </p>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        {renderInventoryDetails(log)}
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                            <span className="text-white text-[10px] font-medium">{log.userName?.charAt(0).toUpperCase() || 'U'}</span>
+                          </div>
+                          <span>{log.userName}</span>
+                        </div>
+                        <span>{formatDateTime(log.createdAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">SL</th>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Entity</th>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Vendor</th>
+                    <th className="text-left py-3 sm:py-4 px-4 sm:px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date & Time</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
                 {logs.map((log, index) => (
                   <tr key={log._id} className="hover:bg-gray-50 transition-colors">
                     {/* SL */}
-                    <td className="py-4 px-6">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
                       <span className="text-sm text-gray-600">{(currentPage - 1) * itemsPerPage + index + 1}</span>
                     </td>
                     
                     {/* Action */}
-                    <td className="py-4 px-6">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
                       <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                           log.resourceType === 'inventory' ? 'bg-emerald-100' : 'bg-gray-100'
                         }`}>
                           {getActionIcon(log.actionType, log.resourceType)}
                         </div>
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-xs sm:text-sm font-medium text-gray-700">
                           {log.resourceType === 'inventory' 
                             ? 'Inventory_update' 
                             : `${log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)}_${log.actionType}`
@@ -571,11 +630,11 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     </td>
                     
                     {/* Entity */}
-                    <td className="py-4 px-6">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
                       <div className="flex items-center gap-2">
                         {getResourceIcon(log.resourceType)}
                         <div>
-                          <p className="text-sm font-medium text-gray-800">
+                          <p className="text-xs sm:text-sm font-medium text-gray-800">
                             {log.resourceName || `${log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)} ${log.resourceId?.slice(-4) || ''}`}
                           </p>
                           <p className="text-xs text-gray-400">{log.resourceType.charAt(0).toUpperCase() + log.resourceType.slice(1)}</p>
@@ -584,8 +643,8 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     </td>
                     
                     {/* Description */}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-2 max-w-sm">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
+                      <div className="flex items-center gap-2 max-w-xs lg:max-w-sm">
                         {renderInventoryDetails(log)}
                         {isBulkAction(log.actionType) && (
                           <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
@@ -596,44 +655,45 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     </td>
                     
                     {/* Vendor */}
-                    <td className="py-4 px-6">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
                           <span className="text-white text-xs font-medium">{log.userName?.charAt(0).toUpperCase() || 'U'}</span>
                         </div>
-                        <span className="text-sm text-gray-600">{log.userName}</span>
+                        <span className="text-xs sm:text-sm text-gray-600">{log.userName}</span>
                       </div>
                     </td>
                     
                     {/* Date & Time */}
-                    <td className="py-4 px-6">
-                      <span className="text-sm text-gray-500">{formatDateTime(log.createdAt)}</span>
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
+                      <span className="text-xs sm:text-sm text-gray-500">{formatDateTime(log.createdAt)}</span>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50">
-            <div className="text-sm text-gray-500">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-gray-50">
+            <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
               Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4 text-gray-600" />
               </button>
               
               {/* Page Numbers */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -650,7 +710,7 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                         currentPage === pageNum
                           ? 'bg-indigo-500 text-white'
                           : 'hover:bg-white text-gray-600'
@@ -665,7 +725,7 @@ const AdminActivityLog: React.FC<AdminActivityLogProps> = ({ tenantId }) => {
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
