@@ -106,14 +106,14 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
     }
   };
 
-  // Responsive star sizes for different breakpoints
+  // Responsive star sizes using CSS classes for different breakpoints
   const renderStars = (currentRating: number, onRate?: (r: number) => void, onHover?: (r: number) => void, size: 'sm' | 'md' | 'lg' = 'md') => {
     const displayRating = onHover && hoverRating > 0 ? hoverRating : currentRating;
-    // Responsive sizes: smaller on mobile, larger on desktop
-    const sizeMap = { 
-      sm: { mobile: 12, desktop: 14 }, 
-      md: { mobile: 16, desktop: 20 }, 
-      lg: { mobile: 24, desktop: 32 } 
+    // Responsive size classes: mobile first, then desktop override
+    const sizeClasses = { 
+      sm: 'w-3 h-3 sm:w-3.5 sm:h-3.5', 
+      md: 'w-4 h-4 sm:w-5 sm:h-5', 
+      lg: 'w-6 h-6 sm:w-8 sm:h-8' 
     };
 
     return (
@@ -131,15 +131,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
             aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
           >
             <Star
-              size={sizeMap[size].mobile}
-              className={`sm:hidden transition-colors ${star <= displayRating
-                ? 'fill-amber-400 text-amber-400'
-                : 'text-gray-300'
-                }`}
-            />
-            <Star
-              size={sizeMap[size].desktop}
-              className={`hidden sm:block transition-colors ${star <= displayRating
+              className={`${sizeClasses[size]} transition-colors ${star <= displayRating
                 ? 'fill-amber-400 text-amber-400'
                 : 'text-gray-300'
                 }`}
@@ -238,8 +230,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               onChange={(e) => setHeadline(e.target.value)}
               placeholder="Summarize your experience..."
               maxLength={100}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all touch-manipulation"
-              style={{ fontSize: '16px' }} /* Prevents iOS zoom on focus */
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-[16px] sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all touch-manipulation"
             />
           </div>
 
@@ -255,8 +246,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               rows={4}
               minLength={10}
               required
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all touch-manipulation"
-              style={{ fontSize: '16px' }} /* Prevents iOS zoom on focus */
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-[16px] sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all touch-manipulation"
             />
             <p className="text-[10px] sm:text-xs text-gray-500 mt-1">{comment.length}/500 characters</p>
           </div>
