@@ -950,114 +950,130 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   const isListLikeView = viewMode === 'list';  // details mode now uses table view
 
     return (
-    <div className="space-y-4 animate-fade-in relative">
-      {/* Header Section - Figma Design */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-xl font-bold text-teal-950 tracking-tight" style={{fontFamily: "Lato"}}>Products</h2>
-        <div className="flex items-center gap-3 flex-wrap">
+    <div className="space-y-3 sm:space-y-4 animate-fade-in relative">
+      {/* Header Section - Responsive Design */}
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <h2 className="text-lg sm:text-xl font-bold text-teal-950 tracking-tight" style={{fontFamily: "Lato"}}>Products</h2>
+          
+          {/* Add Product Button - Always visible */}
+          <button 
+            onClick={() => handleOpenModal()}
+            className="sm:hidden h-10 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center justify-center gap-1.5 text-white text-sm font-bold hover:opacity-90 transition w-full"
+          >
+            <Plus size={16} /> Add Product
+          </button>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           {/* Search Input */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-none">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search products/SKU"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-52 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
+              className="w-full sm:w-52 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#2DD4BF]/20 focus:border-[#2DD4BF]"
             />
           </div>
-          <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
-            Search
-          </button>
-          {/* Deep Search Checkbox */}
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isDeepSearchOpen}
-              onChange={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
-              className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF]"
-            />
-            <span className="text-sm text-gray-600">Deep Search</span>
-          </label>
-          {/* Add Product Button */}
+          
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-50 transition">
+              Search
+            </button>
+            {/* Deep Search Checkbox */}
+            <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer flex-shrink-0">
+              <input
+                type="checkbox"
+                checked={isDeepSearchOpen}
+                onChange={() => setIsDeepSearchOpen(!isDeepSearchOpen)}
+                className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF]"
+              />
+              <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Deep Search</span>
+            </label>
+          </div>
+          
+          {/* Add Product Button - Desktop */}
           <button 
             onClick={() => handleOpenModal()}
-            className="h-12 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center gap-1 text-white text-base font-bold hover:opacity-90 transition"
+            className="hidden sm:flex h-10 sm:h-12 px-3 sm:px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg items-center gap-1 text-white text-sm sm:text-base font-bold hover:opacity-90 transition flex-shrink-0"
           >
             <Plus size={16} /> Add Product
           </button>
         </div>
       </div>
 
-      {/* Toolbar Row - Figma Design */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      {/* Toolbar Row - Responsive Design */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         {/* Left Side - Import/Export/Items Per Page */}
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
-            <Upload size={16} /> Import
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-hide -mx-1 px-1">
+          <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 hover:bg-gray-50 transition whitespace-nowrap flex-shrink-0">
+            <Upload size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Import</span>
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
-            <Download size={16} /> Export
+          <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 hover:bg-gray-50 transition whitespace-nowrap flex-shrink-0">
+            <Download size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Export</span>
           </button>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select 
               value={itemsPerPage}
               onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
+              className="appearance-none px-2 sm:px-3 py-1.5 sm:py-2 pr-6 sm:pr-8 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
             >
-              <option value={10}>10 Products</option>
-              <option value={25}>25 Products</option>
-              <option value={50}>50 Products</option>
-              <option value={100}>100 Products</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
             </select>
-            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={12} className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none sm:w-3.5 sm:h-3.5" />
           </div>
         </div>
+        
         {/* Right Side - Filters */}
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-hide -mx-1 px-1">
+          <span className="hidden sm:flex items-center gap-2 text-sm text-gray-500 flex-shrink-0">
             <Filter size={16} /> Filter:
           </span>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
-              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
+              className="appearance-none px-2 sm:px-3 py-1.5 sm:py-2 pr-6 sm:pr-8 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
-              <option value="">All Category</option>
+              <option value="">Category</option>
               {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
-            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={12} className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none sm:w-3.5 sm:h-3.5" />
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
-              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
+              className="appearance-none px-2 sm:px-3 py-1.5 sm:py-2 pr-6 sm:pr-8 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterBrand}
               onChange={(e) => setFilterBrand(e.target.value)}
             >
-              <option value="">All Brands</option>
+              <option value="">Brand</option>
               {brands.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}
             </select>
-            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={12} className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none sm:w-3.5 sm:h-3.5" />
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
-              className="appearance-none px-3 py-2 pr-8 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
+              className="appearance-none px-2 sm:px-3 py-1.5 sm:py-2 pr-6 sm:pr-8 border border-gray-200 rounded-lg text-xs sm:text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 bg-white"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
-              <option value="">All Status</option>
+              <option value="">Status</option>
               <option value="Active">Publish</option>
               <option value="Draft">Draft</option>
             </select>
-            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <ChevronDown size={12} className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none sm:w-3.5 sm:h-3.5" />
           </div>
         </div>
       </div>
 
       {/* Deep Search Panel */}
       {isDeepSearchOpen && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
               <Filter className="text-teal-500" size={20} />
@@ -1159,52 +1175,52 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                   // Search is applied automatically via filteredProducts
                   toast.success(`Found ${filteredProducts.length} products`);
                 }}
-                className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition flex items-center gap-2"
+                className="px-3 sm:px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition flex items-center gap-1.5 sm:gap-2 text-sm"
               >
-                <Search size={16} />
-                Apply Search
+                <Search size={14} className="sm:w-4 sm:h-4" />
+                Apply
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Bulk Actions Floating Bar */}
+      {/* Bulk Actions Floating Bar - Mobile Optimized */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-6 py-3 rounded-xl shadow-xl border border-gray-200 z-50 flex items-center gap-6 animate-in slide-in-from-bottom-4">
-           <span className="font-bold text-sm bg-teal-500 text-white px-3 py-1 rounded-lg">{selectedIds.length} Selected</span>
+        <div className="fixed bottom-4 sm:bottom-6 left-2 right-2 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 bg-white text-gray-800 px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-xl border border-gray-200 z-50 flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-6 animate-in slide-in-from-bottom-4">
+           <span className="font-bold text-xs sm:text-sm bg-teal-500 text-white px-2 sm:px-3 py-1 rounded-lg">{selectedIds.length} Selected</span>
            
-           <div className="h-6 w-px bg-gray-200"></div>
+           <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
            
-           <div className="flex items-center gap-2">
+           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
               <button 
                 onClick={() => setBulkAction('category')}
-                className="flex items-center gap-2 hover:text-teal-600 transition text-sm font-medium"
+                className="flex items-center gap-1 sm:gap-2 hover:text-teal-600 transition text-xs sm:text-sm font-medium px-2 py-1"
               >
-                <Layers size={16} /> Category
+                <Layers size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Category</span>
               </button>
               <button 
                 onClick={() => setBulkAction('discount')}
-                className="flex items-center gap-2 hover:text-purple-300 transition text-sm font-medium"
+                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 transition text-xs sm:text-sm font-medium px-2 py-1"
               >
-                <Percent size={16} /> Discount
+                <Percent size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Discount</span>
               </button>
               <button 
                 onClick={() => setBulkAction('status')}
-                className="flex items-center gap-2 hover:text-purple-300 transition text-sm font-medium"
+                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 transition text-xs sm:text-sm font-medium px-2 py-1"
               >
-                <CheckCircle size={16} /> Status
+                <CheckCircle size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Status</span>
               </button>
               <button 
                 onClick={executeBulkDelete}
-                className="flex items-center gap-2 text-red-400 hover:text-red-300 transition text-sm font-medium ml-2"
+                className="flex items-center gap-1 sm:gap-2 text-red-500 hover:text-red-600 transition text-xs sm:text-sm font-medium px-2 py-1"
               >
-                <Trash2 size={16} /> Delete
+                <Trash2 size={14} className="sm:w-4 sm:h-4" /> <span className="hidden xs:inline">Delete</span>
               </button>
            </div>
 
-           <button onClick={() => setSelectedIds([])} className="bg-gray-700 rounded-full p-1 hover:bg-gray-600 ml-2">
-             <X size={14} />
+           <button onClick={() => setSelectedIds([])} className="bg-gray-200 rounded-full p-1 hover:bg-gray-300 transition">
+             <X size={12} className="sm:w-3.5 sm:h-3.5" />
            </button>
         </div>
       )}
@@ -1213,7 +1229,128 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
       {viewMode === 'details' ? (
         /* Table View for Details Mode */
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-20">
-          <div className="overflow-x-auto overflow-y-visible">
+          {/* Mobile Card View */}
+          <div className="lg:hidden">
+            {/* Mobile Select All */}
+            {paginatedProducts.length > 0 && (
+              <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-b from-sky-400/25 to-blue-500/25 rounded-t-xl">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === paginatedProducts.length && paginatedProducts.length > 0}
+                    onChange={() => {
+                      if (selectedIds.length === paginatedProducts.length) {
+                        setSelectedIds([]);
+                      } else {
+                        setSelectedIds(paginatedProducts.map(p => p.id));
+                      }
+                    }}
+                    className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] cursor-pointer"
+                  />
+                  <span className="text-xs sm:text-sm font-medium text-black">Select All</span>
+                </label>
+                <span className="text-xs text-gray-500">{paginatedProducts.length} items</span>
+              </div>
+            )}
+
+            {/* Mobile Product Cards */}
+            <div className="divide-y divide-gray-100">
+              {paginatedProducts.map((product, index) => {
+                const isSelected = selectedIds.includes(product.id);
+                const isDraftProduct = (product as any)._isDraft;
+                const draftId = (product as any)._draftId;
+                const productKey = isDraftProduct ? draftId : product.id;
+
+                return (
+                  <div 
+                    key={productKey}
+                    className={`p-3 transition ${isSelected ? 'bg-[#E6F7F5]' : ''} ${isDraftProduct ? 'border-l-4 border-l-yellow-500' : ''}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelection(product.id)}
+                        className="w-4 h-4 text-[#2DD4BF] rounded border-gray-300 focus:ring-[#2DD4BF] cursor-pointer mt-1 flex-shrink-0"
+                      />
+                      <div className="relative w-14 h-14 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                        <img 
+                          src={normalizeImageUrl(product.image || product.galleryImages?.[0])} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover"
+                        />
+                        {isDraftProduct && (
+                          <span className="absolute top-0 left-0 bg-yellow-500 text-white text-[8px] px-1 rounded-br">
+                            DRAFT
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                        <p className="text-xs text-gray-500">SKU: {product.sku || 'prl23456'}</p>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <span className="text-[10px] font-medium text-[#2DD4BF] bg-[#E6F7F5] px-1.5 py-0.5 rounded-full">
+                            {product.category || '—'}
+                          </span>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${isDraftProduct ? 'bg-yellow-100 text-yellow-700' : 'bg-[#E6F7F5] text-[#2DD4BF]'}`}>
+                            {isDraftProduct ? 'Draft' : 'Publish'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="relative flex-shrink-0" data-action-dropdown>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenActionDropdown(openActionDropdown === productKey ? null : productKey);
+                          }}
+                          className="p-1.5 hover:bg-gray-100 rounded-lg transition"
+                        >
+                          <MoreVertical size={16} className="text-gray-500" />
+                        </button>
+                        {openActionDropdown === productKey && (
+                          <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenModal(product as any);
+                                setOpenActionDropdown(null);
+                              }}
+                              className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                              <Edit size={12} /> Edit
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(product.id, isDraftProduct, draftId);
+                                setOpenActionDropdown(null);
+                              }}
+                              className="w-full px-3 py-2 text-left text-xs text-red-600 hover:bg-red-50 flex items-center gap-2"
+                            >
+                              <Trash2 size={12} /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="py-12 text-center text-gray-500 flex flex-col items-center justify-center">
+                <Search size={40} className="text-gray-300 mb-4" />
+                <p className="font-medium text-base">No products found</p>
+                <p className="text-sm mb-4">Try adjusting your search or filters</p>
+                <button onClick={resetFilters} className="text-[#2DD4BF] font-bold hover:underline text-sm">Clear Filters</button>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto overflow-y-visible">
             <table className="w-full">
               <thead className="h-12 bg-gradient-to-b from-sky-400/25 to-blue-500/25">
                 <tr>
@@ -1359,45 +1496,47 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               </tbody>
             </table>
           </div>
+          {/* Desktop empty state already handled by table tbody */}
           {filteredProducts.length === 0 && (
-            <div className="py-12 text-center text-gray-500 flex flex-col items-center justify-center">
+            <div className="hidden lg:flex py-12 text-center text-gray-500 flex-col items-center justify-center">
               <Search size={48} className="text-gray-300 mb-4" />
               <p className="font-medium text-lg">No products found</p>
               <p className="text-sm mb-4">Try adjusting your search or filters</p>
               <button onClick={resetFilters} className="text-[#2DD4BF] font-bold hover:underline">Clear Filters</button>
             </div>
           )}
-          {/* Pagination - Figma Design */}
+          {/* Pagination - Mobile Optimized */}
           {filteredProducts.length > 0 && totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-4 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-3 sm:px-4 py-3 sm:py-4 border-t border-gray-200">
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className={`h-10 pl-2 pr-3 py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-base font-medium ${
+                className={`h-8 sm:h-10 px-2 sm:pl-2 sm:pr-3 py-1.5 sm:py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-sm sm:text-base font-medium ${
                   currentPage === 1
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                ← Previous
+                <span className="hidden sm:inline">←</span> Previous
               </button>
-              <div className="flex items-center gap-1">
-                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+              <div className="flex items-center gap-0.5 sm:gap-1">
+                {[...Array(Math.min(3, totalPages))].map((_, i) => {
                   let pageNum;
-                  if (totalPages <= 5) {
+                  const maxVisible = 3;
+                  if (totalPages <= maxVisible) {
                     pageNum = i + 1;
-                  } else if (currentPage <= 3) {
+                  } else if (currentPage <= 2) {
                     pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
+                  } else if (currentPage >= totalPages - 1) {
+                    pageNum = totalPages - 2 + i;
                   } else {
-                    pageNum = currentPage - 2 + i;
+                    pageNum = currentPage - 1 + i;
                   }
                   return (
                     <button
                       key={i}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`min-w-[36px] h-9 px-3 text-sm font-medium rounded-lg transition ${
+                      className={`min-w-[28px] sm:min-w-[36px] h-7 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm font-medium rounded-lg transition ${
                         currentPage === pageNum
                           ? 'bg-sky-100 text-blue-500 font-bold'
                           : 'text-teal-950 border border-neutral-300 hover:bg-gray-100'
@@ -1407,12 +1546,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
                     </button>
                   );
                 })}
-                {totalPages > 5 && currentPage < totalPages - 2 && (
+                {totalPages > 3 && currentPage < totalPages - 1 && (
                   <>
-                    <span className="px-2 text-gray-400">.....</span>
+                    <span className="px-1 sm:px-2 text-gray-400 text-xs">...</span>
                     <button
                       onClick={() => setCurrentPage(totalPages)}
-                      className="min-w-[36px] h-9 px-3 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                      className="min-w-[28px] sm:min-w-[36px] h-7 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition"
                     >
                       {totalPages}
                     </button>
@@ -1422,13 +1561,13 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className={`h-10 pl-2 pr-3 py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-base font-medium ${
+                className={`h-8 sm:h-10 px-2 sm:pl-2 sm:pr-3 py-1.5 sm:py-2.5 bg-white rounded-lg shadow-sm flex items-center gap-1 text-sm sm:text-base font-medium ${
                   currentPage === totalPages
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                Next →
+                Next <span className="hidden sm:inline">→</span>
               </button>
             </div>
           )}
