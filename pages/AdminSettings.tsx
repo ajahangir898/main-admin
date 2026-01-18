@@ -2,20 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Truck, CheckCircle, AlertCircle, Facebook, Settings, 
   Camera, Loader2, Code, FolderOpen, ArrowRight,
-  DollarSign
+  Shield
 } from 'lucide-react';
 import { CourierConfig, User, Tenant, Role } from '../types';
 import { convertFileToWebP } from '../services/imageUtils';
 import { GalleryPicker } from '../components/GalleryPicker';
 import AdminControl from './AdminControlNew';
-import AdminBilling from './AdminBilling';
 
 interface AdminSettingsProps {
   courierConfig: CourierConfig;
   onUpdateCourierConfig: (config: CourierConfig) => void;
   onNavigate: (page: string) => void;
   user?: User | null;
-  onUpdateProfile?: (updatedUser: User) => void;
   activeTenant?: Tenant | null;
   logo?: string | null;
   onUpdateLogo?: (logo: string | null) => void;
@@ -30,8 +28,6 @@ interface AdminSettingsProps {
   onDeleteRole?: (roleId: string) => Promise<void>;
   onUpdateUserRole?: (userEmail: string, roleId: string) => Promise<void>;
   userPermissions?: Record<string, string[]>;
-  // Props for Billing
-  onUpgrade?: () => void;
 }
 
 // Settings card for navigation
@@ -54,19 +50,17 @@ const Banner: React.FC<{ type: 'success' | 'error'; message: string }> = ({ type
 );
 
 // Tab types
-type SettingsTab = 'general' | 'admin_control' | 'billing';
+type SettingsTab = 'general' | 'admin_control';
 
 const TABS: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
   { id: 'general', label: 'General Settings', icon: <Settings size={18} /> },
   { id: 'admin_control', label: 'Admin Control', icon: <Shield size={18} /> },
-  { id: 'billing', label: 'Billing & Subscription', icon: <DollarSign size={18} /> },
 ];
 
 const AdminSettings: React.FC<AdminSettingsProps> = ({ 
-  onNavigate, user, onUpdateProfile, activeTenant, logo, onUpdateLogo,
+  onNavigate, user, activeTenant, logo, onUpdateLogo,
   users = [], roles = [], onAddUser, onUpdateUser, onDeleteUser,
-  onAddRole, onUpdateRole, onDeleteRole, onUpdateUserRole, userPermissions = {},
-  onUpgrade
+  onAddRole, onUpdateRole, onDeleteRole, onUpdateUserRole, userPermissions = {}
 }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
   const shopLogoRef = useRef<HTMLInputElement>(null);
@@ -182,7 +176,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
       {/* Header */}
       <div>
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Settings</h2>
-        <p className="text-xs sm:text-sm text-gray-500">Manage your profile, users, and subscription</p>
+        <p className="text-xs sm:text-sm text-gray-500">Manage your shop and user settings</p>
       </div>
 
       {/* Tabs */}
@@ -223,13 +217,6 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
             currentUser={user}
             tenantId={activeTenant?._id || activeTenant?.id}
             userPermissions={userPermissions}
-          />
-        )}
-        
-        {activeTab === 'billing' && (
-          <AdminBilling
-            tenant={activeTenant}
-            onUpgrade={onUpgrade}
           />
         )}
       </div>
