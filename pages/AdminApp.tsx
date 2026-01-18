@@ -52,6 +52,7 @@ const AdminFigmaIntegration = lazy(() => import(/* webpackChunkName: "admin-figm
 const AdminBilling = lazy(() => import(/* webpackChunkName: "admin-billing" */ './AdminBilling'));
 const AdminTutorial = lazy(() => import(/* webpackChunkName: "admin-tutorial" */ './AdminTutorial'));
 const AdminActivityLog = lazy(() => import(/* webpackChunkName: "admin-activity-log" */ './AdminActivityLog'));
+const AdminProfile = lazy(() => import(/* webpackChunkName: "admin-profile" */ './AdminProfile'));
 // Admin Components - directly imported for instant layout render
 import { AdminSidebar, AdminHeader } from '../components/AdminComponents';
 
@@ -183,6 +184,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
           onSwitchView={onSwitchView} 
           user={user} 
           onLogout={onLogout} 
+          onNavigateToProfile={() => onNavigate('profile')}
           logo={logo}
           tenants={tenants}
           activeTenantId={activeTenantId}
@@ -561,6 +563,7 @@ const AdminApp: React.FC<AdminAppProps> = ({
          adminSection === 'billing' ? <AdminBilling tenant={selectedTenantRecord} onUpgrade={() => setAdminSection('settings')} /> :
          adminSection === 'tutorial' ? <AdminTutorial /> :
          adminSection === 'activity_log' ? <AdminActivityLog tenantId={activeTenantId} /> :
+         adminSection === 'profile' ? <AdminProfile user={user} onUpdateProfile={onUpdateProfile} activeTenant={selectedTenantRecord} /> :
          adminSection === 'manage_shop' ? <AdminManageShop onNavigate={setAdminSection} tenantId={activeTenantId} websiteConfig={websiteConfig} tenantSubdomain={selectedTenantRecord?.subdomain} /> :
          adminSection === 'settings' ? <AdminSettings courierConfig={courierConfig} onUpdateCourierConfig={onUpdateCourierConfig} onNavigate={setAdminSection} user={user} onUpdateProfile={onUpdateProfile} activeTenant={selectedTenantRecord} logo={logo} onUpdateLogo={onUpdateLogo} /> :
          adminSection === 'support' ? <AdminSupport user={user} activeTenant={selectedTenantRecord} /> :

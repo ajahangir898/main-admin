@@ -4,7 +4,7 @@ import {
 	LayoutDashboard, ShoppingBag, Box, Settings, Sliders,
 	FileText, Star, Users, Image as ImageIcon, DollarSign,
 	Shield, LogOut, Bell, Menu, X, Globe, LogOut as LogOutIcon, ChevronDown, ChevronRight,
-	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store, Figma, ClipboardList
+	Layers, Boxes, MessageCircle, Loader2, Check, Target, ExternalLink, CheckCheck, Trash2, AlertCircle, Package, Clock, Headphones, Store, Figma, ClipboardList, UserCircle
 } from 'lucide-react';
 import { StatCardProps, User, Tenant } from '../types';
 import { useNotifications } from '../hooks/useNotifications';
@@ -89,6 +89,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'activity_log', icon: <ClipboardList size={18} />, label: 'Activity Log', resource: 'settings' },
 		{ id: 'support', icon: <Headphones size={18} />, label: 'Support', resource: 'settings' },
 		{ id: 'tutorial', icon: <FileText size={18} />, label: 'Tutorial', resource: 'settings' },
+		{ id: 'profile', icon: <UserCircle size={18} />, label: 'Profile', resource: 'settings' },
 		{ id: 'settings', icon: <Settings size={18} />, label: 'Settings', resource: 'settings' },
 	];
 
@@ -267,6 +268,7 @@ export const AdminHeader: React.FC<{
 	onSwitchView: () => void,
 	user?: User | null,
 	onLogout?: () => void,
+	onNavigateToProfile?: () => void,
 	logo?: string | null,
 	onMenuClick?: () => void,
 	tenants?: Tenant[],
@@ -276,7 +278,7 @@ export const AdminHeader: React.FC<{
 	onOpenChatCenter?: () => void,
 	hasUnreadChat?: boolean,
 	showCacheMonitor?: boolean
-}> = ({ onSwitchView, user, onLogout, logo, onMenuClick, tenants, activeTenantId, onTenantChange, isTenantSwitching, onOpenChatCenter, hasUnreadChat, showCacheMonitor = false }) => {
+}> = ({ onSwitchView, user, onLogout, onNavigateToProfile, logo, onMenuClick, tenants, activeTenantId, onTenantChange, isTenantSwitching, onOpenChatCenter, hasUnreadChat, showCacheMonitor = false }) => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isTenantMenuOpen, setIsTenantMenuOpen] = useState(false);
 	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -765,6 +767,17 @@ export const AdminHeader: React.FC<{
 										>
 											<ExternalLink size={14} /> Go to Website
 										</a>
+									)}
+									{onNavigateToProfile && (
+										<button
+											onClick={() => {
+												onNavigateToProfile();
+												setIsDropdownOpen(false);
+											}}
+											className="flex items-center gap-3 text-sm text-gray-700 hover:text-purple-600 w-full p-2 rounded-lg hover:bg-gray-50 transition mb-1"
+										>
+											<UserCircle size={18} /> Go to Profile
+										</button>
 									)}
 									<button
 										onClick={onLogout}
