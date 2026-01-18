@@ -184,7 +184,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
-                    <span className="text-[10px] sm:text-xs text-gray-500 w-6 sm:w-8 text-right flex-shrink-0">{count}</span>
+                    <span className="text-xs text-gray-500 w-6 sm:w-8 text-right flex-shrink-0">{count}</span>
                   </div>
                 );
               })}
@@ -230,7 +230,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               onChange={(e) => setHeadline(e.target.value)}
               placeholder="Summarize your experience..."
               maxLength={100}
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-[16px] sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all touch-manipulation"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all touch-manipulation"
             />
           </div>
 
@@ -246,9 +246,9 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               rows={4}
               minLength={10}
               required
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-[16px] sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all touch-manipulation"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all touch-manipulation"
             />
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-1">{comment.length}/500 characters</p>
+            <p className="text-xs text-gray-500 mt-1">{comment.length}/500 characters</p>
           </div>
 
           {/* Submit Button - Full width with proper touch target */}
@@ -318,7 +318,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                   <div className="flex flex-col xs:flex-row xs:flex-wrap items-start xs:items-center gap-1 xs:gap-2 mb-1.5 sm:mb-2">
                     <span className="font-bold text-sm sm:text-base text-gray-900 truncate max-w-full">{review.userName}</span>
                     {review.isVerifiedPurchase && (
-                      <span className="flex items-center gap-1 text-[10px] sm:text-xs text-emerald-600 bg-emerald-50 px-1.5 sm:px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
+                      <span className="flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-1.5 sm:px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                         <CheckCircle size={10} className="sm:w-3 sm:h-3" />
                         Verified Purchase
                       </span>
@@ -328,7 +328,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                   {/* Rating & Date - Responsive layout */}
                   <div className="flex flex-col xs:flex-row xs:flex-wrap items-start xs:items-center gap-1.5 xs:gap-3 mb-2 sm:mb-3">
                     {renderStars(review.rating, undefined, undefined, 'sm')}
-                    <span className="text-[11px] sm:text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {new Date(review.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
@@ -358,7 +358,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                       </div>
                       <p className="text-xs sm:text-sm text-gray-700 ml-7 sm:ml-8 leading-relaxed">{review.reply}</p>
                       {review.repliedAt && (
-                        <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5 sm:mt-2 ml-7 sm:ml-8">
+                        <p className="text-xs text-gray-500 mt-1.5 sm:mt-2 ml-7 sm:ml-8">
                           {new Date(review.repliedAt).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
