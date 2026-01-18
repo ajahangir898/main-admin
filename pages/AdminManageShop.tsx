@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Store, Globe, FileText, Truck, CreditCard, Search, MessageSquare,
   Users, Link2, Settings, ArrowRight, ExternalLink, CheckCircle, AlertCircle,
-  Palette, Shield, Bell, Smartphone, BarChart3, Mail, Loader2
+  Palette, Shield, Bell, Smartphone, BarChart3, Mail, Loader2, Facebook, Code, Package
 } from 'lucide-react';
 import { DataService } from '../services/DataService';
 import { getAuthHeader } from '../services/authService';
@@ -235,15 +235,51 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
       status: 'pending'
     },
     {
-      id: 'delivery',
-      title: 'Delivery Support',
-      titleBn: 'ডেলিভারি সাপোর্ট',
-      description: 'Configure shipping zones, delivery charges and courier integrations',
-      descriptionBn: 'শিপিং জোন, ডেলিভারি চার্জ এবং কুরিয়ার ইন্টিগ্রেশন কনফিগার করুন',
+      id: 'delivery-options',
+      title: 'Delivery Options',
+      titleBn: 'ডেলিভারি অপশন',
+      description: 'Configure delivery charges, methods and shipping zones for your store',
+      descriptionBn: 'আপনার স্টোরের জন্য ডেলিভারি চার্জ, পদ্ধতি এবং শিপিং জোন কনফিগার করুন',
       icon: <Truck size={24} />,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      section: 'settings',
+      section: 'settings_delivery',
+      status: 'active'
+    },
+    {
+      id: 'courier-integration',
+      title: 'Courier Integration',
+      titleBn: 'কুরিয়ার ইন্টিগ্রেশন',
+      description: 'Connect Steadfast, Pathao and other courier services for automated shipping',
+      descriptionBn: 'স্বয়ংক্রিয় শিপিংয়ের জন্য স্টেডফাস্ট, পাঠাও এবং অন্যান্য কুরিয়ার সার্ভিস সংযুক্ত করুন',
+      icon: <Package size={24} />,
+      color: 'text-teal-600',
+      bgColor: 'bg-teal-50',
+      section: 'settings_courier',
+      status: 'active'
+    },
+    {
+      id: 'facebook-pixel',
+      title: 'Facebook Pixel',
+      titleBn: 'ফেসবুক পিক্সেল',
+      description: 'Track conversions, optimize ads and build audiences with Meta Pixel',
+      descriptionBn: 'মেটা পিক্সেল দিয়ে কনভার্সন ট্র্যাক করুন, অ্যাড অপ্টিমাইজ করুন এবং অডিয়েন্স তৈরি করুন',
+      icon: <Facebook size={24} />,
+      color: 'text-blue-700',
+      bgColor: 'bg-blue-50',
+      section: 'settings_facebook_pixel',
+      status: 'active'
+    },
+    {
+      id: 'gtm',
+      title: 'Google Tag Manager',
+      titleBn: 'গুগল ট্যাগ ম্যানেজার',
+      description: 'Manage all marketing tags and analytics without editing code',
+      descriptionBn: 'কোড এডিট ছাড়াই সব মার্কেটিং ট্যাগ এবং অ্যানালিটিক্স পরিচালনা করুন',
+      icon: <Code size={24} />,
+      color: 'text-sky-600',
+      bgColor: 'bg-sky-50',
+      section: 'settings_gtm',
       status: 'active'
     },
     {
