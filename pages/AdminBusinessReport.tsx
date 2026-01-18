@@ -45,7 +45,7 @@ const AdminBusinessReport: React.FC<AdminBusinessReportProps> = ({
   const TabButton: React.FC<{ id: string; label: string; icon?: React.ReactNode }> = ({ id, label, icon }) => (
     <button
       onClick={() => setActiveTab(id)}
-      className={`px-6 py-3 font-medium text-sm flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+      className={`px-3 sm:px-6 py-2.5 sm:py-3 font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 border-b-2 transition whitespace-nowrap ${
         activeTab === id
           ? 'border-emerald-500 text-emerald-600'
           : 'border-transparent text-gray-500 hover:text-gray-900'
@@ -58,25 +58,25 @@ const AdminBusinessReport: React.FC<AdminBusinessReportProps> = ({
   return (
     <div className="space-y-0 animate-fade-in bg-[#F8FAFC] min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center bg-white z-30 pt-4 pb-4 px-6 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 bg-white z-30 pt-3 sm:pt-4 pb-3 sm:pb-4 px-3 sm:px-6 border-b border-gray-200">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <FileText className="w-7 h-7 text-emerald-500" />
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <FileText className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-500" />
             Business Report
           </h2>
-          <p className="text-sm text-gray-500">Track expenses, income, and profit/loss</p>
+          <p className="text-xs sm:text-sm text-gray-500">Track expenses, income, and profit/loss</p>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide bg-white px-2">
+      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide bg-white px-1 sm:px-2 -mx-px">
         {tabs.map((tab) => (
           <TabButton key={tab.id} id={tab.id} label={tab.label} icon={tab.icon} />
         ))}
       </div>
 
       {/* Tab Content */}
-      <div className="min-h-[500px]">
+      <div className="min-h-[400px] sm:min-h-[500px]">
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-96 text-gray-400">Loading...</div>

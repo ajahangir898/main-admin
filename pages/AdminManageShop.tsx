@@ -335,37 +335,39 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl text-white">
-              <Settings size={28} />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg sm:rounded-xl text-white flex-shrink-0">
+              <Settings size={20} className="sm:hidden" />
+              <Settings size={28} className="hidden sm:block" />
             </div>
-            Manage Shop
+            <span className="truncate">Manage Shop</span>
           </h1>
-          <p className="text-gray-500 mt-1">শপ ম্যানেজ করুন - Configure and manage all aspects of your online store</p>
+          <p className="text-gray-500 mt-1 text-xs sm:text-sm truncate">শপ ম্যানেজ করুন - Configure and manage your store</p>
         </div>
         <button
           onClick={() => window.open(`https://${tenantSubdomain || websiteConfig?.domain || 'store'}.systemnextit.com`, '_blank')}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition text-gray-700 font-medium shadow-sm"
+          className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition text-gray-700 font-medium shadow-sm text-sm w-full sm:w-auto"
         >
-          <ExternalLink size={18} />
+          <ExternalLink size={16} className="sm:hidden" />
+          <ExternalLink size={18} className="hidden sm:block" />
           Visit Store
         </button>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         {quickStats.map((stat, idx) => (
-          <div key={idx} className="bg-white rounded-xl p-4 border border-blue-400 shadow-sm hover:shadow-md transition">
+          <div key={idx} className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-400 shadow-sm hover:shadow-md transition">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-500">{stat.icon}</span>
               {isLoadingStats ? (
                 <Loader2 size={14} className="animate-spin text-gray-400" />
               ) : (
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                <span className={`text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full ${
                   stat.change.startsWith('+') || parseFloat(stat.change) > 0
                     ? 'text-green-600 bg-green-50'
                     : parseFloat(stat.change) < 0
@@ -379,12 +381,12 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
             {isLoadingStats ? (
               <div className="flex items-center gap-2">
                 <Loader2 size={20} className="animate-spin text-gray-400" />
-                <p className="text-sm text-gray-400">Loading...</p>
+                <p className="text-xs sm:text-sm text-gray-400">Loading...</p>
               </div>
             ) : (
               <>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-[10px] sm:text-sm text-gray-500 truncate">{stat.label}</p>
               </>
             )}
           </div>
@@ -393,29 +395,30 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
 
       {/* Shop Configuration Cards */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Palette size={20} className="text-purple-500" />
+        <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <Palette size={18} className="text-purple-500 sm:hidden" />
+          <Palette size={20} className="text-purple-500 hidden sm:block" />
           Shop Configuration
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {shopCards.map((card) => (
             <div
               key={card.id}
               onClick={() => card.section && onNavigate(card.section)}
-              className="group bg-white rounded-xl p-5 border border-gray-400 shadow-sm hover:shadow-lg hover:border-purple-200 transition-all cursor-pointer"
+              className="group bg-white rounded-lg sm:rounded-xl p-3 sm:p-5 border border-gray-400 shadow-sm hover:shadow-lg hover:border-purple-200 transition-all cursor-pointer"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className={`p-3 rounded-xl ${card.bgColor} ${card.color} group-hover:scale-110 transition-transform`}>
-                  {card.icon}
+              <div className="flex items-start justify-between mb-2 sm:mb-3">
+                <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl ${card.bgColor} ${card.color} group-hover:scale-110 transition-transform`}>
+                  {React.cloneElement(card.icon as React.ReactElement, { size: 20 })}
                 </div>
                 {getStatusBadge(card.status)}
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-purple-600 transition truncate">
                 {card.title}
               </h3>
-              <p className="text-xs text-gray-400 mb-2">{card.titleBn}</p>
-              <p className="text-sm text-gray-500 line-clamp-2">{card.description}</p>
-              <div className="flex items-center gap-1 text-purple-600 text-sm font-medium mt-3 opacity-0 group-hover:opacity-100 transition">
+              <p className="text-[10px] sm:text-xs text-gray-400 mb-1 sm:mb-2 truncate">{card.titleBn}</p>
+              <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">{card.description}</p>
+              <div className="flex items-center gap-1 text-purple-600 text-xs sm:text-sm font-medium mt-2 sm:mt-3 opacity-0 group-hover:opacity-100 transition">
                 Configure <ArrowRight size={14} />
               </div>
             </div>
@@ -424,46 +427,48 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
       </div>
 
       {/* Additional Settings */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         {/* Security */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-blue-500 rounded-lg text-white">
-              <Shield size={20} />
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-4 sm:p-5 border border-blue-100">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+            <div className="p-1.5 sm:p-2 bg-blue-500 rounded-lg text-white">
+              <Shield size={18} className="sm:hidden" />
+              <Shield size={20} className="hidden sm:block" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Security Settings</h3>
-              <p className="text-sm text-gray-500">সিকিউরিটি সেটিংস</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">Security Settings</h3>
+              <p className="text-xs sm:text-sm text-gray-500">সিকিউরিটি সেটিংস</p>
             </div>
           </div>
-          <p className="text-sm text-gray-600 mb-3">
-            Manage passwords, 2FA authentication, and access controls for your store.
+          <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+            Manage passwords, 2FA authentication, and access controls.
           </p>
           <button
             onClick={() => onNavigate('settings')}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
+            className="text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
             Manage Security <ArrowRight size={14} />
           </button>
         </div>
 
         {/* Notifications */}
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-5 border border-amber-100">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-amber-500 rounded-lg text-white">
-              <Bell size={20} />
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg sm:rounded-xl p-4 sm:p-5 border border-amber-100">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+            <div className="p-1.5 sm:p-2 bg-amber-500 rounded-lg text-white">
+              <Bell size={18} className="sm:hidden" />
+              <Bell size={20} className="hidden sm:block" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Notifications</h3>
-              <p className="text-sm text-gray-500">নোটিফিকেশন</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">Notifications</h3>
+              <p className="text-xs sm:text-sm text-gray-500">নোটিফিকেশন</p>
             </div>
           </div>
-          <p className="text-sm text-gray-600 mb-3">
-            Configure email, push, and SMS notifications for orders and updates.
+          <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+            Configure email, push, and SMS notifications for orders.
           </p>
           <button
             onClick={() => onNavigate('settings')}
-            className="text-sm font-medium text-amber-600 hover:text-amber-700 flex items-center gap-1"
+            className="text-xs sm:text-sm font-medium text-amber-600 hover:text-amber-700 flex items-center gap-1"
           >
             Manage Notifications <ArrowRight size={14} />
           </button>
@@ -471,17 +476,17 @@ const AdminManageShop: React.FC<ManageShopProps> = ({ onNavigate, tenantId, webs
       </div>
 
       {/* Help Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl p-6 text-white">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-bold mb-1">Need Help Setting Up?</h3>
-            <p className="text-purple-100">সাহায্য প্রয়োজন? আমাদের সাপোর্ট টিম সবসময় আপনার পাশে আছে।</p>
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg sm:rounded-xl p-4 sm:p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base sm:text-xl font-bold mb-1">Need Help Setting Up?</h3>
+            <p className="text-purple-100 text-xs sm:text-sm">সাহায্য প্রয়োজন? আমাদের সাপোর্ট টিম সবসময় আপনার পাশে আছে।</p>
           </div>
-          <div className="flex gap-3">
-            <button className="px-4 py-2 bg-white text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition">
+          <div className="flex gap-2 sm:gap-3 flex-wrap">
+            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition text-xs sm:text-sm">
               Watch Tutorial
             </button>
-            <button className="px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-400 transition border border-purple-400">
+            <button className="px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-400 transition border border-purple-400 text-xs sm:text-sm">
               Contact Support
             </button>
           </div>
