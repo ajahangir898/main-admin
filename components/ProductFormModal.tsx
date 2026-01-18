@@ -325,29 +325,29 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 md:p-8">
-      <div className="relative w-full max-w-[1280px] bg-white rounded-[30px] shadow-[0px_0px_37.8px_0px_rgba(0,0,0,0.40)] my-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-2 sm:p-4 md:p-8">
+      <div className="relative w-full max-w-[1280px] bg-white rounded-xl sm:rounded-2xl md:rounded-[30px] shadow-[0px_0px_37.8px_0px_rgba(0,0,0,0.40)] my-2 sm:my-4 overflow-hidden">
         {/* Close Button */}
         <button 
           onClick={onClose} 
-          className="absolute right-8 top-8 z-10 w-9 h-9 bg-neutral-400/25 rounded-lg flex items-center justify-center hover:bg-neutral-400/40 transition-colors"
+          className="absolute right-3 top-3 sm:right-6 sm:top-6 md:right-8 md:top-8 z-10 w-8 h-8 sm:w-9 sm:h-9 bg-neutral-400/25 rounded-lg flex items-center justify-center hover:bg-neutral-400/40 transition-colors min-h-[44px] min-w-[44px]"
         >
           <X size={16} className="text-black" />
         </button>
 
-        <form onSubmit={handleSubmit} className="p-6 md:p-[82px] pt-[100px]">
-          <div className="flex gap-6">
-            {/* Left Column - 611px */}
-            <div className="w-[611px] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-6 space-y-6 overflow-hidden">
+        <form onSubmit={handleSubmit} className="p-4 pt-14 sm:p-6 sm:pt-16 md:p-8 md:pt-20 lg:p-[82px] lg:pt-[100px]">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
+            {/* Left Column - Responsive */}
+            <div className="w-full lg:flex-1 lg:min-w-0 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-hidden">
               
               {/* Basic Details Section */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Basic Details</h2>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-4 sm:mb-6">Basic Details</h2>
                 
                 {/* Product Name */}
                 <div className="mb-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-teal-950 text-base font-bold font-['Lato']">Product Name</label>
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 mb-3">
+                    <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Product Name</label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input 
                         type="checkbox" 
@@ -355,7 +355,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         onChange={(e) => setFormData(prev => ({ ...prev, autoSlug: e.target.checked }))} 
                         className="w-4 h-4 rounded border-2 border-neutral-400 text-blue-500 focus:ring-blue-400" 
                       />
-                      <span className="text-neutral-400 text-base font-medium font-['Poppins']">Auto Slug</span>
+                      <span className="text-neutral-400 text-sm sm:text-base font-medium font-['Poppins']">Auto Slug</span>
                     </label>
                   </div>
                   <input 
@@ -363,20 +363,20 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                     value={formData.name} 
                     onChange={(e) => handleNameChange(e.target.value)} 
                     placeholder="Jasmine Fragrance Oil" 
-                    className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                    className="w-full h-11 sm:h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                   />
                 </div>
 
                 {/* Product Description */}
                 <div>
-                  <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Product Description</label>
+                  <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-3">Product Description</label>
                   <div className="relative">
                     <textarea 
                       value={formData.description} 
                       onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} 
                       placeholder="Jasmine Fragrance oil, extracted from the delicate jasmine blossoms, is renowned for its enchanting and luxurious aroma. Prized for centuries in perfumery and aromatherapy, this exquisite oil offers a multitude of benefits and applications."
-                      rows={5}
-                      className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] leading-6 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      rows={4}
+                      className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] leading-6 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                 </div>
@@ -387,101 +387,101 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
 
               {/* Price & Stock Section */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Price & Stock</h2>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-4 sm:mb-6">Price & Stock</h2>
                 
-                {/* Row 1: Regular Price, Sale Price, Cost Price, SKU */}
-                <div className="grid grid-cols-4 gap-3 mb-4">
+                {/* Row 1: Regular Price, Sale Price, Cost Price, SKU - Responsive Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
                   <div>
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Regular Price</label>
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Regular Price</label>
                     <input 
                       type="text" 
                       value={formData.regularPrice || ''} 
                       onChange={(e) => setFormData(prev => ({ ...prev, regularPrice: parseFloat(e.target.value) || 0 }))} 
                       placeholder="Ex 1990" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                   <div>
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Sale Price</label>
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Sale Price</label>
                     <input 
                       type="text" 
                       value={formData.salePrice || ''} 
                       onChange={(e) => setFormData(prev => ({ ...prev, salePrice: parseFloat(e.target.value) || 0 }))} 
                       placeholder="Ex 1990" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                   <div>
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Cost Price</label>
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Cost Price</label>
                     <input 
                       type="text" 
                       value={formData.costPrice || ''} 
                       onChange={(e) => setFormData(prev => ({ ...prev, costPrice: parseFloat(e.target.value) || 0 }))} 
                       placeholder="Ex 1990" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                   <div>
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">SKU</label>
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">SKU</label>
                     <input 
                       type="text" 
                       value={formData.sku} 
                       onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))} 
                       placeholder="#SK0001" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-black text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-black text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                 </div>
 
-                {/* Row 2: Bar code, MOQ, Quantity, Apply to all */}
-                <div className="flex gap-3 items-end">
-                  <div className="w-44">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Bar code</label>
+                {/* Row 2: Bar code, MOQ, Quantity, Apply to all - Responsive */}
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 items-end">
+                  <div className="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[140px] sm:max-w-[180px]">
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Bar code</label>
                     <div className="relative">
                       <input 
                         type="text" 
                         value={formData.barcode} 
                         onChange={(e) => setFormData(prev => ({ ...prev, barcode: e.target.value }))} 
                         placeholder="2154645786216" 
-                        className="w-full h-12 px-3 py-2.5 pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                        className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 pr-9 sm:pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                       />
-                      <ScanLine size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                      <ScanLine size={18} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-600" />
                     </div>
                   </div>
-                  <div className="w-28">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">MOQ</label>
+                  <div className="sm:w-24 md:w-28">
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">MOQ</label>
                     <input 
                       type="text" 
                       value={formData.moq || ''} 
                       onChange={(e) => setFormData(prev => ({ ...prev, moq: parseInt(e.target.value) || 0 }))} 
-                      placeholder="Ex 1990" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      placeholder="Ex 10" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
-                  <div className="w-28">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Quantity</label>
+                  <div className="sm:w-24 md:w-28">
+                    <label className="block text-teal-950 text-xs sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Quantity</label>
                     <input 
                       type="text" 
                       value={formData.quantity || ''} 
                       onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 }))} 
-                      placeholder="Ex 1990" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      placeholder="Ex 100" 
+                      className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                   <button 
                     type="button" 
                     onClick={applyToAll} 
-                    className="h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-blue-500 text-sky-400 text-base font-bold font-['Poppins'] hover:bg-blue-50 transition-colors"
+                    className="col-span-2 sm:col-span-1 h-10 sm:h-12 px-3 py-2 bg-gray-50 rounded-lg border border-blue-500 text-sky-400 text-sm sm:text-base font-bold font-['Poppins'] hover:bg-blue-50 transition-colors whitespace-nowrap"
                   >
                     Apply to all
                   </button>
                 </div>
               </div>
 
-              {/* Variant Rows Section */}
+              {/* Variant Rows Section - Responsive */}
               <div className="space-y-4">
                 {formData.variantRows.map((variant) => (
-                  <div key={variant.id} className="flex flex-col gap-2">
+                  <div key={variant.id} className="flex flex-col gap-2 p-3 sm:p-0 bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none">
                     {/* Default checkbox aligned right */}
                     <div className="flex justify-end items-center gap-2">
                       <input 
@@ -490,73 +490,74 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         onChange={(e) => updateVariantRow(variant.id, 'isDefault', e.target.checked)} 
                         className="w-4 h-4 rounded border-2 border-slate-900/75" 
                       />
-                      <span className="text-neutral-400 text-base font-medium font-['Poppins']">Default</span>
+                      <span className="text-neutral-400 text-sm sm:text-base font-medium font-['Poppins']">Default</span>
                     </div>
                     
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
                       {/* Upload Image Box */}
                       <div 
                         onClick={() => handleVariantImageUpload(variant.id)} 
-                        className="w-36 h-24 bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden"
+                        className="w-full sm:w-28 md:w-36 h-20 sm:h-24 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden"
                       >
                         {variant.image ? (
                           <img src={variant.image} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="flex flex-col items-center gap-2">
-                            <div className="w-10 h-10 flex items-center justify-center">
-                              <ImageIcon size={32} className="text-neutral-400" />
+                          <div className="flex flex-col items-center gap-1 sm:gap-2">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+                              <ImageIcon size={24} className="text-neutral-400 sm:hidden" />
+                              <ImageIcon size={32} className="text-neutral-400 hidden sm:block" />
                             </div>
-                            <span className="text-neutral-400 text-base font-medium font-['Poppins']">Upload Image</span>
+                            <span className="text-neutral-400 text-xs sm:text-base font-medium font-['Poppins']">Upload Image</span>
                           </div>
                         )}
                       </div>
 
-                      {/* Input Fields Grid */}
-                      <div className="w-96 flex flex-col gap-2">
-                        <div className="flex gap-2">
+                      {/* Input Fields Grid - Responsive */}
+                      <div className="flex-1 flex flex-col gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                           <input 
                             type="text" 
                             value={variant.name} 
                             onChange={(e) => updateVariantRow(variant.id, 'name', e.target.value)} 
                             placeholder="Name" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                           <input 
                             type="text" 
                             value={variant.regularPrice || ''} 
                             onChange={(e) => updateVariantRow(variant.id, 'regularPrice', parseFloat(e.target.value) || 0)} 
-                            placeholder="Regular Price" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            placeholder="Reg. Price" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                           <input 
                             type="text" 
                             value={variant.salePrice || ''} 
                             onChange={(e) => updateVariantRow(variant.id, 'salePrice', parseFloat(e.target.value) || 0)} 
                             placeholder="Sale Price" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                         </div>
-                        <div className="flex gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                           <input 
                             type="text" 
                             value={variant.costPrice || ''} 
                             onChange={(e) => updateVariantRow(variant.id, 'costPrice', parseFloat(e.target.value) || 0)} 
                             placeholder="Cost Price" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                           <input 
                             type="text" 
                             value={variant.quantity || ''} 
                             onChange={(e) => updateVariantRow(variant.id, 'quantity', parseInt(e.target.value) || 0)} 
-                            placeholder="Quantity" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            placeholder="Qty" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                           <input 
                             type="text" 
                             value={variant.sku} 
                             onChange={(e) => updateVariantRow(variant.id, 'sku', e.target.value)} 
                             placeholder="SKU" 
-                            className="w-32 h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-white sm:bg-gray-50 rounded-lg border border-gray-200 text-neutral-400 text-xs sm:text-base font-medium font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                         </div>
                       </div>
@@ -565,118 +566,118 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 ))}
               </div>
 
-              {/* Additional (Optional) Section */}
+              {/* Additional (Optional) Section - Responsive */}
               <div>
-                <h2 className="mb-6">
-                  <span className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6">Additional</span>
-                  <span className="text-neutral-400 text-xl font-bold font-['Lato'] leading-6"> </span>
-                  <span className="text-neutral-400 text-xl font-normal font-['Lato'] leading-6">(Optional)</span>
+                <h2 className="mb-4 sm:mb-6">
+                  <span className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6">Additional</span>
+                  <span className="text-neutral-400 text-lg sm:text-xl font-bold font-['Lato'] leading-6"> </span>
+                  <span className="text-neutral-400 text-lg sm:text-xl font-normal font-['Lato'] leading-6">(Optional)</span>
                 </h2>
 
-                {/* SKU and Bar Code */}
-                <div className="flex gap-8 mb-6">
-                  <div className="w-64">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">SKU</label>
+                {/* SKU and Bar Code - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-4 sm:mb-6">
+                  <div>
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">SKU</label>
                     <input 
                       type="text" 
                       value={formData.additionalSku} 
                       onChange={(e) => setFormData(prev => ({ ...prev, additionalSku: e.target.value }))} 
                       placeholder="SKU1234567" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
-                  <div className="w-64">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Bar Code</label>
+                  <div>
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Bar Code</label>
                     <div className="relative">
                       <input 
                         type="text" 
                         value={formData.additionalBarcode} 
                         onChange={(e) => setFormData(prev => ({ ...prev, additionalBarcode: e.target.value }))} 
                         placeholder="215464578621684" 
-                        className="w-full h-12 px-3 py-2.5 pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                        className="w-full h-10 sm:h-12 px-3 py-2 pr-9 sm:pr-10 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                       />
-                      <ScanLine size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600" />
+                      <ScanLine size={18} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-600" />
                     </div>
                   </div>
                 </div>
 
-                {/* Delivery Charge */}
-                <div className="mb-6">
-                  <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Delivery charge</label>
-                  <div className="flex gap-3">
-                    <div className="flex-1 flex items-center gap-2">
-                      <span className="text-gray-500 text-base font-normal font-['Lato']">Inside Dhaka</span>
+                {/* Delivery Charge - Responsive */}
+                <div className="mb-4 sm:mb-6">
+                  <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Delivery charge</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 text-xs sm:text-base font-normal font-['Lato'] whitespace-nowrap">Inside Dhaka</span>
                       <input 
                         type="text" 
                         value={formData.deliveryInsideDhaka} 
                         onChange={(e) => setFormData(prev => ({ ...prev, deliveryInsideDhaka: parseInt(e.target.value) || 0 }))} 
-                        className="flex-1 h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                        className="flex-1 h-10 sm:h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                       />
                     </div>
-                    <div className="flex-1 flex items-center gap-2">
-                      <span className="text-gray-500 text-base font-normal font-['Lato']">Outside Dhaka</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 text-xs sm:text-base font-normal font-['Lato'] whitespace-nowrap">Outside Dhaka</span>
                       <input 
                         type="text" 
                         value={formData.deliveryOutsideDhaka} 
                         onChange={(e) => setFormData(prev => ({ ...prev, deliveryOutsideDhaka: parseInt(e.target.value) || 0 }))} 
-                        className="flex-1 h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                        className="flex-1 h-10 sm:h-12 px-3 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* Expiration and MOQ */}
-                <div className="flex gap-5">
-                  <div className="w-96">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Expiration</label>
-                    <div className="flex gap-5">
-                      <div className="flex-1 relative">
+                {/* Expiration and MOQ - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                  <div>
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Expiration</label>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-5">
+                      <div className="relative">
                         <input 
                           type="date" 
                           value={formData.expirationStart} 
                           onChange={(e) => setFormData(prev => ({ ...prev, expirationStart: e.target.value }))} 
-                          className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-xs sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           placeholder="Start"
                         />
                       </div>
-                      <div className="flex-1 relative">
+                      <div className="relative">
                         <input 
                           type="date" 
                           value={formData.expirationEnd} 
                           onChange={(e) => setFormData(prev => ({ ...prev, expirationEnd: e.target.value }))} 
-                          className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                          className="w-full h-10 sm:h-12 px-2 sm:px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-xs sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           placeholder="End"
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="w-32">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">MOQ</label>
+                  <div className="sm:max-w-[160px]">
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">MOQ</label>
                     <input 
                       type="text" 
                       value={formData.additionalMoq} 
                       onChange={(e) => setFormData(prev => ({ ...prev, additionalMoq: parseInt(e.target.value) || 0 }))} 
                       placeholder="10" 
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                      className="w-full h-10 sm:h-12 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-bold font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Inventory Section */}
+              {/* Inventory Section - Responsive */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-6">Inventory</h2>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-4 sm:mb-6">Inventory</h2>
                 
-                <div className="flex gap-5 mb-4">
-                  <div className="flex-1">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Stock Quantity</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4">
+                  <div>
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Stock Quantity</label>
                     <input 
                       type="text" 
                       value={formData.stockQuantity} 
                       onChange={(e) => setFormData(prev => ({ ...prev, stockQuantity: e.target.value }))} 
                       placeholder="Unlimited" 
                       disabled={formData.unlimited}
-                      className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50" 
+                      className="w-full h-10 sm:h-12 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50" 
                     />
                     {/* Unlimited Toggle */}
                     <div className="flex items-center gap-3 mt-3">
@@ -687,16 +688,16 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                       >
                         <div className="w-4 h-4 bg-lime-50 rounded-full" />
                       </button>
-                      <span className="text-teal-950 text-base font-normal font-['Lato']">Unlimited</span>
+                      <span className="text-teal-950 text-sm sm:text-base font-normal font-['Lato']">Unlimited</span>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <label className="block text-teal-950 text-base font-bold font-['Lato'] mb-3">Stock Status</label>
+                  <div>
+                    <label className="block text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-2 sm:mb-3">Stock Status</label>
                     <div className="relative">
                       <select 
                         value={formData.stockStatus} 
                         onChange={(e) => setFormData(prev => ({ ...prev, stockStatus: e.target.value }))} 
-                        className="w-full h-12 px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                        className="w-full h-10 sm:h-12 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
                       >
                         <option value="In Stock">In Stock</option>
                         <option value="Out of Stock">Out of Stock</option>
@@ -719,112 +720,118 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                       </svg>
                     )}
                   </div>
-                  <span className="text-gray-500 text-base font-normal font-['Lato']">Hide in website (for landing page)</span>
+                  <span className="text-gray-500 text-xs sm:text-base font-normal font-['Lato']">Hide in website (for landing page)</span>
                 </label>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-6">
+              {/* Action Buttons - Responsive */}
+              <div className="flex flex-col-reverse xs:flex-row items-stretch xs:items-center justify-end gap-3 pt-4 sm:pt-6">
                 <button 
                   type="button" 
                   onClick={handleSaveDraft} 
-                  className="h-10 px-3 py-1.5 bg-white rounded-lg border border-gray-200 flex items-center gap-2 hover:bg-gray-50 transition-colors"
+                  className="h-10 sm:h-10 px-3 py-1.5 bg-white rounded-lg border border-gray-200 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
                 >
                   <FolderOpen size={16} className="text-teal-950" />
-                  <span className="text-teal-950 text-base font-bold font-['Lato']">Save to draft</span>
+                  <span className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Save to draft</span>
                 </button>
                 <button 
                   type="submit" 
                   disabled={isLoading}
-                  className="h-10 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center gap-1 hover:from-sky-500 hover:to-blue-600 transition-colors disabled:opacity-50"
+                  className="h-10 sm:h-10 px-4 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg flex items-center justify-center gap-1 hover:from-sky-500 hover:to-blue-600 transition-colors disabled:opacity-50"
                 >
-                  <span className="text-white text-base font-bold font-['Lato']">{isLoading ? 'Publishing...' : 'Publish Product'}</span>
+                  <span className="text-white text-sm sm:text-base font-bold font-['Lato']">{isLoading ? 'Publishing...' : 'Publish Product'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Right Column - 485px */}
-            <div className="w-[485px] bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-6 space-y-6 overflow-hidden">
+            {/* Right Column - Responsive */}
+            <div className="w-full lg:w-[400px] xl:w-[485px] lg:flex-shrink-0 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-hidden">
               
-              {/* Upload Product Image Section */}
+              {/* Upload Product Image Section - Responsive */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-1">Upload Product Image</h2>
-                <p className="text-teal-950 text-base font-bold font-['Lato'] mb-3">Up to 10 Images</p>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-1">Upload Product Image</h2>
+                <p className="text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-3">Up to 10 Images</p>
                 
-                {/* Main Image Upload */}
-                <div className="w-96 h-64 relative bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+                {/* Main Image Upload - Responsive */}
+                <div className="w-full sm:w-96 h-48 sm:h-64 relative bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
                   {formData.mainImage ? (
                     <img src={formData.mainImage} alt="Product" className="w-full h-full object-contain" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon size={100} className="text-gray-300" />
+                      <ImageIcon size={60} className="text-gray-300 sm:hidden" />
+                      <ImageIcon size={100} className="text-gray-300 hidden sm:block" />
                     </div>
                   )}
                   
                   {/* Browse and Replace buttons */}
-                  <div className="absolute bottom-3 left-3">
+                  <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3">
                     <button 
                       type="button" 
                       onClick={() => fileInputRef.current?.click()} 
-                      className="h-9 px-3 py-2 rounded-lg border border-gray-200 flex items-center gap-1 bg-white hover:bg-gray-50"
+                      className="h-8 sm:h-9 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-gray-200 flex items-center gap-1 bg-white hover:bg-gray-50"
                     >
-                      <FolderOpen size={20} className="text-gray-500" />
-                      <span className="text-gray-500 text-sm font-normal font-['Lato']">Browse</span>
+                      <FolderOpen size={16} className="text-gray-500 sm:hidden" />
+                      <FolderOpen size={20} className="text-gray-500 hidden sm:block" />
+                      <span className="text-gray-500 text-xs sm:text-sm font-normal font-['Lato']">Browse</span>
                     </button>
                   </div>
-                  <div className="absolute bottom-3 right-3">
+                  <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3">
                     <button 
                       type="button" 
                       onClick={() => fileInputRef.current?.click()} 
-                      className="h-9 p-2 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] flex items-center gap-2 hover:bg-gray-50"
+                      className="h-8 sm:h-9 p-1.5 sm:p-2 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] flex items-center gap-1 sm:gap-2 hover:bg-gray-50"
                     >
-                      <RefreshCw size={16} className="text-black" />
-                      <span className="text-black text-sm font-normal font-['Lato']">Replace</span>
+                      <RefreshCw size={14} className="text-black sm:hidden" />
+                      <RefreshCw size={16} className="text-black hidden sm:block" />
+                      <span className="text-black text-xs sm:text-sm font-normal font-['Lato']">Replace</span>
                     </button>
                   </div>
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handleMainImageUpload} className="hidden" />
                 </div>
 
-                {/* Gallery Images */}
-                <div className="flex gap-4 flex-wrap">
+                {/* Gallery Images - Responsive */}
+                <div className="flex gap-2 sm:gap-4 flex-wrap">
                   {formData.galleryImages.slice(0, 2).map((img, index) => (
-                    <div key={index} className="w-24 h-24 relative rounded-lg border border-gray-200 overflow-hidden group">
+                    <div key={index} className="w-16 h-16 sm:w-24 sm:h-24 relative rounded-lg border border-gray-200 overflow-hidden group">
                       <img src={img} alt="" className="w-full h-full object-cover" />
                       <button 
                         type="button" 
                         onClick={() => removeGalleryImage(index)} 
-                        className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <X size={14} className="text-gray-500" />
+                        <X size={12} className="text-gray-500 sm:hidden" />
+                        <X size={14} className="text-gray-500 hidden sm:block" />
                       </button>
                     </div>
                   ))}
                   
-                  {/* Add Image Button */}
+                  {/* Add Image Button - Responsive */}
                   {formData.galleryImages.length < 10 && (
                     <button 
                       type="button" 
                       onClick={() => galleryInputRef.current?.click()} 
-                      className="w-52 h-24 rounded-lg border border-neutral-400 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors"
+                      className="flex-1 min-w-[100px] sm:min-w-[140px] max-w-[180px] sm:max-w-[220px] h-16 sm:h-24 rounded-lg border border-neutral-400 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors"
                     >
-                      <Plus size={24} className="text-lime-500 mb-1" />
-                      <span className="text-lime-500 text-base font-normal font-['Lato'] leading-5">Add Image</span>
+                      <Plus size={20} className="text-lime-500 mb-0.5 sm:mb-1 sm:hidden" />
+                      <Plus size={24} className="text-lime-500 mb-0.5 sm:mb-1 hidden sm:block" />
+                      <span className="text-lime-500 text-xs sm:text-base font-normal font-['Lato'] leading-5">Add Image</span>
                     </button>
                   )}
                   <input ref={galleryInputRef} type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
                 </div>
               </div>
 
-              {/* Categories Section */}
+              {/* Categories Section - Responsive */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-4">Categories</h2>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-3 sm:mb-4">Categories</h2>
                 
                 {/* Product Categories */}
                 <div className="mb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-teal-950 text-base font-bold font-['Lato']">Product Categories</label>
-                    <button type="button" className="flex items-center gap-1 hover:opacity-80">
-                      <Plus size={20} className="text-black" />
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Product Categories</label>
+                    <button type="button" className="flex items-center gap-1 hover:opacity-80 min-h-[44px] min-w-[44px] justify-end">
+                      <Plus size={18} className="text-black sm:hidden" />
+                      <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
                     </button>
                   </div>
@@ -832,52 +839,55 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                     <select 
                       value={formData.category} 
                       onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value, subCategory: '', childCategory: '' }))} 
-                      className="w-full p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                      className="w-full p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
                     >
                       <option value="">Select your category</option>
                       {categories.map(cat => <option key={cat.id} value={cat.name}>{cat.name}</option>)}
                     </select>
-                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+                    <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none sm:hidden" />
+                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none hidden sm:block" />
                   </div>
                 </div>
 
                 {/* Tags */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-teal-950 text-base font-bold font-['Lato']">Tags</label>
-                    <button type="button" className="flex items-center gap-1 hover:opacity-80">
-                      <Plus size={20} className="text-black" />
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Tags</label>
+                    <button type="button" className="flex items-center gap-1 hover:opacity-80 min-h-[44px] min-w-[44px] justify-end">
+                      <Plus size={18} className="text-black sm:hidden" />
+                      <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
                     </button>
                   </div>
                   <div className="relative">
                     <select 
-                      className="w-full p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                      className="w-full p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
                     >
                       <option value="">Select your tags</option>
                       {tags.map(tag => <option key={tag.id} value={tag.name}>{tag.name}</option>)}
                     </select>
-                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+                    <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none sm:hidden" />
+                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none hidden sm:block" />
                   </div>
                 </div>
               </div>
 
-              {/* Variation Section */}
+              {/* Variation Section - Responsive */}
               <div>
-                <h2 className="text-zinc-800 text-xl font-bold font-['Lato'] leading-6 mb-4">Variation</h2>
+                <h2 className="text-zinc-800 text-lg sm:text-xl font-bold font-['Lato'] leading-6 mb-3 sm:mb-4">Variation</h2>
                 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {formData.variations.map((variation, index) => (
                     <div 
                       key={variation.id} 
-                      className="p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)]"
+                      className="p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)]"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-teal-950 text-base font-bold font-['Lato']">{variation.name}</span>
+                        <span className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">{variation.name}</span>
                         <button 
                           type="button" 
                           onClick={() => toggleVariation(variation.id)}
-                          className="w-6 h-6 flex items-center justify-center"
+                          className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
                         >
                           {expandedVariations[variation.id] ? (
                             <Minus size={14} className="text-black" />
@@ -895,30 +905,31 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                             onChange={(e) => setVariationInputs(prev => ({ ...prev, [variation.id]: e.target.value }))} 
                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addVariationOption(variation.id))}
                             placeholder={index === 0 ? 'Colour' : 'Variation name'} 
-                            className="w-full h-8 p-3 bg-white rounded-lg border border-stone-300 text-teal-950 text-xs font-normal font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                            className="w-full h-8 p-2 sm:p-3 bg-white rounded-lg border border-stone-300 text-teal-950 text-xs font-normal font-['Poppins'] focus:outline-none focus:ring-2 focus:ring-blue-400" 
                           />
                           
-                          {/* Variation Options */}
-                          <div className="flex flex-wrap gap-2">
+                          {/* Variation Options - Responsive */}
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
                             {variation.options.map((option) => (
                               <div 
                                 key={option.id} 
-                                className="w-24 h-8 p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center"
+                                className="w-20 sm:w-24 h-7 sm:h-8 px-2 sm:p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center"
                               >
-                                <span className="text-teal-950 text-xs font-normal font-['Poppins']">{option.name}</span>
+                                <span className="text-teal-950 text-[10px] sm:text-xs font-normal font-['Poppins'] truncate">{option.name}</span>
                                 <button 
                                   type="button" 
                                   onClick={() => removeVariationOption(variation.id, option.id)}
-                                  className="text-red-700 hover:text-red-800"
+                                  className="text-red-700 hover:text-red-800 ml-1 flex-shrink-0"
                                 >
-                                  <Trash2 size={14} />
+                                  <Trash2 size={12} className="sm:hidden" />
+                                  <Trash2 size={14} className="hidden sm:block" />
                                 </button>
                               </div>
                             ))}
                             
                             {/* Empty Option Input */}
-                            <div className="w-24 h-8 p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center">
-                              <span className="text-neutral-400 text-xs font-normal font-['Poppins']">Option</span>
+                            <div className="w-20 sm:w-24 h-7 sm:h-8 px-2 sm:p-3 bg-white rounded-lg border border-stone-300 flex justify-between items-center">
+                              <span className="text-neutral-400 text-[10px] sm:text-xs font-normal font-['Poppins']">Option</span>
                             </div>
                           </div>
                         </div>
