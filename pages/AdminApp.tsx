@@ -245,6 +245,7 @@ const canAccessPage = (page: string, user?: User | null, permissions?: Permissio
         'due_list': 'due_book',
         'expenses': 'expenses',
         'settings': 'settings',
+        'manage_shop': 'settings',
         'settings_delivery': 'settings',
         'settings_courier': 'settings',
         'settings_facebook_pixel': 'settings',
