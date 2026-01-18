@@ -990,8 +990,8 @@ const AdminControl: React.FC<AdminControlProps> = ({
                   <div className="relative">
                     <Lock size={16} className="absolute left-3 top-3.5 text-slate-500" />
                     <input type={showPwd ? 'text' : 'password'} required minLength={6} value={userForm.password} onChange={e => setUserForm({...userForm, password: e.target.value})}
-                      className="w-full pl-9 pr-12 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 min-h-[44px]" placeholder="Min 6 chars" />
-                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-2 top-2 text-slate-500 hover:text-white w-10 h-10 flex items-center justify-center">
+                      className="w-full pl-9 pr-11 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 min-h-[44px]" placeholder="Min 6 chars" />
+                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-1 top-1 text-slate-500 hover:text-white w-10 h-10 flex items-center justify-center rounded">
                       {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
@@ -1049,7 +1049,7 @@ const AdminControl: React.FC<AdminControlProps> = ({
             
             <div className="flex gap-3 p-4 sm:p-5 border-t border-white/10 flex-shrink-0">
               <button type="button" onClick={() => setUserModal(false)} className="flex-1 py-2.5 border border-white/20 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 min-h-[44px]">Cancel</button>
-              <button type="submit" form="userForm" onClick={saveUser} disabled={loading} className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 min-h-[44px]">
+              <button type="submit" form="userForm" disabled={loading} className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 min-h-[44px]">
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {editUser ? 'Update' : 'Create'}
               </button>
