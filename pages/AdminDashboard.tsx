@@ -522,7 +522,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {/* Area Chart */}
             <div className="h-36 sm:h-44 relative">
-              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid meet">
+              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="salesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.15" />
@@ -587,7 +587,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {/* Area Chart */}
             <div className="h-36 sm:h-44 relative">
-              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid meet">
+              <svg className="w-full h-full" viewBox="0 0 300 150" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="profitGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.15" />
@@ -771,7 +771,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="flex-1 hidden xs:flex items-center justify-center gap-2">
                       <div className={`w-2 h-2 rounded-full ${(item.product.stock || 0) > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
                       <span className={`text-sm sm:text-base font-normal ${(item.product.stock || 0) > 0 ? 'text-green-500' : 'text-red-500'}`} style={{ fontFamily: 'Public Sans, sans-serif' }}>
-                        {(item.product.stock || 0) > 0 ? 'Stock' : 'Out'}
+                        {(item.product.stock || 0) > 0 ? 'Stock' : 'Stock out'}
                       </span>
                     </div>
                     <div className="w-20 sm:w-24 flex-shrink-0 text-right text-teal-950 text-sm sm:text-base font-bold" style={{ fontFamily: 'Lato, sans-serif' }}>${(item.product.price || 999).toFixed(2)}</div>
