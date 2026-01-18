@@ -8,6 +8,28 @@ import {
 } from 'lucide-react';
 import { Product, Category, SubCategory, ChildCategory, Brand, Tag } from '../types';
 
+// Constants for special product tags
+const SPECIAL_TAGS = {
+  DEAL_OF_THE_DAY: 'Deal of the Day',
+  MOST_SELLING: 'Most Selling',
+  OUR_PRODUCTS: 'Our Products',
+} as const;
+
+// Helper to check if a tag matches a special tag (case-insensitive)
+const hasSpecialTag = (tags: string[], specialTag: string): boolean => 
+  tags.some(t => t.toLowerCase() === specialTag.toLowerCase());
+
+// Helper to add or remove a special tag
+const toggleSpecialTag = (tags: string[], specialTag: string, shouldHave: boolean): string[] => {
+  const hasTag = hasSpecialTag(tags, specialTag);
+  if (shouldHave && !hasTag) {
+    return [...tags, specialTag];
+  } else if (!shouldHave && hasTag) {
+    return tags.filter(t => t.toLowerCase() !== specialTag.toLowerCase());
+  }
+  return tags;
+};
+
 // Types for variant management
 interface VariantOption {
   id: string;
@@ -261,9 +283,9 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
     if (editingProduct) {
       // Check if special tags are present in the tags array
       const productTags = editingProduct.tags || [];
-      const isDealOfTheDay = productTags.some(t => t.toLowerCase() === 'deal of the day');
-      const isMostSelling = productTags.some(t => t.toLowerCase() === 'most selling');
-      const isOurProduct = productTags.some(t => t.toLowerCase() === 'our products');
+      const isDealOfTheDay = hasSpecialTag(productTags, SPECIAL_TAGS.DEAL_OF_THE_DAY);
+      const isMostSelling = hasSpecialTag(productTags, SPECIAL_TAGS.MOST_SELLING);
+      const isOurProduct = hasSpecialTag(productTags, SPECIAL_TAGS.OUR_PRODUCTS);
       
       setFormData(prev => ({
         ...prev,
@@ -406,27 +428,11 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Build tags array including special tags
+    // Build tags array including special tags using helper function
     let finalTags = [...formData.tags];
-    
-    // Add special tags based on flags
-    if (formData.isDealOfTheDay && !finalTags.some(t => t.toLowerCase() === 'deal of the day')) {
-      finalTags.push('Deal of the Day');
-    } else if (!formData.isDealOfTheDay) {
-      finalTags = finalTags.filter(t => t.toLowerCase() !== 'deal of the day');
-    }
-    
-    if (formData.isMostSelling && !finalTags.some(t => t.toLowerCase() === 'most selling')) {
-      finalTags.push('Most Selling');
-    } else if (!formData.isMostSelling) {
-      finalTags = finalTags.filter(t => t.toLowerCase() !== 'most selling');
-    }
-    
-    if (formData.isOurProduct && !finalTags.some(t => t.toLowerCase() === 'our products')) {
-      finalTags.push('Our Products');
-    } else if (!formData.isOurProduct) {
-      finalTags = finalTags.filter(t => t.toLowerCase() !== 'our products');
-    }
+    finalTags = toggleSpecialTag(finalTags, SPECIAL_TAGS.DEAL_OF_THE_DAY, formData.isDealOfTheDay);
+    finalTags = toggleSpecialTag(finalTags, SPECIAL_TAGS.MOST_SELLING, formData.isMostSelling);
+    finalTags = toggleSpecialTag(finalTags, SPECIAL_TAGS.OUR_PRODUCTS, formData.isOurProduct);
     
     const productData: Product = {
       id: editingProduct?.id || Date.now(),
