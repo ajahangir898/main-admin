@@ -472,142 +472,147 @@ const AdminGallery: React.FC = () => {
     <div className="flex flex-col h-[calc(100vh-80px)] bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden animate-fade-in">
       
       {/* Header */}
-      <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white z-10">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold text-gray-800">Gallery</h2>
-          
-          {/* Trash Toggle */}
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-              showTrash 
-                ? 'bg-red-100 text-red-700 border border-red-200' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <Trash2 size={16} />
-            Trash {trashItems.length > 0 && `(${trashItems.length})`}
-          </button>
-        </div>
-
-        {!showTrash && (
-          <div className="flex-1 max-w-lg flex gap-3 w-full">
-            <div className="relative flex-1">
-              <input 
-                type="text" 
-                placeholder="Search images..." 
-                className="w-full pl-10 pr-4 py-2 border border-purple-100 bg-purple-50/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            </div>
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-col gap-3 sm:gap-4 bg-white z-10">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gallery</h2>
             
-            {/* Folder Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => setShowFolderDropdown(!showFolderDropdown)}
-                className="flex items-center gap-2 px-4 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition text-sm font-bold whitespace-nowrap"
-              >
-                <FolderOpen size={18} /> 
-                {currentFolder || 'All Images'}
-                <ChevronDown size={16} />
-              </button>
+            {/* Trash Toggle */}
+            <button
+              onClick={() => setShowTrash(!showTrash)}
+              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition ${
+                showTrash 
+                  ? 'bg-red-100 text-red-700 border border-red-200' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              <Trash2 size={14} className="sm:hidden" />
+              <Trash2 size={16} className="hidden sm:block" />
+              <span className="hidden xs:inline">Trash</span> {trashItems.length > 0 && `(${trashItems.length})`}
+            </button>
+          </div>
+
+          {!showTrash && (
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-none sm:w-48 lg:w-64">
+                <input 
+                  type="text" 
+                  placeholder="Search images..." 
+                  className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 border border-purple-100 bg-purple-50/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 sm:hidden" />
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hidden sm:block" />
+              </div>
               
-              {showFolderDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
-                  <div className="p-2 border-b border-gray-100">
-                    <button
-                      onClick={() => { setCurrentFolder(null); setShowFolderDropdown(false); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm ${!currentFolder ? 'bg-purple-50 text-purple-700' : 'hover:bg-gray-50'}`}
-                    >
-                      All Images
-                    </button>
-                  </div>
-                  
-                  <div className="max-h-48 overflow-y-auto p-2">
-                    {folders.map(folder => (
-                      <div
-                        key={folder.name}
-                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer group ${
-                          currentFolder === folder.name ? 'bg-purple-50 text-purple-700' : 'hover:bg-gray-50'
-                        }`}
-                        onClick={() => { setCurrentFolder(folder.name); setShowFolderDropdown(false); }}
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          setContextMenu({ x: e.clientX, y: e.clientY, folder: folder.name });
-                        }}
+              {/* Folder Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={() => setShowFolderDropdown(!showFolderDropdown)}
+                  className="flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition text-sm font-bold whitespace-nowrap w-full sm:w-auto"
+                >
+                  <FolderOpen size={16} className="sm:hidden" />
+                  <FolderOpen size={18} className="hidden sm:block" /> 
+                  <span className="truncate max-w-[100px] sm:max-w-none">{currentFolder || 'All Images'}</span>
+                  <ChevronDown size={16} />
+                </button>
+                
+                {showFolderDropdown && (
+                  <div className="absolute right-0 sm:right-auto sm:left-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+                    <div className="p-2 border-b border-gray-100">
+                      <button
+                        onClick={() => { setCurrentFolder(null); setShowFolderDropdown(false); }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm ${!currentFolder ? 'bg-purple-50 text-purple-700' : 'hover:bg-gray-50'}`}
                       >
-                        {editingFolder === folder.name ? (
+                        All Images
+                      </button>
+                    </div>
+                    
+                    <div className="max-h-48 overflow-y-auto p-2">
+                      {folders.map(folder => (
+                        <div
+                          key={folder.name}
+                          className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer group ${
+                            currentFolder === folder.name ? 'bg-purple-50 text-purple-700' : 'hover:bg-gray-50'
+                          }`}
+                          onClick={() => { setCurrentFolder(folder.name); setShowFolderDropdown(false); }}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            setContextMenu({ x: e.clientX, y: e.clientY, folder: folder.name });
+                          }}
+                        >
+                          {editingFolder === folder.name ? (
+                            <input
+                              value={editFolderName}
+                              onChange={(e) => setEditFolderName(e.target.value)}
+                              onBlur={() => handleRenameFolder(folder.name)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleRenameFolder(folder.name)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex-1 px-2 py-1 border rounded text-sm"
+                              autoFocus
+                            />
+                          ) : (
+                            <>
+                              <span className="flex items-center gap-2">
+                                <FolderOpen size={16} />
+                                {folder.name}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setContextMenu({ x: e.clientX, y: e.clientY, folder: folder.name });
+                                }}
+                                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded"
+                              >
+                                <MoreVertical size={14} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="p-2 border-t border-gray-100">
+                      {showCreateFolder ? (
+                        <div className="flex gap-2">
                           <input
-                            value={editFolderName}
-                            onChange={(e) => setEditFolderName(e.target.value)}
-                            onBlur={() => handleRenameFolder(folder.name)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleRenameFolder(folder.name)}
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex-1 px-2 py-1 border rounded text-sm"
+                            value={newFolderName}
+                            onChange={(e) => setNewFolderName(e.target.value)}
+                            placeholder="Folder name"
+                            className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                            onKeyDown={(e) => e.key === 'Enter' && handleCreateFolder()}
                             autoFocus
                           />
-                        ) : (
-                          <>
-                            <span className="flex items-center gap-2">
-                              <FolderOpen size={16} />
-                              {folder.name}
-                            </span>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setContextMenu({ x: e.clientX, y: e.clientY, folder: folder.name });
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded"
-                            >
-                              <MoreVertical size={14} />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="p-2 border-t border-gray-100">
-                    {showCreateFolder ? (
-                      <div className="flex gap-2">
-                        <input
-                          value={newFolderName}
-                          onChange={(e) => setNewFolderName(e.target.value)}
-                          placeholder="Folder name"
-                          className="flex-1 px-3 py-2 border rounded-lg text-sm"
-                          onKeyDown={(e) => e.key === 'Enter' && handleCreateFolder()}
-                          autoFocus
-                        />
+                          <button
+                            onClick={handleCreateFolder}
+                            className="px-3 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm"
+                          >
+                            <Check size={16} />
+                          </button>
+                          <button
+                            onClick={() => { setShowCreateFolder(false); setNewFolderName(''); }}
+                            className="px-3 py-2 bg-gray-200 rounded-lg text-sm"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          onClick={handleCreateFolder}
-                          className="px-3 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm"
+                          onClick={() => setShowCreateFolder(true)}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-purple-600 hover:bg-purple-50 rounded-lg text-sm"
                         >
-                          <Check size={16} />
+                          <FolderPlus size={16} />
+                          Create Folder
                         </button>
-                        <button
-                          onClick={() => { setShowCreateFolder(false); setNewFolderName(''); }}
-                          className="px-3 py-2 bg-gray-200 rounded-lg text-sm"
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setShowCreateFolder(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-purple-600 hover:bg-purple-50 rounded-lg text-sm"
-                      >
-                        <FolderPlus size={16} />
-                        Create Folder
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Context Menu for Folders */}
@@ -636,19 +641,19 @@ const AdminGallery: React.FC = () => {
       )}
 
       {/* Grid Content */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 bg-gray-50/30">
         {showTrash ? (
           // Trash View
           isLoadingTrash ? (
             <ImageGridSkeleton count={6} />
           ) : trashItems.length > 0 ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg">
-                <AlertTriangle size={18} />
-                <span className="text-sm">Items are permanently deleted after 24 hours</span>
+              <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
+                <AlertTriangle size={16} className="flex-shrink-0" />
+                <span>Items are permanently deleted after 24 hours</span>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
                 {trashItems.map(item => (
                   <div 
                     key={item.trashPath}
@@ -664,17 +669,19 @@ const AdminGallery: React.FC = () => {
                         }}
                       />
                     </div>
-                    <div className="p-3">
-                      <h4 className="font-bold text-gray-800 text-sm truncate">{item.filename}</h4>
+                    <div className="p-2 sm:p-3">
+                      <h4 className="font-bold text-gray-800 text-xs sm:text-sm truncate">{item.filename}</h4>
                       <div className="flex items-center gap-1 text-xs text-amber-600 mt-1">
-                        <Clock size={12} />
-                        Expires in {formatTimeRemaining(item.expiresIn)}
+                        <Clock size={10} className="sm:hidden" />
+                        <Clock size={12} className="hidden sm:block" />
+                        <span className="text-[10px] sm:text-xs">Expires in {formatTimeRemaining(item.expiresIn)}</span>
                       </div>
                       <button
                         onClick={() => handleRestore(item)}
-                        className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-medium hover:bg-emerald-200 transition"
+                        className="mt-2 w-full flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] sm:text-xs font-medium hover:bg-emerald-200 transition"
                       >
-                        <RotateCcw size={14} />
+                        <RotateCcw size={12} className="sm:hidden" />
+                        <RotateCcw size={14} className="hidden sm:block" />
                         Restore
                       </button>
                     </div>
@@ -684,8 +691,9 @@ const AdminGallery: React.FC = () => {
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-400">
-              <Trash2 size={48} className="mb-4 opacity-20" />
-              <p className="font-medium">Trash is empty</p>
+              <Trash2 size={36} className="mb-4 opacity-20 sm:hidden" />
+              <Trash2 size={48} className="mb-4 opacity-20 hidden sm:block" />
+              <p className="font-medium text-sm sm:text-base">Trash is empty</p>
             </div>
           )
         ) : (
@@ -693,7 +701,7 @@ const AdminGallery: React.FC = () => {
           !isLoaded ? (
             <ImageGridSkeleton count={10} />
           ) : filteredImages.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
               {filteredImages.map(item => (
                 <div 
                   key={item.id}
@@ -707,28 +715,28 @@ const AdminGallery: React.FC = () => {
                   <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
                     <img src={normalizeImageUrl(item.imageUrl)} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                     
-                    {/* Overlay on Hover */}
-                    <div className={`absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-3 transition-opacity duration-200 ${selectedIds.includes(item.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2 flex-wrap justify-center">
+                    {/* Overlay on Hover/Select */}
+                    <div className={`absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2 sm:gap-3 transition-opacity duration-200 ${selectedIds.includes(item.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                      {/* Action Buttons - Compact on mobile */}
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center px-2">
                         <button
                           onClick={(e) => handleCopyUrl(e, item.imageUrl, item.id)}
-                          className="bg-white hover:bg-gray-100 text-gray-700 rounded-lg px-3 py-2 shadow-lg flex items-center gap-1.5 text-xs font-medium transition"
+                          className="bg-white hover:bg-gray-100 text-gray-700 rounded-lg p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-1 sm:gap-1.5 text-xs font-medium transition"
                           title="Copy image URL"
                         >
                           {copiedId === item.id ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                          {copiedId === item.id ? 'Copied!' : 'Copy'}
+                          <span className="hidden sm:inline">{copiedId === item.id ? 'Copied!' : 'Copy'}</span>
                         </button>
                         <button
                           onClick={(e) => handleDownload(e, item.imageUrl, item.title)}
-                          className="bg-white hover:bg-gray-100 text-gray-700 rounded-lg px-3 py-2 shadow-lg flex items-center gap-1.5 text-xs font-medium transition"
+                          className="bg-white hover:bg-gray-100 text-gray-700 rounded-lg p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-1 sm:gap-1.5 text-xs font-medium transition"
                           title="Download image"
                         >
                           <Download size={14} />
                         </button>
                         <button
                           onClick={(e) => handleDeleteImage(e, item)}
-                          className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 shadow-lg flex items-center gap-1.5 text-xs font-medium transition"
+                          className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 sm:px-3 sm:py-2 shadow-lg flex items-center gap-1 sm:gap-1.5 text-xs font-medium transition"
                           title="Delete image"
                         >
                           <Trash2 size={14} />
@@ -737,16 +745,17 @@ const AdminGallery: React.FC = () => {
                       
                       {/* Selection indicator */}
                       {selectedIds.includes(item.id) && (
-                        <div className="bg-purple-600 text-white rounded-full p-2 shadow-lg">
-                          <CheckCircle size={24} />
+                        <div className="bg-purple-600 text-white rounded-full p-1.5 sm:p-2 shadow-lg">
+                          <CheckCircle size={18} className="sm:hidden" />
+                          <CheckCircle size={24} className="hidden sm:block" />
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="p-3">
-                    <h4 className="font-bold text-gray-800 text-sm truncate" title={item.title}>{item.title}</h4>
+                  <div className="p-2 sm:p-3">
+                    <h4 className="font-bold text-gray-800 text-xs sm:text-sm truncate" title={item.title}>{item.title}</h4>
                     <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">{item.category}</span>
+                      <span className="text-[10px] sm:text-xs text-gray-500 bg-gray-100 px-1.5 sm:px-2 py-0.5 rounded-full truncate max-w-[80%]">{item.category}</span>
                     </div>
                   </div>
                 </div>
@@ -754,8 +763,9 @@ const AdminGallery: React.FC = () => {
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-400">
-              <Smartphone size={48} className="mb-4 opacity-20" />
-              <p className="font-medium">No images found</p>
+              <Smartphone size={36} className="mb-4 opacity-20 sm:hidden" />
+              <Smartphone size={48} className="mb-4 opacity-20 hidden sm:block" />
+              <p className="font-medium text-sm sm:text-base">No images found</p>
             </div>
           )
         )}
@@ -763,44 +773,54 @@ const AdminGallery: React.FC = () => {
 
       {/* Footer Actions */}
       {!showTrash && (
-        <div className="p-4 border-t border-gray-100 bg-white flex justify-between items-center gap-4 z-20">
-          <div className="flex items-center gap-3">
-            {selectedIds.length > 0 && (
-              <>
-                <button 
-                  onClick={openMoveModal}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium transition text-sm"
-                >
-                  <MoveRight size={16} /> Move to Folder
-                </button>
-                <button 
-                  onClick={handleDeleteSelected}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-medium transition text-sm"
-                >
-                  <Trash2 size={16} /> Delete Selected
-                </button>
-              </>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*"
-              multiple
-              onChange={handleUpload} 
-            />
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-6 py-3 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg font-bold transition uppercase tracking-wide text-sm border border-purple-200"
-            >
-              <Upload size={18} /> Upload Images
-            </button>
+        <div className="p-2 sm:p-3 md:p-4 border-t border-gray-100 bg-white z-20">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            {/* Selection Actions */}
+            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
+              {selectedIds.length > 0 && (
+                <>
+                  <button 
+                    onClick={openMoveModal}
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium transition text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    <MoveRight size={14} className="sm:hidden" />
+                    <MoveRight size={16} className="hidden sm:block" />
+                    <span className="hidden xs:inline">Move to</span> Folder
+                  </button>
+                  <button 
+                    onClick={handleDeleteSelected}
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-medium transition text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    <Trash2 size={14} className="sm:hidden" />
+                    <Trash2 size={16} className="hidden sm:block" />
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
             
-            <div className="px-6 py-3 border border-purple-600 text-purple-600 rounded-lg font-medium text-sm min-w-[120px] text-center">
-              {selectedIds.length} Selected
+            {/* Upload and Counter */}
+            <div className="flex items-center gap-2 sm:gap-4 justify-end">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/*"
+                multiple
+                onChange={handleUpload} 
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg font-bold transition uppercase tracking-wide text-xs sm:text-sm border border-purple-200"
+              >
+                <Upload size={16} className="sm:hidden" />
+                <Upload size={18} className="hidden sm:block" />
+                Upload
+              </button>
+              
+              <div className="px-3 sm:px-6 py-2 sm:py-3 border border-purple-600 text-purple-600 rounded-lg font-medium text-xs sm:text-sm min-w-[80px] sm:min-w-[120px] text-center">
+                {selectedIds.length} <span className="hidden xs:inline">Selected</span>
+              </div>
             </div>
           </div>
         </div>
@@ -808,10 +828,10 @@ const AdminGallery: React.FC = () => {
 
       {/* Move to Folder Modal */}
       {showMoveModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-md shadow-2xl">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">Move {movingImages.length} image(s) to folder</h3>
+              <h3 className="text-base sm:text-lg font-bold">Move {movingImages.length} image(s) to folder</h3>
               <button onClick={() => setShowMoveModal(false)} className="p-1 hover:bg-gray-100 rounded">
                 <X size={20} />
               </button>

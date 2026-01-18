@@ -1494,20 +1494,20 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
       {/* Header - Modern design matching AdminOrders */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Settings className="w-6 h-6 text-indigo-500" />
-            Customization
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-500 flex-shrink-0" />
+            <span className="truncate">Customization</span>
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Manage website appearance, carousel, campaigns and popups</p>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1 truncate">Manage website appearance, carousel, campaigns and popups</p>
         </div>
         <button
           onClick={handleSaveChanges}
           disabled={isSaving}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-all shadow-lg min-w-[160px] justify-center ${
+          className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-bold transition-all shadow-lg min-w-[140px] sm:min-w-[160px] justify-center text-sm sm:text-base w-full sm:w-auto ${
             isSaved
               ? 'bg-emerald-500 text-white'
               : isSaving
@@ -1538,21 +1538,22 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
       {isLoading ? (
         <MetricsSkeleton count={4} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {/* Carousel Items */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Carousel Items</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">Carousel Items</p>
+                <p className="mt-1 text-xl sm:text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <ImageIcon size={24} className="text-blue-500" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                <ImageIcon size={20} className="text-blue-500 sm:hidden" />
+                <ImageIcon size={24} className="text-blue-500 hidden sm:block" />
               </div>
             </div>
             <button
               onClick={() => setActiveTab('carousel')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
+              className="mt-2 sm:mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
             >
               <Eye size={14} />
               Manage
@@ -1560,21 +1561,22 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
 
           {/* Active Campaigns */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Campaigns</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">Active Campaigns</p>
+                <p className="mt-1 text-xl sm:text-3xl font-bold text-gray-900">
                   {websiteConfiguration.campaigns?.filter(c => c.status === 'Publish').length || 0}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-                <CalendarDays size={24} className="text-emerald-500" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                <CalendarDays size={20} className="text-emerald-500 sm:hidden" />
+                <CalendarDays size={24} className="text-emerald-500 hidden sm:block" />
               </div>
             </div>
             <button
               onClick={() => setActiveTab('campaigns')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+              className="mt-2 sm:mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
             >
               <Eye size={14} />
               Manage
@@ -1582,21 +1584,22 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
 
           {/* Active Popups */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Popups</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">Active Popups</p>
+                <p className="mt-1 text-xl sm:text-3xl font-bold text-gray-900">
                   {websiteConfiguration.popups?.filter(p => p.status === 'Publish').length || 0}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-                <Layers size={24} className="text-purple-500" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                <Layers size={20} className="text-purple-500 sm:hidden" />
+                <Layers size={24} className="text-purple-500 hidden sm:block" />
               </div>
             </div>
             <button
               onClick={() => setActiveTab('popup')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
+              className="mt-2 sm:mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
             >
               <Eye size={14} />
               Manage
@@ -1604,113 +1607,21 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
 
           {/* Theme Sections */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Theme Sections</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">8</p>
-                <p className="mt-1 text-xs text-gray-400">Customizable areas</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium truncate">Theme Sections</p>
+                <p className="mt-1 text-xl sm:text-3xl font-bold text-gray-900">8</p>
+                <p className="mt-1 text-xs text-gray-400 hidden sm:block">Customizable areas</p>
               </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-                <Palette size={24} className="text-orange-500" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                <Palette size={20} className="text-orange-500 sm:hidden" />
+                <Palette size={24} className="text-orange-500 hidden sm:block" />
               </div>
             </div>
             <button
               onClick={() => setActiveTab('theme_view')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
-            >
-              <Eye size={14} />
-              Customize
-            </button>
-          </div>
-        </div>
-      )}
-
-
-      {/* Quick Stats Cards */}
-      {isLoading ? (
-        <MetricsSkeleton count={4} />
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {/* Carousel Items */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Carousel Items</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <ImageIcon size={24} className="text-blue-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('carousel')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Active Campaigns */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Campaigns</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
-                  {websiteConfiguration.campaigns?.filter(c => c.status === 'Publish').length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-                <CalendarDays size={24} className="text-emerald-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('campaigns')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Active Popups */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Popups</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
-                  {websiteConfiguration.popups?.filter(p => p.status === 'Publish').length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-                <Layers size={24} className="text-purple-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('popup')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Theme Sections */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Theme Sections</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">8</p>
-                <p className="mt-1 text-xs text-gray-400">Customizable areas</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-                <Palette size={24} className="text-orange-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('theme_view')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
+              className="mt-2 sm:mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
             >
               <Eye size={14} />
               Customize
@@ -1720,7 +1631,7 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
       )}
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto">
+      <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-1">
         <TabButton id="carousel" label="Carousel" icon={<ImageIcon size={16} />} />
         <TabButton id="campaigns" label="Campaigns" icon={<CalendarDays size={16} />} />
         <TabButton id="popup" label="Popups" icon={<Layers size={16} />} />
@@ -1731,20 +1642,21 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 min-h-[500px]">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 sm:p-4 md:p-6 min-h-[400px] sm:min-h-[500px]">
         {/* ================================================================== */}
         {/* Carousel Tab */}
         {/* ================================================================== */}
         {activeTab === 'carousel' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Filters and Search */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              {/* Status Filters - Scrollable on mobile */}
+              <div className="flex bg-gray-100 rounded-lg p-1 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-1">
                 {(['All', 'Publish', 'Draft', 'Trash'] as CarouselFilterStatus[]).map((status) => (
                   <button
                     key={status}
                     onClick={() => setCarouselFilterStatus(status)}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${
+                    className={`px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                       carouselFilterStatus === status
                         ? 'bg-white text-green-600 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
@@ -1759,8 +1671,10 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                   </button>
                 ))}
               </div>
-              <div className="flex gap-3 w-full md:w-auto">
-                <div className="relative flex-1 md:w-64">
+              
+              {/* Search and Add Button */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <div className="relative flex-1">
                   <input
                     type="text"
                     placeholder="Search"
@@ -1772,39 +1686,111 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 </div>
                 <ActionButton
                   onClick={() => openCarouselModal()}
-                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
+                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2 justify-center w-full sm:w-auto"
                 >
                   <Plus size={16} />
-                  Add Carousel
+                  <span className="hidden xs:inline">Add</span> Carousel
                 </ActionButton>
               </div>
             </div>
 
-            {/* Carousel Table */}
-            <div className="overflow-x-auto border rounded-lg shadow-sm">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
-                  <tr>
-                    <th className="px-4 py-3 w-10">
-                      <input type="checkbox" className="rounded" />
-                    </th>
-                    <th className="px-4 py-3">Image</th>
-                    <th className="px-4 py-3">Name</th>
-                    <th className="px-4 py-3">Url</th>
-                    <th className="px-4 py-3">Url Type</th>
-                    <th className="px-4 py-3">Serial</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredCarouselItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50 group">
-                      <td className="px-4 py-3">
+            {/* Carousel Table - Mobile Card View / Desktop Table */}
+            <div className="overflow-hidden border rounded-lg shadow-sm">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
+                    <tr>
+                      <th className="px-4 py-3 w-10">
                         <input type="checkbox" className="rounded" />
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="w-16 h-10 bg-gray-100 rounded border overflow-hidden">
+                      </th>
+                      <th className="px-4 py-3">Image</th>
+                      <th className="px-4 py-3">Name</th>
+                      <th className="px-4 py-3">Url</th>
+                      <th className="px-4 py-3">Url Type</th>
+                      <th className="px-4 py-3">Serial</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {filteredCarouselItems.map((item) => (
+                      <tr key={item.id} className="hover:bg-gray-50 group">
+                        <td className="px-4 py-3">
+                          <input type="checkbox" className="rounded" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="w-16 h-10 bg-gray-100 rounded border overflow-hidden">
+                            {item.image ? (
+                              <img
+                                src={normalizeImageUrl(item.image)}
+                                alt={item.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                <ImageIcon size={16} />
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-gray-800">{item.name}</td>
+                        <td className="px-4 py-3 text-gray-500 max-w-xs truncate">{item.url}</td>
+                        <td className="px-4 py-3 text-gray-500">{item.urlType}</td>
+                        <td className="px-4 py-3 font-mono">{item.serial}</td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                              item.status === 'Publish'
+                                ? 'bg-green-100 text-green-700'
+                                : STATUS_COLORS.Draft
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100">
+                            <button
+                              onClick={() => openCarouselModal(item)}
+                              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteCarousel(item.id)}
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredCarouselItems.length === 0 && (
+                      <tr>
+                        <td colSpan={8} className="text-center py-12 text-gray-400">
+                          <ImageIcon size={32} className="mx-auto mb-2 opacity-50" />
+                          No carousel items found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {filteredCarouselItems.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    <ImageIcon size={32} className="mx-auto mb-2 opacity-50" />
+                    No carousel items found.
+                  </div>
+                ) : (
+                  filteredCarouselItems.map((item) => (
+                    <div key={item.id} className="p-4 hover:bg-gray-50">
+                      <div className="flex gap-3">
+                        <div className="w-20 h-12 bg-gray-100 rounded border overflow-hidden flex-shrink-0">
                           {item.image ? (
                             <img
                               src={normalizeImageUrl(item.image)}
@@ -1817,50 +1803,43 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                             </div>
                           )}
                         </div>
-                      </td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{item.name}</td>
-                      <td className="px-4 py-3 text-gray-500 max-w-xs truncate">{item.url}</td>
-                      <td className="px-4 py-3 text-gray-500">{item.urlType}</td>
-                      <td className="px-4 py-3 font-mono">{item.serial}</td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                            item.status === 'Publish'
-                              ? 'bg-green-100 text-green-700'
-                              : STATUS_COLORS.Draft
-                          }`}
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100">
-                          <button
-                            onClick={() => openCarouselModal(item)}
-                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteCarousel(item.id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-medium text-gray-800 truncate">{item.name}</h4>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${
+                                item.status === 'Publish'
+                                  ? 'bg-green-100 text-green-700'
+                                  : STATUS_COLORS.Draft
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 truncate mt-1">{item.url || 'No URL'}</p>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-xs text-gray-400">Serial: {item.serial}</span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => openCarouselModal(item)}
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCarousel(item.id)}
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredCarouselItems.length === 0 && (
-                    <tr>
-                      <td colSpan={8} className="text-center py-12 text-gray-400">
-                        <ImageIcon size={32} className="mx-auto mb-2 opacity-50" />
-                        No carousel items found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
 
             {/* Pagination */}
@@ -1882,15 +1861,16 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         {/* Campaigns Tab */}
         {/* ================================================================== */}
         {activeTab === 'campaigns' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Filters and Search */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              {/* Status Filters */}
+              <div className="flex bg-gray-100 rounded-lg p-1 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-1">
                 {(['All', 'Publish', 'Draft'] as CampaignFilterStatus[]).map((status) => (
                   <button
                     key={status}
                     onClick={() => { setCampaignFilterStatus(status); setCampaignCurrentPage(1); }}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${
+                    className={`px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                       campaignFilterStatus === status
                         ? 'bg-white text-green-600 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
@@ -1900,168 +1880,244 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                   </button>
                 ))}
               </div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
+              
+              {/* Search and Actions */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="relative flex-1">
                   <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     value={campaignSearchQuery}
                     onChange={(e) => { setCampaignSearchQuery(e.target.value); setCampaignCurrentPage(1); }}
                     placeholder="Search Category"
-                    className="pl-10 pr-4 py-2 border rounded-lg w-64 focus:ring-2 focus:ring-green-500"
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                   />
                 </div>
-                <select
-                  value={campaignItemsPerPage}
-                  onChange={(e) => { setCampaignItemsPerPage(Number(e.target.value)); setCampaignCurrentPage(1); }}
-                  className="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500"
-                >
-                  <option value={10}>10 Campaign</option>
-                  <option value={25}>25 Campaign</option>
-                  <option value={50}>50 Campaign</option>
-                  <option value={100}>100 Campaign</option>
-                </select>
-                <ActionButton
-                  onClick={() => openCampaignModal()}
-                  variant="bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"
-                >
-                  <Plus size={18} />
-                  Add Campaign
-                </ActionButton>
+                <div className="flex gap-2 sm:gap-3">
+                  <select
+                    value={campaignItemsPerPage}
+                    onChange={(e) => { setCampaignItemsPerPage(Number(e.target.value)); setCampaignCurrentPage(1); }}
+                    className="border rounded-lg px-2 sm:px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 flex-1 sm:flex-none"
+                  >
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <ActionButton
+                    onClick={() => openCampaignModal()}
+                    variant="bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2 justify-center flex-1 sm:flex-none"
+                  >
+                    <Plus size={18} />
+                    <span className="hidden xs:inline">Add</span> Campaign
+                  </ActionButton>
+                </div>
               </div>
             </div>
 
-            {/* Campaign Table */}
-            <div className="overflow-x-auto border rounded-lg shadow-sm">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
-                  <tr>
-                    <th className="px-4 py-3 w-10">
-                      <input type="checkbox" className="rounded" />
-                    </th>
-                    <th className="px-4 py-3">SL</th>
-                    <th className="px-4 py-3">Product</th>
-                    <th className="px-4 py-3">Campaign Name</th>
-                    <th className="px-4 py-3">Start</th>
-                    <th className="px-4 py-3">End</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {paginatedCampaigns.map((campaign, index) => {
-                    const product = products.find(p => p.id === campaign.productId);
-                    const rowNumber = (campaignCurrentPage - 1) * campaignItemsPerPage + index + 1;
-                    return (
-                      <tr key={campaign.id} className="hover:bg-gray-50 group">
-                        <td className="px-4 py-3">
-                          <input type="checkbox" className="rounded" />
-                        </td>
-                        <td className="px-4 py-3 font-medium text-gray-800">{campaign.serial || rowNumber}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gray-100 rounded border overflow-hidden flex-shrink-0">
-                              {product?.images?.[0] ? (
-                                <img
-                                  src={normalizeImageUrl(product.images[0])}
-                                  alt={product.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : campaign.logo ? (
-                                <img
-                                  src={normalizeImageUrl(campaign.logo)}
-                                  alt={campaign.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                  <ImageIcon size={16} />
-                                </div>
-                              )}
+            {/* Campaign Table - Desktop / Cards - Mobile */}
+            <div className="overflow-hidden border rounded-lg shadow-sm">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-gray-50 text-gray-700 font-semibold text-xs uppercase border-b">
+                    <tr>
+                      <th className="px-4 py-3 w-10">
+                        <input type="checkbox" className="rounded" />
+                      </th>
+                      <th className="px-4 py-3">SL</th>
+                      <th className="px-4 py-3">Product</th>
+                      <th className="px-4 py-3">Campaign Name</th>
+                      <th className="px-4 py-3">Start</th>
+                      <th className="px-4 py-3">End</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {paginatedCampaigns.map((campaign, index) => {
+                      const product = products.find(p => p.id === campaign.productId);
+                      const rowNumber = (campaignCurrentPage - 1) * campaignItemsPerPage + index + 1;
+                      return (
+                        <tr key={campaign.id} className="hover:bg-gray-50 group">
+                          <td className="px-4 py-3">
+                            <input type="checkbox" className="rounded" />
+                          </td>
+                          <td className="px-4 py-3 font-medium text-gray-800">{campaign.serial || rowNumber}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-gray-100 rounded border overflow-hidden flex-shrink-0">
+                                {product?.images?.[0] ? (
+                                  <img
+                                    src={normalizeImageUrl(product.images[0])}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : campaign.logo ? (
+                                  <img
+                                    src={normalizeImageUrl(campaign.logo)}
+                                    alt={campaign.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                    <ImageIcon size={16} />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-medium text-gray-800 truncate max-w-[180px]">{product?.name || 'No Product'}</p>
+                                {product?.sku && <p className="text-xs text-gray-500">[{product.sku}]</p>}
+                              </div>
                             </div>
-                            <div className="min-w-0">
-                              <p className="font-medium text-gray-800 truncate max-w-[180px]">{product?.name || 'No Product'}</p>
-                              {product?.sku && <p className="text-xs text-gray-500">[{product.sku}]</p>}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-700">{campaign.name}</td>
-                        <td className="px-4 py-3 text-gray-500">{new Date(campaign.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
-                        <td className="px-4 py-3 text-gray-500">{new Date(campaign.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
-                        <td className="px-4 py-3">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : STATUS_COLORS.Draft}`}>
-                            {campaign.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right relative">
-                          <button
-                            onClick={() => setCampaignActionMenu(campaignActionMenu === campaign.id ? null : campaign.id)}
-                            className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
-                          >
-                            <MoreVertical size={18} />
-                          </button>
-                          {campaignActionMenu === campaign.id && (
-                            <div className="absolute right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-20 min-w-[120px]">
-                              <button
-                                onClick={() => { openCampaignModal(campaign); setCampaignActionMenu(null); }}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-blue-600"
-                              >
-                                <Edit size={14} /> Edit
-                              </button>
-                              <button
-                                onClick={() => { handleDeleteCampaign(campaign.id); setCampaignActionMenu(null); }}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600"
-                              >
-                                <Trash2 size={14} /> Delete
-                              </button>
-                            </div>
-                          )}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">{campaign.name}</td>
+                          <td className="px-4 py-3 text-gray-500">{new Date(campaign.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
+                          <td className="px-4 py-3 text-gray-500">{new Date(campaign.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}</td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : STATUS_COLORS.Draft}`}>
+                              {campaign.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right relative">
+                            <button
+                              onClick={() => setCampaignActionMenu(campaignActionMenu === campaign.id ? null : campaign.id)}
+                              className="p-1.5 hover:bg-gray-100 rounded-lg transition text-gray-500 hover:text-gray-700"
+                            >
+                              <MoreVertical size={18} />
+                            </button>
+                            {campaignActionMenu === campaign.id && (
+                              <div className="absolute right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-20 min-w-[120px]">
+                                <button
+                                  onClick={() => { openCampaignModal(campaign); setCampaignActionMenu(null); }}
+                                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-blue-600"
+                                >
+                                  <Edit size={14} /> Edit
+                                </button>
+                                <button
+                                  onClick={() => { handleDeleteCampaign(campaign.id); setCampaignActionMenu(null); }}
+                                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600"
+                                >
+                                  <Trash2 size={14} /> Delete
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {paginatedCampaigns.length === 0 && (
+                      <tr>
+                        <td colSpan={8} className="text-center py-12 text-gray-400">
+                          <CalendarDays size={32} className="mx-auto mb-2 opacity-50" />
+                          No campaigns found.
                         </td>
                       </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile/Tablet Card View */}
+              <div className="lg:hidden divide-y divide-gray-100">
+                {paginatedCampaigns.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    <CalendarDays size={32} className="mx-auto mb-2 opacity-50" />
+                    No campaigns found.
+                  </div>
+                ) : (
+                  paginatedCampaigns.map((campaign, index) => {
+                    const product = products.find(p => p.id === campaign.productId);
+                    return (
+                      <div key={campaign.id} className="p-4 hover:bg-gray-50">
+                        <div className="flex gap-3">
+                          <div className="w-16 h-16 bg-gray-100 rounded border overflow-hidden flex-shrink-0">
+                            {product?.images?.[0] ? (
+                              <img
+                                src={normalizeImageUrl(product.images[0])}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : campaign.logo ? (
+                              <img
+                                src={normalizeImageUrl(campaign.logo)}
+                                alt={campaign.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                <ImageIcon size={20} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-medium text-gray-800 truncate">{campaign.name}</h4>
+                                <p className="text-xs text-gray-500 truncate">{product?.name || 'No Product'}</p>
+                              </div>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${campaign.status === 'Publish' ? 'bg-green-100 text-green-700' : STATUS_COLORS.Draft}`}>
+                                {campaign.status}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                              <span>{new Date(campaign.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}</span>
+                              <span>→</span>
+                              <span>{new Date(campaign.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}</span>
+                            </div>
+                            <div className="flex justify-end gap-2 mt-2">
+                              <button
+                                onClick={() => openCampaignModal(campaign)}
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCampaign(campaign.id)}
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     );
-                  })}
-                  {paginatedCampaigns.length === 0 && (
-                    <tr>
-                      <td colSpan={8} className="text-center py-12 text-gray-400">
-                        <CalendarDays size={32} className="mx-auto mb-2 opacity-50" />
-                        No campaigns found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                  })
+                )}
+              </div>
             </div>
 
             {/* Pagination */}
             {filteredCampaigns.length > 0 && (
-              <div className="flex items-center justify-between px-4 py-3 border rounded-lg bg-gray-50">
-                <p className="text-sm text-gray-600">
-                  Showing {((campaignCurrentPage - 1) * campaignItemsPerPage) + 1} to {Math.min(campaignCurrentPage * campaignItemsPerPage, filteredCampaigns.length)} of {filteredCampaigns.length} campaigns
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 sm:px-4 py-3 border rounded-lg bg-gray-50">
+                <p className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
+                  Showing {((campaignCurrentPage - 1) * campaignItemsPerPage) + 1} to {Math.min(campaignCurrentPage * campaignItemsPerPage, filteredCampaigns.length)} of {filteredCampaigns.length}
                 </p>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-wrap justify-center">
                   <button
                     onClick={() => setCampaignCurrentPage(prev => Math.max(1, prev - 1))}
                     disabled={campaignCurrentPage === 1}
-                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                    className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
                   >
-                    <ChevronLeft size={16} /> Previous
+                    <ChevronLeft size={16} /> <span className="hidden sm:inline">Prev</span>
                   </button>
-                  {Array.from({ length: Math.min(5, campaignTotalPages) }, (_, i) => {
+                  {Array.from({ length: Math.min(3, campaignTotalPages) }, (_, i) => {
                     let pageNum;
-                    if (campaignTotalPages <= 5) {
+                    if (campaignTotalPages <= 3) {
                       pageNum = i + 1;
-                    } else if (campaignCurrentPage <= 3) {
+                    } else if (campaignCurrentPage <= 2) {
                       pageNum = i + 1;
-                    } else if (campaignCurrentPage >= campaignTotalPages - 2) {
-                      pageNum = campaignTotalPages - 4 + i;
+                    } else if (campaignCurrentPage >= campaignTotalPages - 1) {
+                      pageNum = campaignTotalPages - 2 + i;
                     } else {
-                      pageNum = campaignCurrentPage - 2 + i;
+                      pageNum = campaignCurrentPage - 1 + i;
                     }
                     return (
                       <button
                         key={pageNum}
                         onClick={() => setCampaignCurrentPage(pageNum)}
-                        className={`w-8 h-8 text-sm font-medium rounded-lg transition ${campaignCurrentPage === pageNum
+                        className={`w-8 h-8 text-xs sm:text-sm font-medium rounded-lg transition ${campaignCurrentPage === pageNum
                           ? 'bg-teal-500 text-white'
                           : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
                         }`}
@@ -2070,23 +2126,12 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                       </button>
                     );
                   })}
-                  {campaignTotalPages > 5 && campaignCurrentPage < campaignTotalPages - 2 && (
-                    <>
-                      <span className="px-2 text-gray-400">...</span>
-                      <button
-                        onClick={() => setCampaignCurrentPage(campaignTotalPages)}
-                        className="w-8 h-8 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                      >
-                        {campaignTotalPages}
-                      </button>
-                    </>
-                  )}
                   <button
                     onClick={() => setCampaignCurrentPage(prev => Math.min(campaignTotalPages, prev + 1))}
                     disabled={campaignCurrentPage === campaignTotalPages}
-                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+                    className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
                   >
-                    Next <ChevronRight size={16} />
+                    <span className="hidden sm:inline">Next</span> <ChevronRight size={16} />
                   </button>
                 </div>
               </div>
@@ -2119,21 +2164,130 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         )}
 
         {activeTab === 'popup' && (
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex bg-gray-100 rounded-lg p-1">{['All', 'Publish', 'Draft'].map(s => <button key={s} onClick={() => setPopupFilterStatus(s as any)} className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${popupFilterStatus === s ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>{s === 'All' ? 'All Data' : s}{s === 'All' && <span className="ml-1 text-xs bg-gray-200 px-1.5 rounded-full">{(websiteConfiguration.popups || []).length}</span>}</button>)}</div>
-              <div className="flex gap-3 w-full md:w-auto">
-                <div className="relative flex-1 md:w-64"><input type="text" placeholder="Search" className="w-full pl-10 pr-4 py-2 bg-white border rounded-lg text-sm focus:ring-1 focus:ring-green-500" value={popupSearchQuery} onChange={e => setPopupSearchQuery(e.target.value)}/><Search className="absolute left-3 top-2.5 text-gray-400" size={16}/></div>
-                <ActionButton onClick={() => openPopupModal()} variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2"><Plus size={16}/>Add Popup</ActionButton>
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              {/* Status Filters */}
+              <div className="flex bg-gray-100 rounded-lg p-1 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-1">
+                {['All', 'Publish', 'Draft'].map(s => (
+                  <button 
+                    key={s} 
+                    onClick={() => setPopupFilterStatus(s as any)} 
+                    className={`px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition whitespace-nowrap ${popupFilterStatus === s ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  >
+                    {s === 'All' ? 'All Data' : s}
+                    {s === 'All' && <span className="ml-1 text-xs bg-gray-200 px-1.5 rounded-full">{(websiteConfiguration.popups || []).length}</span>}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Search and Add */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <div className="relative flex-1">
+                  <input 
+                    type="text" 
+                    placeholder="Search" 
+                    className="w-full pl-10 pr-4 py-2 bg-white border rounded-lg text-sm focus:ring-1 focus:ring-green-500" 
+                    value={popupSearchQuery} 
+                    onChange={e => setPopupSearchQuery(e.target.value)}
+                  />
+                  <Search className="absolute left-3 top-2.5 text-gray-400" size={16}/>
+                </div>
+                <ActionButton 
+                  onClick={() => openPopupModal()} 
+                  variant="bg-green-600 text-white hover:from-[#2BAEE8] hover:to-[#1A7FE8] flex items-center gap-2 justify-center w-full sm:w-auto"
+                >
+                  <Plus size={16}/><span className="hidden xs:inline">Add</span> Popup
+                </ActionButton>
               </div>
             </div>
-            <div className="overflow-x-auto border rounded-lg shadow-sm">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b"><tr><th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Image</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">URL</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Priority</th><th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th><th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th></tr></thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredPopups.length === 0 ? <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-400">No popups found</td></tr> : filteredPopups.map(p => <tr key={p.id} className="hover:bg-gray-50"><td className="px-4 py-3"><img src={p.image} alt={p.name} className="h-12 w-16 object-cover rounded border"/></td><td className="px-4 py-3 text-sm font-medium text-gray-800">{p.name}</td><td className="px-4 py-3 text-sm text-gray-500 truncate max-w-xs">{p.url || '-'}</td><td className="px-4 py-3 text-sm text-gray-800">{p.priority || 0}</td><td className="px-4 py-3"><button onClick={() => handleTogglePopupStatus(p)} className={`px-3 py-1 rounded-full text-xs font-semibold ${p.status === 'Publish' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>{p.status}</button></td><td className="px-4 py-3 text-right"><div className="flex items-center justify-end gap-2"><button onClick={() => openPopupModal(p)} className="p-1.5 hover:bg-blue-50 rounded text-blue-600"><Edit size={16}/></button><button onClick={() => handleDeletePopup(p.id)} className="p-1.5 hover:bg-red-50 rounded text-red-600"><Trash2 size={16}/></button></div></td></tr>)}
-                </tbody>
-              </table>
+            
+            {/* Popup Table - Desktop / Cards - Mobile */}
+            <div className="overflow-hidden border rounded-lg shadow-sm">
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Image</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">URL</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Priority</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredPopups.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-12 text-center text-gray-400">No popups found</td>
+                      </tr>
+                    ) : filteredPopups.map(p => (
+                      <tr key={p.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <img src={p.image} alt={p.name} className="h-12 w-16 object-cover rounded border"/>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-800">{p.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-xs">{p.url || '-'}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{p.priority || 0}</td>
+                        <td className="px-4 py-3">
+                          <button 
+                            onClick={() => handleTogglePopupStatus(p)} 
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${p.status === 'Publish' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}
+                          >
+                            {p.status}
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => openPopupModal(p)} className="p-1.5 hover:bg-blue-50 rounded text-blue-600">
+                              <Edit size={16}/>
+                            </button>
+                            <button onClick={() => handleDeletePopup(p.id)} className="p-1.5 hover:bg-red-50 rounded text-red-600">
+                              <Trash2 size={16}/>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {filteredPopups.length === 0 ? (
+                  <div className="px-4 py-12 text-center text-gray-400">No popups found</div>
+                ) : filteredPopups.map(p => (
+                  <div key={p.id} className="p-4 hover:bg-gray-50">
+                    <div className="flex gap-3">
+                      <img src={p.image} alt={p.name} className="h-16 w-20 object-cover rounded border flex-shrink-0"/>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-medium text-gray-800 truncate">{p.name}</h4>
+                          <button 
+                            onClick={() => handleTogglePopupStatus(p)} 
+                            className={`px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${p.status === 'Publish' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}
+                          >
+                            {p.status}
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500 truncate mt-1">{p.url || 'No URL'}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-xs text-gray-400">Priority: {p.priority || 0}</span>
+                          <div className="flex gap-2">
+                            <button onClick={() => openPopupModal(p)} className="p-1.5 hover:bg-blue-50 rounded text-blue-600">
+                              <Edit size={16}/>
+                            </button>
+                            <button onClick={() => handleDeletePopup(p.id)} className="p-1.5 hover:bg-red-50 rounded text-red-600">
+                              <Trash2 size={16}/>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

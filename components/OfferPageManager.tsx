@@ -119,74 +119,81 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
   };
 
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex flex-col lg:flex-row h-full bg-gray-50">
       {/* Left Section - Table */}
-      <div className="flex-1 p-6 overflow-auto">
+      <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-auto">
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Landing Page</h1>
-            <p className="text-gray-500 mt-1">Create unlimited landing Page</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Landing Page</h1>
+            <p className="text-gray-500 mt-1 text-sm">Create unlimited landing Page</p>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors">
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 sm:gap-3">
+            <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors text-sm">
               Version 1
               <ChevronDown size={16} />
             </button>
             <button
               onClick={onCreateNew}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors text-sm"
             >
               <Plus size={18} />
-              Create Landing Page
+              <span className="hidden xs:inline">Create</span> Landing Page
             </button>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search Category"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
-            />
+        <div className="flex flex-col gap-3 mb-4">
+          {/* Search Row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <div className="relative flex-1 max-w-full sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="text"
+                placeholder="Search Category"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
+              />
+            </div>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+              Search
+            </button>
           </div>
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
-            Search
-          </button>
-          <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <Filter size={16} />
-            Filter:
+          
+          {/* Filters Row */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <Filter size={16} />
+              <span className="hidden xs:inline">Filter:</span>
+            </div>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="flex-1 min-w-[100px] max-w-[150px] px-2 sm:px-3 py-2 border border-gray-200 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="all">All Category</option>
+            </select>
+            <select
+              value={versionFilter}
+              onChange={(e) => setVersionFilter(e.target.value)}
+              className="flex-1 min-w-[100px] max-w-[150px] px-2 sm:px-3 py-2 border border-gray-200 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="all">All Version</option>
+              <option value="v1">V-1</option>
+              <option value="v2">V-2</option>
+            </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="flex-1 min-w-[100px] max-w-[150px] px-2 sm:px-3 py-2 border border-gray-200 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="all">All Status</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
           </div>
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500"
-          >
-            <option value="all">All Category</option>
-          </select>
-          <select
-            value={versionFilter}
-            onChange={(e) => setVersionFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500"
-          >
-            <option value="all">All Version</option>
-            <option value="v1">V-1</option>
-            <option value="v2">V-2</option>
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500"
-          >
-            <option value="all">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
-          </select>
         </div>
 
         {/* Table */}
@@ -210,7 +217,8 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-teal-50 border-b border-teal-100">
                     <tr>
@@ -358,9 +366,76 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
                 </table>
               </div>
 
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {paginatedPages.map((page, index) => (
+                  <div
+                    key={page._id}
+                    className={`p-4 hover:bg-gray-50 ${previewPage?._id === page._id ? 'bg-teal-50/50' : ''}`}
+                    onClick={() => handleRowClick(page)}
+                  >
+                    <div className="flex gap-3">
+                      {page.imageUrl ? (
+                        <img
+                          src={page.imageUrl}
+                          alt={page.productTitle}
+                          className="w-16 h-16 object-cover rounded-lg border flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FileText size={20} className="text-gray-400" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-medium text-gray-900 text-sm line-clamp-2">{page.productTitle}</h4>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTogglePublish(page);
+                            }}
+                            className={`px-2 py-0.5 rounded text-xs font-medium flex-shrink-0 ${
+                              page.status === 'published'
+                                ? 'bg-teal-500 text-white'
+                                : 'bg-gray-200 text-gray-600'
+                            }`}
+                          >
+                            {page.status === 'published' ? 'Publish' : 'Draft'}
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500 truncate mt-1">offer/{page.urlSlug}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">V-1</span>
+                          <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => onPreview(page)}
+                              className="p-1.5 hover:bg-gray-100 rounded text-gray-500"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              onClick={() => onEdit(page)}
+                              className="p-1.5 hover:bg-gray-100 rounded text-blue-600"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <button
+                              onClick={() => setDeleteModal({ open: true, page })}
+                              className="p-1.5 hover:bg-red-50 rounded text-red-600"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               {/* Pagination */}
-              <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t bg-gray-50">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                   <span>Show</span>
                   <select
                     value={pageSize}
@@ -374,12 +449,12 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
                     <option value={25}>25</option>
                     <option value={50}>50</option>
                   </select>
-                  <span>entries</span>
+                  <span className="hidden xs:inline">entries</span>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">
-                    Showing {startIndex + 1} to {Math.min(startIndex + pageSize, filteredPages.length)} of {filteredPages.length}
+                <div className="flex flex-col xs:flex-row items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    Showing {startIndex + 1}-{Math.min(startIndex + pageSize, filteredPages.length)} of {filteredPages.length}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
@@ -389,7 +464,7 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
                     >
                       <ChevronLeft size={18} />
                     </button>
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
                       const pageNum = i + 1;
                       return (
                         <button
@@ -420,8 +495,8 @@ export const OfferPageManager: React.FC<OfferPageManagerProps> = ({
         </div>
       </div>
 
-      {/* Right Section - Preview */}
-      <div className="w-[380px] border-l bg-white p-6 flex flex-col">
+      {/* Right Section - Preview (Hidden on mobile, shown on lg+) */}
+      <div className="hidden lg:flex w-[380px] border-l bg-white p-6 flex-col">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
           {previewPage && (

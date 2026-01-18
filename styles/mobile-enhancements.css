@@ -9,6 +9,24 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hide scrollbar for horizontal scroll areas */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Extra small breakpoint for xs: prefix support */
+@media (min-width: 480px) {
+  .xs\:inline { display: inline; }
+  .xs\:flex { display: flex; }
+  .xs\:flex-row { flex-direction: row; }
+  .xs\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 /* Better touch targets on mobile */
 @media (max-width: 768px) {
   button,
@@ -26,6 +44,11 @@ html {
   
   .space-x-4 {
     gap: 0.75rem;
+  }
+  
+  /* Make sure tables are usable */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
