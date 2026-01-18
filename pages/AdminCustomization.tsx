@@ -1626,99 +1626,6 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         </div>
       )}
 
-
-      {/* Quick Stats Cards */}
-      {isLoading ? (
-        <MetricsSkeleton count={4} />
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {/* Carousel Items */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Carousel Items</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">{websiteConfiguration.carouselItems?.length || 0}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <ImageIcon size={24} className="text-blue-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('carousel')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Active Campaigns */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Campaigns</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
-                  {websiteConfiguration.campaigns?.filter(c => c.status === 'Publish').length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-                <CalendarDays size={24} className="text-emerald-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('campaigns')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Active Popups */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Active Popups</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">
-                  {websiteConfiguration.popups?.filter(p => p.status === 'Publish').length || 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-                <Layers size={24} className="text-purple-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('popup')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-purple-600 hover:text-purple-700"
-            >
-              <Eye size={14} />
-              Manage
-            </button>
-          </div>
-
-          {/* Theme Sections */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 font-medium">Theme Sections</p>
-                <p className="mt-1 text-3xl font-bold text-gray-900">8</p>
-                <p className="mt-1 text-xs text-gray-400">Customizable areas</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-                <Palette size={24} className="text-orange-500" />
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveTab('theme_view')}
-              className="mt-3 flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700"
-            >
-              <Eye size={14} />
-              Customize
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Tab Navigation */}
       <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto">
         <TabButton id="carousel" label="Carousel" icon={<ImageIcon size={16} />} />
@@ -2095,24 +2002,68 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
         )}
 
         {isCampaignModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setIsCampaignModalOpen(false)}>
-            <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <div className="p-6 border-b sticky top-0 bg-white z-10"><h3 className="text-xl font-bold">{editingCampaign ? 'Edit Campaign' : 'Add New Campaign'}</h3></div>
-              <form onSubmit={handleSaveCampaign} className="p-6 space-y-4">
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label><input type="text" value={campaignFormData.name || ''} onChange={e => setCampaignFormData(p => ({ ...p, name: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
-                  <select value={campaignFormData.productId || ''} onChange={e => setCampaignFormData(p => ({ ...p, productId: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4" onClick={() => setIsCampaignModalOpen(false)}>
+            <div className="bg-white rounded-xl sm:rounded-2xl w-full max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="p-4 sm:p-6 border-b sticky top-0 bg-white z-10 flex justify-between items-center flex-shrink-0">
+                <h3 className="text-lg sm:text-xl font-bold">{editingCampaign ? 'Edit Campaign' : 'Add New Campaign'}</h3>
+                <button onClick={() => setIsCampaignModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-full transition">
+                  <X size={20} className="text-gray-500"/>
+                </button>
+              </div>
+              <form onSubmit={handleSaveCampaign} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
+                  <input type="text" value={campaignFormData.name || ''} onChange={e => setCampaignFormData(p => ({ ...p, name: e.target.value }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500" required placeholder="Enter campaign name"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
+                  <select value={campaignFormData.productId || ''} onChange={e => setCampaignFormData(p => ({ ...p, productId: e.target.value }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500 bg-white">
                     <option value="">-- Select a Product --</option>
                     {products.map(product => (
                       <option key={product.id} value={product.id}>{product.name}</option>
                     ))}
                   </select>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Campaign Logo</label><div className="flex items-center gap-4">{campaignFormData.logo ? <img src={normalizeImageUrl(campaignFormData.logo)} alt="Logo" className="w-20 h-12 object-contain border rounded"/> : <div className="w-20 h-12 bg-gray-100 rounded flex items-center justify-center"><ImageIcon className="text-gray-400" size={24}/></div>}<input type="file" ref={campaignLogoInputRef} accept="image/*" onChange={handleCampaignLogoUpload} className="hidden"/><button type="button" onClick={() => campaignLogoInputRef.current?.click()} className="px-4 py-2 border rounded-lg hover:bg-gray-50">Upload Logo</button>{campaignFormData.logo && <button type="button" onClick={() => setCampaignFormData(p => ({ ...p, logo: '' }))} className="text-red-500 hover:text-red-700"><X size={20}/></button>}</div></div>
-                <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label><input type="datetime-local" value={campaignFormData.startDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, startDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label><input type="datetime-local" value={campaignFormData.endDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, endDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" required/></div></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Link URL</label><input type="text" value={campaignFormData.url || ''} onChange={e => setCampaignFormData(p => ({ ...p, url: e.target.value }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" placeholder="https://..."/></div>
-                <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Order</label><input type="number" value={campaignFormData.serial || 1} onChange={e => setCampaignFormData(p => ({ ...p, serial: parseInt(e.target.value) }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500" min={1}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select value={campaignFormData.status || 'Publish'} onChange={e => setCampaignFormData(p => ({ ...p, status: e.target.value as 'Publish' | 'Draft' }))} className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500"><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div></div>
-                <div className="flex gap-3 pt-4"><button type="button" onClick={() => setIsCampaignModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button><button type="submit" className="flex-1 px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-medium">{editingCampaign ? 'Update' : 'Create'} Campaign</button></div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Logo</label>
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                    {campaignFormData.logo ? <img src={normalizeImageUrl(campaignFormData.logo)} alt="Logo" className="w-16 sm:w-20 h-10 sm:h-12 object-contain border rounded"/> : <div className="w-16 sm:w-20 h-10 sm:h-12 bg-gray-100 rounded flex items-center justify-center"><ImageIcon className="text-gray-400" size={20}/></div>}
+                    <input type="file" ref={campaignLogoInputRef} accept="image/*" onChange={handleCampaignLogoUpload} className="hidden"/>
+                    <button type="button" onClick={() => campaignLogoInputRef.current?.click()} className="px-3 sm:px-4 py-2 border rounded-lg hover:bg-gray-50 text-sm">Upload</button>
+                    {campaignFormData.logo && <button type="button" onClick={() => setCampaignFormData(p => ({ ...p, logo: '' }))} className="text-red-500 hover:text-red-700 p-1"><X size={18}/></button>}
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                    <input type="datetime-local" value={campaignFormData.startDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, startDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500" required/>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
+                    <input type="datetime-local" value={campaignFormData.endDate?.slice(0, 16) || ''} onChange={e => setCampaignFormData(p => ({ ...p, endDate: new Date(e.target.value).toISOString() }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500" required/>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Link URL</label>
+                  <input type="text" value={campaignFormData.url || ''} onChange={e => setCampaignFormData(p => ({ ...p, url: e.target.value }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500" placeholder="https://..."/>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                    <input type="number" value={campaignFormData.serial || 1} onChange={e => setCampaignFormData(p => ({ ...p, serial: parseInt(e.target.value) }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500" min={1}/>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select value={campaignFormData.status || 'Publish'} onChange={e => setCampaignFormData(p => ({ ...p, status: e.target.value as 'Publish' | 'Draft' }))} className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-2 focus:ring-2 focus:ring-green-500 bg-white">
+                      <option value="Publish">Publish</option>
+                      <option value="Draft">Draft</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
+                  <button type="button" onClick={() => setIsCampaignModalOpen(false)} className="w-full sm:flex-1 px-4 py-2.5 sm:py-2 border rounded-lg hover:bg-gray-50 font-medium">Cancel</button>
+                  <button type="submit" className="w-full sm:flex-1 px-4 py-2.5 sm:py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg hover:from-[#2BAEE8] hover:to-[#1A7FE8] font-medium">{editingCampaign ? 'Update' : 'Create'} Campaign</button>
+                </div>
               </form>
             </div>
           </div>
@@ -2328,20 +2279,25 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
       </div>
 
       {isCarouselModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div className="p-4 border-b bg-gray-50 flex justify-between items-center sticky top-0"><h3 className="font-bold text-gray-800">{editingCarousel ? 'Edit Carousel' : 'Add New Carousel'}</h3><button onClick={() => setIsCarouselModalOpen(false)}><X size={20} className="text-gray-500"/></button></div>
-            <form onSubmit={handleSaveCarousel} className="p-6 space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-3 sm:p-4 border-b bg-gray-50 flex justify-between items-center sticky top-0 flex-shrink-0 z-10">
+              <h3 className="font-bold text-gray-800 text-sm sm:text-base">{editingCarousel ? 'Edit Carousel' : 'Add New Carousel'}</h3>
+              <button onClick={() => setIsCarouselModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-full transition">
+                <X size={20} className="text-gray-500"/>
+              </button>
+            </div>
+            <form onSubmit={handleSaveCarousel} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Desktop Banner*</label>
                 <p className="text-xs text-gray-500 mb-2">{CAROUSEL_WIDTH}×{CAROUSEL_HEIGHT}px. Auto WebP.</p>
                 <input type="file" ref={carouselDesktopInputRef} onChange={e => handleImageUpload(e, 'carousel')} className="hidden" accept="image/*"/>
-                <div className="flex gap-2">
-                  <div onClick={() => carouselDesktopInputRef.current?.click()} className="flex-1 border-2 border-dashed rounded-lg p-2 text-center cursor-pointer hover:bg-gray-50 h-28">
-                    {carouselFormData.image ? <img src={normalizeImageUrl(carouselFormData.image)} alt="" className="w-full h-full object-cover rounded"/> : <div className="text-gray-400 flex flex-col items-center justify-center h-full"><Upload size={32} className="mb-2"/><p className="text-sm">Upload</p></div>}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div onClick={() => carouselDesktopInputRef.current?.click()} className="flex-1 border-2 border-dashed rounded-lg p-2 text-center cursor-pointer hover:bg-gray-50 h-24 sm:h-28">
+                    {carouselFormData.image ? <img src={normalizeImageUrl(carouselFormData.image)} alt="" className="w-full h-full object-cover rounded"/> : <div className="text-gray-400 flex flex-col items-center justify-center h-full"><Upload size={28} className="mb-2 sm:hidden"/><Upload size={32} className="mb-2 hidden sm:block"/><p className="text-xs sm:text-sm">Tap to Upload</p></div>}
                   </div>
-                  <button type="button" onClick={() => openGalleryPicker('carousel')} className="w-24 border-2 border-dashed border-indigo-300 rounded-lg flex flex-col items-center justify-center text-indigo-600 hover:bg-indigo-50 transition">
-                    <FolderOpen size={24} className="mb-1"/>
+                  <button type="button" onClick={() => openGalleryPicker('carousel')} className="w-full sm:w-24 h-12 sm:h-auto border-2 border-dashed border-indigo-300 rounded-lg flex flex-row sm:flex-col items-center justify-center gap-2 sm:gap-1 text-indigo-600 hover:bg-indigo-50 transition">
+                    <FolderOpen size={20} className="sm:mb-1"/>
                     <span className="text-xs font-medium">Gallery</span>
                   </button>
                 </div>
@@ -2350,46 +2306,111 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Banner</label>
                 <p className="text-xs text-gray-500 mb-2">{CAROUSEL_MOBILE_WIDTH}×{CAROUSEL_MOBILE_HEIGHT}px. Auto WebP.</p>
                 <input type="file" ref={carouselMobileInputRef} onChange={e => handleImageUpload(e, 'carouselMobile')} className="hidden" accept="image/*"/>
-                <div className="flex gap-2">
-                  <div onClick={() => carouselMobileInputRef.current?.click()} className="flex-1 border-2 border-dashed border-blue-300 rounded-lg p-2 text-center cursor-pointer hover:bg-blue-50 h-28">
-                    {carouselFormData.mobileImage ? <div className="relative w-full h-full"><img src={normalizeImageUrl(carouselFormData.mobileImage)} alt="" className="w-full h-full object-cover rounded"/><button type="button" onClick={e => { e.stopPropagation(); setCarouselFormData(p => ({ ...p, mobileImage: '' })); }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"><X size={14}/></button></div> : <div className="text-blue-400 flex flex-col items-center justify-center h-full"><Upload size={32} className="mb-2"/><p className="text-sm">Upload</p></div>}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div onClick={() => carouselMobileInputRef.current?.click()} className="flex-1 border-2 border-dashed border-blue-300 rounded-lg p-2 text-center cursor-pointer hover:bg-blue-50 h-24 sm:h-28">
+                    {carouselFormData.mobileImage ? <div className="relative w-full h-full"><img src={normalizeImageUrl(carouselFormData.mobileImage)} alt="" className="w-full h-full object-cover rounded"/><button type="button" onClick={e => { e.stopPropagation(); setCarouselFormData(p => ({ ...p, mobileImage: '' })); }} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"><X size={14}/></button></div> : <div className="text-blue-400 flex flex-col items-center justify-center h-full"><Upload size={28} className="mb-2 sm:hidden"/><Upload size={32} className="mb-2 hidden sm:block"/><p className="text-xs sm:text-sm">Tap to Upload</p></div>}
                   </div>
-                  <button type="button" onClick={() => openGalleryPicker('carouselMobile')} className="w-24 border-2 border-dashed border-indigo-300 rounded-lg flex flex-col items-center justify-center text-indigo-600 hover:bg-indigo-50 transition">
-                    <FolderOpen size={24} className="mb-1"/>
+                  <button type="button" onClick={() => openGalleryPicker('carouselMobile')} className="w-full sm:w-24 h-12 sm:h-auto border-2 border-dashed border-indigo-300 rounded-lg flex flex-row sm:flex-col items-center justify-center gap-2 sm:gap-1 text-indigo-600 hover:bg-indigo-50 transition">
+                    <FolderOpen size={20} className="sm:mb-1"/>
                     <span className="text-xs font-medium">Gallery</span>
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Name</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.name} onChange={e => setCarouselFormData({ ...carouselFormData, name: e.target.value })} required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Serial</label><input type="number" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.serial} onChange={e => setCarouselFormData({ ...carouselFormData, serial: Number(e.target.value) })} required/></div></div>
-              <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Url</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.url} onChange={e => setCarouselFormData({ ...carouselFormData, url: e.target.value })}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Url Type</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.urlType} onChange={e => setCarouselFormData({ ...carouselFormData, urlType: e.target.value as any })}><option value="Internal">Internal</option><option value="External">External</option></select></div></div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={carouselFormData.status} onChange={e => setCarouselFormData({ ...carouselFormData, status: e.target.value as any })}><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div>
-              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsCarouselModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" disabled={isCarouselSaving} className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-60 flex items-center gap-2">{isCarouselSaving ? <><Loader2 size={16} className="animate-spin"/>Saving...</> : 'Save Carousel'}</button></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input type="text" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={carouselFormData.name} onChange={e => setCarouselFormData({ ...carouselFormData, name: e.target.value })} required placeholder="Enter carousel name"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Serial</label>
+                  <input type="number" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={carouselFormData.serial} onChange={e => setCarouselFormData({ ...carouselFormData, serial: Number(e.target.value) })} required/>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Url</label>
+                  <input type="text" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={carouselFormData.url} onChange={e => setCarouselFormData({ ...carouselFormData, url: e.target.value })} placeholder="https://..."/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Url Type</label>
+                  <select className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" value={carouselFormData.urlType} onChange={e => setCarouselFormData({ ...carouselFormData, urlType: e.target.value as any })}>
+                    <option value="Internal">Internal</option>
+                    <option value="External">External</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" value={carouselFormData.status} onChange={e => setCarouselFormData({ ...carouselFormData, status: e.target.value as any })}>
+                  <option value="Publish">Publish</option>
+                  <option value="Draft">Draft</option>
+                </select>
+              </div>
+              <div className="pt-3 sm:pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                <button type="button" onClick={() => setIsCarouselModalOpen(false)} className="w-full sm:w-auto px-4 py-2.5 sm:py-2 border rounded-lg text-sm hover:bg-gray-50 font-medium">Cancel</button>
+                <button type="submit" disabled={isCarouselSaving} className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8] disabled:opacity-60 flex items-center justify-center gap-2">{isCarouselSaving ? <><Loader2 size={16} className="animate-spin"/>Saving...</> : 'Save Carousel'}</button>
+              </div>
             </form>
           </div>
         </div>
       )}
       {isPopupModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 flex justify-between items-center"><h3 className="font-bold text-gray-800">{editingPopup ? 'Edit Popup' : 'Add New Popup'}</h3><button onClick={() => setIsPopupModalOpen(false)}><X size={20} className="text-gray-500"/></button></div>
-            <form onSubmit={handleSavePopup} className="p-6 space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-3 sm:p-4 border-b bg-gray-50 flex justify-between items-center flex-shrink-0">
+              <h3 className="font-bold text-gray-800 text-sm sm:text-base">{editingPopup ? 'Edit Popup' : 'Add New Popup'}</h3>
+              <button onClick={() => setIsPopupModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-full transition">
+                <X size={20} className="text-gray-500"/>
+              </button>
+            </div>
+            <form onSubmit={handleSavePopup} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Popup Image*</label>
                 <input type="file" ref={popupImageInputRef} onChange={e => handleImageUpload(e, 'popup')} className="hidden" accept="image/*"/>
-                <div className="flex gap-2">
-                  <div onClick={() => popupImageInputRef.current?.click()} className="flex-1 border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50">
-                    {popupFormData.image ? <img src={normalizeImageUrl(popupFormData.image)} alt="" className="h-28 mx-auto object-contain"/> : <div className="text-gray-400"><Upload size={32} className="mx-auto mb-2"/><p className="text-sm">Upload</p></div>}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div onClick={() => popupImageInputRef.current?.click()} className="flex-1 border-2 border-dashed rounded-lg p-3 sm:p-4 text-center cursor-pointer hover:bg-gray-50 min-h-[100px] sm:min-h-[112px]">
+                    {popupFormData.image ? <img src={normalizeImageUrl(popupFormData.image)} alt="" className="h-20 sm:h-28 mx-auto object-contain"/> : <div className="text-gray-400 flex flex-col items-center justify-center h-full"><Upload size={28} className="mb-2 sm:hidden"/><Upload size={32} className="mb-2 hidden sm:block"/><p className="text-xs sm:text-sm">Tap to Upload</p></div>}
                   </div>
-                  <button type="button" onClick={() => openGalleryPicker('popup')} className="w-24 border-2 border-dashed border-indigo-300 rounded-lg flex flex-col items-center justify-center text-indigo-600 hover:bg-indigo-50 transition">
-                    <FolderOpen size={24} className="mb-1"/>
+                  <button type="button" onClick={() => openGalleryPicker('popup')} className="w-full sm:w-24 h-12 sm:h-auto border-2 border-dashed border-indigo-300 rounded-lg flex flex-row sm:flex-col items-center justify-center gap-2 sm:gap-1 text-indigo-600 hover:bg-indigo-50 transition">
+                    <FolderOpen size={20} className="sm:mb-1"/>
                     <span className="text-xs font-medium">Gallery</span>
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">Name*</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.name} onChange={e => setPopupFormData({ ...popupFormData, name: e.target.value })} required/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">Priority</label><input type="number" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.priority} onChange={e => setPopupFormData({ ...popupFormData, priority: Number(e.target.value) })}/></div></div>
-              <div className="grid grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">URL</label><input type="text" className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.url} onChange={e => setPopupFormData({ ...popupFormData, url: e.target.value })}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">URL Type</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.urlType} onChange={e => setPopupFormData({ ...popupFormData, urlType: e.target.value as any })}><option value="Internal">Internal</option><option value="External">External</option></select></div></div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-1">Status</label><select className="w-full px-3 py-2 border rounded-lg text-sm" value={popupFormData.status} onChange={e => setPopupFormData({ ...popupFormData, status: e.target.value as any })}><option value="Publish">Publish</option><option value="Draft">Draft</option></select></div>
-              <div className="pt-4 flex justify-end gap-3"><button type="button" onClick={() => setIsPopupModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm hover:bg-gray-50">Cancel</button><button type="submit" className="px-4 py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save Popup</button></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
+                  <input type="text" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={popupFormData.name} onChange={e => setPopupFormData({ ...popupFormData, name: e.target.value })} required placeholder="Enter popup name"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                  <input type="number" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={popupFormData.priority} onChange={e => setPopupFormData({ ...popupFormData, priority: Number(e.target.value) })} placeholder="0"/>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                  <input type="text" className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value={popupFormData.url} onChange={e => setPopupFormData({ ...popupFormData, url: e.target.value })} placeholder="https://..."/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">URL Type</label>
+                  <select className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" value={popupFormData.urlType} onChange={e => setPopupFormData({ ...popupFormData, urlType: e.target.value as any })}>
+                    <option value="Internal">Internal</option>
+                    <option value="External">External</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select className="w-full px-3 py-2.5 sm:py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" value={popupFormData.status} onChange={e => setPopupFormData({ ...popupFormData, status: e.target.value as any })}>
+                  <option value="Publish">Publish</option>
+                  <option value="Draft">Draft</option>
+                </select>
+              </div>
+              <div className="pt-3 sm:pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
+                <button type="button" onClick={() => setIsPopupModalOpen(false)} className="w-full sm:w-auto px-4 py-2.5 sm:py-2 border rounded-lg text-sm hover:bg-gray-50 font-medium">Cancel</button>
+                <button type="submit" className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-gradient-to-r from-[#38BDF8] to-[#1E90FF] text-white rounded-lg text-sm font-bold hover:from-[#2BAEE8] hover:to-[#1A7FE8]">Save Popup</button>
+              </div>
             </form>
           </div>
         </div>
