@@ -330,7 +330,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
         {/* Close Button */}
         <button 
           onClick={onClose} 
-          className="absolute right-3 top-3 sm:right-6 sm:top-6 md:right-8 md:top-8 z-10 w-8 h-8 sm:w-9 sm:h-9 bg-neutral-400/25 rounded-lg flex items-center justify-center hover:bg-neutral-400/40 transition-colors min-h-[44px] min-w-[44px]"
+          className="absolute right-3 top-3 sm:right-6 sm:top-6 md:right-8 md:top-8 z-10 min-w-[44px] min-h-[44px] sm:w-9 sm:h-9 sm:min-w-0 sm:min-h-0 bg-neutral-400/25 rounded-lg flex items-center justify-center hover:bg-neutral-400/40 transition-colors"
         >
           <X size={16} className="text-black" />
         </button>
@@ -829,7 +829,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Product Categories</label>
-                    <button type="button" className="flex items-center gap-1 hover:opacity-80 min-h-[44px] min-w-[44px] justify-end">
+                    <button type="button" className="flex items-center gap-1 p-2 hover:opacity-80">
                       <Plus size={18} className="text-black sm:hidden" />
                       <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
@@ -853,7 +853,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Tags</label>
-                    <button type="button" className="flex items-center gap-1 hover:opacity-80 min-h-[44px] min-w-[44px] justify-end">
+                    <button type="button" className="flex items-center gap-1 p-2 hover:opacity-80">
                       <Plus size={18} className="text-black sm:hidden" />
                       <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
@@ -887,7 +887,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         <button 
                           type="button" 
                           onClick={() => toggleVariation(variation.id)}
-                          className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
+                          className="p-3 sm:p-1.5 flex items-center justify-center"
                         >
                           {expandedVariations[variation.id] ? (
                             <Minus size={14} className="text-black" />
