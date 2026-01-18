@@ -64,6 +64,10 @@ interface ProductFormData {
   additionalSku: string;
   additionalBarcode: string;
   additionalMoq: number;
+  // Special product flags
+  isDealOfTheDay: boolean;
+  isMostSelling: boolean;
+  isOurProduct: boolean;
 }
 
 interface ProductFormModalProps {
@@ -78,6 +82,11 @@ interface ProductFormModalProps {
   brands: Brand[];
   tags: Tag[];
   isLoading?: boolean;
+  // Callbacks for creating new catalog items
+  onAddCategory?: (category: Category) => void;
+  onAddSubCategory?: (subCategory: SubCategory) => void;
+  onAddChildCategory?: (childCategory: ChildCategory) => void;
+  onAddTag?: (tag: Tag) => void;
 }
 
 const ProductFormModal: React.FC<ProductFormModalProps> = ({
@@ -91,10 +100,24 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   childCategories,
   brands,
   tags,
-  isLoading = false
+  isLoading = false,
+  onAddCategory,
+  onAddSubCategory,
+  onAddChildCategory,
+  onAddTag
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  // State for inline "Add New" forms
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [showNewSubCategoryInput, setShowNewSubCategoryInput] = useState(false);
+  const [newSubCategoryName, setNewSubCategoryName] = useState('');
+  const [showNewChildCategoryInput, setShowNewChildCategoryInput] = useState(false);
+  const [newChildCategoryName, setNewChildCategoryName] = useState('');
+  const [showNewTagInput, setShowNewTagInput] = useState(false);
+  const [newTagName, setNewTagName] = useState('');
 
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
@@ -138,7 +161,96 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
     additionalSku: 'SKU1234567',
     additionalBarcode: '215464578621684',
     additionalMoq: 10,
+    // Special product flags
+    isDealOfTheDay: false,
+    isMostSelling: false,
+    isOurProduct: false,
   });
+
+  // Get filtered subcategories based on selected category
+  const filteredSubCategories = subCategories.filter(sub => {
+    const selectedCat = categories.find(c => c.name === formData.category);
+    return selectedCat && sub.categoryId === selectedCat.id;
+  });
+
+  // Get filtered child categories based on selected subcategory
+  const filteredChildCategories = childCategories.filter(child => {
+    const selectedSub = subCategories.find(s => s.name === formData.subCategory);
+    return selectedSub && child.subCategoryId === selectedSub.id;
+  });
+
+  // Handler to create a new category
+  const handleCreateCategory = () => {
+    if (!newCategoryName.trim()) return;
+    const newCategory: Category = {
+      id: Date.now().toString(),
+      name: newCategoryName.trim(),
+      slug: newCategoryName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      status: 'Active',
+    };
+    onAddCategory?.(newCategory);
+    setFormData(prev => ({ ...prev, category: newCategory.name }));
+    setNewCategoryName('');
+    setShowNewCategoryInput(false);
+  };
+
+  // Handler to create a new subcategory
+  const handleCreateSubCategory = () => {
+    if (!newSubCategoryName.trim() || !formData.category) return;
+    const parentCat = categories.find(c => c.name === formData.category);
+    if (!parentCat) return;
+    const newSubCategory: SubCategory = {
+      id: Date.now().toString(),
+      categoryId: parentCat.id,
+      name: newSubCategoryName.trim(),
+      status: 'Active',
+    };
+    onAddSubCategory?.(newSubCategory);
+    setFormData(prev => ({ ...prev, subCategory: newSubCategory.name }));
+    setNewSubCategoryName('');
+    setShowNewSubCategoryInput(false);
+  };
+
+  // Handler to create a new child category
+  const handleCreateChildCategory = () => {
+    if (!newChildCategoryName.trim() || !formData.subCategory) return;
+    const parentSub = subCategories.find(s => s.name === formData.subCategory);
+    if (!parentSub) return;
+    const newChildCategory: ChildCategory = {
+      id: Date.now().toString(),
+      subCategoryId: parentSub.id,
+      name: newChildCategoryName.trim(),
+      status: 'Active',
+    };
+    onAddChildCategory?.(newChildCategory);
+    setFormData(prev => ({ ...prev, childCategory: newChildCategory.name }));
+    setNewChildCategoryName('');
+    setShowNewChildCategoryInput(false);
+  };
+
+  // Handler to create a new tag
+  const handleCreateTag = () => {
+    if (!newTagName.trim()) return;
+    const newTag: Tag = {
+      id: Date.now().toString(),
+      name: newTagName.trim(),
+      status: 'Active',
+    };
+    onAddTag?.(newTag);
+    setFormData(prev => ({ ...prev, tags: [...prev.tags, newTag.name] }));
+    setNewTagName('');
+    setShowNewTagInput(false);
+  };
+
+  // Toggle tag in formData.tags
+  const toggleTag = (tagName: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.includes(tagName)
+        ? prev.tags.filter(t => t !== tagName)
+        : [...prev.tags, tagName]
+    }));
+  };
 
   const [variationInputs, setVariationInputs] = useState<Record<string, string>>({});
   const [expandedVariations, setExpandedVariations] = useState<Record<string, boolean>>({
@@ -147,6 +259,12 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
 
   useEffect(() => {
     if (editingProduct) {
+      // Check if special tags are present in the tags array
+      const productTags = editingProduct.tags || [];
+      const isDealOfTheDay = productTags.some(t => t.toLowerCase() === 'deal of the day');
+      const isMostSelling = productTags.some(t => t.toLowerCase() === 'most selling');
+      const isOurProduct = productTags.some(t => t.toLowerCase() === 'our products');
+      
       setFormData(prev => ({
         ...prev,
         name: editingProduct.name || '',
@@ -158,10 +276,13 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
         category: editingProduct.category || '',
         subCategory: editingProduct.subCategory || '',
         childCategory: editingProduct.childCategory || '',
-        tags: editingProduct.tags || [],
+        tags: productTags,
         brand: editingProduct.brand || '',
         mainImage: editingProduct.image || '',
         galleryImages: editingProduct.galleryImages || [],
+        isDealOfTheDay,
+        isMostSelling,
+        isOurProduct,
       }));
     }
   }, [editingProduct]);
@@ -284,6 +405,29 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Build tags array including special tags
+    let finalTags = [...formData.tags];
+    
+    // Add special tags based on flags
+    if (formData.isDealOfTheDay && !finalTags.some(t => t.toLowerCase() === 'deal of the day')) {
+      finalTags.push('Deal of the Day');
+    } else if (!formData.isDealOfTheDay) {
+      finalTags = finalTags.filter(t => t.toLowerCase() !== 'deal of the day');
+    }
+    
+    if (formData.isMostSelling && !finalTags.some(t => t.toLowerCase() === 'most selling')) {
+      finalTags.push('Most Selling');
+    } else if (!formData.isMostSelling) {
+      finalTags = finalTags.filter(t => t.toLowerCase() !== 'most selling');
+    }
+    
+    if (formData.isOurProduct && !finalTags.some(t => t.toLowerCase() === 'our products')) {
+      finalTags.push('Our Products');
+    } else if (!formData.isOurProduct) {
+      finalTags = finalTags.filter(t => t.toLowerCase() !== 'our products');
+    }
+    
     const productData: Product = {
       id: editingProduct?.id || Date.now(),
       name: formData.name,
@@ -297,7 +441,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       subCategory: formData.subCategory,
       childCategory: formData.childCategory,
       brand: formData.brand,
-      tags: formData.tags,
+      tags: finalTags,
       searchTags: [],
       colors: [],
       sizes: [],
@@ -829,12 +973,47 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Product Categories</label>
-                    <button type="button" className="flex items-center gap-1 p-2 hover:opacity-80">
+                    <button 
+                      type="button" 
+                      onClick={() => setShowNewCategoryInput(!showNewCategoryInput)}
+                      className="flex items-center gap-1 p-2 hover:opacity-80"
+                    >
                       <Plus size={18} className="text-black sm:hidden" />
                       <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
                     </button>
                   </div>
+                  
+                  {/* Inline Add Category Form */}
+                  {showNewCategoryInput && (
+                    <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <input
+                        type="text"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="Enter category name"
+                        className="w-full p-2 mb-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleCreateCategory())}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleCreateCategory}
+                          className="flex-1 px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-lg text-xs font-medium hover:from-sky-500 hover:to-blue-600"
+                        >
+                          Save Category
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setShowNewCategoryInput(false); setNewCategoryName(''); }}
+                          className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="relative">
                     <select 
                       value={formData.category} 
@@ -849,25 +1028,262 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
                   </div>
                 </div>
 
+                {/* Sub Category */}
+                {formData.category && (
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Sub Category</label>
+                      <button 
+                        type="button" 
+                        onClick={() => setShowNewSubCategoryInput(!showNewSubCategoryInput)}
+                        className="flex items-center gap-1 p-2 hover:opacity-80"
+                      >
+                        <Plus size={18} className="text-black sm:hidden" />
+                        <Plus size={20} className="text-black hidden sm:block" />
+                        <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
+                      </button>
+                    </div>
+                    
+                    {/* Inline Add SubCategory Form */}
+                    {showNewSubCategoryInput && (
+                      <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <input
+                          type="text"
+                          value={newSubCategoryName}
+                          onChange={(e) => setNewSubCategoryName(e.target.value)}
+                          placeholder="Enter sub category name"
+                          className="w-full p-2 mb-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleCreateSubCategory())}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleCreateSubCategory}
+                            className="flex-1 px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-lg text-xs font-medium hover:from-sky-500 hover:to-blue-600"
+                          >
+                            Save Sub Category
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setShowNewSubCategoryInput(false); setNewSubCategoryName(''); }}
+                            className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="relative">
+                      <select 
+                        value={formData.subCategory} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, subCategory: e.target.value, childCategory: '' }))} 
+                        className="w-full p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                      >
+                        <option value="">Select sub category</option>
+                        {filteredSubCategories.map(sub => <option key={sub.id} value={sub.name}>{sub.name}</option>)}
+                      </select>
+                      <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none sm:hidden" />
+                      <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none hidden sm:block" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Child Category */}
+                {formData.subCategory && (
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Child Category</label>
+                      <button 
+                        type="button" 
+                        onClick={() => setShowNewChildCategoryInput(!showNewChildCategoryInput)}
+                        className="flex items-center gap-1 p-2 hover:opacity-80"
+                      >
+                        <Plus size={18} className="text-black sm:hidden" />
+                        <Plus size={20} className="text-black hidden sm:block" />
+                        <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
+                      </button>
+                    </div>
+                    
+                    {/* Inline Add ChildCategory Form */}
+                    {showNewChildCategoryInput && (
+                      <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <input
+                          type="text"
+                          value={newChildCategoryName}
+                          onChange={(e) => setNewChildCategoryName(e.target.value)}
+                          placeholder="Enter child category name"
+                          className="w-full p-2 mb-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleCreateChildCategory())}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleCreateChildCategory}
+                            className="flex-1 px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-lg text-xs font-medium hover:from-sky-500 hover:to-blue-600"
+                          >
+                            Save Child Category
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setShowNewChildCategoryInput(false); setNewChildCategoryName(''); }}
+                            className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="relative">
+                      <select 
+                        value={formData.childCategory} 
+                        onChange={(e) => setFormData(prev => ({ ...prev, childCategory: e.target.value }))} 
+                        className="w-full p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
+                      >
+                        <option value="">Select child category</option>
+                        {filteredChildCategories.map(child => <option key={child.id} value={child.name}>{child.name}</option>)}
+                      </select>
+                      <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none sm:hidden" />
+                      <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none hidden sm:block" />
+                    </div>
+                  </div>
+                )}
+
                 {/* Tags */}
-                <div>
+                <div className="mb-4">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <label className="text-teal-950 text-sm sm:text-base font-bold font-['Lato']">Tags</label>
-                    <button type="button" className="flex items-center gap-1 p-2 hover:opacity-80">
+                    <button 
+                      type="button" 
+                      onClick={() => setShowNewTagInput(!showNewTagInput)}
+                      className="flex items-center gap-1 p-2 hover:opacity-80"
+                    >
                       <Plus size={18} className="text-black sm:hidden" />
                       <Plus size={20} className="text-black hidden sm:block" />
                       <span className="text-teal-950 text-xs font-bold font-['Lato']">Add New</span>
                     </button>
                   </div>
-                  <div className="relative">
-                    <select 
-                      className="w-full p-2.5 sm:p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] text-teal-950 text-sm sm:text-base font-normal font-['Lato'] focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer"
-                    >
-                      <option value="">Select your tags</option>
-                      {tags.map(tag => <option key={tag.id} value={tag.name}>{tag.name}</option>)}
-                    </select>
-                    <ChevronDown size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none sm:hidden" />
-                    <ChevronDown size={24} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none hidden sm:block" />
+                  
+                  {/* Inline Add Tag Form */}
+                  {showNewTagInput && (
+                    <div className="mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <input
+                        type="text"
+                        value={newTagName}
+                        onChange={(e) => setNewTagName(e.target.value)}
+                        placeholder="Enter tag name"
+                        className="w-full p-2 mb-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleCreateTag())}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleCreateTag}
+                          className="flex-1 px-3 py-1.5 bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-lg text-xs font-medium hover:from-sky-500 hover:to-blue-600"
+                        >
+                          Save Tag
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setShowNewTagInput(false); setNewTagName(''); }}
+                          className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Tag Selection */}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {tags.map(tag => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => toggleTag(tag.name)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          formData.tags.includes(tag.name)
+                            ? 'bg-gradient-to-r from-sky-400 to-blue-500 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {tag.name}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  {/* Selected Tags Display */}
+                  {formData.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {formData.tags.map(tagName => (
+                        <span
+                          key={tagName}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                        >
+                          {tagName}
+                          <button
+                            type="button"
+                            onClick={() => toggleTag(tagName)}
+                            className="hover:text-blue-900"
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Special Product Flags Section */}
+                <div className="pt-4 border-t border-gray-200">
+                  <h3 className="text-teal-950 text-sm sm:text-base font-bold font-['Lato'] mb-3">Product Highlights</h3>
+                  
+                  <div className="space-y-3">
+                    {/* Deal of the Day */}
+                    <label className="flex items-center justify-between p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] cursor-pointer hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🔥</span>
+                        <span className="text-teal-950 text-sm font-medium font-['Lato']">Deal of the Day</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData(prev => ({ ...prev, isDealOfTheDay: !prev.isDealOfTheDay }))} 
+                        className={`w-12 h-6 px-1 py-1.5 rounded-[200px] flex items-center overflow-hidden transition-colors ${formData.isDealOfTheDay ? 'bg-gradient-to-r from-orange-400 to-red-500 justify-end' : 'bg-gray-300 justify-start'}`}
+                      >
+                        <div className="w-4 h-4 bg-white rounded-full" />
+                      </button>
+                    </label>
+
+                    {/* Most Selling */}
+                    <label className="flex items-center justify-between p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] cursor-pointer hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🏆</span>
+                        <span className="text-teal-950 text-sm font-medium font-['Lato']">Most Selling Products</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData(prev => ({ ...prev, isMostSelling: !prev.isMostSelling }))} 
+                        className={`w-12 h-6 px-1 py-1.5 rounded-[200px] flex items-center overflow-hidden transition-colors ${formData.isMostSelling ? 'bg-gradient-to-r from-yellow-400 to-amber-500 justify-end' : 'bg-gray-300 justify-start'}`}
+                      >
+                        <div className="w-4 h-4 bg-white rounded-full" />
+                      </button>
+                    </label>
+
+                    {/* Our Products */}
+                    <label className="flex items-center justify-between p-3 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.20)] cursor-pointer hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">⭐</span>
+                        <span className="text-teal-950 text-sm font-medium font-['Lato']">Our Products</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => setFormData(prev => ({ ...prev, isOurProduct: !prev.isOurProduct }))} 
+                        className={`w-12 h-6 px-1 py-1.5 rounded-[200px] flex items-center overflow-hidden transition-colors ${formData.isOurProduct ? 'bg-gradient-to-r from-sky-400 to-blue-500 justify-end' : 'bg-gray-300 justify-start'}`}
+                      >
+                        <div className="w-4 h-4 bg-white rounded-full" />
+                      </button>
+                    </label>
                   </div>
                 </div>
               </div>
