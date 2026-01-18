@@ -46,7 +46,7 @@ export const StorePopup = ({ popup: p, onClose, onNavigate }: StorePopupProps) =
           className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10 p-1 sm:p-1.5 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition touch-manipulation"
           aria-label="Close popup"
         >
-          <X size={18} className="text-gray-700 dark:text-gray-300 sm:w-5 sm:h-5" />
+          <X className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-700 dark:text-gray-300" />
         </button>
         <div
           className={`relative bg-white dark:bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden shadow-2xl ${
