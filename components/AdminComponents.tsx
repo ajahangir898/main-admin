@@ -99,7 +99,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ activePage, onNaviga
 		{ id: 'catalog_childcategories', label: 'Child Categories' },
 		{ id: 'catalog_brands', label: 'Brand' },
 		{ id: 'catalog_tags', label: 'Tags' },
-		{ id: 'popups', label: 'Popups' },
 	];
 
 	// Filter menu items based on permissions
