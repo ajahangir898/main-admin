@@ -7,10 +7,24 @@ import { CourierConfig, User as UserType, Tenant, Role } from '../types';
 import { convertFileToWebP } from '../services/imageUtils';
 import { GalleryPicker } from '../components/GalleryPicker';
 
+// Settings card props interface
+interface SettingsCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  onClick: () => void;
+}
+
 // Settings card component for navigation
-const SettingsCard: React.FC<{ title: string; description: string; icon: React.ReactNode; color: string; onClick: () => void }> = ({ title, description, icon, color, onClick }) => (
-  <button onClick={onClick} className={`p-4 sm:p-5 rounded-xl border ${color} flex items-center gap-3 sm:gap-4 hover:shadow-md transition group w-full text-left active:scale-[0.98]`}>
-    <div className="p-2 sm:p-3 rounded-full bg-white/80 shadow-sm group-hover:scale-110 transition flex-shrink-0">{icon}</div>
+const SettingsCard: React.FC<SettingsCardProps> = ({ title, description, icon, color, onClick }) => (
+  <button 
+    onClick={onClick} 
+    className={`p-4 sm:p-5 rounded-xl border ${color} flex items-center gap-3 sm:gap-4 hover:shadow-md transition group w-full text-left active:scale-[0.98]`}
+  >
+    <div className="p-2 sm:p-3 rounded-full bg-white/80 shadow-sm group-hover:scale-110 transition flex-shrink-0">
+      {icon}
+    </div>
     <div className="flex-1 min-w-0">
       <h3 className="font-bold text-gray-800 text-sm sm:text-base truncate">{title}</h3>
       <p className="text-xs text-gray-500 truncate">{description}</p>
