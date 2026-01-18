@@ -25,7 +25,9 @@ import {
   Settings,
   Sliders,
   Filter,
-  MoreVertical
+  MoreVertical,
+  Lock,
+  Crown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -2332,40 +2334,69 @@ const AdminCustomization: React.FC<AdminCustomizationProps> = ({
           </div>
         )}
         {activeTab === 'theme_view' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {THEME_VIEW_SECTIONS.map(s => (
-              <div key={s.title} className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <h3 className="font-bold text-gray-800 text-lg border-b pb-2 mb-4">{s.title}</h3>
-                <div className="space-y-2">
-                  {s.hasNone && (
-                    <div className={`border rounded-lg p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-white transition-themeColors cursor-pointer ${!websiteConfiguration[s.key as keyof WebsiteConfig] ? 'border-green-500 bg-green-50 shadow-sm' : 'border-gray-300 bg-white'}`}>
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={!websiteConfiguration[s.key as keyof WebsiteConfig]} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: '' }))}/>
-                        <span className="font-semibold text-gray-700">None</span>
-                      </div>
-                      <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-themeColors">
-                        <Eye size={14}/>View Site
-                      </button>
-                    </div>
-                  )}
-                  {Array.from({ length: s.count }).map((_, i) => { 
-                    const v = `style${i + 1}`;
-                    const cur = websiteConfiguration[s.key as keyof WebsiteConfig] || 'style1';
-                    return (
-                      <div key={i} className={`border rounded-lg p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-white transition-themeColors cursor-pointer ${cur === v ? 'border-green-500 bg-green-50 shadow-sm' : 'border-gray-300 bg-white'}`}>
+          <div className="relative">
+            {/* Premium User Locked Overlay */}
+            <div className="absolute inset-0 z-10 bg-white/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center">
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-8 shadow-xl text-center max-w-md mx-4">
+                <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Lock size={36} className="text-white" />
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Crown size={24} className="text-amber-500" />
+                  <h3 className="text-xl font-bold text-gray-800">Premium Feature</h3>
+                </div>
+                <p className="text-gray-600 mb-4">
+                  Theme customization is only available for <span className="font-semibold text-amber-600">Premium Users</span>
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  Upgrade your plan to unlock beautiful theme styles and customize your store's appearance.
+                </p>
+                <a 
+                  href="/admin/billing" 
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 flex items-center gap-2 mx-auto"
+                >
+                  <Crown size={18} />
+                  Upgrade to Premium
+                </a>
+              </div>
+            </div>
+            
+            {/* Theme View Content (Blurred behind overlay) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pointer-events-none select-none" aria-hidden="true">
+              {THEME_VIEW_SECTIONS.map(s => (
+                <div key={s.title} className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                  <h3 className="font-bold text-gray-800 text-lg border-b pb-2 mb-4">{s.title}</h3>
+                  <div className="space-y-2">
+                    {s.hasNone && (
+                      <div className={`border rounded-lg p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-white transition-themeColors cursor-pointer ${!websiteConfiguration[s.key as keyof WebsiteConfig] ? 'border-green-500 bg-green-50 shadow-sm' : 'border-gray-300 bg-white'}`}>
                         <div className="flex items-center gap-3">
-                          <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={cur === v} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: v }))}/>
-                          <span className="font-semibold text-gray-700">{s.title.split(' ')[0]} {i + 1}</span>
+                          <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={!websiteConfiguration[s.key as keyof WebsiteConfig]} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: '' }))}/>
+                          <span className="font-semibold text-gray-700">None</span>
                         </div>
                         <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-themeColors">
-                          <Eye size={14}/>View demo
+                          <Eye size={14}/>View Site
                         </button>
                       </div>
-                    );
-                  })}
+                    )}
+                    {Array.from({ length: s.count }).map((_, i) => { 
+                      const v = `style${i + 1}`;
+                      const cur = websiteConfiguration[s.key as keyof WebsiteConfig] || 'style1';
+                      return (
+                        <div key={i} className={`border rounded-lg p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-white transition-themeColors cursor-pointer ${cur === v ? 'border-green-500 bg-green-50 shadow-sm' : 'border-gray-300 bg-white'}`}>
+                          <div className="flex items-center gap-3">
+                            <input type="radio" name={s.title} className="w-5 h-5 text-green-600 cursor-pointer" checked={cur === v} onChange={() => setWebsiteConfiguration(p => ({ ...p, [s.key]: v }))}/>
+                            <span className="font-semibold text-gray-700">{s.title.split(' ')[0]} {i + 1}</span>
+                          </div>
+                          <button className="bg-green-600 text-white px-4 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:from-[#2BAEE8] hover:to-[#1A7FE8] transition-themeColors">
+                            <Eye size={14}/>View demo
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
         {activeTab === 'theme_colors' && (
