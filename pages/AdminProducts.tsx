@@ -27,6 +27,11 @@ interface AdminProductsProps {
   onBulkDelete: (ids: number[]) => void;
   onBulkUpdate: (ids: number[], updates: Partial<Product>) => void;
   tenantId?: string;
+  // Callbacks for creating new catalog items from product form
+  onAddCategory?: (category: Category) => void;
+  onAddSubCategory?: (subCategory: SubCategory) => void;
+  onAddChildCategory?: (childCategory: ChildCategory) => void;
+  onAddTag?: (tag: Tag) => void;
 }
 
 type ViewMode = 'extraLargeIcons' | 'largeIcons' | 'mediumIcons' | 'smallIcons' | 'list' | 'details';
@@ -107,7 +112,11 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
   onDeleteProduct,
   onBulkDelete,
   onBulkUpdate,
-  tenantId
+  tenantId,
+  onAddCategory,
+  onAddSubCategory,
+  onAddChildCategory,
+  onAddTag
 }) => {
   const activeTenantId = tenantId || 'default';
   const [searchTerm, setSearchTerm] = useState('');
@@ -1816,6 +1825,10 @@ const AdminProducts: React.FC<AdminProductsProps> = ({
           brands={brands}
           tags={tags}
           isLoading={isSaving}
+          onAddCategory={onAddCategory}
+          onAddSubCategory={onAddSubCategory}
+          onAddChildCategory={onAddChildCategory}
+          onAddTag={onAddTag}
         />
       )}
 
